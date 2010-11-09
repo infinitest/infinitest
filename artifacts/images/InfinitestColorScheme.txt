@@ -1,0 +1,14 @@
+Red Text: FF0700
+Red Bullet: A60400
+Red Background: FF7673
+Green Highlight: 39E444
+Green Background: 67E46F
+Green Text: 00C90D
+Green Bullet: 008209
+Green Bullet #2: 26962D
+Blue Highlight: 03234A
+Blue Background: 6899D3
+Blue Text: 0E53A7
+Blue Bullet: 04346C
+Yellow Background: EAFC71
+Yellow Text: D8F800

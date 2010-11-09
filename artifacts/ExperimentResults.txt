@@ -1,0 +1,17 @@
+== JMock 2 == 
+Ran 341 test runs
+Found 0 inconsistencies
+AllTest runs took 621799ms
+MinimalTest runs took 125001ms
+
+== Inquiry Engine ==
+Ran 302 test runs
+Found 2 inconsistencies
+AllTest runs took 2134436ms
+MinimalTest runs took 642344ms
+
+== Jaggregate ==
+Ran 719 test runs
+Found 0 inconsistencies
+AllTest runs took 3393922ms
+MinimalTest runs took 254124ms

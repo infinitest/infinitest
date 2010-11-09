@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<module name="Checker">
+    <module name="SuppressionCommentFilter"/>
+
+    <module name="TreeWalker">
+        <module name="FileContentsHolder"/>
+
+        <!-- Naming - http://checkstyle.sourceforge.net/config_naming.html -->
+        <module name="ConstantName" />
+        <module name="LocalFinalVariableName" />
+        <module name="LocalVariableName" />
+        <module name="MemberName" />
+        <module name="MethodName" />
+        <module name="PackageName" />
+        <module name="ParameterName" />
+        <module name="StaticVariableName" />
+        <module name="TypeName" />
+
+        <!-- Imports - http://checkstyle.sourceforge.net/config_imports.html -->
+        <module name="AvoidStarImport" />
+        <module name="IllegalImport" /> <!-- forbids sun.* imports -->
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+
+        <!-- Whitespace - http://checkstyle.sourceforge.net/config_whitespace.html-->
+        <module name="TypecastParenPad" />
+        <module name="TabCharacter" />
+        <module name="WhitespaceAfter" />
+
+        <!-- Modifiers - http://checkstyle.sourceforge.net/config_modifier.html-->
+        <module name="ModifierOrder" />
+        <module name="RedundantModifier" />
+
+        <!-- Block Checks - http://checkstyle.sourceforge.net/config_blocks.html -->
+        <module name="EmptyBlock" />
+        <module name="LeftCurly">
+            <property name="option" value="nl" />
+        </module>
+        <module name="RightCurly">
+            <property name="option" value="alone" />
+        </module>
+        <module name="AvoidNestedBlocks" />
+
+        <!-- Coding - http://checkstyle.sourceforge.net/config_coding.html -->
+        <module name="CovariantEquals" />
+        <module name="DoubleCheckedLocking" />
+        <module name="EmptyStatement" />
+        <module name="EqualsHashCode" />
+        <module name="IllegalInstantiation">
+            <property name="classes"
+                value="java.lang.Boolean,java.lang.StringBuffer,java.lang.Exception,java.lang.Throwable,java.lang.Error" />
+        </module>
+        <module name="InnerAssignment" />
+        <module name="MissingSwitchDefault" />
+        <module name="RedundantThrows" />
+        <module name="SimplifyBooleanExpression" />
+        <module name="SimplifyBooleanReturn" />
+        <module name="StringLiteralEquality" />
+        <module name="NestedIfDepth">
+            <property name="max" value="2" />
+        </module>
+        <module name="NestedTryDepth" />
+        <module name="ParameterAssignment" />
+        <module name="DefaultComesLast" />
+        <module name="FallThrough" />
+        <module name="MultipleVariableDeclarations" />
+        <module name="UnnecessaryParentheses" />
+        <module name="IllegalCatch">
+            <property name="illegalClassNames"
+                value="java.lang.Exception,java.lang.Throwable,java.lang.RuntimeException,java.lang.IllegalArgumentException,java.lang.IllegalStateException,java.lang.Error" />
+        </module>
+        <module name="IllegalThrows">
+            <property name="illegalClassNames" value="java.lang.Exception,java.lang.Throwable,java.lang.Error" />
+        </module>
+
+        <!-- Class Design - http://checkstyle.sourceforge.net/config_design.html -->
+        <module name="MutableException" />
+        <module name="ThrowsCount">
+            <property name="max" value="2" />
+        </module>
+
+        <!-- Size Violations - http://checkstyle.sourceforge.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="120" />
+        </module>
+        <module name="ParameterNumber" />
+
+        <!-- Metrics - http://checkstyle.sourceforge.net/config_metrics.html -->
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="3" />
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="7" />
+        </module>
+        <module name="NPathComplexity">
+            <property name="max" value="20" />
+        </module>
+        <module name="JavaNCSS">
+            <property name="methodMaximum" value="50" />
+            <property name="classMaximum" value="1000" />
+            <property name="fileMaximum" value="1500" />
+        </module>
+
+        <!-- Miscellaneous - http://checkstyle.sourceforge.net/config_misc.html -->
+        <module name="UpperEll" />
+        <module name="ArrayTypeStyle" />
+
+        <!-- Debt Markup -->
+        <module name="GenericIllegalRegexp">
+            <property name="format" value="// IOU" />
+            <property name="ignoreCase" value="true" />
+            <property name="message" value="Unpaid short-term debt" />
+        </module>
+
+    </module>
+
+</module>

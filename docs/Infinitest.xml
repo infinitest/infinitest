@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<code_scheme name="Infinitest">
+  <option name="USE_SAME_INDENTS" value="false" />
+  <option name="JAVA_INDENT_OPTIONS">
+    <value>
+      <option name="INDENT_SIZE" value="2" />
+      <option name="CONTINUATION_INDENT_SIZE" value="2" />
+      <option name="TAB_SIZE" value="2" />
+      <option name="USE_TAB_CHARACTER" value="false" />
+      <option name="SMART_TABS" value="false" />
+      <option name="LABEL_INDENT_SIZE" value="0" />
+      <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+    </value>
+  </option>
+  <option name="XML_INDENT_OPTIONS">
+    <value>
+      <option name="INDENT_SIZE" value="4" />
+      <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      <option name="TAB_SIZE" value="4" />
+      <option name="USE_TAB_CHARACTER" value="false" />
+      <option name="SMART_TABS" value="false" />
+      <option name="LABEL_INDENT_SIZE" value="0" />
+      <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+    </value>
+  </option>
+  <option name="BRACE_STYLE" value="2" />
+  <option name="CLASS_BRACE_STYLE" value="2" />
+  <option name="METHOD_BRACE_STYLE" value="2" />
+  <option name="ELSE_ON_NEW_LINE" value="true" />
+  <option name="CATCH_ON_NEW_LINE" value="true" />
+  <option name="FINALLY_ON_NEW_LINE" value="true" />
+  <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+  <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
+  <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="1" />
+  <option name="IMPORT_LAYOUT_TABLE">
+    <value>
+      <package name="javax" withSubpackages="true" />
+      <package name="java" withSubpackages="true" />
+      <emptyLine />
+      <package name="" withSubpackages="true" />
+    </value>
+  </option>
+  <option name="OPTIMIZE_IMPORTS_ON_THE_FLY" value="true" />
+  <option name="ADD_UNAMBIGIOUS_IMPORTS_ON_THE_FLY" value="true" />
+  <option name="JD_KEEP_EMPTY_PARAMETER" value="false" />
+  <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
+  <option name="JD_KEEP_EMPTY_RETURN" value="false" />
+  <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
+  <ADDITIONAL_INDENT_OPTIONS fileType="js">
+    <option name="INDENT_SIZE" value="4" />
+    <option name="CONTINUATION_INDENT_SIZE" value="8" />
+    <option name="TAB_SIZE" value="4" />
+    <option name="USE_TAB_CHARACTER" value="false" />
+    <option name="SMART_TABS" value="false" />
+    <option name="LABEL_INDENT_SIZE" value="0" />
+    <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+  </ADDITIONAL_INDENT_OPTIONS>
+</code_scheme>
+
