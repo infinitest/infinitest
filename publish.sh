@@ -1,6 +1,7 @@
 #!/bin/sh
-eclipse_root=`dirname $0`
-project_root=$eclipse_root/..
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+eclipse_root=`dirname $abspath`
+project_root=`dirname $eclipse_root`
 main_site=$project_root/website/site
 update_site=${main_site}/experimental
 plugin_name="Infinitest"
@@ -16,13 +17,12 @@ mv pom.xml.new pom.xml
 # Move up to root of repo
 cd $project_root 
 
-# Get up to date
-git pull
-
 # Build it!
 mvn clean install -o -Dplugin.name="${plugin_name}" -Pintegration
 if [ "$?" -ne "0" ]; then
+    cd $project_root
     git checkout infinitest-eclipse/pom.xml
+    echo "Build Failure. Exiting..."
     exit 1
 fi
 
@@ -45,8 +45,8 @@ do
     cp eclipse-feature/target/*.jar $main_site/features/
     cp eclipse-plugin/target/*.jar $main_site/plugins/
 
-    git commit -a -m "Incrementing to version $new_version"
-    git push origin master
+    #git commit -a -m "Releasing $new_version -- $release_message"
+    #git push origin master
 
     #cd $update_site
     #git commit -am  "Released version $new_version"

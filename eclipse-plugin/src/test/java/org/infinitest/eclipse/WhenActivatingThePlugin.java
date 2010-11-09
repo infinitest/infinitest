@@ -4,7 +4,6 @@ import static org.infinitest.eclipse.InfinitestPlugin.parseReleaseDate;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
@@ -13,7 +12,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.infinitest.EventQueue;
 import org.infinitest.NamedRunnable;
 import org.infinitest.eclipse.trim.VisualStatusRegistry;
-import org.infinitest.keys.LicenseState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,13 +39,6 @@ public class WhenActivatingThePlugin
         controller.setUpdateNotifier(coreUpdateNotifier);
         controller.setEventQueue(eventQueue);
         controller.setMarkerClearingRunnable(markerClearingRunnable);
-    }
-
-    private LicenseState mockLicense(boolean valid)
-    {
-        LicenseState license = mock(LicenseState.class);
-        when(license.isValid()).thenReturn(valid);
-        return license;
     }
 
     @Test
