@@ -1,0 +1,37 @@
+Tue Sep 15 22:37:29 CDT 2009    5.1.60  Infinitest console view now remains hidden, even when tests write to standard error
+
+Tue Sep 15 23:17:16 CDT 2009    5.1.61  Now supporting Hamcrest 1.2 by removing baked in verison of hamcrest 1.1
+
+Sat Oct 10 23:13:00 CDT 2009    5.1.62  Added first version of new failure viewer, accessible as a quick fix on an error marker
+
+Mon Oct 12 12:20:41 CDT 2009    5.1.63    Added assertion messages to test failure viewer
+
+Mon Oct 19 23:27:08 CDT 2009    5.1.64    Fixed issue #13, regarding wrapping of long error messages in the failure viewer
+
+Wed Oct 21 21:37:43 CDT 2009    5.1.65    Failure viewer now allows you to select stack trace elements using the mouse (in addition to the keyboard)
+
+Wed Oct 21 22:36:49 CDT 2009    5.1.66    Failure viewer now closes when the user clicks somewhere else
+
+Mon Nov 23 22:54:14 CST 2009    5.1.67    Fixed lighthouse issue #7, related to projects with external jar dependencies
+
+Tue Nov 24 20:50:36 CST 2009    5.1.68    Fixing null resources issue on Windows
+
+Mon Dec  7 10:39:53 CST 2009    5.1.69    Licensing system improvements
+
+Mon Dec  7 14:35:50 CST 2009    5.1.70    Slight change to the license dialog
+
+Mon Dec  7 16:13:00 CST 2009    5.1.71    Updated icons for licenses
+
+Mon Dec 14 09:48:12 CST 2009    5.1.72    Infinitest core now uses Scala. Improved ScalaTest support coming soon.
+
+Mon Dec 14 15:21:38 CST 2009    5.1.73    Resolving many bugs related to missing classes and classpath issues
+
+Mon Dec 28 12:00:51 CST 2009    5.1.74    Now running tests that inherit from classes that use a @RunWith annotation, like Scala Specs
+
+Thu Mar 18 20:45:43 CDT 2010    5.1.75    Added support for JUnit 4.8.1
+
+Thu Mar 18 22:03:21 CDT 2010    5.1.76    Fixing installation verification issue
+
+Thu Mar 18 22:36:38 CDT 2010    5.1.77    Fixed issue with plugin manifest
+
+Thu Mar 18 22:51:06 CDT 2010    5.1.78    Fixed issue with missing libraries in the plugin

@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Ignore-Package: org.eclipse.jface.text,org.infinitest.filter,org.eclip
+ se.core.runtime,java.util,java.net,org.springframework.context.suppor
+ t,org.springframework.beans.factory.annotation,com.google.common.base
+ ,org.infinitest.keys,org.eclipse.debug.core.sourcelookup.containers,o
+ rg.apache.commons.lang,org.eclipse.ui.ide,java.io,org.eclipse.core.re
+ sources,java.lang,java.util.concurrent,org.eclipse.jface.resource,com
+ .google.common.collect,org.eclipse.ui.console,org.eclipse.swt.events,
+ org.eclipse.ui,org.eclipse.ui.plugin,java.text,org.eclipse.ui.menus,o
+ rg.infinitest,org.eclipse.swt.layout,org.junit,org.infinitest.util,or
+ g.eclipse.debug.core.sourcelookup,org.eclipse.jface.preference,org.ec
+ lipse.jdt.launching,org.eclipse.core.runtime.jobs,org.eclipse.jdt.cor
+ e,org.eclipse.swt.graphics,org.osgi.framework,org.infinitest.testrunn
+ er,org.eclipse.jface.util,org.eclipse.core.internal.resources,org.ecl
+ ipse.swt.widgets,java.util.logging,org.springframework.stereotype
+Bundle-ActivationPolicy: lazy
+Bundle-Classpath: .,lib/aopalliance-1.0.jar,lib/commons-codec-1.3.jar,
+ lib/commons-io-1.3.2.jar,lib/commons-lang-2.4.jar,lib/commons-logging
+ -1.1.1.jar,lib/continuous-testing-toolkit-1.0-rc2.jar,lib/google-coll
+ ections-0.8.jar,lib/hamcrest-all-1.1.jar,lib/infinitest-core-5.0.52-S
+ NAPSHOT.jar,lib/infinitest-runner-5.0.52-SNAPSHOT.jar,lib/javassist-3
+ .7.1.GA.jar,lib/jgrapht-jdk1.5-0.7.3.jar,lib/junit-4.8.1.jar,lib/spri
+ ng-beans-2.5.6.jar,lib/spring-context-2.5.6.jar,lib/spring-context-su
+ pport-2.5.6.jar,lib/spring-core-2.5.6.jar
+Tool: Bnd-0.0.357
+Bundle-Name: Infinitest Plugin for Eclipse
+Created-By: 1.6.0_22 (Apple Inc.)
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.ui, org.eclipse.core.runtime, org.eclipse.
+ core.resources, org.eclipse.jdt.core, org.junit4, org.eclipse.ui.ide,
+  org.eclipse.ui.console;bundle-version="3.3.0", org.eclipse.jdt.debug
+ .ui, org.eclipse.jface.text, org.eclipse.debug.core, org.eclipse.jdt.
+ launching
+Bundle-Vendor: infinitest.org
+Plugin-Datestamp: 11/08/2010
+Bundle-Version: 5.1.78
+Bnd-LastModified: 1289270419310
+Bundle-Activator: org.infinitest.eclipse.InfinitestPlugin
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.infinitest.eclipse; singleton:=true
+
