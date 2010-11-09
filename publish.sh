@@ -54,7 +54,8 @@ do
     break
   else
     echo "Aborted!"
-    git checkout infinitest-eclipse/pom.xml
+    cd $project_root/infinitest-eclipse
+    git checkout pom.xml
     break
   fi
   break;
