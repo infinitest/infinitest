@@ -2,4 +2,7 @@
 .project
 .settings/
 target/
-
+.DS_Store
+eclipse-plugin/META-INF/MANIFEST.MF
+eclipse-plugin/lib/infinitest-core-5.0.52-SNAPSHOT.jar
+eclipse-plugin/lib/infinitest-runner-5.0.52-SNAPSHOT.jar

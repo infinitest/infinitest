@@ -20,11 +20,6 @@ public class InfinitestActivationController implements PluginActivationControlle
     private IWorkspace workspace;
 
     @Autowired
-    public InfinitestActivationController()
-    {
-    }
-
-    @Autowired
     public void setMarkerClearingRunnable(NamedRunnable markerClearingRunnable)
     {
         this.markerClearingRunnable = markerClearingRunnable;

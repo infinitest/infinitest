@@ -233,7 +233,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!-- Run in 32 bit mode.  Otherwise tests relying on SWT will fail on Snow Leopard. -->
-                   <!-- <argLine>-d32</argLine> -->
+                   <argLine>-d32</argLine>
                 </configuration>
             </plugin>
             <plugin>
