@@ -15,7 +15,7 @@ You need [maven](http://maven.apache.org/download.html). Did I mention that?
 Finding your way around
 ------------------------
 
-`infinitest-core` and `infinitest-runner` are included in every plugin. `infinitest-intellij` is the IntelliJ plugin, while `infinitest-eclipse` is a multi-module project that contains 3 sub-projects necessary for the eclipse plugin. `eclipse-feature` and `eclipse-site` just include metadata necessary for creating and packaging the plugin.
+`infinitest-core` is included in every plugin. `infinitest-intellij` is the IntelliJ plugin, while `infinitest-eclipse` is a multi-module project that contains 3 sub-projects necessary for the eclipse plugin. `eclipse-feature` and `eclipse-site` just include metadata necessary for creating and packaging the plugin.
 
 `testWorkspace` is a collection of sample projects that we use for exploratory testing. If you find something in the wild that makes Infinitest break, it's a good idea to reproduce it in testWorkspace, fix it, and then try it again to be sure you've really fixed it.
 
