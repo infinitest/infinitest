@@ -1,9 +1,9 @@
 #!/bin/sh
-MAIN_SITE=eclipse.infinitest.org:/var/www/html
-EXPERIMENTAL_SITE=${MAIN_SITE}/experimental
-PLUGIN_NAME="Infinitest"
-    
-update_site=$EXPERIMENTAL_SITE
+eclipse_root=`dirname $0`
+project_root=$eclipse_root/..
+main_site=$project_root/website/site
+update_site=${main_site}/experimental
+plugin_name="Infinitest"
 
 # Increment Version
 # DEBT Replace some of this hackery with a maven properties file
@@ -14,44 +14,43 @@ sed s/\<plugin.version\>$current_minor_version$current_point_version/\<plugin.ve
 mv pom.xml.new pom.xml
 
 # Move up to root of repo
-cd ..
+cd $project_root 
 
 # Get up to date
 git pull
 
 # Build it!
-mvn clean install -o -Dplugin.name="${PLUGIN_NAME}" -Pintegration
+mvn clean install -o -Dplugin.name="${plugin_name}" -Pintegration
 if [ "$?" -ne "0" ]; then
     git checkout infinitest-eclipse/pom.xml
     exit 1
 fi
 
-# FIXME Additional integration tests here!
-
 echo "Please enter the newsfeed summary for this release:"
 read release_message
 
 # Prompt and update if accepted
-echo "Ready to upload ${PLUGIN_NAME} version $new_version to ${update_site} site with message: $release_message"
+echo "Ready to upload ${plugin_name} version $new_version to ${update_site} site with message: $release_message"
 echo "Publish now?"
 select fname in [p]ush,[a]bort;
 do
   if [ $REPLY = "p" ]; then
     echo "Pushing to update site..."
-    cd infinitest-eclipse
+    cd $project_root/infinitest-eclipse
     printf "\n\n%s    %s    %s" "`date`" ${new_version} "${release_message}" >> ReleaseNotes.txt
     ruby update_rss.rb ${new_version} "${release_message}"
-    scp rss.xml ${update_site}
-    scp ReleaseNotes.txt ${update_site}
-    scp eclipse-site/target/classes/site.xml ${update_site}
-    scp eclipse-feature/target/*.jar $MAIN_SITE/features/
-    scp eclipse-plugin/target/*.jar $MAIN_SITE/plugins/
+    cp rss.xml ${update_site}
+    cp ReleaseNotes.txt ${update_site}
+    cp eclipse-site/target/classes/site.xml ${update_site}
+    cp eclipse-feature/target/*.jar $main_site/features/
+    cp eclipse-plugin/target/*.jar $main_site/plugins/
 
     git commit -a -m "Incrementing to version $new_version"
     git push origin master
-    # DEBT Should probably do some stuff here:
-    ## Tag the repo
-    ## Update the main site?
+
+    #cd $update_site
+    #git commit -am  "Released version $new_version"
+    #git push origin master
     break
   else
     echo "Aborted!"
