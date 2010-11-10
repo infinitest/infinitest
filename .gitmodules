@@ -1,0 +1,6 @@
+[submodule "infinitest-core"]
+	path = infinitest-core
+	url = git@github.com:infinitest/infinitest-core.git
+[submodule "infinitest-eclipse"]
+	path = infinitest-eclipse
+	url = git@github.com:infinitest/infinitest-eclipse.git
