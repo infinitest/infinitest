@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>Infinitest for Eclipse Releases</title>
+    <link>update.improvingworks.com/rss.xml</link>
+    <description>News feed for new Infinitest releases</description>
+    <item>
+      <title>Infinitest for Eclipse 5.1.78 released - Fixed issue with missing libraries in the plugin</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Thu, 18 Mar 2010 22:51:06 -0500</pubDate>
+      <dc:date>2010-03-18T22:51:06.897418-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.77 released - Fixed issue with plugin manifest</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Thu, 18 Mar 2010 22:36:38 -0500</pubDate>
+      <dc:date>2010-03-18T22:36:38-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.76 released - Fixing installation verification issue</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Thu, 18 Mar 2010 22:03:22 -0500</pubDate>
+      <dc:date>2010-03-18T22:03:22-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.75 released - Added support for JUnit 4.8.1</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Thu, 18 Mar 2010 20:45:44 -0500</pubDate>
+      <dc:date>2010-03-18T20:45:44-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.74 released - Now running tests that inherit from classes that use a @RunWith annotation, like Scala Specs</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 28 Dec 2009 12:00:52 -0600</pubDate>
+      <dc:date>2009-12-28T12:00:52-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.73 released - Resolving many bugs related to missing classes and classpath issues</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 14 Dec 2009 15:21:38 -0600</pubDate>
+      <dc:date>2009-12-14T15:21:38-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.72 released - Infinitest core now uses Scala. Improved ScalaTest support coming soon.</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 14 Dec 2009 09:48:13 -0600</pubDate>
+      <dc:date>2009-12-14T09:48:13-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.71 released - Updated icons for licenses</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 07 Dec 2009 16:13:00 -0600</pubDate>
+      <dc:date>2009-12-07T16:13:00-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.70 released - Slight change to the license dialog</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 07 Dec 2009 14:35:51 -0600</pubDate>
+      <dc:date>2009-12-07T14:35:51-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.69 released - Licensing system improvements</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 07 Dec 2009 10:39:54 -0600</pubDate>
+      <dc:date>2009-12-07T10:39:54-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.68 released - Fixing null resources issue on Windows</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Tue, 24 Nov 2009 20:50:37 -0600</pubDate>
+      <dc:date>2009-11-24T20:50:37-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.67 released - Fixed lighthouse issue #7, related to projects with external jar dependencies</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 23 Nov 2009 22:54:15 -0600</pubDate>
+      <dc:date>2009-11-23T22:54:15-06:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.66 released - Failure viewer now closes when the user clicks somewhere else</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Wed, 21 Oct 2009 22:36:50 -0500</pubDate>
+      <dc:date>2009-10-21T22:36:50-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.65 released - Failure viewer now allows you to select stack trace elements using the mouse (in addition to the keyboard)</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Wed, 21 Oct 2009 21:37:45 -0500</pubDate>
+      <dc:date>2009-10-21T21:37:45-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.64 released - Fixed issue #13, regarding wrapping of long error messages in the failure viewer</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 19 Oct 2009 23:27:09 -0500</pubDate>
+      <dc:date>2009-10-19T23:27:09-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.63 released - Added assertion messages to test failure viewer</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Mon, 12 Oct 2009 12:20:42 -0500</pubDate>
+      <dc:date>2009-10-12T12:20:42-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.62 released - Added first version of new failure viewer, accessible as a quick fix on an error marker</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Sat, 10 Oct 2009 23:13:01 -0500</pubDate>
+      <dc:date>2009-10-10T23:13:01-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.61 released - Now supporting Hamcrest 1.2 by removing baked in verison of hamcrest 1.1</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Tue, 15 Sep 2009 23:17:17 -0500</pubDate>
+      <dc:date>2009-09-15T23:17:17-05:00</dc:date>
+    </item>
+    <item>
+      <title>Infinitest for Eclipse 5.1.60 released - Infinitest console view now remains hidden, even when tests write to standard error</title>
+      <link>ReleaseNotes.txt</link>
+      <pubDate>Tue, 15 Sep 2009 22:46:39 -0500</pubDate>
+      <dc:date>2009-09-15T22:46:39-05:00</dc:date>
+    </item>
+  </channel>
+</rss>
