@@ -1,1 +1,1 @@
--Djava.awt.headless=true
+-Djava.awt.headless=true -d32
