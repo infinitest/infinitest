@@ -4,3 +4,6 @@
 [submodule "infinitest-eclipse"]
 	path = infinitest-eclipse
 	url = git@github.com:infinitest/infinitest-eclipse.git
+[submodule "infinitest-intellij"]
+	path = infinitest-intellij
+	url = git@github.com:infinitest/infinitest-intellij.git
