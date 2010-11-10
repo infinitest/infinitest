@@ -1,0 +1,8 @@
+
+# The fake project we use when testing Infinitest
+com\.fakeco.*
+
+.*WhenClassesChange
+.*TestBackupAndRestore
+.*\$.*
+.*Simulation
