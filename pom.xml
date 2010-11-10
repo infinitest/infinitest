@@ -124,11 +124,11 @@
 					<additionalConfig>
 						<file>
 							<name>.settings/org.eclipse.jdt.core.prefs</name>
-							<location>eclipse_settings/org.eclipse.jdt.core.prefs</location>
+							<location>artifacts/eclipse_settings/org.eclipse.jdt.core.prefs</location>
 						</file>
 						<file>
 							<name>.settings/org.eclipse.jdt.ui.prefs</name>
-							<location>eclipse_settings/org.eclipse.jdt.ui.prefs</location>
+							<location>artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
 						</file>
 					</additionalConfig>
 				</configuration>
@@ -173,7 +173,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<configLocation>../infinitest-checkstyle.xml</configLocation>
+					<configLocation>../artifacts/infinitest-checkstyle.xml</configLocation>
 					<consoleOutput>true</consoleOutput>
 					<failOnViolation>true</failOnViolation>
 					<encoding>UTF-8</encoding>
