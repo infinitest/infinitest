@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>org.infinitest</groupId>
-            <artifactId>infinitest-core</artifactId>
+            <artifactId>infinitest-lib</artifactId>
             <version>5.0.52-SNAPSHOT</version>
         </dependency>
     </dependencies>

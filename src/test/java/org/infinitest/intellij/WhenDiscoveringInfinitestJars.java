@@ -14,7 +14,7 @@ public class WhenDiscoveringInfinitestJars
     {
         InfinitestJarLocator locator = new InfinitestJarLocator();
         List<String> jarNames = locator.findInfinitestJarNames();
-        assertThat(jarNames, hasItem("infinitest-core-5.0.52-SNAPSHOT.jar"));
+        assertThat(jarNames, hasItem("infinitest-lib-5.0.52-SNAPSHOT.jar"));
         assertThat(jarNames, hasItem("infinitest-runner-5.0.52-SNAPSHOT.jar"));
     }
 

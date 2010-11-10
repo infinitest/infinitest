@@ -9,7 +9,7 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>org.infinitest:infinitest-core</include>
+                <include>org.infinitest:infinitest-lib</include>
                 <include>org.infinitest:infinitest-runner</include>
                 <include>org.infinitest:infinitest-intellij</include>
                 <include>com.google.collections:google-collections</include>
