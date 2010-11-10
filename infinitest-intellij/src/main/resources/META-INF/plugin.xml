@@ -1,0 +1,29 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin>
+    <name>Infinitest</name>
+
+    <description>Infinitest plugin for Intellij</description>
+    <version>5.1.57</version>
+    <vendor>Infinitest</vendor>
+    <idea-version since-build="9732"/>
+    <application-components>
+        <component>
+            <implementation-class>org.infinitest.intellij.idea.facet.InfinitestFacetLoader</implementation-class>
+        </component>
+    </application-components>
+    <project-components>
+        <component>
+            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory
+            </implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.infinitest.intellij.idea.greenhook.ScmUpdater</implementation-class>
+        </component>
+    </project-components>
+    <module-components>
+        <component>
+            <implementation-class>org.infinitest.intellij.idea.window.InfinitestToolWindow
+            </implementation-class>
+        </component>
+    </module-components>
+</idea-plugin>
