@@ -7,3 +7,6 @@
 [submodule "infinitest-intellij"]
 	path = infinitest-intellij
 	url = git@github.com:infinitest/infinitest-intellij.git
+[submodule "website/site"]
+	path = website/site
+	url = git@github.com:infinitest/infinitest.github.com.git
