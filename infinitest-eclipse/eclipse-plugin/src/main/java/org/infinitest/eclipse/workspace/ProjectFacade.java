@@ -57,16 +57,17 @@ class ProjectFacade implements EclipseProject
         }
 
         if (jvmInstall != null && jvmInstall.getInstallLocation().exists())
+        {
             return jvmInstall.getInstallLocation();
+        }
         return new File(System.getProperty("java.home"));
     }
 
     private IVMInstall findFirstJava5OrGreaterJvm(IVMInstall jvmInstall) throws UnknownJvmVersionException
     {
         IVMInstall[] installs = jvmInstall.getVMInstallType().getVMInstalls();
-        for (int i = 0; i < installs.length; i++)
+        for (IVMInstall candidate : installs)
         {
-            IVMInstall candidate = installs[i];
             if (parseMajorVersion(candidate) >= 5)
             {
                 return candidate;
@@ -105,6 +106,7 @@ class ProjectFacade implements EclipseProject
 
     private static class UnknownJvmVersionException extends Exception
     {
+        private static final long serialVersionUID = 9053017151840025522L;
     }
 
     public boolean isOpen()

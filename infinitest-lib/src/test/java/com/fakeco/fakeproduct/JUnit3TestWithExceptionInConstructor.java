@@ -8,7 +8,9 @@ public class JUnit3TestWithExceptionInConstructor extends TestCase
     public JUnit3TestWithExceptionInConstructor()
     {
         if (testIsBeingRunFromInfinitest())
+        {
             throw new NullPointerException();
+        }
     }
 
     public void testThatPasses()

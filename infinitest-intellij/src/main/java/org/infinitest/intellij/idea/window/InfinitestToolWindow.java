@@ -1,23 +1,24 @@
 package org.infinitest.intellij.idea.window;
 
-import com.intellij.facet.FacetManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleComponent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
 import org.infinitest.intellij.idea.facet.FacetListener;
 import org.infinitest.intellij.idea.facet.InfinitestFacet;
 import org.infinitest.intellij.plugin.InfinitestPlugin;
 import org.infinitest.intellij.plugin.InfinitestPluginImpl;
 import org.jetbrains.annotations.NotNull;
 
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleComponent;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
+
 public class InfinitestToolWindow implements ModuleComponent, FacetListener
 {
     public static final String TOOL_WINDOW_ID = "Infinitest";
 
     private InfinitestPlugin plugin;
-    private Project project;
-    private Module module;
+    private final Project project;
+    private final Module module;
     private boolean projectOpened;
 
     public InfinitestToolWindow(Project project, Module module)

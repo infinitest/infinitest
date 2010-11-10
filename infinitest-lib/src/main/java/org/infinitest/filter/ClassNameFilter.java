@@ -25,7 +25,9 @@ public class ClassNameFilter
         for (Pattern pattern : filters)
         {
             if (pattern.matcher(className).lookingAt())
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -33,7 +35,9 @@ public class ClassNameFilter
     public void addFilter(String regex)
     {
         if (isValidFilter(regex))
+        {
             filters.add(Pattern.compile(regex));
+        }
     }
 
     private boolean isValidFilter(String line)

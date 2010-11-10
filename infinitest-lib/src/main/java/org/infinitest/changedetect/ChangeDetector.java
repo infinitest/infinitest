@@ -1,6 +1,5 @@
 package org.infinitest.changedetect;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -12,7 +11,6 @@ public interface ChangeDetector
     Set<File> findChangedFiles() throws IOException;
 
     void clear();
-    
 
     boolean filesWereRemoved();
 

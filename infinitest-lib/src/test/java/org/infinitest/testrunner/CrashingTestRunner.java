@@ -1,6 +1,5 @@
 package org.infinitest.testrunner;
 
-
 public class CrashingTestRunner implements NativeRunner
 {
     public TestResults runTest(String testClass)

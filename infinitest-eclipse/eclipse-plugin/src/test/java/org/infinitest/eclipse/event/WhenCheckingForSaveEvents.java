@@ -7,16 +7,12 @@ import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.event.DeltaVisitor;
-import org.infinitest.eclipse.event.SaveDetector;
 import org.infinitest.eclipse.trim.SaveListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +67,7 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport
     @Test
     public void shouldDetectNonDerivedResources() throws CoreException
     {
-        expect(resource.getType()).andReturn(IFile.FILE);
+        expect(resource.getType()).andReturn(IResource.FILE);
         expect(resource.isDerived()).andReturn(false);
         replay(resource);
 
@@ -84,7 +80,7 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport
     public void shouldKeepLookingIfResourceIsNotAFile() throws CoreException
     {
         expect(resource.isDerived()).andReturn(false);
-        expect(resource.getType()).andReturn(IFolder.FOLDER);
+        expect(resource.getType()).andReturn(IResource.FOLDER);
         replay(resource);
 
         assertTrue(deltaVisitor.visit(resourceDelta(CONTENT)));
@@ -95,7 +91,7 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport
     @Test
     public void shouldIgnoreMarkerOnlyChanges() throws CoreException
     {
-        expect(resource.getType()).andReturn(IFile.FILE);
+        expect(resource.getType()).andReturn(IResource.FILE);
         expect(resource.isDerived()).andReturn(false);
         replay(resource);
 

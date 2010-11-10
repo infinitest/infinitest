@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 class WorkspaceResourceFinder implements ResourceFinder
 {
-    private ISourceContainer sourceContainer;
+    private final ISourceContainer sourceContainer;
     private IWorkspace workspace;
 
     @Autowired
@@ -45,7 +45,9 @@ class WorkspaceResourceFinder implements ResourceFinder
             for (IResource each : workspaceRoot().members())
             {
                 if (each.getLocationURI().equals(projectUri))
+                {
                     return (IProject) each;
+                }
             }
             throw new IllegalArgumentException("Could not find project for " + projectUri);
         }
@@ -63,7 +65,9 @@ class WorkspaceResourceFinder implements ResourceFinder
         {
             Object[] elements = sourceContainer.findSourceElements(sourceFile);
             if (elements.length > 0)
+            {
                 return (IResource) elements[0];
+            }
             return null;
         }
         catch (CoreException e)
@@ -96,10 +100,14 @@ class WorkspaceResourceFinder implements ResourceFinder
         IWorkspaceRoot root = workspaceRoot();
         IResource member = root.findMember(path);
         if (member == null)
+        {
             return null;
+        }
         File file = new File(member.getLocationURI().getPath());
         if (file.exists())
+        {
             return file;
+        }
         return null;
     }
 }

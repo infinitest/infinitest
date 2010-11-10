@@ -16,8 +16,8 @@ import org.infinitest.eclipse.workspace.ResourceLookup;
 public class FailureViewer
 {
     private final List<StackTraceElement> stackTrace;
-    private ResourceLookup resourceFinder;
-    private Shell viewerDialog;
+    private final ResourceLookup resourceFinder;
+    private final Shell viewerDialog;
     private final String message;
 
     public FailureViewer(Shell shell, String message, List<StackTraceElement> stackTrace, ResourceLookup resourceLookup)
@@ -65,7 +65,9 @@ public class FailureViewer
     {
         org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(dialog, BORDER | V_SCROLL);
         for (StackTraceElement each : stackTrace)
+        {
             list.add(each.toString());
+        }
         StackElementSelectionListener selectionListener = new StackElementSelectionListener(dialog, resourceFinder,
                         stackTrace);
         list.addKeyListener(selectionListener);

@@ -3,7 +3,6 @@ package org.infinitest.eclipse.event;
 import static org.easymock.EasyMock.*;
 
 import org.infinitest.EventQueue;
-import org.infinitest.eclipse.event.CoreUpdateNotifier;
 import org.junit.Test;
 
 public class WhenNoProcessorsCanHandleEvent

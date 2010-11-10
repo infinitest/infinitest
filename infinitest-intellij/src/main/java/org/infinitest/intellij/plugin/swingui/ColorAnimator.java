@@ -1,6 +1,6 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 
 import java.awt.Color;
 
@@ -22,9 +22,13 @@ class ColorAnimator
     void setAngerLevel(int level)
     {
         if (level > getMaxAngerLevel())
+        {
             throw new IllegalArgumentException("Level must be less than or equal to 10, was " + level);
+        }
         if (level < 0)
+        {
             throw new IllegalArgumentException("Level must be greater than zero, was " + level);
+        }
         angerLevel = level;
         updateStep();
     }
@@ -37,7 +41,9 @@ class ColorAnimator
     public Color shiftColorOnAnimationTick(Color color)
     {
         if (color.equals(FAILING_COLOR))
+        {
             return shiftFailingColor(color);
+        }
         return shiftPassingColor(color);
     }
 
@@ -61,8 +67,10 @@ class ColorAnimator
     {
         double shift = getColorShiftForAnimationTick();
         if (shift < 0)
+        {
             throw new IllegalStateException("Shift cannot be less than zero! " + getAnimationLength() + " "
                             + getAngerLevel() + " " + animationCounter);
+        }
         return new Color((int) (color.getRed() * shift), (int) (color.getGreen() * shift),
                         (int) (color.getBlue() * shift));
     }
@@ -70,13 +78,13 @@ class ColorAnimator
     double getColorShiftForAnimationTick()
     {
         double maxDelta = getAngerLevel() * 0.1d;
-        double delta = maxDelta * ((double) animationCounter / (double) getAnimationLength());
+        double delta = maxDelta * animationCounter / getAnimationLength();
         return 1.0d - delta;
     }
 
     private int getAnimationLength()
     {
-        return (getMaxAngerLevel() + 1) - getAngerLevel();
+        return getMaxAngerLevel() + 1 - getAngerLevel();
     }
 
     public int getAnimationRate()
@@ -107,7 +115,9 @@ class ColorAnimator
     {
         int anger = 0;
         while (anger < ANGER_LEVEL_TIME_CUTOFFS.length && timeSinceGreen >= ANGER_LEVEL_TIME_CUTOFFS[anger])
+        {
             anger++;
+        }
         setAngerLevel(anger);
     }
 }

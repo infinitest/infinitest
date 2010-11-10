@@ -28,7 +28,9 @@ public class WhenAnErrorOccurs
             public Set<File> findChangedFiles() throws IOException
             {
                 if (shouldFail)
+                {
                     throw new IOException();
+                }
                 return Collections.emptySet();
             }
         };

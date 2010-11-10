@@ -9,7 +9,9 @@ public class CollectionUtils
     {
         Iterator<T> iterator = list.iterator();
         if (iterator.hasNext())
+        {
             return iterator.next();
+        }
         return null;
     }
 }

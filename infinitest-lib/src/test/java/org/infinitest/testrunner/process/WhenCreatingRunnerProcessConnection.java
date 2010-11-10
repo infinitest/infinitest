@@ -71,7 +71,9 @@ public class WhenCreatingRunnerProcessConnection
                 outStream.writeObject(messages[i++]);
                 result = (TestResults) inStream.readObject();
                 if (result != null)
+                {
                     addAll(results, result);
+                }
             } while (i < messages.length);
             outStream.writeObject(null);
             inStream.close();

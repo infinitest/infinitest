@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 
 public class InfinitestLineMarkerProvider implements LineMarkerProvider
 {
-    public LineMarkerInfo getLineMarkerInfo(PsiElement psiElement)
+    public LineMarkerInfo<?> getLineMarkerInfo(PsiElement psiElement)
     {
         return null;
     }

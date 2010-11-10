@@ -15,7 +15,7 @@ import org.infinitest.eclipse.InfinitestPlugin;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
 {
-    private PreferenceChangeHandler handler;
+    private final PreferenceChangeHandler handler;
 
     public PreferencePage()
     {

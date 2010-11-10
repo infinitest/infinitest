@@ -38,7 +38,9 @@ public class JavaAssistClassParser implements ClassParser
             try
             {
                 for (String pathElement : getPathElements())
+                {
                     classPool.appendClassPath(pathElement);
+                }
             }
             catch (NotFoundException e)
             {
@@ -55,8 +57,12 @@ public class JavaAssistClassParser implements ClassParser
         List<String> entries = newArrayList(split(classpath, pathSeparator));
         ListIterator<String> iter = entries.listIterator();
         while (iter.hasNext())
+        {
             if (entryDoesNotExist(iter))
+            {
                 iter.remove();
+            }
+        }
         return entries;
     }
 
@@ -69,11 +75,15 @@ public class JavaAssistClassParser implements ClassParser
     {
         CtClass cachedClass = getCachedClass(className);
         if (unparsableClass(cachedClass))
+        {
             return new UnparsableClass(className);
+        }
         JavaAssistClass javaClass = new JavaAssistClass(cachedClass);
         URL url = getClassPool().find(className);
         if (url != null && url.getProtocol().equals("file"))
+        {
             javaClass.setClassFile(new File(url.getFile()));
+        }
         return javaClass;
     }
 

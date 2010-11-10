@@ -6,7 +6,7 @@ import java.util.List;
 
 public class StatusEventSupport
 {
-    private List<StatusEventListener> listeners = newArrayList();
+    private final List<StatusEventListener> listeners = newArrayList();
 
     public void addListener(StatusEventListener listener)
     {
@@ -16,6 +16,8 @@ public class StatusEventSupport
     public void fireStatusChange(WorkspaceStatus status)
     {
         for (StatusEventListener each : listeners)
+        {
             each.statusChanged(status);
+        }
     }
 }

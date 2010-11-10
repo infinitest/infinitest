@@ -27,16 +27,24 @@ class LicenseKeyBasedState implements LicenseState
     public boolean validate(Date pluginReleaseDate)
     {
         if (license.noLicenseData())
+        {
             return valid("30 Day Trial");
+        }
 
         if (!license.supportedLicense())
+        {
             return valid("No support available for this license");
+        }
 
         String expirationDate = formatDate(license.getExpirationDate());
         if (isValidWithPluginReleasedOn(pluginReleaseDate))
+        {
             return invalid("Invalid plugin version. Free upgrades ended " + expirationDate);
+        }
         if (license.isExpired())
+        {
             return valid("Upgrades and support expired " + formatDate(license.getExpirationDate()));
+        }
         return valid("Upgrades and support expire " + expirationDate);
     }
 
@@ -58,7 +66,9 @@ class LicenseKeyBasedState implements LicenseState
     public Icon getIcon()
     {
         if (!isValid)
+        {
             return INVALID;
+        }
         return license.getIcon();
     }
 

@@ -1,7 +1,8 @@
 package org.infinitest.intellij.idea;
 
-import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
+
+import com.intellij.openapi.components.ProjectComponent;
 
 public abstract class DefaultProjectComponent implements ProjectComponent
 {

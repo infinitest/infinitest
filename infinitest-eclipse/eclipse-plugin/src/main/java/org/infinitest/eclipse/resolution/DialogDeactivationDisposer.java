@@ -13,6 +13,7 @@ final class DialogDeactivationDisposer extends ShellAdapter
         this.dialog = dialog;
     }
 
+    @Override
     public void shellDeactivated(ShellEvent arg0)
     {
         dialog.dispose();

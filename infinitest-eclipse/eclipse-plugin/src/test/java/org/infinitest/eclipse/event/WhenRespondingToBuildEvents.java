@@ -9,7 +9,6 @@ import org.eclipse.core.internal.events.ResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.runtime.CoreException;
 import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.event.ClassFileChangeProcessor;
 import org.infinitest.eclipse.workspace.WorkspaceFacade;
 import org.junit.After;
 import org.junit.Before;

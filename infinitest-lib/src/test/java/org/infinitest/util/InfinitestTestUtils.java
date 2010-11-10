@@ -29,7 +29,9 @@ public abstract class InfinitestTestUtils
         {
             File fileForClass = getFileForClass(file, className);
             if (fileForClass.exists())
+            {
                 return fileForClass;
+            }
         }
         throw new IllegalArgumentException(className + " does not exist");
     }
@@ -48,7 +50,9 @@ public abstract class InfinitestTestUtils
         String fileName = originalFile.getAbsolutePath();
         originalFile.delete();
         if (!backup.renameTo(new File(fileName)))
+        {
             throw new IllegalStateException(originalFile + " could not be restored");
+        }
     }
 
     public static File getFileForClass(File baseDir, String classname)
@@ -59,10 +63,14 @@ public abstract class InfinitestTestUtils
     public static void copyFile(File in, File out) throws Exception
     {
         if (!out.exists())
+        {
             out.createNewFile();
+        }
 
         if (!in.exists())
+        {
             throw new IllegalArgumentException(in + " does not exist");
+        }
 
         FileInputStream fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
@@ -100,6 +108,7 @@ public abstract class InfinitestTestUtils
                         || classNames.contains(JUnit4Runner.class.getName());
     }
 
+    @SuppressWarnings("serial")
     public static Throwable throwableWithStack(final StackTraceElement... stack)
     {
         return new Throwable()

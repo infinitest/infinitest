@@ -21,9 +21,13 @@ class TreeModelExpansionListener
             public Object invoke(Object proxy, Method method, Object[] args)
             {
                 if ("equals".equals(method.getName()))
+                {
                     return TreeModelExpansionListener.class.equals(args[0]);
+                }
                 if ("hashCode".equals(method.getName()))
+                {
                     return TreeModelExpansionListener.class.hashCode();
+                }
 
                 expandTreeNodes(tree);
                 return null;
@@ -37,6 +41,8 @@ class TreeModelExpansionListener
     private static void expandTreeNodes(JTree tree)
     {
         for (int i = 0; i < tree.getRowCount(); i++)
+        {
             tree.expandRow(i);
+        }
     }
 }

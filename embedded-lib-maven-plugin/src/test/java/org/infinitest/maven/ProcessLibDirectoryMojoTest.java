@@ -7,18 +7,20 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class ProcessLibDirectoryMojoTest {
-  @Test
-  public void shouldAppendBundleClassPathToExistingBndFile() throws Exception {
-    ProcessLibDirectoryMojo mojo = new ProcessLibDirectoryMojo();
-    mojo.targetDirectory = new File("target");
-    mojo.baseDirectory = new File("src/test/resources");
-    
-    mojo.execute();
-    
-    assertTrue(contentEquals(new File(mojo.baseDirectory + "/expected-osgi.bnd"), 
-            new File(mojo.targetDirectory + "/osgi.bnd")));
-    assertTrue(contentEquals(new File(mojo.baseDirectory + "/expected-build.properties"), 
-            new File(mojo.baseDirectory + "/build.properties")));
-  }
+public class ProcessLibDirectoryMojoTest
+{
+    @Test
+    public void shouldAppendBundleClassPathToExistingBndFile() throws Exception
+    {
+        ProcessLibDirectoryMojo mojo = new ProcessLibDirectoryMojo();
+        mojo.targetDirectory = new File("target");
+        mojo.baseDirectory = new File("src/test/resources");
+
+        mojo.execute();
+
+        assertTrue(contentEquals(new File(mojo.baseDirectory + "/expected-osgi.bnd"), new File(mojo.targetDirectory
+                        + "/osgi.bnd")));
+        assertTrue(contentEquals(new File(mojo.baseDirectory + "/expected-build.properties"), new File(
+                        mojo.baseDirectory + "/build.properties")));
+    }
 }

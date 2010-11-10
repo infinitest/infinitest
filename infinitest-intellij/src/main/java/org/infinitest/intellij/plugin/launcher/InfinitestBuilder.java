@@ -21,7 +21,7 @@ public class InfinitestBuilder
     private ResultCollector resultCollector;
     private InfinitestPresenter presenter;
     private InfinitestView view;
-    private InfinitestCore core;
+    private final InfinitestCore core;
     private TestControl testControl;
 
     public InfinitestBuilder(InfinitestCore core)
@@ -50,15 +50,19 @@ public class InfinitestBuilder
     public InfinitestView getView()
     {
         if (view == null)
+        {
             view = InfinitestMainFrame.createFrame(resultCollector);
+        }
         return view;
     }
 
     private InfinitestPresenter createPresenter()
     {
         if (presenter == null)
-            presenter = new InfinitestPresenter(resultCollector, core, getView(), testControl, IdeaInfinitestAnnotator
-                            .getInstance());
+        {
+            presenter = new InfinitestPresenter(resultCollector, core, getView(), testControl,
+                            IdeaInfinitestAnnotator.getInstance());
+        }
         return presenter;
     }
 

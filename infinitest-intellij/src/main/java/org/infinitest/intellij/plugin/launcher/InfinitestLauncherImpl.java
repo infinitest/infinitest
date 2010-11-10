@@ -1,5 +1,11 @@
 package org.infinitest.intellij.plugin.launcher;
 
+import static org.infinitest.intellij.idea.window.InfinitestToolWindow.*;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+
 import org.apache.log4j.Logger;
 import org.infinitest.InfinitestCoreBuilder;
 import org.infinitest.intellij.CompilationNotifier;
@@ -7,7 +13,6 @@ import org.infinitest.intellij.InfinitestLoggingListener;
 import org.infinitest.intellij.ModuleSettings;
 import org.infinitest.intellij.ToolWindowRegistry;
 import org.infinitest.intellij.idea.IdeaCompilationListener;
-import static org.infinitest.intellij.idea.window.InfinitestToolWindow.TOOL_WINDOW_ID;
 import org.infinitest.intellij.plugin.SourceNavigator;
 import org.infinitest.intellij.plugin.greenhook.GreenHook;
 import org.infinitest.intellij.plugin.greenhook.GreenHookListener;
@@ -15,22 +20,18 @@ import org.infinitest.intellij.plugin.swingui.ResultClickListener;
 import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
 import org.infinitest.util.InfinitestUtils;
 
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
 public class InfinitestLauncherImpl implements InfinitestLauncher
 {
-    private ModuleSettings moduleSettings;
-    private ToolWindowRegistry toolWindowRegistry;
-    private CompilationNotifier compilationNotifier;
-    private SourceNavigator navigator;
-    private InfinitestBuilder infinitestBuilder;
+    private final ModuleSettings moduleSettings;
+    private final ToolWindowRegistry toolWindowRegistry;
+    private final CompilationNotifier compilationNotifier;
+    private final SourceNavigator navigator;
+    private final InfinitestBuilder infinitestBuilder;
     private IdeaCompilationListener testControl;
-    private GreenHookListener greenHookListener;
+    private final GreenHookListener greenHookListener;
 
     public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry,
-                                  CompilationNotifier compilationNotifier,
-                                  SourceNavigator navigator)
+                    CompilationNotifier compilationNotifier, SourceNavigator navigator)
     {
         this.moduleSettings = moduleSettings;
         this.toolWindowRegistry = toolWindowRegistry;
@@ -100,7 +101,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
     private InfinitestBuilder createInfinitestBuilder()
     {
         InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(),
-                new SwingEventQueue());
+                        new SwingEventQueue());
         return new InfinitestBuilder(coreBuilder.createCore());
     }
 }

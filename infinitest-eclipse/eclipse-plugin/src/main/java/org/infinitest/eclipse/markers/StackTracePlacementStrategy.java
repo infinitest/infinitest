@@ -21,7 +21,9 @@ public class StackTracePlacementStrategy implements MarkerPlacementStrategy
         {
             List<IResource> resources = lookup.findResourcesForClassName(element.getClassName());
             if (!resources.isEmpty())
+            {
                 return new MarkerPlacement(resources.get(0), element.getLineNumber());
+            }
         }
         return null;
     }

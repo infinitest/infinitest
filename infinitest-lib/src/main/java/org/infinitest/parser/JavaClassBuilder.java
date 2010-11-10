@@ -69,7 +69,9 @@ class JavaClassBuilder implements ClassBuilder
     private void rethrowIfSerious(RuntimeException e)
     {
         if (!(e.getCause() instanceof NotFoundException))
+        {
             throw e;
+        }
     }
 
     public void clear()

@@ -34,7 +34,8 @@ public class WhenComparingMarkers
         assertEquals(methodError, new ProblemMarkerInfo(methodFailed("testClass", "", error), finder));
         assertThat(methodError, not(equalTo(new ProblemMarkerInfo(methodFailed("testClass2", "", error), finder))));
 
-        ProblemMarkerInfo errorMarker = new ProblemMarkerInfo(methodFailed("testClass", "", new AssertionError()), finder);
+        ProblemMarkerInfo errorMarker = new ProblemMarkerInfo(methodFailed("testClass", "", new AssertionError()),
+                        finder);
         assertThat(methodError, equalTo(errorMarker));
         assertThat(methodFailure, not(equalTo(methodError)));
     }

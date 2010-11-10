@@ -68,7 +68,9 @@ public class TestInfinitestPresenter
     {
         List<String> list = newArrayList();
         for (int i = 0; i < count; i++)
+        {
             list.add("SomeTest " + i);
+        }
         return list;
     }
 

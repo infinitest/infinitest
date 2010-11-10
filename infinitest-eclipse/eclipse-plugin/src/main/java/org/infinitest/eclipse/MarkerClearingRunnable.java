@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MarkerClearingRunnable extends NamedRunnable
 {
-    private List<MarkerRegistry> registries;
+    private final List<MarkerRegistry> registries;
 
     @Autowired
     public MarkerClearingRunnable(MarkerRegistry... markerRegistries)
@@ -20,12 +20,16 @@ public class MarkerClearingRunnable extends NamedRunnable
         super("Clearing markers");
         registries = asList(markerRegistries);
         if (registries.isEmpty())
+        {
             throw new IllegalArgumentException("No marker registries to clear! Expected at least two." + registries);
+        }
     }
 
     public void run()
     {
         for (MarkerRegistry each : registries)
+        {
             each.clear();
+        }
     }
 }

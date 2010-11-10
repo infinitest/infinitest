@@ -19,7 +19,8 @@ public class WhenDiscoveringInfinitestJars
     }
 
     @Test
-    public void shouldDetermineInfinitestVersionFromEmbeddedPom() {
+    public void shouldDetermineInfinitestVersionFromEmbeddedPom()
+    {
         InfinitestJarLocator locator = new InfinitestJarLocator();
         assertThat(locator.findInfinitestVersion(), is("5.0.52-SNAPSHOT"));
     }

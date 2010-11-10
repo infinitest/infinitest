@@ -13,10 +13,10 @@ import org.infinitest.testrunner.RunnerEventSupport;
 
 class ProcessorRunnable implements Runnable
 {
-    private QueueProcessor processor;
+    private final QueueProcessor processor;
     private final Queue<String> testQueue;
     private final RunnerEventSupport eventSupport;
-    private int initialSize;
+    private final int initialSize;
     private final ConcurrencyController concurrencySemaphore;
 
     public ProcessorRunnable(Queue<String> testQueue, QueueProcessor processor, RunnerEventSupport eventSupport,

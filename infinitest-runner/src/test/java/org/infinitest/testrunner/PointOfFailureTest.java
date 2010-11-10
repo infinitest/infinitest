@@ -39,8 +39,8 @@ public class PointOfFailureTest extends EqualityTestSupport
     @Test
     public void shouldProduceRepresentativeToString()
     {
-        PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1, NullPointerException.class
-                        .getSimpleName(), "message");
+        PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1,
+                        NullPointerException.class.getSimpleName(), "message");
 
         String expected = "org.infinitest.SomeTest:1 - NullPointerException(message)";
         assertEquals(expected, pointOfFailure.toString());
@@ -58,8 +58,8 @@ public class PointOfFailureTest extends EqualityTestSupport
     @Test
     public void shouldProduceRepresentativeToStringWithoutMessage()
     {
-        PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1, NullPointerException.class
-                        .getSimpleName(), null);
+        PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1,
+                        NullPointerException.class.getSimpleName(), null);
 
         String expected = "org.infinitest.SomeTest:1 - NullPointerException";
         assertEquals(expected, pointOfFailure.toString());

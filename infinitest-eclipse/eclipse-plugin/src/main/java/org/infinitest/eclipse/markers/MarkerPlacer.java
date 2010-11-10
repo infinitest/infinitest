@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MarkerPlacer
 {
-    private List<MarkerPlacementStrategy> placementStrategyChain = newArrayList();
+    private final List<MarkerPlacementStrategy> placementStrategyChain = newArrayList();
 
     @Autowired
     public MarkerPlacer(ResourceLookup lookup)
@@ -35,7 +35,9 @@ public class MarkerPlacer
         {
             MarkerPlacement placement = each.getPlacement(event);
             if (placement != null)
+            {
                 return placement;
+            }
         }
         return null;
     }

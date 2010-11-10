@@ -16,7 +16,9 @@ public class TestQueue extends PriorityBlockingQueue<String>
     public boolean add(String testName)
     {
         if (!contains(testName))
+        {
             return super.add(testName);
+        }
         return false;
     }
 }

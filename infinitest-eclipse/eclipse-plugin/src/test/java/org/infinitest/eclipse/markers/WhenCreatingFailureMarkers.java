@@ -17,7 +17,7 @@ public class WhenCreatingFailureMarkers
         throwable.fillInStackTrace();
         ProblemMarkerInfo info = new ProblemMarkerInfo(methodFailed("testName", "methodName", throwable),
                         new FakeResourceFinder());
-        
+
         String pickledStackTrace = info.attributes().get(PICKLED_STACK_TRACE_ATTRIBUTE).toString();
         StackTraceElement[] stackTrace = (StackTraceElement[]) unpickle(pickledStackTrace);
         assertEquals(throwable.getStackTrace().length, stackTrace.length);

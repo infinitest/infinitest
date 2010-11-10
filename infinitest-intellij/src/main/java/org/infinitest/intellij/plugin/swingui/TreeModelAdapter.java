@@ -18,7 +18,7 @@ import org.infinitest.testrunner.TestEvent;
 class TreeModelAdapter implements TreeModel, FailureListListener
 {
     private final ResultCollector collector;
-    private List<TreeModelListener> listeners;
+    private final List<TreeModelListener> listeners;
 
     public TreeModelAdapter(ResultCollector resultCollector)
     {
@@ -35,25 +35,35 @@ class TreeModelAdapter implements TreeModel, FailureListListener
     public Object getChild(Object parent, int index)
     {
         if (parent == getRoot())
+        {
             return collector.getPointOfFailure(index);
+        }
         if (collector.isPointOfFailure(parent))
+        {
             return collector.getTestsFor((PointOfFailure) parent).get(index);
+        }
         return null;
     }
 
     public int getChildCount(Object parent)
     {
         if (parent.equals(getRoot()))
+        {
             return collector.getPointOfFailureCount();
+        }
         if (collector.isPointOfFailure(parent))
+        {
             return collector.getTestsFor((PointOfFailure) parent).size();
+        }
         return 0;
     }
 
     public int getIndexOfChild(Object parent, Object child)
     {
         if (getRoot().equals(parent))
+        {
             return collector.getPointOfFailureIndex((PointOfFailure) child);
+        }
         return 0;
     }
 

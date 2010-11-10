@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
  */
 public class GenericMarkerRegistry implements MarkerRegistry
 {
-    private Map<MarkerInfo, IMarker> markers;
+    private final Map<MarkerInfo, IMarker> markers;
     private final String markerId;
 
     public GenericMarkerRegistry(String markerId)
@@ -38,7 +38,9 @@ public class GenericMarkerRegistry implements MarkerRegistry
             markers.put(newMarkerInfo, newMarker);
         }
         else
+        {
             updateMarker(newMarkerInfo);
+        }
     }
 
     public void updateMarker(MarkerInfo markerInfo)
@@ -53,7 +55,9 @@ public class GenericMarkerRegistry implements MarkerRegistry
         try
         {
             if (marker != null)
+            {
                 marker.delete();
+            }
         }
         catch (CoreException e)
         {
@@ -74,7 +78,9 @@ public class GenericMarkerRegistry implements MarkerRegistry
     public void clear()
     {
         for (MarkerInfo each : copyOf(markers.keySet()))
+        {
             deleteMarker(each);
+        }
         markers.clear();
     }
 
@@ -87,7 +93,9 @@ public class GenericMarkerRegistry implements MarkerRegistry
     public void removeMarkers(String testName)
     {
         for (MarkerInfo each : findMarkersFor(testName))
+        {
             deleteMarker(each);
+        }
     }
 
     private void deleteMarker(MarkerInfo each)
@@ -107,8 +115,12 @@ public class GenericMarkerRegistry implements MarkerRegistry
     {
         List<MarkerInfo> markersFound = newArrayList();
         for (MarkerInfo each : markers.keySet())
+        {
             if (each.getTestName().equals(testName))
+            {
                 markersFound.add(each);
+            }
+        }
         return markersFound;
     }
 

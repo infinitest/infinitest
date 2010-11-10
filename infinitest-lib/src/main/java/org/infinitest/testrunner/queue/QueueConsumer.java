@@ -18,8 +18,8 @@ public abstract class QueueConsumer
     private final Queue<String> testQueue;
     private final RunnerEventSupport eventSupport;
     private QueueProcessorThread processorThread;
-    private long testTimeout;
-    private ExecutorService executor;
+    private final long testTimeout;
+    private final ExecutorService executor;
     private ConcurrencyController semaphore;
 
     public QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue)
@@ -71,7 +71,9 @@ public abstract class QueueConsumer
             try
             {
                 if (testsAreRunning())
+                {
                     stopCurrentRun();
+                }
                 startNewTestRun();
             }
             catch (InterruptedException e)
@@ -104,7 +106,9 @@ public abstract class QueueConsumer
             processorThread.terminate();
             processorThread.join(5000);
             if (processorThread.isAlive())
+            {
                 throw new IllegalStateException();
+            }
         }
     }
 

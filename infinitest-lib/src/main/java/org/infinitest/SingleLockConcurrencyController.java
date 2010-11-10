@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 public class SingleLockConcurrencyController implements ConcurrencyController
 {
-    private Semaphore semaphore = new Semaphore(1);
+    private final Semaphore semaphore = new Semaphore(1);
 
     public void acquire() throws InterruptedException
     {

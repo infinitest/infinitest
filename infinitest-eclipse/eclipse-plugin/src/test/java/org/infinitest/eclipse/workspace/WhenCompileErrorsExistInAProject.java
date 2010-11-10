@@ -1,13 +1,10 @@
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
-import static org.junit.Assert.assertThat;
+import static com.google.common.collect.Lists.*;
+import static org.easymock.EasyMock.*;
+import static org.infinitest.eclipse.util.StatusMatchers.*;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 

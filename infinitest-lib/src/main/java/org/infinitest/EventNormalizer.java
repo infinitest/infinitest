@@ -120,9 +120,13 @@ class EventNormalizer
             public Object invoke(Object proxy, final Method method, final Object[] args)
             {
                 if (method.equals(hashCodeMethod))
+                {
                     return proxyHashCode(proxy);
+                }
                 else if (method.equals(equalsMethod))
+                {
                     return proxyEquals(proxy, args[0]);
+                }
 
                 eventQueue.pushNamed(new NamedRunnable("Processing Results")
                 {

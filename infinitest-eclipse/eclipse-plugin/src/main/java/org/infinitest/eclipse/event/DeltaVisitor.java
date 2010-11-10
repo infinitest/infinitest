@@ -2,7 +2,6 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceDelta.*;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -19,8 +18,10 @@ class DeltaVisitor implements IResourceDeltaVisitor
         IResource resource = delta.getResource();
         if (!resource.isDerived())
         {
-            if (resource.getType() != IFile.FILE)
+            if (resource.getType() != IResource.FILE)
+            {
                 return KEEP_SEARCHING;
+            }
             savedResourceFound = notOnlyMarkersChanged(delta);
         }
         return STOP_SEARCHING;

@@ -1,16 +1,17 @@
 package org.infinitest.intellij;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import org.infinitest.intellij.plugin.swingui.ResultClickListener;
-import org.infinitest.testrunner.TestEvent;
-import static org.infinitest.util.EventFakeSupport.createEvent;
-import static org.junit.Assert.assertThat;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.infinitest.util.EventFakeSupport.*;
+import static org.junit.Assert.*;
+
+import java.awt.event.MouseEvent;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
-import java.awt.event.MouseEvent;
+
+import org.infinitest.intellij.plugin.swingui.ResultClickListener;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Test;
 
 public class WhenDoubleClickingTestEvent
 {
@@ -28,6 +29,7 @@ public class WhenDoubleClickingTestEvent
         assertThat(navigator.getLine(), not(0));
     }
 
+    @SuppressWarnings("serial")
     private MouseEvent doubleClick(final TestEvent event)
     {
         return new MouseEvent(new JTree()

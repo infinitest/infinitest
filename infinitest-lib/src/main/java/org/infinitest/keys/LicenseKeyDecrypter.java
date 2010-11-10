@@ -52,7 +52,9 @@ public class LicenseKeyDecrypter
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             BlockCodec decoder = decoder(encryptedBytes);
             for (byte[] block : decoder.getBlocks())
+            {
                 out.write(cipher.doFinal(block));
+            }
             out.close();
 
             return new ByteArrayInputStream(out.toByteArray());

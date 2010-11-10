@@ -21,7 +21,9 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter
     {
         file = filterFile;
         if (!file.exists())
+        {
             log(INFO, "Filter file " + file + " does not exist.");
+        }
 
         updateFilterList();
     }
@@ -34,11 +36,15 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter
     public void updateFilterList()
     {
         if (file == null)
+        {
             return;
+        }
 
         clearFilters();
         if (file.exists())
+        {
             tryToReadFilterFile();
+        }
     }
 
     private void tryToReadFilterFile()

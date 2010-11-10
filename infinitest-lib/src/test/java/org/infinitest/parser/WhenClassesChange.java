@@ -53,7 +53,7 @@ public class WhenClassesChange extends DependencyGraphTestBase
     private JavaClass runTest(Class<?> testClass)
     {
         Set<JavaClass> classes = updateGraphWithChangedClass(testClass);
-        assertEquals(1, classes.size());	
+        assertEquals(1, classes.size());
         return classes.iterator().next();
     }
 

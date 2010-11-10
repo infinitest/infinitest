@@ -24,13 +24,18 @@ public class RunStatistics extends TestResultsAdapter
     public long getLastFailureTime(String testName)
     {
         if (!failureTimestamps.containsKey(testName))
+        {
             return 0;
+        }
         return failureTimestamps.get(testName);
     }
 
+    @Override
     public void testCaseComplete(TestCaseEvent event)
     {
         for (TestEvent each : event.getFailureEvents())
+        {
             update(each);
+        }
     }
 }

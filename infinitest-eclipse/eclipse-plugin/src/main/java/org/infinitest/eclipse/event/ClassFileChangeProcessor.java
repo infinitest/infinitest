@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 class ClassFileChangeProcessor extends EclipseEventProcessor
 {
-    private WorkspaceFacade workspace;
+    private final WorkspaceFacade workspace;
 
     @Autowired
     ClassFileChangeProcessor(WorkspaceFacade workspace)
@@ -31,15 +31,21 @@ class ClassFileChangeProcessor extends EclipseEventProcessor
     public void processEvent(IResourceChangeEvent event) throws CoreException
     {
         if (containsClassFileChanges(getDeltas(event)))
+        {
             workspace.updateProjects();
+        }
     }
 
     private boolean containsClassFileChanges(IResourceDelta... deltas)
     {
         // DEBT SHould use IResourceDeltaVisitor instead
         for (IResourceDelta delta : deltas)
+        {
             if (isClassFile(delta) || containsClassFileChanges(delta.getAffectedChildren()))
+            {
                 return true;
+            }
+        }
         return false;
     }
 

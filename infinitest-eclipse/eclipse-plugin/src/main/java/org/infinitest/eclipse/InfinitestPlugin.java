@@ -99,7 +99,9 @@ public class InfinitestPlugin extends AbstractUIPlugin
     public Bundle getPluginBundle()
     {
         if (pluginBundle == null && InfinitestPlugin.getInstance() != null)
+        {
             return InfinitestPlugin.getInstance().getBundle();
+        }
         return pluginBundle;
     }
 

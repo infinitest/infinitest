@@ -17,7 +17,7 @@ import org.infinitest.filter.TestFilter;
  */
 public class ClassFileTestDetector implements TestDetector
 {
-    private TestFilter filters;
+    private final TestFilter filters;
     private ClassFileIndex index;
     private ClasspathProvider classpath;
 
@@ -46,7 +46,9 @@ public class ClassFileTestDetector implements TestDetector
         // to another set of changed classes
         Set<JavaClass> changedParents = new HashSet<JavaClass>();
         for (JavaClass jclass : changedClasses)
+        {
             index.findParents(changedClasses, changedParents, jclass);
+        }
 
         // combine two sets
         changedClasses.addAll(changedParents);
@@ -62,9 +64,13 @@ public class ClassFileTestDetector implements TestDetector
         for (JavaClass jclass : changedClasses)
         {
             if (isATest(jclass) && inCurrentProject(jclass))
+            {
                 testsToRun.add(jclass);
+            }
             else
+            {
                 log(Level.FINE, "Filtered test: " + jclass);
+            }
         }
         return testsToRun;
     }
@@ -77,8 +83,12 @@ public class ClassFileTestDetector implements TestDetector
         {
             File classFile = jclass.getClassFile();
             for (File parentDir : classpath.getClassOutputDirs())
+            {
                 if (classFile.getAbsolutePath().startsWith(parentDir.getAbsolutePath()))
+                {
                     return true;
+                }
+            }
         }
         return false;
     }
@@ -118,8 +128,12 @@ public class ClassFileTestDetector implements TestDetector
     {
         Set<String> tests = newHashSet();
         for (String each : getIndexedClasses())
+        {
             if (isATest(index.findJavaClass(each)))
+            {
                 tests.add(each);
+            }
+        }
         return tests;
     }
 }

@@ -33,8 +33,8 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     {
         Throwable pointOfFailure = new AssertionFailedError().fillInStackTrace();
 
-        testRun(createEvent("method1", pointOfFailure), createEvent("method2", pointOfFailure), createEvent("method3",
-                        new AssertionError()));
+        testRun(createEvent("method1", pointOfFailure), createEvent("method2", pointOfFailure),
+                        createEvent("method3", new AssertionError()));
 
         assertEquals(2, collector.getPointOfFailureCount());
         assertEquals(3, collector.getFailures().size());
@@ -109,9 +109,13 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
         for (PointOfFailure pointOfFailure : collector.getPointsOfFailure())
         {
             if (pointOfFailure.getMessage().contains("other message"))
+            {
                 assertEquals(1, collector.getFailuresForPointOfFailure(pointOfFailure).size());
+            }
             else
+            {
                 assertEquals(2, collector.getFailuresForPointOfFailure(pointOfFailure).size());
+            }
         }
     }
 

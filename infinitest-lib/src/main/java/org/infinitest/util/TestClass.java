@@ -31,11 +31,15 @@ class TestClass
             {
                 Annotation annotation = eachMethod.getAnnotation(annotationClass);
                 if (annotation != null && !isShadowed(eachMethod, results))
+                {
                     results.add(eachMethod);
+                }
             }
         }
         if (runsTopToBottom(annotationClass))
+        {
             Collections.reverse(results);
+        }
         return results;
     }
 
@@ -49,7 +53,9 @@ class TestClass
         for (Method each : results)
         {
             if (isShadowed(method, each))
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -57,13 +63,19 @@ class TestClass
     private boolean isShadowed(Method current, Method previous)
     {
         if (!previous.getName().equals(current.getName()))
+        {
             return false;
+        }
         if (previous.getParameterTypes().length != current.getParameterTypes().length)
+        {
             return false;
+        }
         for (int i = 0; i < previous.getParameterTypes().length; i++)
         {
             if (!previous.getParameterTypes()[i].equals(current.getParameterTypes()[i]))
+            {
                 return false;
+            }
         }
         return true;
     }

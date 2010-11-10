@@ -1,6 +1,5 @@
 package org.infinitest.filter;
 
-
 /**
  * This filter prevents any matching tests from being run as part of a core update.
  * 

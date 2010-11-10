@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.infinitest.RuntimeEnvironment;
 import org.infinitest.ConsoleOutputListener.OutputType;
+import org.infinitest.RuntimeEnvironment;
 import org.infinitest.testrunner.NativeRunner;
 import org.infinitest.testrunner.OutputStreamHandler;
 import org.infinitest.testrunner.TestRunnerProcess;
@@ -66,9 +66,9 @@ public class NativeConnectionFactory implements ProcessConnectionFactory
 
         StringBuilder message = new StringBuilder();
         message.append("Launching test runner process with the following configuration:").append(lineSeparator);
-        message.append("Directory: ").append(builder.directory().getAbsolutePath()).append(lineSeparator).append(
-                        "Environment: ").append(builder.environment()).append(lineSeparator).append("Command: ")
-                        .append(builder.command());
+        message.append("Directory: ").append(builder.directory().getAbsolutePath()).append(lineSeparator)
+                        .append("Environment: ").append(builder.environment()).append(lineSeparator)
+                        .append("Command: ").append(builder.command());
 
         log(INFO, message.toString());
     }

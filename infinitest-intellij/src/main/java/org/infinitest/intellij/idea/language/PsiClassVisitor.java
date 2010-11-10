@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 
 public class PsiClassVisitor extends PsiElementVisitor
 {
-    private PsiClassVisitorAction action;
+    private final PsiClassVisitorAction action;
 
     public PsiClassVisitor(PsiClassVisitorAction action)
     {

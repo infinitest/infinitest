@@ -53,7 +53,9 @@ class EventInfoFrame extends JDialog
         getContentPane().add(southPanel, BorderLayout.SOUTH);
         String message = event.getMessage();
         if (message == null)
+        {
             message = "";
+        }
         setTitle(event.getTestName() + "." + event.getTestMethod() + "()");
         pack();
         closeButton.requestFocusInWindow();
@@ -67,7 +69,9 @@ class EventInfoFrame extends JDialog
     public static String stackTraceToString(StackTraceElement[] stackTrace)
     {
         if (stackTrace == null)
+        {
             return "";
+        }
         return listToMultilineString(Arrays.asList(stackTrace));
     }
 

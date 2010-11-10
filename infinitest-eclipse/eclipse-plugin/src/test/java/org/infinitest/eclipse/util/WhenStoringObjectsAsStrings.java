@@ -1,9 +1,8 @@
 package org.infinitest.eclipse.util;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static org.infinitest.eclipse.util.PickleJar.pickle;
-import static org.infinitest.eclipse.util.PickleJar.unpickle;
-import static org.junit.Assert.assertEquals;
+import static com.google.common.collect.Lists.*;
+import static org.infinitest.eclipse.util.PickleJar.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -13,13 +12,13 @@ public class WhenStoringObjectsAsStrings
     public void canPickleAnyOldObject()
     {
         String stringForm = pickle(new String("BB"));
-        assertEquals(new String("BB"),unpickle(stringForm));
+        assertEquals(new String("BB"), unpickle(stringForm));
     }
 
-	@Test
+    @Test
     public void canPickleListsOfObjects()
     {
         String stringForm = pickle(newArrayList("Hello", "There").toString());
-        assertEquals(newArrayList("Hello", "There").toString(),unpickle(stringForm));
+        assertEquals(newArrayList("Hello", "There").toString(), unpickle(stringForm));
     }
 }

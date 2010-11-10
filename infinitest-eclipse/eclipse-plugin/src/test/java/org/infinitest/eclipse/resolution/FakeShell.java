@@ -10,6 +10,7 @@ class FakeShell extends Shell
     boolean layout;
     boolean disposed;
 
+    @Override
     protected void checkSubclass()
     {
     }

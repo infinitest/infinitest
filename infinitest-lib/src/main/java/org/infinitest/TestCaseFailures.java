@@ -39,7 +39,9 @@ public class TestCaseFailures
     {
         ArrayList<TestEvent> list = newArrayList();
         for (TestEventEqualityAdapter each : set)
+        {
             list.add(each.getEvent());
+        }
         return list;
     }
 
@@ -47,7 +49,9 @@ public class TestCaseFailures
     {
         LinkedHashSet<TestEventEqualityAdapter> set = newLinkedHashSet();
         for (TestEvent testEvent : failures)
+        {
             set.add(new TestEventEqualityAdapter(testEvent));
+        }
         return set;
     }
 

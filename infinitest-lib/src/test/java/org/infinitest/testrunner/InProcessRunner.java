@@ -4,7 +4,7 @@ import java.util.List;
 
 public class InProcessRunner extends AbstractTestRunner
 {
-    private NativeRunner runner;
+    private final NativeRunner runner;
 
     public InProcessRunner()
     {

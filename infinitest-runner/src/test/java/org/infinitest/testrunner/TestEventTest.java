@@ -9,11 +9,12 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import jdave.test.JDaveUtils;
+
 import org.infinitest.util.EqualityTestSupport;
 import org.infinitest.util.EventFakeSupport;
 import org.junit.Before;
 import org.junit.Test;
-import jdave.test.JDaveUtils;
 
 //Move this to infinitest-runners
 public class TestEventTest extends EqualityTestSupport
@@ -114,7 +115,7 @@ public class TestEventTest extends EqualityTestSupport
     {
         String actual = event.getPointOfFailure().toString();
         String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName()
-                + "(" + error.getMessage() + ")";
+                        + "(" + error.getMessage() + ")";
 
         assertEquals(expected, actual);
     }

@@ -57,7 +57,9 @@ public class FakeEnvironments
         // This is a workaround for the maven surefire plugin classpath issue listed here:
         // http://jira.codehaus.org/browse/SUREFIRE-435
         if (System.getProperty("surefire.test.class.path") != null)
+        {
             return System.getProperty("surefire.test.class.path");
+        }
 
         return System.getProperty("java.class.path");
     }

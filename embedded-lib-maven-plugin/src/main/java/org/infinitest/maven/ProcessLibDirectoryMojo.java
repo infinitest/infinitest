@@ -79,18 +79,17 @@ public class ProcessLibDirectoryMojo extends AbstractMojo
             copyFileToDirectory(bndFile, targetDirectory);
         }
 
-        FileWriter bndWriter = 
-              new FileWriter(new File(targetDirectory + "/osgi.bnd"), true);
-        
-        try 
+        FileWriter bndWriter = new FileWriter(new File(targetDirectory + "/osgi.bnd"), true);
+
+        try
         {
             bndWriter.append("\nBundle-Classpath: .");
             for (String fileName : jarFileNames)
             {
                 bndWriter.append(",\\\n  " + fileName);
             }
-        } 
-        finally 
+        }
+        finally
         {
             bndWriter.close();
         }
@@ -98,22 +97,19 @@ public class ProcessLibDirectoryMojo extends AbstractMojo
 
     private void addJarsToBuildProperties(String[] jarFileNames) throws IOException
     {
-        FileWriter buildPropertiesWriter = 
-            new FileWriter(new File(baseDirectory + "/build.properties"), false);
+        FileWriter buildPropertiesWriter = new FileWriter(new File(baseDirectory + "/build.properties"), false);
 
         try
         {
-            buildPropertiesWriter.append(
-                    "source.. = src/main/java/,src/main/resources/\n" +
-                    "bin.includes = plugin.xml,preferences.ini,META-INF/," +
-                    ".,src/main/resources/icons/");
-    
+            buildPropertiesWriter.append("source.. = src/main/java/,src/main/resources/\n"
+                            + "bin.includes = plugin.xml,preferences.ini,META-INF/," + ".,src/main/resources/icons/");
+
             for (String fileName : jarFileNames)
             {
                 buildPropertiesWriter.append("," + fileName);
             }
             buildPropertiesWriter.append("\n");
-    
+
             buildPropertiesWriter.append("jars.compile.order = .");
             for (String fileName : jarFileNames)
             {

@@ -16,7 +16,9 @@ public class EclipseLoggingListener implements LoggingListener
         Status status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
         InfinitestPlugin plugin = InfinitestPlugin.getInstance();
         if (plugin != null)
+        {
             plugin.getLog().log(status);
+        }
     }
 
     public void logMessage(Level level, String message)
@@ -24,15 +26,21 @@ public class EclipseLoggingListener implements LoggingListener
         Status status = new Status(levelToStatus(level), PLUGIN_ID, message);
         InfinitestPlugin plugin = InfinitestPlugin.getInstance();
         if (plugin != null)
+        {
             plugin.getLog().log(status);
+        }
     }
 
     private int levelToStatus(Level level)
     {
         if (level.equals(SEVERE))
+        {
             return IStatus.ERROR;
+        }
         if (level.equals(WARNING))
+        {
             return IStatus.WARNING;
+        }
         return IStatus.INFO;
     }
 }

@@ -64,7 +64,7 @@ class CustomProgressBar extends JProgressBar
         }
         g2.setFont(getFont());
         TextLayout layout = new TextLayout(getStatusMessage(), getFont(), g2.getFontRenderContext());
-        layout.draw(g2, 10, (getHeight() / 2) + getBaselineOffset(layout));
+        layout.draw(g2, 10, getHeight() / 2 + getBaselineOffset(layout));
     }
 
     private float getBaselineOffset(TextLayout layout)
@@ -75,7 +75,9 @@ class CustomProgressBar extends JProgressBar
     String getStatusMessage()
     {
         if (statusMsg == null)
+        {
             return getMessage(INDEXING);
+        }
         String msg = statusMsg.replace("$TEST_COUNT", Integer.toString(getMaximum()));
         msg = msg.replace("$TESTS_RAN", Integer.toString(getValue()));
         msg = msg.replace("$CURRENT_TEST", getCurrentTest());
@@ -85,7 +87,9 @@ class CustomProgressBar extends JProgressBar
     public String getCurrentTest()
     {
         if (currentTest == null)
+        {
             return "";
+        }
         return currentTest;
     }
 

@@ -39,7 +39,9 @@ public class PointOfFailure implements Serializable
     {
         int hashCode = className.hashCode() ^ lineNumber ^ errorClassName.hashCode();
         if (message != null)
+        {
             hashCode = hashCode ^ message.hashCode();
+        }
         return hashCode;
     }
 
@@ -47,10 +49,14 @@ public class PointOfFailure implements Serializable
     public boolean equals(Object other)
     {
         if (this == other)
+        {
             return true;
+        }
 
         if (!(other instanceof PointOfFailure))
+        {
             return false;
+        }
 
         PointOfFailure that = (PointOfFailure) other;
         return className.equals(that.className) && lineNumber == that.lineNumber
@@ -60,9 +66,13 @@ public class PointOfFailure implements Serializable
     private boolean safeEquals(Object orig, Object other)
     {
         if (orig == null && other == null)
+        {
             return true;
+        }
         if (orig == null || other == null)
+        {
             return false;
+        }
 
         return orig.equals(other);
     }
@@ -70,10 +80,12 @@ public class PointOfFailure implements Serializable
     @Override
     public String toString()
     {
-        StringBuilder builder = new StringBuilder(className).append(':').append(lineNumber).append(" - ").append(
-                        errorClassName);
+        StringBuilder builder = new StringBuilder(className).append(':').append(lineNumber).append(" - ")
+                        .append(errorClassName);
         if (message != null)
+        {
             builder.append('(').append(message).append(')');
+        }
         return builder.toString();
     }
 }

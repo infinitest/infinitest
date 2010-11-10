@@ -50,6 +50,8 @@ public class MultiProcessRunner extends AbstractTestRunner
     public void runTests(List<String> testNames)
     {
         if (!testNames.isEmpty())
+        {
             queueConsumer.push(testNames);
+        }
     }
 }

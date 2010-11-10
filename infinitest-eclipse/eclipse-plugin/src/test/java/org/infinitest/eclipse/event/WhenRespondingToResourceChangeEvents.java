@@ -5,7 +5,6 @@ import static org.easymock.EasyMock.*;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.infinitest.EventQueue;
 import org.infinitest.NamedRunnable;
-import org.infinitest.eclipse.event.CoreUpdateNotifier;
 import org.junit.Before;
 import org.junit.Test;
 

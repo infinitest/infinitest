@@ -26,8 +26,8 @@ class EclipseWorkspace implements WorkspaceFacade
     private final CoreRegistry coreRegistry;
     private final CoreFactory coreFactory;
     private WorkspaceStatus status;
-    private List<WorkspaceStatusListener> statusListeners = newArrayList();
-    private Events<UpdateListener> updateEvent = eventFor(UpdateListener.class);
+    private final List<WorkspaceStatusListener> statusListeners = newArrayList();
+    private final Events<UpdateListener> updateEvent = eventFor(UpdateListener.class);
     private final ProjectSet projectSet;
 
     @Autowired
@@ -42,18 +42,24 @@ class EclipseWorkspace implements WorkspaceFacade
     public void addStatusListeners(WorkspaceStatusListener... listeners)
     {
         for (WorkspaceStatusListener each : listeners)
+        {
             statusListeners.add(each);
+        }
     }
 
     public void updateProjects() throws CoreException
     {
         if (projectSet.hasErrors())
+        {
             setStatus(workspaceErrors());
+        }
         else
         {
             int numberOfTestsToRun = updateProjectsIn(projectSet);
             if (numberOfTestsToRun == 0)
+            {
                 setStatus(noTestsRun());
+            }
         }
     }
 
@@ -61,7 +67,9 @@ class EclipseWorkspace implements WorkspaceFacade
     {
         status = newStatus;
         for (WorkspaceStatusListener each : statusListeners)
+        {
             each.statusChanged(newStatus);
+        }
     }
 
     public WorkspaceStatus getStatus()
@@ -86,7 +94,9 @@ class EclipseWorkspace implements WorkspaceFacade
         RuntimeEnvironment environment = buildRuntimeEnvironment(project);
         InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
         if (core == null)
+        {
             core = createCore(project, environment);
+        }
         core.setRuntimeEnvironment(environment);
         return core.update();
     }
@@ -101,8 +111,8 @@ class EclipseWorkspace implements WorkspaceFacade
 
     private RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project, File javaHome) throws CoreException
     {
-        return new RuntimeEnvironment(projectSet.outputDirectories(project), project.workingDirectory(), project
-                        .rawClasspath(), javaHome);
+        return new RuntimeEnvironment(projectSet.outputDirectories(project), project.workingDirectory(),
+                        project.rawClasspath(), javaHome);
     }
 
     private InfinitestCore createCore(ProjectFacade project, RuntimeEnvironment environment)
@@ -116,6 +126,8 @@ class EclipseWorkspace implements WorkspaceFacade
     public void addUpdateListeners(UpdateListener... updateListeners)
     {
         for (UpdateListener each : updateListeners)
+        {
             updateEvent.addListener(each);
+        }
     }
 }

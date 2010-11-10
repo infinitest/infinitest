@@ -10,9 +10,9 @@ import java.util.Map;
 public class QueueAggregator
 {
     private int initialSize = 0;
-    private Map<InfinitestCore, AggregatingQueueListener> coreQueueListeners;
+    private final Map<InfinitestCore, AggregatingQueueListener> coreQueueListeners;
     public static final String STATUS_PROPERTY = "status";
-    private List<TestQueueListener> queueListeners;
+    private final List<TestQueueListener> queueListeners;
 
     public QueueAggregator()
     {
@@ -47,30 +47,42 @@ public class QueueAggregator
         List<String> aggregatedQueue = getAggregatedQueue();
         initialSize = max(initialSize, aggregatedQueue.size());
         for (TestQueueListener each : queueListeners)
+        {
             each.testQueueUpdated(new TestQueueEvent(aggregatedQueue, initialSize));
+        }
         if (aggregatedQueue.isEmpty())
+        {
             initialSize = 0;
+        }
     }
 
     private List<String> getAggregatedQueue()
     {
         List<String> aggregatedQueue = newArrayList();
         for (AggregatingQueueListener each : coreQueueListeners.values())
+        {
             aggregatedQueue.addAll(each.currentQueue);
+        }
         return aggregatedQueue;
     }
 
     private void fireReloadingEvent()
     {
         for (TestQueueListener each : queueListeners)
+        {
             each.reloading();
+        }
     }
 
     private void fireCompleteEvent()
     {
         if (getAggregatedQueue().isEmpty())
+        {
             for (TestQueueListener each : queueListeners)
+            {
                 each.testRunComplete();
+            }
+        }
     }
 
     Map<InfinitestCore, AggregatingQueueListener> getCoreQueueListeners()

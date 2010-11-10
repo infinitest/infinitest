@@ -1,10 +1,11 @@
 package org.infinitest.intellij.idea.language;
 
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.util.IconLoader;
+import javax.swing.Icon;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
+import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.IconLoader;
 
 class InfinitestGutterIconRenderer extends GutterIconRenderer
 {
@@ -35,7 +36,9 @@ class InfinitestGutterIconRenderer extends GutterIconRenderer
     private String formatMessage(String message)
     {
         if (message == null)
+        {
             return "no message";
+        }
         return message.replace("<", "&lt;").replace(">", "&gt;");
     }
 }

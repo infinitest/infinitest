@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 class CleanEventProcessor extends EclipseEventProcessor
 {
     private final CoreRegistry coreRegistry;
-    private ProjectSet projectSet;
+    private final ProjectSet projectSet;
 
     @Autowired
     CleanEventProcessor(CoreRegistry coreRegistry, ProjectSet projectSet)
@@ -29,6 +29,7 @@ class CleanEventProcessor extends EclipseEventProcessor
         this.projectSet = projectSet;
     }
 
+    @Override
     public void processEvent(IResourceChangeEvent event) throws JavaModelException
     {
         cleanProjects(getDeltas(event));
@@ -37,7 +38,9 @@ class CleanEventProcessor extends EclipseEventProcessor
     private void cleanProjects(IResourceDelta[] projectResourceDeltas)
     {
         for (IResourceDelta projectDelta : projectResourceDeltas)
+        {
             cleanProject(projectDelta);
+        }
     }
 
     private void cleanProject(IResourceDelta projectResourceDelta)
@@ -45,9 +48,13 @@ class CleanEventProcessor extends EclipseEventProcessor
         IPath projectPath = projectResourceDelta.getResource().getFullPath();
         EclipseProject project = projectSet.findProject(projectPath);
         if (project == null)
+        {
             log(WARNING, "Could not find project for resource " + projectPath);
+        }
         else
+        {
             coreRegistry.removeCore(project.getLocationURI());
+        }
     }
 
     @Override

@@ -33,10 +33,13 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
     public void dispose()
     {
         if (composite != null && !composite.isDisposed())
+        {
             composite.dispose();
+        }
         composite = null;
     }
 
+    @Override
     public void fill(Composite parent, int oldSide, int newSide)
     {
         composite = new Composite(parent, NONE);
@@ -64,7 +67,9 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
     {
         RowData rowData = new RowData();
         if (newSide == BOTTOM || newSide == TOP)
+        {
             rowData.width = 400;
+        }
         return rowData;
     }
 

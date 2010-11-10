@@ -6,17 +6,17 @@ import static org.infinitest.testrunner.TestEvent.*;
 import java.util.List;
 
 import org.infinitest.ConsoleOutputListener;
+import org.infinitest.ConsoleOutputListener.OutputType;
 import org.infinitest.ReloadListener;
 import org.infinitest.TestQueueEvent;
 import org.infinitest.TestQueueListener;
-import org.infinitest.ConsoleOutputListener.OutputType;
 
 public class RunnerEventSupport
 {
-    private List<ConsoleOutputListener> consoleListenerList;
-    private List<TestQueueListener> testQueueListenerList;
-    private List<TestResultsListener> listeners;
-    private Object source;
+    private final List<ConsoleOutputListener> consoleListenerList;
+    private final List<TestQueueListener> testQueueListenerList;
+    private final List<TestResultsListener> listeners;
+    private final Object source;
 
     public RunnerEventSupport(Object eventSource)
     {
@@ -54,7 +54,9 @@ public class RunnerEventSupport
     public void fireTestCaseComplete(String testName, TestResults results)
     {
         for (TestResultsListener each : listeners)
+        {
             each.testCaseComplete(new TestCaseEvent(testName, source, results));
+        }
     }
 
     public void fireStartingEvent(String testClass)
@@ -75,13 +77,17 @@ public class RunnerEventSupport
     public void fireTestRunComplete()
     {
         for (TestQueueListener each : testQueueListenerList)
+        {
             each.testRunComplete();
+        }
     }
 
     public void fireConsoleUpdateEvent(String newText, OutputType outputType)
     {
         for (ConsoleOutputListener each : consoleListenerList)
+        {
             each.consoleOutputUpdate(newText, outputType);
+        }
     }
 
     public void addTestQueueListener(TestQueueListener listener)
@@ -97,7 +103,9 @@ public class RunnerEventSupport
     public void fireQueueEvent(TestQueueEvent event)
     {
         for (TestQueueListener each : testQueueListenerList)
+        {
             each.testQueueUpdated(event);
+        }
     }
 
 }

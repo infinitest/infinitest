@@ -43,7 +43,9 @@ public class FileChangeDetector implements ChangeDetector
         for (File classFileOrDirectory : classesOrDirectories)
         {
             if (classFileOrDirectory.isDirectory() && hasValidName(classFileOrDirectory, isPackage))
+            {
                 findChildren(changedFiles, classFileOrDirectory);
+            }
             else if (ClassFileFilter.isClassFile(classFileOrDirectory))
             {
                 File classFile = classFileOrDirectory;
@@ -63,7 +65,9 @@ public class FileChangeDetector implements ChangeDetector
     {
         File[] children = childrenOf(classFileOrDirectory);
         if (children != null)
+        {
             changedFiles.addAll(findFiles(children, true));
+        }
     }
 
     protected File[] childrenOf(File directory)
@@ -92,7 +96,9 @@ public class FileChangeDetector implements ChangeDetector
         for (File key : timestampIndex.keySet())
         {
             if (!key.exists())
+            {
                 removedFiles.add(key);
+            }
         }
         return removedFiles;
     }

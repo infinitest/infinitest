@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 
 public class IdeaCompilationNotifier implements CompilationNotifier
 {
-    private Project project;
+    private final Project project;
 
     public IdeaCompilationNotifier(Project project)
     {

@@ -84,7 +84,9 @@ public class WhenViewingAStackTrace
         while (!shell.isDisposed() && !dialog.isDisposed())
         {
             if (!display.readAndDispatch())
+            {
                 display.sleep();
+            }
         }
         display.dispose();
     }

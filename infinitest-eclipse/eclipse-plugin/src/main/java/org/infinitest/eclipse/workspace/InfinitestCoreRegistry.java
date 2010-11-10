@@ -16,14 +16,16 @@ import org.springframework.stereotype.Component;
 @Component
 class InfinitestCoreRegistry implements CoreRegistry
 {
-    private Map<URI, InfinitestCore> coreMap = newHashMap();
-    private List<CoreLifecycleListener> listeners = newArrayList();
+    private final Map<URI, InfinitestCore> coreMap = newHashMap();
+    private final List<CoreLifecycleListener> listeners = newArrayList();
 
     @Autowired
     InfinitestCoreRegistry(CoreLifecycleListener... listeners)
     {
         for (CoreLifecycleListener each : listeners)
+        {
             addLifecycleListener(each);
+        }
     }
 
     public void addCore(URI projectUri, InfinitestCore core)
@@ -50,13 +52,17 @@ class InfinitestCoreRegistry implements CoreRegistry
     private void fireRemovedEvent(InfinitestCore core)
     {
         for (CoreLifecycleListener each : listeners)
+        {
             each.coreRemoved(core);
+        }
     }
 
     private void fireAddedEvent(InfinitestCore core)
     {
         for (CoreLifecycleListener each : listeners)
+        {
             each.coreCreated(core);
+        }
     }
 
     public int indexedCoreCount()

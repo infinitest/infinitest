@@ -13,7 +13,7 @@ import com.intellij.psi.PsiFile;
 
 public class InfinitestHighlightingPassFactory implements TextEditorHighlightingPassFactory
 {
-    private TextEditorHighlightingPassRegistrar passRegistrar;
+    private final TextEditorHighlightingPassRegistrar passRegistrar;
 
     public InfinitestHighlightingPassFactory(TextEditorHighlightingPassRegistrar passRegistrar)
     {
@@ -47,7 +47,7 @@ public class InfinitestHighlightingPassFactory implements TextEditorHighlighting
     public void initComponent()
     {
         passRegistrar.registerTextEditorHighlightingPass(this, TextEditorHighlightingPassRegistrar.Anchor.LAST,
-                Pass.UPDATE_ALL, true, true);
+                        Pass.UPDATE_ALL, true, true);
     }
 
     public void disposeComponent()

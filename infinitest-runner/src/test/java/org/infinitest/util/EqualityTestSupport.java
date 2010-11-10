@@ -42,7 +42,9 @@ public abstract class EqualityTestSupport
     {
         Object equal = createEqualInstance();
         for (Object other : createUnequalInstances())
+        {
             assertThat(equal, not(equalTo(other)));
+        }
     }
 
     @Test
@@ -65,6 +67,8 @@ public abstract class EqualityTestSupport
     {
         Object equal = createEqualInstance();
         for (Object other : createUnequalInstances())
+        {
             assertThat(equal.hashCode(), not(equalTo(other.hashCode())));
+        }
     }
 }

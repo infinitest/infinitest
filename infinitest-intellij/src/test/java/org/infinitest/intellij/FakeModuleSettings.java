@@ -46,7 +46,7 @@ public class FakeModuleSettings implements ModuleSettings
 
     public RuntimeEnvironment getRuntimeEnvironment()
     {
-        return new RuntimeEnvironment(Collections.<File> emptyList(), new File("."), "",
-            new File(getProperty("java.home")));
+        return new RuntimeEnvironment(Collections.<File> emptyList(), new File("."), "", new File(
+                        getProperty("java.home")));
     }
 }

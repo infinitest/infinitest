@@ -19,9 +19,13 @@ public class SwingEventQueue implements EventQueue
         try
         {
             if (!isEventDispatchThread())
+            {
                 invokeAndWait(runnable);
+            }
             else
+            {
                 runnable.run();
+            }
         }
         catch (InterruptedException e)
         {

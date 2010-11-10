@@ -73,8 +73,8 @@ public class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTes
 
         Set<JavaClass> testsToRun = getGraph().findTestsToRun(fileSet);
         assertFalse("We cleared TestFakeProduct from the graph", testsToRun.contains(testFakeProductFile));
-        assertEquals("Because FakeProduct is the only class in the graph, no tests should be returned", 0, testsToRun
-                        .size());
+        assertEquals("Because FakeProduct is the only class in the graph, no tests should be returned", 0,
+                        testsToRun.size());
     }
 
     @Test

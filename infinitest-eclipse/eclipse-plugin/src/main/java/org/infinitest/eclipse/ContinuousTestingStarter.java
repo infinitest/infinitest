@@ -19,6 +19,8 @@ public class ContinuousTestingStarter implements IStartup
         InfinitestPlugin plugin = InfinitestPlugin.getInstance();
         boolean autoTest = plugin.getPreferenceStore().getBoolean(AUTO_TEST);
         if (autoTest)
+        {
             plugin.startContinuouslyTesting();
+        }
     }
 }

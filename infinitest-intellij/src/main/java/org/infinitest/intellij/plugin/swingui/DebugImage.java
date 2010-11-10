@@ -45,7 +45,7 @@ class DebugImage extends BufferedImage implements Cloneable
 
     /**
      * Dumps the current image to a PNG file.
-     *
+     * 
      * @param file
      *            File
      * @throws IOException
@@ -63,7 +63,7 @@ class DebugImage extends BufferedImage implements Cloneable
     /**
      * Returns the bounds of the shapes that were drawn using a color other than the background
      * color, or null if nothing was drawn.
-     *
+     * 
      * @return Rectangle
      */
     public Rectangle getDrawingBounds()
@@ -74,7 +74,7 @@ class DebugImage extends BufferedImage implements Cloneable
     /**
      * Returns the bounds of the shapes that were drawn using the given color, or null if nothing
      * was drawn.
-     *
+     * 
      * @return Rectangle
      */
     public Rectangle getDrawingBounds(Color color)
@@ -97,7 +97,7 @@ class DebugImage extends BufferedImage implements Cloneable
     /**
      * Returns true if the given pixel is a match for the given color or, if the color is null, if
      * the given pixel is simply not a background pixel.
-     *
+     * 
      * @param color
      * @param x
      * @param y
@@ -112,36 +112,60 @@ class DebugImage extends BufferedImage implements Cloneable
     private int findLeft(Color color) throws NoRenderingException
     {
         for (int x = 0; x < getWidth(); x++)
+        {
             for (int y = 0; y < getHeight(); y++)
+            {
                 if (colorMatch(color, x, y))
+                {
                     return x;
+                }
+            }
+        }
         throw new NoRenderingException();
     }
 
     private int findTop(Color color) throws NoRenderingException
     {
         for (int y = 0; y < getHeight(); y++)
+        {
             for (int x = 0; x < getWidth(); x++)
+            {
                 if (colorMatch(color, x, y))
+                {
                     return y;
+                }
+            }
+        }
         throw new NoRenderingException();
     }
 
     private int findBottom(Color color) throws NoRenderingException
     {
         for (int y = getHeight() - 1; y >= 0; y--)
+        {
             for (int x = 0; x < getWidth(); x++)
+            {
                 if (colorMatch(color, x, y))
+                {
                     return y;
+                }
+            }
+        }
         throw new NoRenderingException();
     }
 
     private int findRight(Color color) throws NoRenderingException
     {
         for (int x = getWidth() - 1; x >= 0; x--)
+        {
             for (int y = 0; y < getHeight(); y++)
+            {
                 if (colorMatch(color, x, y))
+                {
                     return x;
+                }
+            }
+        }
         throw new NoRenderingException();
     }
 

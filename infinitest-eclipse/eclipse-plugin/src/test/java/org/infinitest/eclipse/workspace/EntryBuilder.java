@@ -12,8 +12,8 @@ class EntryBuilder
     private int contentKind;
     private int entryKind;
     private IPath path;
-    private IPath[] inclusionPatterns = new Path[0];
-    private IPath[] exclusionPatterns = new Path[0];
+    private final IPath[] inclusionPatterns = new Path[0];
+    private final IPath[] exclusionPatterns = new Path[0];
     private IPath sourceAttachmentPath;
     private IPath sourceAttachmentRootPath;
     private IPath outputPath;

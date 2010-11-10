@@ -10,8 +10,8 @@ import org.infinitest.ConsoleOutputListener.OutputType;
 public class ConsoleOutputProcessor implements Runnable
 {
     private final RunnerEventSupport eventSupport;
-    private InputStream outputSource;
-    private OutputType outputType;
+    private final InputStream outputSource;
+    private final OutputType outputType;
 
     public ConsoleOutputProcessor(InputStream stream, OutputType outputType, RunnerEventSupport eventSupport)
     {
@@ -27,7 +27,9 @@ public class ConsoleOutputProcessor implements Runnable
             int bytesRead;
             byte[] buffer = new byte[1024 * 10];
             while ((bytesRead = outputSource.read(buffer)) != -1)
+            {
                 eventSupport.fireConsoleUpdateEvent(new String(buffer, 0, bytesRead), outputType);
+            }
             outputSource.close();
         }
         catch (IOException e)

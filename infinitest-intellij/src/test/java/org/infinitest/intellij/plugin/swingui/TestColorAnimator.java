@@ -1,13 +1,13 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
+import static org.junit.Assert.*;
 
 import java.awt.Color;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestColorAnimator
 {
@@ -40,7 +40,9 @@ public class TestColorAnimator
     {
         animator.setAngerLevel(1);
         for (int i = 0; i < 8; i++)
+        {
             animator.tick();
+        }
 
         animator.setAngerLevel(10);
         assertEquals(Color.BLACK, animator.shiftColorOnAnimationTick(FAILING_COLOR));

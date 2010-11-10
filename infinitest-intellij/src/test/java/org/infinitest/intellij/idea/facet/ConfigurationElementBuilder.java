@@ -4,7 +4,7 @@ import org.jdom.Element;
 
 public class ConfigurationElementBuilder
 {
-    private Element configElement = new Element("config");
+    private final Element configElement = new Element("config");
 
     public static ConfigurationElementBuilder configuration()
     {

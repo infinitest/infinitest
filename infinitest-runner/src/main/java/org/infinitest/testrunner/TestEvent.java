@@ -18,10 +18,10 @@ public class TestEvent implements Serializable
         METHOD_FAILURE, TEST_CASE_STARTING
     }
 
-    private String message;
-    private String name;
-    private String method;
-    private TestState state;
+    private final String message;
+    private final String name;
+    private final String method;
+    private final TestState state;
     private boolean isAssertionFailure;
     private StackTraceElement[] stackTrace;
     private String simpleErrorClassName;
@@ -35,7 +35,9 @@ public class TestEvent implements Serializable
         state = eventType;
 
         if (error != null)
+        {
             populateAttributesToEnsureSerializability(message, error);
+        }
     }
 
     public static TestEvent methodFailed(String message, String testName, String methodName, Throwable throwable)
@@ -101,14 +103,16 @@ public class TestEvent implements Serializable
     {
         int i = 0;
         while (isTestClass(stackTrace[i].getClassName()))
+        {
             i++;
+        }
         return stackTrace[i];
     }
 
     private boolean isTestClass(String className)
     {
-        return className.startsWith("org.junit") || className.startsWith("junit.framework") ||
-                className.startsWith("jdave");
+        return className.startsWith("org.junit") || className.startsWith("junit.framework")
+                        || className.startsWith("jdave");
     }
 
     private int getPointOfFailureLineNumber()
@@ -121,7 +125,7 @@ public class TestEvent implements Serializable
         if (getErrorClassName() != null)
         {
             return new PointOfFailure(getPointOfFailureClass(), getPointOfFailureLineNumber(), getErrorClassName(),
-                    getMessage());
+                            getMessage());
         }
         return null;
     }
@@ -150,9 +154,13 @@ public class TestEvent implements Serializable
     private static boolean safeEquals(Object orig, Object other)
     {
         if (orig == null && other == null)
+        {
             return true;
+        }
         if (orig == null || other == null)
+        {
             return false;
+        }
 
         return orig.equals(other);
     }

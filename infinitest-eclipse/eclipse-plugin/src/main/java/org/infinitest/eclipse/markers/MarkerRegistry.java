@@ -1,6 +1,5 @@
 package org.infinitest.eclipse.markers;
 
-
 public interface MarkerRegistry
 {
     void addMarker(MarkerInfo marker);

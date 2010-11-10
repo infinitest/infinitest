@@ -8,7 +8,7 @@ import org.infinitest.filter.ClassNameFilter;
 
 public class StackTraceFilter
 {
-    private ClassNameFilter nameFilter;
+    private final ClassNameFilter nameFilter;
 
     public StackTraceFilter()
     {
@@ -24,8 +24,12 @@ public class StackTraceFilter
     {
         List<StackTraceElement> filteredStackTrace = newArrayList();
         for (StackTraceElement each : stackTrace)
+        {
             if (!nameFilter.match(each.getClassName()))
+            {
                 filteredStackTrace.add(each);
+            }
+        }
         return filteredStackTrace;
     }
 }

@@ -80,7 +80,9 @@ public class TestRunnerProcess
                 testName = (String) inputStream.readObject();
 
                 if (testName != null)
+                {
                     writeTestResultToOutputStream(process, outputStream, testName);
+                }
 
             } while (testName != null);
 

@@ -20,9 +20,7 @@ public class InfinitestJarLocator
     public List<String> findInfinitestJarNames()
     {
         String version = findInfinitestVersion();
-        return asList(
-                "infinitest-lib-" + version + ".jar",
-                "infinitest-runner-" + version + ".jar");
+        return asList("infinitest-lib-" + version + ".jar", "infinitest-runner-" + version + ".jar");
     }
 
     public String findInfinitestVersion()
@@ -33,7 +31,7 @@ public class InfinitestJarLocator
             XPath xpath = factory.newXPath();
             xpath.setNamespaceContext(new PomNamespaceContext());
             XPathExpression expression = xpath
-                    .compile("//pom:dependency[pom:artifactId = 'infinitest-lib']/pom:version");
+                            .compile("//pom:dependency[pom:artifactId = 'infinitest-lib']/pom:version");
             InputSource inputSource = new InputSource(getClass().getResourceAsStream(BUNDLED_POM));
             return expression.evaluate(inputSource);
         }

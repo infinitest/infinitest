@@ -19,7 +19,9 @@ public class TestJUnit4TestCase
     public void shouldFailIfPropertyIsSet()
     {
         if (ENABLED.equals(System.getProperty(KEY)))
+        {
             fail("Test Failed");
+        }
     }
 
     public static void enable()

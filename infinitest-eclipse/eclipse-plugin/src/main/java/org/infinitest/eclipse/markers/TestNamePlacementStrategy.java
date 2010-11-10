@@ -19,7 +19,9 @@ public class TestNamePlacementStrategy implements MarkerPlacementStrategy
     {
         List<IResource> resources = lookup.findResourcesForClassName(event.getTestName());
         if (resources.isEmpty())
+        {
             return null;
+        }
         return new MarkerPlacement(resources.get(0), 0);
     }
 }

@@ -20,7 +20,9 @@ public class FakeProjectSet implements ProjectSet
     public ProjectFacade findProject(IPath path)
     {
         if (project.getPath().equals(path))
+        {
             return new ProjectFacade(project);
+        }
         throw new UnsupportedOperationException();
     }
 

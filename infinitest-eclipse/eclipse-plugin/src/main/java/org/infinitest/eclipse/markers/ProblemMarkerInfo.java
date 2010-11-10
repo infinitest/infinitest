@@ -47,6 +47,7 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo
      * @throws CoreException
      * @Deprecated Use getPlacement() or {@link #createMarker(String)}
      */
+    @Override
     public IResource associatedResource() throws CoreException
     {
         return getPlacement().getResource();
@@ -93,7 +94,9 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo
     {
         String message = failure.getMessage();
         if (isBlank(message) || isStringifiedNull(message))
+        {
             return "";
+        }
         return " (" + message + ")";
     }
 

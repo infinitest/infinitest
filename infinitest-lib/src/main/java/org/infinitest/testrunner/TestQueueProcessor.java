@@ -6,8 +6,8 @@ import static org.infinitest.util.InfinitestUtils.*;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.infinitest.RuntimeEnvironment;
 import org.infinitest.ConsoleOutputListener.OutputType;
+import org.infinitest.RuntimeEnvironment;
 import org.infinitest.testrunner.process.ProcessConnection;
 import org.infinitest.testrunner.process.ProcessConnectionFactory;
 import org.infinitest.testrunner.queue.QueueProcessor;
@@ -59,8 +59,12 @@ class TestQueueProcessor implements QueueProcessor
     public void cleanup()
     {
         if (!currentConnection.abort())
+        {
             log(WARNING, "Failed to clean up after terminated test run");
+        }
         else
+        {
             log("Test runner process terminated");
+        }
     }
 }

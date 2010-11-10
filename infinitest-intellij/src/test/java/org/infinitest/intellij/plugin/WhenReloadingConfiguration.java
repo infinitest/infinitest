@@ -1,9 +1,9 @@
 package org.infinitest.intellij.plugin;
 
+import static org.mockito.Mockito.*;
+
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class WhenReloadingConfiguration
 {
@@ -25,8 +25,8 @@ public class WhenReloadingConfiguration
     static class FakeInfinitestConfiguration implements InfinitestConfiguration
     {
         private InfinitestConfigurationListener listener;
-        private InfinitestLauncher firstLauncher;
-        private InfinitestLauncher secondLauncher;
+        private final InfinitestLauncher firstLauncher;
+        private final InfinitestLauncher secondLauncher;
         private boolean launched;
 
         FakeInfinitestConfiguration(InfinitestLauncher firstLauncher, InfinitestLauncher secondLauncher)

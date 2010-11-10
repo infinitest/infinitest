@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 class CoreFactory implements CoreSettings
 {
-    private EventQueue eventQueue;
-    private ConcurrencyController concurrencyController;
+    private final EventQueue eventQueue;
+    private final ConcurrencyController concurrencyController;
 
     @Autowired
     public CoreFactory(EventQueue eventQueue)

@@ -14,7 +14,7 @@ public class InfinitestFacet extends Facet<InfinitestFacetConfiguration>
     private final Module module;
 
     public InfinitestFacet(@NotNull FacetType<?, ?> facetType, @NotNull Module module, String name,
-        @NotNull InfinitestFacetConfiguration configuration, Facet<?> underlyingFacet)
+                    @NotNull InfinitestFacetConfiguration configuration, Facet<?> underlyingFacet)
     {
         super(facetType, module, name, configuration, underlyingFacet);
         this.module = module;

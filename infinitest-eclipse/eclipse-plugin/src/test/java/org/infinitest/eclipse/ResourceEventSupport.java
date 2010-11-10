@@ -71,7 +71,9 @@ public class ResourceEventSupport
         expect(delta.getAffectedChildren()).andReturn(new IResourceDelta[] { projectDelta });
         replay(delta, projectDelta);
         for (IResourceDelta each : resourceDeltas)
+        {
             replay(each);
+        }
         return delta;
     }
 }

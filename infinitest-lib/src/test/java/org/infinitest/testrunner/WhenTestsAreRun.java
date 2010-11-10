@@ -232,6 +232,8 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
     public void testCaseComplete(TestCaseEvent event)
     {
         for (TestEvent each : event.getFailureEvents())
+        {
             methodEvents.add(each);
+        }
     }
 }

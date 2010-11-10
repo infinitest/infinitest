@@ -55,7 +55,9 @@ public class InfinitestUtils
     public static String stripPackageName(String className)
     {
         if (!className.contains("."))
+        {
             return className;
+        }
         return className.substring(className.lastIndexOf('.') + 1);
     }
 
@@ -82,14 +84,20 @@ public class InfinitestUtils
     private static void fireLoggingEvent(String message, Throwable throwable)
     {
         for (LoggingListener each : loggingListeners)
+        {
             each.logError(message, throwable);
+        }
     }
 
     private static void fireLoggingEvent(Level level, String logMsg)
     {
         if (level.intValue() >= InfinitestGlobalSettings.getLogLevel().intValue())
+        {
             for (LoggingListener each : loggingListeners)
+            {
                 each.logMessage(level, logMsg);
+            }
+        }
     }
 
     public static List<String> getClassNames(StackTraceElement[] currentStack)
@@ -105,11 +113,15 @@ public class InfinitestUtils
     static String getExceptionMessage(Throwable e)
     {
         if (e.getMessage() == null)
+        {
             return e.getClass().getName();
+        }
 
         String msg = e.getMessage().replace(":", ":\n");
         if (msg.length() > 50)
+        {
             return msg.substring(0, 50) + "...";
+        }
 
         return msg;
     }
@@ -143,7 +155,9 @@ public class InfinitestUtils
             if (isDirectory(each))
             {
                 if (fileExists(each + separatorChar + classToLookFor))
+                {
                     return convertFromWindowsClassPath(each);
+                }
             }
             else
             {
@@ -151,7 +165,9 @@ public class InfinitestUtils
                 {
                     JarFile jarFile = new JarFile(each);
                     if (jarFile.getJarEntry(classToLookFor) != null)
+                    {
                         return convertFromWindowsClassPath(each);
+                    }
                 }
                 catch (IOException e)
                 {
@@ -166,7 +182,7 @@ public class InfinitestUtils
     {
         return path.replace("\\", "/");
     }
-    
+
     private static boolean fileExists(String filename)
     {
         return new File(filename).exists();
@@ -190,7 +206,7 @@ public class InfinitestUtils
         if (listOfStringableObjects.size() > MAX_LINE_COUNT)
         {
             trace.append(LINE_SEP);
-            trace.append((listOfStringableObjects.size() - MAX_LINE_COUNT) + " more...");
+            trace.append(listOfStringableObjects.size() - MAX_LINE_COUNT + " more...");
         }
         return stripEnd(trace.toString(), LINE_SEP);
     }

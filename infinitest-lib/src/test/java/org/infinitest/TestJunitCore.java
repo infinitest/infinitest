@@ -15,9 +15,9 @@ import org.junit.runner.notification.RunListener;
 
 /**
  * Exploratory test for JunitCore
- *
+ * 
  * @author bjrady
- *
+ * 
  */
 public class TestJunitCore
 {
@@ -67,8 +67,8 @@ public class TestJunitCore
         assertEquals("Test Count", 1, desc.testCount());
 
         desc = findDescription("shouldFailIfPropertyIsSet", finishedList);
-        assertEquals("Display name", "shouldFailIfPropertyIsSet(org.infinitest.TestJunitCore$StubTest)", desc
-                        .getDisplayName());
+        assertEquals("Display name", "shouldFailIfPropertyIsSet(org.infinitest.TestJunitCore$StubTest)",
+                        desc.getDisplayName());
         assertTrue("Result should have no children", desc.getChildren().isEmpty());
         assertTrue("Test result, not suite result", desc.isTest());
         assertEquals("Test Count", 1, desc.testCount());
@@ -81,7 +81,9 @@ public class TestJunitCore
         for (Description d : testList)
         {
             if (d.getDisplayName().startsWith(methodName + "("))
+            {
                 return d;
+            }
         }
         return null;
     }
@@ -108,7 +110,9 @@ public class TestJunitCore
         {
             // This is done so Eclipse doesn't get confused and fail because of this test.
             if (System.getProperty(StubTest.class.getName()) != null)
+            {
                 fail("This test should fail");
+            }
         }
 
         public static void enable()

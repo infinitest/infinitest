@@ -7,7 +7,7 @@ import org.infinitest.testrunner.TestEvent;
 
 public class TestEventEqualityAdapter
 {
-    private TestEvent event;
+    private final TestEvent event;
 
     public TestEventEqualityAdapter(TestEvent event)
     {

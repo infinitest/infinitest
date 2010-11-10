@@ -47,7 +47,7 @@ public class WhenDetachingFromTheCore
     {
         EventNormalizer normalizer = new EventNormalizer(new FakeEventQueue());
         assertEquals(normalizer.testQueueNormalizer(listener), normalizer.testQueueNormalizer(listener));
-        assertThat(normalizer.testQueueNormalizer(listener), not(equalTo(normalizer
-                        .testQueueNormalizer(new TestQueueAdapter()))));
+        assertThat(normalizer.testQueueNormalizer(listener),
+                        not(equalTo(normalizer.testQueueNormalizer(new TestQueueAdapter()))));
     }
 }

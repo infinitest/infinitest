@@ -36,13 +36,19 @@ class CoreUpdateNotifier implements IResourceChangeListener
     public void resourceChanged(final IResourceChangeEvent event)
     {
         if (event.getDelta() != null)
+        {
             processEvent(event);
+        }
     }
 
     public void processEvent(IResourceChangeEvent event)
     {
         for (EclipseEventProcessor processor : processors)
+        {
             if (processor.canProcessEvent(event))
+            {
                 queue.pushNamed(new EventProcessorRunnable(processor, event));
+            }
+        }
     }
 }

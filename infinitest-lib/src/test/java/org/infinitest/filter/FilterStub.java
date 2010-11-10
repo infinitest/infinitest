@@ -3,8 +3,6 @@ package org.infinitest.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinitest.filter.TestFilter;
-
 public class FilterStub implements TestFilter
 {
     private final List<String> classesToFilter = new ArrayList<String>();

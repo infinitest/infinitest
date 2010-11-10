@@ -1,10 +1,9 @@
 package org.infinitest.eclipse.console;
 
-import org.infinitest.ReloadListener;
 import org.infinitest.TestQueueEvent;
 import org.infinitest.TestQueueListener;
 
-public class ConsoleClearingListener implements TestQueueListener, ReloadListener
+public class ConsoleClearingListener implements TestQueueListener
 {
     private final TextOutputWriter writer;
 
@@ -21,7 +20,9 @@ public class ConsoleClearingListener implements TestQueueListener, ReloadListene
     public void testQueueUpdated(TestQueueEvent event)
     {
         if (event.getInitialSize() == event.getTestQueue().size())
+        {
             writer.clearConsole();
+        }
     }
 
     public void testRunComplete()

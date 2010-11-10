@@ -35,7 +35,9 @@ public class TcpSocketProcessCommunicator
     public int createSocket()
     {
         if (serverSocket != null && !serverSocket.isClosed())
+        {
             throw new IllegalStateException("Test runner socket is already open");
+        }
 
         try
         {

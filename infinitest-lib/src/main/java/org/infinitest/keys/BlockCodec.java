@@ -38,7 +38,9 @@ public class BlockCodec
 
         List<Integer> blockSizes = new ArrayList<Integer>();
         for (int i = 0; i < numBlocks; i++)
+        {
             blockSizes.add(in.read());
+        }
 
         for (Integer blockSize : blockSizes)
         {
@@ -65,9 +67,13 @@ public class BlockCodec
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             out.write(blocks.size());
             for (byte[] block : blocks)
+            {
                 out.write(block.length);
+            }
             for (byte[] block : blocks)
+            {
                 out.write(block);
+            }
             out.close();
             return out.toByteArray();
         }

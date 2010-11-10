@@ -30,20 +30,28 @@ public class PreferenceChangeHandler
     {
         String preference = findChangedPreference(event);
         if (AUTO_TEST.equals(preference))
+        {
             updateAutoTest(event);
+        }
 
         if (SLOW_TEST_WARNING.equals(preference))
+        {
             updateSlowTestWarning(event);
+        }
 
         if (PARALLEL_CORES.equals(preference))
+        {
             updateConcurrency(event);
+        }
     }
 
     private void updateConcurrency(PropertyChangeEvent event)
     {
         String newValue = event.getNewValue().toString();
         if (!isBlank(newValue))
+        {
             coreSettings.setConcurrentCoreCount(Integer.parseInt(newValue));
+        }
     }
 
     private void updateSlowTestWarning(PropertyChangeEvent event)
@@ -51,24 +59,32 @@ public class PreferenceChangeHandler
         // DEBT Duplication?
         String newValue = event.getNewValue().toString();
         if (!isBlank(newValue))
+        {
             setSlowTestTimeLimit(parseInt(newValue));
-        // Could remove markers that are no longer valid if this value is raised
+            // Could remove markers that are no longer valid if this value is raised
+        }
     }
 
     private void updateAutoTest(PropertyChangeEvent event)
     {
         Boolean continuouslyTest = (Boolean) event.getNewValue();
         if (continuouslyTest.booleanValue())
+        {
             controller.enable();
+        }
         else
+        {
             controller.disable();
+        }
     }
 
     private String findChangedPreference(PropertyChangeEvent event)
     {
         Object source = event.getSource();
         if (source instanceof FieldEditor && event.getProperty().equals(VALUE))
+        {
             return ((FieldEditor) source).getPreferenceName();
+        }
         return null;
     }
 }

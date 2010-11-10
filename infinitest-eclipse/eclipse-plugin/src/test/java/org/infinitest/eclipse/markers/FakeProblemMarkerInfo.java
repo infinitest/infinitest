@@ -20,7 +20,7 @@ final class FakeProblemMarkerInfo extends ProblemMarkerInfo
     {
         IResource mockResource = createNiceMock(IResource.class);
         IMarker marker = createNiceMock(IMarker.class);
-        expect(mockResource.createMarker((isA(String.class)))).andReturn(marker);
+        expect(mockResource.createMarker(isA(String.class))).andReturn(marker);
 
         replay(mockResource);
         return mockResource;

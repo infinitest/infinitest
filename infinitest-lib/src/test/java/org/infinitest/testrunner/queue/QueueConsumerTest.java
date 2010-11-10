@@ -166,7 +166,9 @@ public class QueueConsumerTest
             try
             {
                 if (Thread.interrupted())
+                {
                     events.put("Interrupted");
+                }
                 events.put("Cleaned");
                 notify();
             }
@@ -181,7 +183,9 @@ public class QueueConsumerTest
             try
             {
                 if (Thread.interrupted())
+                {
                     events.put("Interrupted");
+                }
             }
             catch (InterruptedException e)
             {
@@ -192,7 +196,9 @@ public class QueueConsumerTest
         public void process(String test) throws InterruptedException
         {
             if (Thread.interrupted())
+            {
                 events.put("Interrupted");
+            }
             events.put("Starting " + test);
             synchronized (this)
             {
@@ -211,10 +217,14 @@ public class QueueConsumerTest
         {
             events.put("Starting " + test);
             if (processSemaphore != null)
+            {
                 processSemaphore.acquire();
+            }
             events.put("Finished " + test);
             if (processSemaphore != null)
+            {
                 processSemaphore.release();
+            }
         }
 
         public void close()

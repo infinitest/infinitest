@@ -23,7 +23,7 @@ import org.infinitest.eclipse.workspace.ResourceLookup;
 class StackElementSelectionListener extends KeyAdapter implements MouseListener
 {
     private final Shell dialog;
-    private ResourceLookup resourceLookup;
+    private final ResourceLookup resourceLookup;
     private final List<StackTraceElement> stackTrace;
 
     StackElementSelectionListener(Shell dialog, ResourceLookup resourceLookup, List<StackTraceElement> stackTrace)
@@ -33,11 +33,14 @@ class StackElementSelectionListener extends KeyAdapter implements MouseListener
         this.stackTrace = stackTrace;
     }
 
+    @Override
     public void keyPressed(KeyEvent event)
     {
         org.eclipse.swt.widgets.List list = (org.eclipse.swt.widgets.List) event.widget;
         if (event.keyCode == SWT.CR)
+        {
             jumpToSelectedLine(list);
+        }
     }
 
     private void jumpToSelectedLine(org.eclipse.swt.widgets.List list)
@@ -47,7 +50,9 @@ class StackElementSelectionListener extends KeyAdapter implements MouseListener
             StackTraceElement element = stackTrace.get(list.getSelectionIndex());
             IFile classFile = getClassFile(element.getClassName());
             if (classFile != null)
+            {
                 jumpAndCloseDialog(element, classFile);
+            }
         }
     }
 
@@ -61,7 +66,9 @@ class StackElementSelectionListener extends KeyAdapter implements MouseListener
     {
         List<IResource> resources = resourceLookup.findResourcesForClassName(className);
         if (resources.isEmpty())
+        {
             return null;
+        }
         return (IFile) resources.get(0).getAdapter(IFile.class);
     }
 

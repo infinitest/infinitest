@@ -15,8 +15,8 @@ import javax.swing.tree.TreePath;
 
 import junit.framework.AssertionFailedError;
 
-import org.infinitest.testrunner.TestEvent;
 import org.infinitest.intellij.plugin.SourceNavigatorStub;
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -35,17 +35,11 @@ public class License
     {
         // NOTE: Changing these values will break existing licenses. They must be deprecated for one
         // year before you can remove or change them.
-        EXPIRATION_DATE,
-        CUSTOMER_NAME,
-        CUSTOMER_EMAIL,
-        COMPANY_NAME,
-        PRODUCT_NAME,
-        ORDER_METHOD,
-        LICENSE_ID,
-        LICENSE_TYPE
+        EXPIRATION_DATE, CUSTOMER_NAME, CUSTOMER_EMAIL, //
+        COMPANY_NAME, PRODUCT_NAME, ORDER_METHOD, LICENSE_ID, LICENSE_TYPE
     }
 
-    private Properties properties;
+    private final Properties properties;
 
     public License()
     {
@@ -82,7 +76,9 @@ public class License
     public Icon getIcon()
     {
         if (isExpired() && supportedLicense())
+        {
             return Icon.WARNING;
+        }
         return getType().icon;
     }
 

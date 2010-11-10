@@ -1,26 +1,26 @@
 package org.infinitest.intellij;
 
+import static java.util.Collections.*;
+import static org.infinitest.testrunner.TestEvent.*;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+
 import junit.framework.AssertionFailedError;
+
 import org.infinitest.FakeInfinitestCore;
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.testrunner.TestEvent;
-import static org.infinitest.testrunner.TestEvent.methodFailed;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import java.util.List;
 
 public class WhenTestFailuresReported
 {
     private InfinitestAnnotator annotator;
     private InfinitestPresenter presenter;
-    private TestEvent failure = methodFailed("message", "test", "method", new AssertionFailedError());
+    private final TestEvent failure = methodFailed("message", "test", "method", new AssertionFailedError());
     private static final List<TestEvent> EMPTY_LIST = emptyList();
 
     @Before

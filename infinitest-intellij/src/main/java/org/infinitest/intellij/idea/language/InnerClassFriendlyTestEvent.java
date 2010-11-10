@@ -4,7 +4,7 @@ import org.infinitest.testrunner.TestEvent;
 
 public class InnerClassFriendlyTestEvent
 {
-    private TestEvent event;
+    private final TestEvent event;
 
     public InnerClassFriendlyTestEvent(TestEvent event)
     {
@@ -32,7 +32,9 @@ public class InnerClassFriendlyTestEvent
     {
         String className = event.getPointOfFailure().getClassName();
         if (className.contains("$"))
+        {
             return className.substring(0, className.indexOf("$"));
+        }
         return className;
     }
 

@@ -14,8 +14,8 @@ import org.junit.runner.notification.RunListener;
 
 class EventTranslator extends RunListener
 {
-    private List<TestEvent> eventsCollected;
-    private Map<Description, MethodStats> methodStats;
+    private final List<TestEvent> eventsCollected;
+    private final Map<Description, MethodStats> methodStats;
     private final Clock clock;
 
     EventTranslator(Clock clock)
@@ -46,7 +46,9 @@ class EventTranslator extends RunListener
     public void testRunFinished(Result result)
     {
         for (Failure failure : result.getFailures())
+        {
             eventsCollected.add(createEventFrom(failure));
+        }
     }
 
     public TestResults getTestResults()

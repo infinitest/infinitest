@@ -27,10 +27,14 @@ public class LicenseStateFactory
     public LicenseState createLicense(String licenseKey)
     {
         if (isBlank(licenseKey))
+        {
             return new TrialLicense(installationDate);
+        }
         License license = parseLicense(licenseKey);
         if (license != null)
+        {
             return new LicenseKeyBasedState(license, pluginReleaseDate);
+        }
         return null;
     }
 

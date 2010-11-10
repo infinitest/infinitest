@@ -32,8 +32,12 @@ class JavaProjectSet implements ProjectSet
     public ProjectFacade findProject(IPath path)
     {
         for (IJavaProject project : openProjects())
+        {
             if (project.getPath().equals(path))
+            {
                 return createProjectFacade(project);
+            }
+        }
 
         return null;
     }
@@ -52,15 +56,21 @@ class JavaProjectSet implements ProjectSet
     {
         List<ProjectFacade> projects = newArrayList();
         for (IJavaProject project : openProjects())
+        {
             projects.add(new ProjectFacade(project));
+        }
         return projects;
     }
 
     public boolean hasErrors() throws CoreException
     {
         for (ProjectFacade project : projects())
+        {
             if (project.hasErrors())
+            {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -111,11 +121,15 @@ class JavaProjectSet implements ProjectSet
     {
         File file = new File(path.toPortableString());
         if (file.exists())
+        {
             return file;
+        }
 
         file = finder.findFileFor(path);
         if (file != null)
+        {
             return file;
+        }
 
         String jarPath = relativePath(path);
 

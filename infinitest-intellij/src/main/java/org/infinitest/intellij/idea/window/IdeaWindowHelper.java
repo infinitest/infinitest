@@ -10,7 +10,7 @@ import com.intellij.ui.content.ContentFactory;
 
 public class IdeaWindowHelper
 {
-    @SuppressWarnings( { "deprecation" })
+    @SuppressWarnings({ "deprecation" })
     public void addPanelToWindow(JPanel rootPanel, ToolWindow window)
     {
         ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();

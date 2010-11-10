@@ -16,20 +16,26 @@ public class ResultCollectorBean extends ResultCollector
     public void addChangeListeners(FailureListListener... listeners)
     {
         for (FailureListListener each : listeners)
+        {
             addChangeListener(each);
+        }
     }
 
     @Autowired
     public void addTestQueueListeners(TestQueueListener... listeners)
     {
         for (TestQueueListener each : listeners)
+        {
             addTestQueueListener(each);
+        }
     }
 
     @Autowired
     public void addStatusChangeListeners(StatusChangeListener... listeners)
     {
         for (StatusChangeListener each : listeners)
+        {
             addStatusChangeListener(each);
+        }
     }
 }

@@ -58,7 +58,7 @@ public class FakeModule implements Module
         return null;
     }
 
-    @SuppressWarnings( { "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public <T> T getComponent(Class<T> interfaceClass)
     {
         return (T) listener;

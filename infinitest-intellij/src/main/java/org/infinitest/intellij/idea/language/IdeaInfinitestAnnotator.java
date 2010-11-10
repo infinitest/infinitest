@@ -10,7 +10,7 @@ import org.infinitest.testrunner.TestEvent;
 
 public class IdeaInfinitestAnnotator implements InfinitestAnnotator
 {
-    private Set<InnerClassFriendlyTestEvent> events = new HashSet<InnerClassFriendlyTestEvent>();
+    private final Set<InnerClassFriendlyTestEvent> events = new HashSet<InnerClassFriendlyTestEvent>();
 
     private static IdeaInfinitestAnnotator instance;
 

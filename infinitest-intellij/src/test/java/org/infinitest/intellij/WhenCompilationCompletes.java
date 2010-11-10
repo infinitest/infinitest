@@ -7,13 +7,13 @@ import org.infinitest.RuntimeEnvironment;
 import org.infinitest.intellij.idea.IdeaCompilationListener;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Matchers;
 
 import com.intellij.openapi.compiler.CompilationStatusListener;
 
 public class WhenCompilationCompletes
 {
-    private ModuleSettings moduleSettings = new FakeModuleSettings("test");
+    private final ModuleSettings moduleSettings = new FakeModuleSettings("test");
     private InfinitestCore core;
 
     @Before
@@ -28,7 +28,7 @@ public class WhenCompilationCompletes
         CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
         listener.compilationFinished(false, 0, 0, null);
 
-        verify(core).setRuntimeEnvironment(Mockito.any(RuntimeEnvironment.class));
+        verify(core).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
         verify(core).update();
     }
 
@@ -38,7 +38,7 @@ public class WhenCompilationCompletes
         CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
         listener.compilationFinished(true, 0, 0, null);
 
-        verify(core, never()).setRuntimeEnvironment(Mockito.any(RuntimeEnvironment.class));
+        verify(core, never()).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
         verify(core, never()).update();
     }
 
@@ -48,7 +48,7 @@ public class WhenCompilationCompletes
         CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
         listener.compilationFinished(false, 1, 0, null);
 
-        verify(core, never()).setRuntimeEnvironment(Mockito.any(RuntimeEnvironment.class));
+        verify(core, never()).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
         verify(core, never()).update();
     }
 }

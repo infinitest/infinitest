@@ -2,7 +2,6 @@ package org.infinitest.eclipse.event;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.runtime.CoreException;
-import org.infinitest.eclipse.event.EclipseEventProcessor;
 
 class MockProcessor extends EclipseEventProcessor
 {

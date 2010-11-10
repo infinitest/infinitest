@@ -47,8 +47,7 @@ public class ErrorViewerResolution implements IMarkerResolution2
     {
         try
         {
-            Serializable unpickledStack = unpickle(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE)
-                    .toString());
+            Serializable unpickledStack = unpickle(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE).toString());
             List<StackTraceElement> stackTrace = newArrayList((StackTraceElement[]) unpickledStack);
             createStackViewWith(stackTrace, marker.getAttribute(MESSAGE).toString());
         }
@@ -69,8 +68,12 @@ public class ErrorViewerResolution implements IMarkerResolution2
     {
         // RISK Untested
         for (Shell shell : Display.getDefault().getShells())
+        {
             if (isPrimary(shell))
+            {
                 return shell;
+            }
+        }
         // This is problematic because the active shell may be the Problems View QuickFix dialog,
         // rather than the main eclipse shell
         return Display.getDefault().getActiveShell();

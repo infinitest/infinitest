@@ -32,7 +32,9 @@ public class WhenInfoFrameIsShowing
     {
         List<StackTraceElement> elements = newArrayList();
         for (int i = 0; i < 100; i++)
+        {
             elements.add(new StackTraceElement("class", "method", "file", 0));
+        }
         StackTraceElement[] traceElements = elements.toArray(new StackTraceElement[0]);
         String[] lines = stackTraceToString(traceElements).split("\\n");
         assertEquals(51, lines.length);

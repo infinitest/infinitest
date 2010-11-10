@@ -1,8 +1,8 @@
 package org.infinitest.intellij.idea;
 
 import org.infinitest.InfinitestCore;
-import org.infinitest.TestControl;
 import org.infinitest.RuntimeEnvironment;
+import org.infinitest.TestControl;
 import org.infinitest.intellij.ModuleSettings;
 
 import com.intellij.openapi.compiler.CompilationStatusListener;
@@ -10,8 +10,8 @@ import com.intellij.openapi.compiler.CompileContext;
 
 public class IdeaCompilationListener implements CompilationStatusListener, TestControl
 {
-    private InfinitestCore core;
-    private ModuleSettings moduleSettings;
+    private final InfinitestCore core;
+    private final ModuleSettings moduleSettings;
     private boolean shouldRunTests = true;
 
     public IdeaCompilationListener(InfinitestCore core, ModuleSettings moduleSettings)
@@ -23,20 +23,27 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
     public void compilationFinished(boolean aborted, int errors, int warnings, CompileContext compileContext)
     {
         RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
-        if (runtimeEnvironment == null) return;
+        if (runtimeEnvironment == null)
+        {
+            return;
+        }
 
         if (!aborted && errors == 0)
         {
             core.setRuntimeEnvironment(runtimeEnvironment);
             if (shouldRunTests)
+            {
                 core.update();
+            }
         }
     }
 
     public void setRunTests(boolean shouldRunTests)
     {
         if (shouldRunTests && !this.shouldRunTests)
+        {
             core.reload();
+        }
         this.shouldRunTests = shouldRunTests;
     }
 

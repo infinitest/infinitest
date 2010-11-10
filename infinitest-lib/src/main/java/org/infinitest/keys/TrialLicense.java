@@ -29,14 +29,18 @@ public class TrialLicense implements LicenseState
     public String getSupportStatus()
     {
         if (trialExpired())
+        {
             return "Trial period elapsed";
+        }
         return daysLeft() + " Days Remaining";
     }
 
     public Icon getIcon()
     {
         if (trialExpired())
+        {
             return INVALID;
+        }
         return TRIAL;
     }
 
@@ -53,7 +57,7 @@ public class TrialLicense implements LicenseState
 
     private long almost30DaysAgo()
     {
-        long almost30Days = (30 * MILLISECONDS_PER_DAY) - 10;
+        long almost30Days = 30 * MILLISECONDS_PER_DAY - 10;
         return System.currentTimeMillis() - almost30Days;
     }
 }

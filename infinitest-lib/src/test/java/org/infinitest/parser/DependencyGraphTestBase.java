@@ -47,7 +47,9 @@ public abstract class DependencyGraphTestBase
     {
         Set<File> fileSet = new HashSet<File>();
         for (Class<?> clazz : classes)
+        {
             fileSet.add(getFileForClass(clazz));
+        }
         return getGraph().findTestsToRun(fileSet);
     }
 
@@ -79,8 +81,8 @@ public abstract class DependencyGraphTestBase
     protected void verifyDependency(Class<?> changedFile, Class<?> expectedTest)
     {
         Set<JavaClass> testsToRun = findTestsForChangedFiles(changedFile);
-        assertTrue("Changing " + changedFile + " did not cause " + expectedTest + " to be run", testsToRun
-                        .contains(getGraph().findJavaClass(expectedTest.getName())));
+        assertTrue("Changing " + changedFile + " did not cause " + expectedTest + " to be run",
+                        testsToRun.contains(getGraph().findJavaClass(expectedTest.getName())));
     }
 
     protected ClassFileTestDetector getGraph()

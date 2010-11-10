@@ -4,7 +4,6 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.infinitest.eclipse.event.EventProcessorRunnable;
 import org.junit.Test;
 
 public class WhenDispatchingEventProcessingOnTheEventQueue

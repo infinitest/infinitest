@@ -1,26 +1,18 @@
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.logging.Level.WARNING;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.infinitest.ConsoleOutputListener.OutputType.STDOUT;
-import static org.infinitest.CoreDependencySupport.FAILING_TEST;
-import static org.infinitest.CoreDependencySupport.PASSING_TEST;
-import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
-import static org.infinitest.testrunner.TestRunnerMother.createRunner;
-import static org.infinitest.util.FakeEnvironments.emptyRuntimeEnvironment;
-import static org.infinitest.util.FakeEnvironments.fakeEnvironment;
-import static org.infinitest.util.InfinitestTestUtils.testIsBeingRunFromInfinitest;
-import static org.infinitest.util.InfinitestUtils.addLoggingListener;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static com.google.common.collect.Lists.*;
+import static java.util.logging.Level.*;
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.Matchers.*;
+import static org.infinitest.ConsoleOutputListener.OutputType.*;
+import static org.infinitest.CoreDependencySupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
+import static org.infinitest.testrunner.TestRunnerMother.*;
+import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.util.InfinitestTestUtils.*;
+import static org.infinitest.util.InfinitestUtils.*;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.util.List;
 
@@ -75,9 +67,13 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest
             public void consoleOutputUpdate(String newText, ConsoleOutputListener.OutputType outputType)
             {
                 if (outputType.equals(STDOUT))
+                {
                     stdOut.append(newText);
+                }
                 else
+                {
                     stdErr.append(newText);
+                }
             }
         });
         // DEBT Race condition in this test. We need to check the status of stdOut and stdErr in the

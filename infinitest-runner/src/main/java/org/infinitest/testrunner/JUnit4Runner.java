@@ -24,9 +24,13 @@ public class JUnit4Runner implements NativeRunner
         {
             Class<?> clazz = Class.forName(testClass);
             if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz))
+            {
                 core.run(new UninstantiableJUnit3TestRequest(clazz));
+            }
             else
+            {
                 core.run(classWithoutSuiteMethod(clazz));
+            }
         }
         catch (ClassNotFoundException e)
         {
@@ -62,7 +66,9 @@ public class JUnit4Runner implements NativeRunner
                 {
                     TestCase testCase = (TestCase) test;
                     if (testCase.getName().equals("warning"))
+                    {
                         return true;
+                    }
                 }
             }
             return false;

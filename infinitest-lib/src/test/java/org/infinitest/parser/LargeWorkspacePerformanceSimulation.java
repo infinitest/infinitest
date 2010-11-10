@@ -116,7 +116,9 @@ public class LargeWorkspacePerformanceSimulation
             Set<JavaClass> classes = each.findClasses(files.subList(0, filesChanges++ % 10));
             Set<JavaClass> changedParents = new HashSet<JavaClass>();
             for (JavaClass jclass : classes)
+            {
                 each.findParents(classes, changedParents, jclass);
+            }
             print(".");
         }
     }
@@ -124,18 +126,22 @@ public class LargeWorkspacePerformanceSimulation
     private void print(String string)
     {
         if (showOutput)
+        {
             System.out.print(string);
+        }
     }
 
     private void println(String string)
     {
         if (showOutput)
+        {
             System.out.println(string);
+        }
     }
 
     private static String humanReadable(long memory)
     {
-        return (memory / 1024) + "k";
+        return memory / 1024 + "k";
     }
 
 }

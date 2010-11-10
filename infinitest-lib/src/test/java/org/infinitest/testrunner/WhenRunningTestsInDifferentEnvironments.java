@@ -69,8 +69,8 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest
         }
         catch (JavaHomeException e)
         {
-            assertThat(convertFromWindowsClassPath(e.getMessage()), 
-                    containsString(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java"));
+            assertThat(convertFromWindowsClassPath(e.getMessage()),
+                            containsString(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java"));
         }
     }
 
@@ -83,12 +83,12 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest
         touch(new File(fakeJavaHome, "bin/java.exe"));
         List<String> arguments = environment.createProcessArguments();
         assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java.exe",
-                convertFromWindowsClassPath(get(arguments, 0)));
+                        convertFromWindowsClassPath(get(arguments, 0)));
 
         touch(new File(fakeJavaHome, "bin/java"));
         arguments = environment.createProcessArguments();
         assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java",
-                convertFromWindowsClassPath(get(arguments, 0)));
+                        convertFromWindowsClassPath(get(arguments, 0)));
     }
 
     @Test

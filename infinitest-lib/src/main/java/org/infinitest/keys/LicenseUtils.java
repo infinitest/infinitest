@@ -18,7 +18,9 @@ public abstract class LicenseUtils
         String keyLocation = "/org/infinitest/keys/" + keyName;
         InputStream keyStream = LicenseUtils.class.getResourceAsStream(keyLocation);
         if (keyStream == null)
+        {
             throw new IllegalStateException("Could not find key at " + keyLocation);
+        }
         return IOUtils.toByteArray(keyStream);
     }
 

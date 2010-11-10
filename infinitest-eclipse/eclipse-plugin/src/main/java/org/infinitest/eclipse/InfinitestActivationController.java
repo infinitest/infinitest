@@ -25,7 +25,6 @@ public class InfinitestActivationController implements PluginActivationControlle
         this.markerClearingRunnable = markerClearingRunnable;
     }
 
-   
     @Autowired
     public void setVisualStatusRegistry(VisualStatusRegistry visualStatusRegistry)
     {
@@ -53,7 +52,9 @@ public class InfinitestActivationController implements PluginActivationControlle
     public void enable()
     {
         if (!pluginEnabled)
+        {
             attachListener();
+        }
     }
 
     public void disable()

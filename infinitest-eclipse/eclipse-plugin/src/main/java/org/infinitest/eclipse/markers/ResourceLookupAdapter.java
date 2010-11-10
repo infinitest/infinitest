@@ -29,7 +29,9 @@ public class ResourceLookupAdapter implements ResourceLookup
         {
             IResource resource = finder.findResourceForSourceFile(sourceFile);
             if (resource != null)
+            {
                 resources.add(resource);
+            }
         }
         return resources;
     }

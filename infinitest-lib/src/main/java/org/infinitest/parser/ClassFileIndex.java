@@ -31,7 +31,9 @@ public class ClassFileIndex
         {
             JavaClass javaClass = loadClassFromFile(file);
             if (javaClass != null)
+            {
                 changedClasses.add(javaClass);
+            }
         }
         builder.clear();
         return changedClasses;
@@ -44,7 +46,9 @@ public class ClassFileIndex
         {
             clazz = builder.createClass(classname);
             if (clazz.locatedInClassFile())
+            {
                 addToIndex(clazz);
+            }
         }
         return clazz;
     }
@@ -52,8 +56,12 @@ public class ClassFileIndex
     private JavaClass findClass(String classname)
     {
         for (JavaClass each : graph.vertexSet())
+        {
             if (each.getName().equals(classname))
+            {
                 return each;
+            }
+        }
         return null;
     }
 
@@ -72,9 +80,13 @@ public class ClassFileIndex
     private void addToGraph(JavaClass newClass)
     {
         if (graph.containsVertex(newClass))
+        {
             replaceVertex(newClass);
+        }
         else
+        {
             graph.addVertex(newClass);
+        }
     }
 
     private void replaceVertex(JavaClass newClass)
@@ -83,7 +95,9 @@ public class ClassFileIndex
         graph.removeVertex(newClass);
         graph.addVertex(newClass);
         for (JavaClass each : incomingEdges)
+        {
             graph.addEdge(each, newClass);
+        }
     }
 
     private void updateParentReferences(JavaClass parentClass)
@@ -94,7 +108,9 @@ public class ClassFileIndex
             if (childClass != null && !childClass.equals(parentClass))
             {
                 if (graph.containsVertex(childClass))
+                {
                     graph.addEdge(parentClass, childClass);
+                }
             }
         }
     }
@@ -103,7 +119,9 @@ public class ClassFileIndex
     {
         JavaClass javaClass = builder.loadClass(file);
         if (javaClass != null)
+        {
             addToIndex(javaClass);
+        }
         return javaClass;
     }
 
@@ -116,7 +134,9 @@ public class ClassFileIndex
             // (and it's not already marked to be run),
             // add it to the list of changed classes
             if (!classes.contains(parentClass) && !parents.contains(parentClass) && !parentClass.equals(jclass))
+            {
                 findParents(classes, parents, parentClass);
+            }
         }
     }
 
@@ -140,7 +160,9 @@ public class ClassFileIndex
         Set<String> classes = newHashSet();
         Set<JavaClass> vertexSet = graph.vertexSet();
         for (JavaClass each : vertexSet)
+        {
             classes.add(each.getName());
+        }
         return classes;
     }
 

@@ -1,9 +1,8 @@
 package org.infinitest.eclipse;
 
-import static org.infinitest.eclipse.InfinitestPlugin.parseReleaseDate;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.infinitest.eclipse.InfinitestPlugin.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Date;
 

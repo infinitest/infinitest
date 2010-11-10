@@ -24,7 +24,9 @@ class StateMonitor implements StatusChangeListener
     public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus)
     {
         if (newStatus.equals(RUNNING))
+        {
             statusInFlux = true;
+        }
         if (statusInFlux && newStatus.equals(PASSING))
         {
             cycleStart = getCurrentTime();

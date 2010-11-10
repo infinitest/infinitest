@@ -58,7 +58,7 @@ public class JavaProjectBuilder implements IJavaProject
     private JavaProjectBuilder(String projectName)
     {
         this.projectName = projectName;
-        this.entries = newArrayList();
+        entries = newArrayList();
     }
 
     public JavaProjectBuilder withJar(String jarName)
@@ -89,7 +89,7 @@ public class JavaProjectBuilder implements IJavaProject
 
     public JavaProjectBuilder withMarker(IMarker aMarker)
     {
-        this.marker = aMarker;
+        marker = aMarker;
         return this;
     }
 
@@ -100,8 +100,8 @@ public class JavaProjectBuilder implements IJavaProject
 
     private JavaProjectBuilder addJar(String path, boolean exported)
     {
-        entries.add(new EntryBuilder().contentKind(K_BINARY).entryKind(CPE_LIBRARY).path(new Path(path)).exported(
-                        exported).build());
+        entries.add(new EntryBuilder().contentKind(K_BINARY).entryKind(CPE_LIBRARY).path(new Path(path))
+                        .exported(exported).build());
 
         return this;
     }
@@ -121,8 +121,8 @@ public class JavaProjectBuilder implements IJavaProject
         Path sourcePath = projectPath(sourceDirectory);
         Path outputPath = projectPath(outputDirectory);
 
-        entries.add(new EntryBuilder().contentKind(K_SOURCE).entryKind(CPE_SOURCE).path(sourcePath).outputPath(
-                        outputPath).exported(exported).build());
+        entries.add(new EntryBuilder().contentKind(K_SOURCE).entryKind(CPE_SOURCE).path(sourcePath)
+                        .outputPath(outputPath).exported(exported).build());
 
         return this;
     }
@@ -143,8 +143,8 @@ public class JavaProjectBuilder implements IJavaProject
 
     public JavaProjectBuilder andDependsOn(String dependencyProjectName)
     {
-        entries.add(new EntryBuilder().contentKind(K_SOURCE).entryKind(CPE_PROJECT).path(
-                        new Path("/" + dependencyProjectName)).build());
+        entries.add(new EntryBuilder().contentKind(K_SOURCE).entryKind(CPE_PROJECT)
+                        .path(new Path("/" + dependencyProjectName)).build());
 
         return this;
     }

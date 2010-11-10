@@ -12,7 +12,7 @@ import com.intellij.util.ui.UIUtil;
 
 public class IdeaToolWindowRegistry implements ToolWindowRegistry
 {
-    private Project project;
+    private final Project project;
 
     public IdeaToolWindowRegistry(Project project)
     {

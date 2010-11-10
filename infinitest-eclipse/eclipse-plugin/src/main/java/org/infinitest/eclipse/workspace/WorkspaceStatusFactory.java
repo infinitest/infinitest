@@ -40,7 +40,7 @@ public class WorkspaceStatusFactory
 
     private static class SimpleStringStatus implements WorkspaceStatus
     {
-        private String message;
+        private final String message;
 
         public SimpleStringStatus(String message)
         {

@@ -34,7 +34,7 @@ class DefaultInfinitestCore implements InfinitestCore
     private String name;
     private final List<ReloadListener> reloadListeners;
     private final List<DisabledTestListener> disabledTestListeners;
-    private RunStatistics stats;
+    private final RunStatistics stats;
 
     DefaultInfinitestCore(TestRunner testRunner, EventQueue eventQueue)
     {
@@ -115,7 +115,9 @@ class DefaultInfinitestCore implements InfinitestCore
             runTests(testsToRun);
         }
         else
+        {
             log("No tests to run in " + getName() + " for change " + changedFiles);
+        }
         return testsToRun.size();
     }
 
@@ -130,7 +132,9 @@ class DefaultInfinitestCore implements InfinitestCore
         }
         Collection<File> changedFiles = changeDetector.findChangedFiles();
         if (!changedFiles.isEmpty())
+        {
             log(name + " Files changed: " + changedFiles);
+        }
         return changedFiles;
     }
 
@@ -209,7 +213,9 @@ class DefaultInfinitestCore implements InfinitestCore
     private void fireDisabledTestEvents(Set<String> disabledTests)
     {
         for (DisabledTestListener each : disabledTestListeners)
+        {
             each.testsDisabled(disabledTests);
+        }
     }
 
     private void checkForFatalError(Throwable e)
@@ -234,13 +240,17 @@ class DefaultInfinitestCore implements InfinitestCore
     {
         List<String> tests = newArrayList();
         for (JavaClass javaClass : classes)
+        {
             tests.add(javaClass.getName());
+        }
         return tests;
     }
 
     private void fireReload()
     {
         for (ReloadListener each : reloadListeners)
+        {
             each.reloading();
+        }
     }
 }

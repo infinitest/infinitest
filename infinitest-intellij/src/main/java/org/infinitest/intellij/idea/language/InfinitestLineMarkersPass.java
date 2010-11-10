@@ -1,8 +1,9 @@
 package org.infinitest.intellij.idea.language;
 
+import static com.intellij.openapi.editor.markup.HighlighterLayer.*;
+
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.openapi.editor.Document;
-import static com.intellij.openapi.editor.markup.HighlighterLayer.FIRST;
 import com.intellij.openapi.editor.markup.MarkupModel;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -16,8 +17,8 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 {
     private static final Key<InnerClassFriendlyTestEvent> KEY = new Key<InnerClassFriendlyTestEvent>("Infinitest");
 
-    private Project project;
-    private Document document;
+    private final Project project;
+    private final Document document;
 
     protected InfinitestLineMarkersPass(Project project, Document document)
     {
@@ -26,10 +27,12 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
         this.document = document;
     }
 
+    @Override
     public void doCollectInformation(ProgressIndicator progressIndicator)
     {
     }
 
+    @Override
     public void doApplyInformationToEditor()
     {
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);

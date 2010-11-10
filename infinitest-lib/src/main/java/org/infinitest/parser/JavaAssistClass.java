@@ -33,7 +33,7 @@ public class JavaAssistClass extends AbstractJavaClass
 {
     private final String className;
     private File classFile;
-    private Boolean isATest;
+    private final Boolean isATest;
     private Collection<String> imports;
 
     public JavaAssistClass(CtClass classReference)
@@ -46,7 +46,9 @@ public class JavaAssistClass extends AbstractJavaClass
     public Collection<String> getImports()
     {
         if (imports == null)
+        {
             throw new DisposedClassException(getName());
+        }
         return imports;
     }
 
@@ -79,7 +81,9 @@ public class JavaAssistClass extends AbstractJavaClass
     private void addFieldDependencies(CtClass ctClass, Set<String> imports)
     {
         for (CtField field : ctClass.getDeclaredFields())
+        {
             imports.add(parseClassNameFromConstantPoolDescriptor(field.getFieldInfo2().getDescriptor()));
+        }
     }
 
     private void addMethodAnnotationDependencies(CtClass ctClass, Set<String> imports)
@@ -99,7 +103,9 @@ public class JavaAssistClass extends AbstractJavaClass
         for (Object each : attributes)
         {
             if (each instanceof AnnotationsAttribute)
+            {
                 addAnnotations(imports, (AnnotationsAttribute) each);
+            }
         }
     }
 
@@ -110,11 +116,12 @@ public class JavaAssistClass extends AbstractJavaClass
         if (annotationAttribute != null)
         {
             Annotation[][] parameters = annotationAttribute.getAnnotations();
-            for (int i = 0; i < parameters.length; i++)
+            for (Annotation[] annotations : parameters)
             {
-                Annotation[] annotations = parameters[i];
-                for (int j = 0; j < annotations.length; j++)
-                    imports.add(annotations[j].getTypeName());
+                for (Annotation annotation : annotations)
+                {
+                    imports.add(annotation.getTypeName());
+                }
             }
         }
     }
@@ -140,7 +147,9 @@ public class JavaAssistClass extends AbstractJavaClass
         if (annotations != null)
         {
             for (Annotation each : annotations.getAnnotations())
+            {
                 imports.add(each.getTypeName());
+            }
         }
     }
 
@@ -149,7 +158,9 @@ public class JavaAssistClass extends AbstractJavaClass
         ConstPool constPool = ctClass.getClassFile2().getConstPool();
         Set<?> classNames = constPool.getClassNames();
         for (Object each : classNames)
+        {
             imports.add(pathToClassName(each.toString()));
+        }
     }
 
     private String pathToClassName(String classPath)
@@ -175,15 +186,21 @@ public class JavaAssistClass extends AbstractJavaClass
     boolean canInstantiate(CtClass classReference)
     {
         for (CtConstructor ctConstructor : classReference.getConstructors())
+        {
             if (isValidConstructor(classReference, ctConstructor))
+            {
                 return true;
+            }
+        }
         return false;
     }
 
     private boolean isValidConstructor(CtClass classReference, CtConstructor ctConstructor)
     {
         if (usesCustomRunner(classReference))
+        {
             return true;
+        }
         return hasJUnitCompatibleConstructor(ctConstructor);
     }
 
@@ -195,9 +212,13 @@ public class JavaAssistClass extends AbstractJavaClass
             {
                 CtClass[] parameterTypes = ctConstructor.getParameterTypes();
                 if (hasDefaultConstructor(parameterTypes))
+                {
                     return true;
+                }
                 if (hasTestNameConstructor(parameterTypes))
+                {
                     return true;
+                }
             }
             catch (NotFoundException e)
             {
@@ -237,9 +258,15 @@ public class JavaAssistClass extends AbstractJavaClass
     {
         AnnotationsAttribute annotations = getAnnotationsOfType(visibleTag, classReference);
         if (annotations != null)
+        {
             for (Annotation annotation : annotations.getAnnotations())
+            {
                 if (annotation.getTypeName().equals(RunWith.class.getName()))
+                {
                     return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -257,8 +284,12 @@ public class JavaAssistClass extends AbstractJavaClass
     private boolean hasJUnitTestMethods(CtClass classReference)
     {
         for (CtMethod ctMethod : classReference.getMethods())
+        {
             if (isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod))
+            {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -273,7 +304,9 @@ public class JavaAssistClass extends AbstractJavaClass
         while (superclass != null)
         {
             if (predicate.apply(superclass))
+            {
                 return true;
+            }
             superclass = findSuperclass(superclass);
         }
         return false;
@@ -318,7 +351,9 @@ public class JavaAssistClass extends AbstractJavaClass
                 for (Annotation each : annotations.getAnnotations())
                 {
                     if (Test.class.getName().equals(each.getTypeName()))
+                    {
                         return true;
+                    }
                 }
             }
         }

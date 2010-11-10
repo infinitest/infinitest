@@ -69,9 +69,13 @@ public class TestFakeProduct extends TestCase
                     throws FileNotFoundException, IOException
     {
         if (pass)
+        {
             writeProperty(testName, "");
+        }
         else
+        {
             writeProperty(testName, failureMessage);
+        }
     }
 
     public static int getCallCount(String methodName) throws FileNotFoundException, IOException
@@ -79,7 +83,9 @@ public class TestFakeProduct extends TestCase
         Properties prop = loadProperties();
         String callCount = prop.getProperty(methodName + CALLCOUNT_POSTFIX);
         if (callCount == null)
+        {
             return 0;
+        }
         return Integer.parseInt(callCount);
     }
 
@@ -109,7 +115,7 @@ public class TestFakeProduct extends TestCase
             {
                 String exception = message.replace(EXCEPTION_POSTFIX, "");
                 Class<?> clazz = Class.forName(exception);
-                throw ((Exception) clazz.newInstance());
+                throw (Exception) clazz.newInstance();
             }
             fail(message);
         }
@@ -157,8 +163,12 @@ public class TestFakeProduct extends TestCase
     public static void setTestError(String testName, Class<?> exceptionClass) throws FileNotFoundException, IOException
     {
         if (exceptionClass == null)
+        {
             writeProperty(testName, "");
+        }
         else
+        {
             writeProperty(testName, exceptionClass.getName() + EXCEPTION_POSTFIX);
+        }
     }
 }

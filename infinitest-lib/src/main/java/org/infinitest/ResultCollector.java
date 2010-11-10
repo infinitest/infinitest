@@ -30,7 +30,7 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
     private final List<FailureListListener> changeListeners;
     private final List<StatusChangeListener> statusChangeListeners;
     private final ListMultimap<PointOfFailure, TestEvent> failuresByPointOfFailure;
-    private QueueAggregator queueAggregator;
+    private final QueueAggregator queueAggregator;
 
     public ResultCollector()
     {
@@ -63,15 +63,21 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         core.removeDisabledTestListener(this);
         List<String> tests = findFailingTestsForCore(core);
         for (String string : tests)
+        {
             resultMap.remove(string);
+        }
     }
 
     private List<String> findFailingTestsForCore(InfinitestCore core)
     {
         List<String> tests = newArrayList();
         for (TestCaseEvent eachEvent : resultMap.values())
+        {
             if (core.isEventSourceFor(eachEvent))
+            {
                 tests.add(eachEvent.getTestName());
+            }
+        }
         return tests;
     }
 
@@ -85,6 +91,7 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         statusChangeListeners.remove(listener);
     }
 
+    @Override
     public void testCaseComplete(TestCaseEvent event)
     {
         TestCaseFailures failureSet = getCurrentFailuresForTestCase(event);
@@ -101,7 +108,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
     {
         TestCaseEvent oldEvent = resultMap.get(event.getTestName());
         if (oldEvent != null)
+        {
             return new TestCaseFailures(oldEvent.getFailureEvents());
+        }
         return new TestCaseFailures(noEvents());
     }
 
@@ -118,7 +127,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         {
             PointOfFailure pointOfFailure = failure.getPointOfFailure();
             if (!resultList.contains(pointOfFailure))
+            {
                 resultList.add(pointOfFailure);
+            }
         }
         return resultList;
     }
@@ -139,7 +150,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         for (TestEvent event : getFailures())
         {
             if (event.getPointOfFailure().equals(pointOfFailure))
+            {
                 matchedEvents.add(event);
+            }
         }
         return matchedEvents;
     }
@@ -168,7 +181,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
     {
         List<TestEvent> failures = newArrayList();
         for (TestCaseEvent each : resultMap.values())
+        {
             failures.addAll(each.getFailureEvents());
+        }
         return failures;
     }
 
@@ -194,7 +209,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         {
             TestCaseEvent event = resultMap.remove(eachTest);
             if (event != null)
+            {
                 fireChangeEvent(noEvents(), event.getFailureEvents());
+            }
         }
     }
 
@@ -211,16 +228,22 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
     public void testRunComplete()
     {
         if (hasFailures())
+        {
             setStatus(FAILING);
+        }
         else
+        {
             setStatus(PASSING);
+        }
         log("Update complete. Status " + getStatus());
     }
 
     public void testQueueUpdated(TestQueueEvent event)
     {
         if (!event.getTestQueue().isEmpty())
+        {
             setStatus(RUNNING);
+        }
     }
 
     public void reloading()
@@ -246,18 +269,24 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
     private void fireStatusChanged(CoreStatus oldStatus, CoreStatus newStatus)
     {
         for (StatusChangeListener each : statusChangeListeners)
+        {
             each.coreStatusChanged(oldStatus, newStatus);
+        }
     }
 
     private void fireChangeEvent(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
     {
         for (FailureListListener each : changeListeners)
+        {
             each.failureListChanged(failuresAdded, failuresRemoved);
+        }
     }
 
     private void fireUpdateEvent(Collection<TestEvent> updatedFailures)
     {
         for (FailureListListener each : changeListeners)
+        {
             each.failuresUpdated(updatedFailures);
+        }
     }
 }

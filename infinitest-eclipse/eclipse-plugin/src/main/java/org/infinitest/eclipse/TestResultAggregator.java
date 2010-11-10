@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestResultAggregator implements CoreLifecycleListener, TestResultsListener
 {
-    private List<TestResultsListener> listeners = newArrayList();
+    private final List<TestResultsListener> listeners = newArrayList();
 
     @Autowired
     public void addListeners(AggregateResultsListener... resultsListeners)
@@ -36,12 +36,16 @@ public class TestResultAggregator implements CoreLifecycleListener, TestResultsL
     public void testCaseComplete(TestCaseEvent event)
     {
         for (TestResultsListener each : listeners)
+        {
             each.testCaseComplete(event);
+        }
     }
 
     public void testCaseStarting(TestEvent event)
     {
         for (TestResultsListener each : listeners)
+        {
             each.testCaseStarting(event);
+        }
     }
 }

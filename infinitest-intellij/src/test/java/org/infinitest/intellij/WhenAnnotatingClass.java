@@ -1,13 +1,13 @@
 package org.infinitest.intellij;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.infinitest.util.CollectionUtils.*;
+import static org.infinitest.util.EventFakeSupport.*;
+import static org.junit.Assert.*;
+
 import org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator;
-import static org.infinitest.util.CollectionUtils.first;
-import static org.infinitest.util.EventFakeSupport.eventWithError;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 public class WhenAnnotatingClass
 {

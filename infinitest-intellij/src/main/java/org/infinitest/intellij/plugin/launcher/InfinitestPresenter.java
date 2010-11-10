@@ -83,7 +83,9 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
         view.setMaximumProgress(event.getInitialSize());
         view.setProgress(1 + event.getTestsRun());
         if (!event.getTestQueue().isEmpty())
+        {
             view.setCurrentTest(event.getCurrentTest());
+        }
     }
 
     private void updateView(CoreStatus status)
@@ -138,9 +140,13 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
     public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
     {
         for (TestEvent added : failuresAdded)
+        {
             annotator.annotate(added);
+        }
         for (TestEvent removed : failuresRemoved)
+        {
             annotator.clearAnnotation(removed);
+        }
     }
 
     public void failuresUpdated(Collection<TestEvent> updatedFailures)

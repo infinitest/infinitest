@@ -1,19 +1,12 @@
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.emptyList;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
-import static org.infinitest.eclipse.workspace.JavaProjectBuilder.project;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.google.common.collect.Lists.*;
+import static java.util.Collections.*;
+import static org.easymock.EasyMock.*;
+import static org.infinitest.eclipse.util.StatusMatchers.*;
+import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URI;

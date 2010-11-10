@@ -80,7 +80,9 @@ public class InfinitestPerformanceHarness
         {
             long totalTime = 0;
             for (Long timestamp : perfRecords.get(key))
+            {
                 totalTime += timestamp;
+            }
             System.err.println(key + " : " + totalTime + "ms");
         }
     }

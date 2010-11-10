@@ -13,6 +13,7 @@ public class MouseToSelectionAdapter extends MouseAdapter
         this.listener = listener;
     }
 
+    @Override
     public void mouseUp(MouseEvent arg0)
     {
         listener.widgetSelected(null);

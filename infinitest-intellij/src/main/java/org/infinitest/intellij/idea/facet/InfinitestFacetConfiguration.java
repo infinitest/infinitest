@@ -34,7 +34,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 
     private Module module;
     private InfinitestConfigurationListener listener;
-    private LicenseStateFactory licenseStateFactory = new LicenseStateFactory(new Date());
+    private final LicenseStateFactory licenseStateFactory = new LicenseStateFactory(new Date());
 
     public InfinitestFacetConfiguration()
     {
@@ -109,11 +109,13 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
     public InfinitestLauncher createLauncher()
     {
         InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(new IdeaModuleSettings(module),
-                        new IdeaToolWindowRegistry(module.getProject()), new IdeaCompilationNotifier(module
-                                        .getProject()), new IdeaSourceNavigator(module.getProject()));
+                        new IdeaToolWindowRegistry(module.getProject()), new IdeaCompilationNotifier(
+                                        module.getProject()), new IdeaSourceNavigator(module.getProject()));
 
         if (isScmUpdateEnabled())
+        {
             launcher.addGreenHook(new ScmUpdater(module.getProject()));
+        }
 
         return launcher;
     }

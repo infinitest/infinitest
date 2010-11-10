@@ -48,8 +48,9 @@ public class TestInfinitestMainFrame
 
     /**
      * Test harness to make sure the frame looks pretty.
-     *
-     * @param args Command line arguments
+     * 
+     * @param args
+     *            Command line arguments
      */
     public static void main(String[] args)
     {
@@ -68,9 +69,13 @@ public class TestInfinitestMainFrame
             public void actionPerformed(ActionEvent e)
             {
                 if (frame.getProgressBarColor().equals(PASSING_COLOR))
+                {
                     frame.setProgressBarColor(FAILING_COLOR);
+                }
                 else
+                {
                     frame.setProgressBarColor(PASSING_COLOR);
+                }
             }
         }));
 

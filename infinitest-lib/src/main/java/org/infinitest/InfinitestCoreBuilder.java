@@ -18,9 +18,9 @@ import org.infinitest.testrunner.TestRunner;
 public class InfinitestCoreBuilder
 {
     private TestFilter filterList;
-    private Class<? extends TestRunner> runnerClass;
+    private final Class<? extends TestRunner> runnerClass;
     private final RuntimeEnvironment runtimeEnvironment;
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
     private String coreName = "";
     private ConcurrencyController controller;
 

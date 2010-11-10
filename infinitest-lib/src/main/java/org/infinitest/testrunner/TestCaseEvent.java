@@ -25,7 +25,9 @@ public class TestCaseEvent
         for (TestEvent testEvent : results)
         {
             if (!IGNORED_ERRORS.contains(testEvent.getFullErrorClassName()))
+            {
                 this.methodEvents.add(testEvent);
+            }
         }
     }
 

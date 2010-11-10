@@ -63,8 +63,8 @@ public class UninstantiateableJUnit3TestRunner extends Runner
         }
     }
 
-    private Test fTest;
-    private Class<?> testClass;
+    private final Test fTest;
+    private final Class<?> testClass;
 
     public UninstantiateableJUnit3TestRunner(Class<?> klass)
     {

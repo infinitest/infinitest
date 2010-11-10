@@ -14,7 +14,9 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator2
     public IMarkerResolution[] getResolutions(IMarker marker)
     {
         if (hasResolutions(marker))
+        {
             return new IMarkerResolution[] { new ErrorViewerResolution(getTestAndMethodName(marker)) };
+        }
         return new IMarkerResolution[0];
     }
 
@@ -24,7 +26,9 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator2
         {
             Object attribute = marker.getAttribute(TEST_NAME_ATTRIBUTE);
             if (attribute == null)
+            {
                 return null;
+            }
             String testName = attribute.toString();
             Object methodName = marker.getAttribute(METHOD_NAME_ATTRIBUTE);
             return stripPackageName(testName) + "." + methodName;

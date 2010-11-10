@@ -1,13 +1,11 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static java.awt.Color.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static java.awt.Color.BLACK;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.WHITE;
 
 public class WhenDrawingProgressBar
 {

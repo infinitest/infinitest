@@ -22,7 +22,7 @@ class FailureCellRenderer extends DefaultTreeCellRenderer
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-        boolean leaf, int row, boolean focused)
+                    boolean leaf, int row, boolean focused)
     {
         JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, focused);
         label.setIcon(loadIcon(value));
@@ -32,7 +32,9 @@ class FailureCellRenderer extends DefaultTreeCellRenderer
     private Icon loadIcon(Object node)
     {
         if (node instanceof String)
+        {
             return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/error.png"));
+        }
         return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/failure.png"));
     }
 

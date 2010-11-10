@@ -25,7 +25,9 @@ public class ResultCollectorTestSupport
     {
         String testName = DEFAULT_TEST_NAME;
         if (events.length != 0)
+        {
             testName = events[0].getTestName();
+        }
         testRunWith(testName, events);
     }
 

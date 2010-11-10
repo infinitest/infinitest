@@ -2,6 +2,7 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static org.infinitest.util.EventFakeSupport.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.infinitest.ResultCollectorTestSupport;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 
 public class WhenDisplayingResultsInATree extends ResultCollectorTestSupport implements TreeModelListener
 {

@@ -20,12 +20,17 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
     private VisualStatus status;
     private final Set<String> testsRan = newLinkedHashSet();
 
+    @Override
     public void testQueueUpdated(TestQueueEvent event)
     {
         if (!event.getTestQueue().isEmpty())
+        {
             statusChanged(runningTests(event.getTestQueue().size(), event.getCurrentTest()));
+        }
         else
+        {
             statusChanged(testRunFinished(testsRan));
+        }
     }
 
     public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus)
@@ -64,8 +69,10 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
     {
         testsRan.add(event.getTestName());
         if (event.failed())
+        {
             setFailingColors();
-        // Remove this test from the set of tests currently being run.
+            // Remove this test from the set of tests currently being run.
+        }
 
         // Keep in mind that tests can be interrupted before they are completed,
         // so testCaseStarting will be called again before this is called

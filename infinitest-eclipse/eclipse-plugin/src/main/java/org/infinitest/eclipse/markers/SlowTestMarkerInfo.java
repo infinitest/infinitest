@@ -25,11 +25,14 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo
         this.lookup = lookup;
     }
 
+    @Override
     public IResource associatedResource() throws CoreException
     {
         List<IResource> resources = lookup.findResourcesForClassName(testName);
         if (resources.isEmpty())
+        {
             return null;
+        }
         return resources.get(0);
     }
 

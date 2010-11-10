@@ -97,7 +97,7 @@ public class FakeWorkspace implements IWorkspace
         throw new UnsupportedOperationException();
     }
 
-    public Map getDanglingReferences()
+    public Map<?, ?> getDanglingReferences()
     {
         throw new UnsupportedOperationException();
     }

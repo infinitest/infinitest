@@ -1,17 +1,19 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import junit.framework.AssertionFailedError;
-import static org.hamcrest.Matchers.is;
-import static org.infinitest.util.EventFakeSupport.eventWithError;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.infinitest.util.EventFakeSupport.*;
+import static org.junit.Assert.*;
+
+import java.awt.Component;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import java.awt.Component;
-import java.awt.event.WindowEvent;
+
+import junit.framework.AssertionFailedError;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenShowingMainFrame
 {
@@ -54,7 +56,7 @@ public class WhenShowingMainFrame
     {
         Object node = "PointOfFailure.java:32";
         JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
-                false, 0, false);
+                        false, 0, false);
         assertThat(treeCell.getIcon().toString(), is(expectedIcon("error")));
     }
 
@@ -63,14 +65,14 @@ public class WhenShowingMainFrame
     {
         Object node = eventWithError(new AssertionFailedError());
         JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
-                false, 0, false);
+                        false, 0, false);
         assertThat(treeCell.getIcon().toString(), is(expectedIcon("failure")));
     }
 
     private String expectedIcon(String iconName)
     {
-        ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/"
-                + iconName + ".png"));
+        ImageIcon expectedIcon = new ImageIcon(getClass().getResource(
+                        "/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
         return expectedIcon.toString();
     }
 }

@@ -1,6 +1,5 @@
 package org.infinitest.testrunner;
 
-
 public class RunnerThatCannotBeCreated implements NativeRunner
 {
     public RunnerThatCannotBeCreated()

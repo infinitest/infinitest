@@ -1,10 +1,10 @@
 package org.infinitest.intellij;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.junit.Test;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class WhenLoggingError
 {

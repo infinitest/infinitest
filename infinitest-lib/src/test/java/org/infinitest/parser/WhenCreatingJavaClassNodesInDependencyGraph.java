@@ -45,7 +45,9 @@ public class WhenCreatingJavaClassNodesInDependencyGraph
     public void cleanup()
     {
         if (newDir != null)
+        {
             delete(newDir);
+        }
     }
 
     private static void delete(File directory)
@@ -53,9 +55,13 @@ public class WhenCreatingJavaClassNodesInDependencyGraph
         for (File file : directory.listFiles())
         {
             if (file.isDirectory())
+            {
                 delete(file);
+            }
             else
+            {
                 assertTrue(file.delete());
+            }
         }
         assertTrue(directory.delete());
     }

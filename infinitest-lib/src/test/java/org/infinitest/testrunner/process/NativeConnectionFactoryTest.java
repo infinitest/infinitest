@@ -93,7 +93,7 @@ public class NativeConnectionFactoryTest
         }
         catch (RuntimeException e)
         {
-        	assertTrue(errorMsg.contains(TestRunnerProcess.TEST_RUN_ERROR));
+            assertTrue(errorMsg.contains(TestRunnerProcess.TEST_RUN_ERROR));
         }
     }
 }

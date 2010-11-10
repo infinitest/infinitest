@@ -23,7 +23,9 @@ public class AllTests extends TestCase
         TestSuite suite = new TestSuite();
 
         if (testIsBeingRunFromInfinitest())
+        {
             fail("Should not try to run this");
+        }
 
         return suite;
     }

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Events<T>
 {
-    private Method eventMethod;
-    private List<T> listeners = newArrayList();
+    private final Method eventMethod;
+    private final List<T> listeners = newArrayList();
 
     public Events(Method eventMethod)
     {

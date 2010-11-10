@@ -8,7 +8,7 @@ public abstract class PickleJar
 {
     public static String pickle(Serializable object)
     {
-        return new String (serialize(object));
+        return new String(serialize(object));
     }
 
     public static Serializable unpickle(String stringForm)

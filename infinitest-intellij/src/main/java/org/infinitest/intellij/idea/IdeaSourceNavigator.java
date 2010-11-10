@@ -1,19 +1,21 @@
 package org.infinitest.intellij.idea;
 
+import static com.intellij.psi.search.GlobalSearchScope.*;
+
+import org.infinitest.intellij.plugin.SourceNavigator;
+import org.jetbrains.annotations.Nullable;
+
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
-import static com.intellij.psi.search.GlobalSearchScope.projectScope;
-import org.infinitest.intellij.plugin.SourceNavigator;
-import org.jetbrains.annotations.Nullable;
 
 public class IdeaSourceNavigator implements SourceNavigator
 {
     private String className;
-    private Project project;
+    private final Project project;
 
     public IdeaSourceNavigator(Project project)
     {
@@ -32,7 +34,7 @@ public class IdeaSourceNavigator implements SourceNavigator
         if (source != null)
         {
             FileEditorManager.getInstance(project).openEditor(new OpenFileDescriptor(project, source, line - 1, 0),
-                    true);
+                            true);
         }
     }
 

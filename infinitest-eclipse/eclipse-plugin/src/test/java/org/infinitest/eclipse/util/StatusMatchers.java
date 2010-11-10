@@ -15,7 +15,9 @@ public abstract class StatusMatchers
             public boolean matches(Object item)
             {
                 if (ObjectUtils.equals(expectedStatus, item))
+                {
                     return true;
+                }
                 if (item instanceof WorkspaceStatus)
                 {
                     WorkspaceStatus actualStatus = (WorkspaceStatus) item;
@@ -28,9 +30,13 @@ public abstract class StatusMatchers
             public void describeTo(Description description)
             {
                 if (expectedStatus == null)
+                {
                     description.appendText("null status");
+                }
                 else
+                {
                     description.appendText("status with the message " + expectedStatus.getMessage());
+                }
             }
         };
     }

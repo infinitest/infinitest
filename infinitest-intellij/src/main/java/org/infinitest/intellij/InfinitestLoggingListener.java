@@ -9,7 +9,7 @@ import org.infinitest.util.LoggingListener;
 
 public class InfinitestLoggingListener implements LoggingListener
 {
-    private InfinitestView view;
+    private final InfinitestView view;
 
     public InfinitestLoggingListener(InfinitestView view)
     {

@@ -1,12 +1,13 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.util.EventFakeSupport.withATest;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import static org.infinitest.util.EventFakeSupport.*;
+import static org.junit.Assert.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenRenderingTreeNodes
 {
@@ -31,7 +32,7 @@ public class WhenRenderingTreeNodes
     {
         Object node = "PointOfFailure.java:32";
         JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
-                false, 0, false);
+                        false, 0, false);
         assertEquals(expectedIcon("error"), treeCell.getIcon().toString());
     }
 
@@ -40,13 +41,13 @@ public class WhenRenderingTreeNodes
     {
         Object node = withATest();
         JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
-                false, 0, false);
+                        false, 0, false);
         assertEquals(expectedIcon("failure"), treeCell.getIcon().toString());
     }
 
     private String expectedIcon(String iconName)
     {
-        return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" +
-                iconName + ".png")).toString();
+        return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"))
+                        .toString();
     }
 }

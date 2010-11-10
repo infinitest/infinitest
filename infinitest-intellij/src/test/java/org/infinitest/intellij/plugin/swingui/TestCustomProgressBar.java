@@ -1,28 +1,21 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import org.infinitest.CoreStatus;
-import static org.infinitest.CoreStatus.FAILING;
-import static org.infinitest.CoreStatus.INDEXING;
-import static org.infinitest.CoreStatus.PASSING;
-import static org.infinitest.CoreStatus.RUNNING;
-import static org.infinitest.CoreStatus.SCANNING;
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
-import static org.infinitest.intellij.plugin.launcher.StatusMessages.getMessage;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.infinitest.CoreStatus.*;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
+import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
+import static org.junit.Assert.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+
+import org.infinitest.CoreStatus;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestCustomProgressBar
 {
@@ -73,7 +66,7 @@ public class TestCustomProgressBar
         graphics.fillRect(0, 0, size.width, size.height);
         progressBar.paint(graphics);
         // ImageIO.write(img, "PNG", new File("customPainter.png"));
-        int progressBarRightEdge = (400);
+        int progressBarRightEdge = 400;
         Color foregroundColor = progressBar.getForeground();
         assertEquals(foregroundColor, new Color(img.getRGB(progressBarRightEdge - 5, size.height / 2)));
         Color backgroundColor = new Color(img.getRGB(progressBarRightEdge + 5, size.height / 2));

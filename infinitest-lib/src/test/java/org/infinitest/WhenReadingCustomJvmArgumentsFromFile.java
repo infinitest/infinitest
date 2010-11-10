@@ -37,7 +37,7 @@ public class WhenReadingCustomJvmArgumentsFromFile
     @After
     public void tearDown()
     {
-        //assertTrue("Failed to delete arguments file.", file.delete());
+        // assertTrue("Failed to delete arguments file.", file.delete());
         file.delete();
     }
 

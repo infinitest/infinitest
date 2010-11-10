@@ -1,5 +1,12 @@
 package org.infinitest.intellij.idea.greenhook;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.infinitest.intellij.idea.DefaultProjectComponent;
+import org.infinitest.intellij.plugin.greenhook.GreenHook;
+import org.jetbrains.annotations.NotNull;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -13,16 +20,10 @@ import com.intellij.openapi.vcs.update.UpdateEnvironment;
 import com.intellij.openapi.vcs.update.UpdatedFiles;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import org.infinitest.intellij.idea.DefaultProjectComponent;
-import org.infinitest.intellij.plugin.greenhook.GreenHook;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScmUpdater extends DefaultProjectComponent implements GreenHook
 {
-    private ProjectLevelVcsManager vcsManager;
+    private final ProjectLevelVcsManager vcsManager;
 
     public ScmUpdater(Project project)
     {
@@ -39,11 +40,14 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook
                 for (AbstractVcs each : vssProviders)
                 {
                     UpdateEnvironment updateEnvironment = each.getUpdateEnvironment();
-                    if (updateEnvironment == null) continue;
+                    if (updateEnvironment == null)
+                    {
+                        continue;
+                    }
 
                     FilePath[] paths = collectVcsRoots(each);
                     updateEnvironment.updateDirectories(paths, UpdatedFiles.create(), new EmptyProgressIndicator(),
-                            Ref.create((SequentialUpdatesContext) new InfinitestSequentialUpdatesContext()));
+                                    Ref.create((SequentialUpdatesContext) new InfinitestSequentialUpdatesContext()));
                 }
                 VirtualFileManager.getInstance().refresh(true);
             }

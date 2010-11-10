@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ControlledEventQueue implements EventQueue
 {
-    private List<Runnable> events = newArrayList();
+    private final List<Runnable> events = newArrayList();
 
     public synchronized void push(Runnable runnable)
     {
@@ -20,9 +20,13 @@ public class ControlledEventQueue implements EventQueue
         ArrayList<Runnable> eventsToFire = newArrayList(events);
         events.clear();
         for (Runnable event : eventsToFire)
+        {
             event.run();
+        }
         if (!events.isEmpty())
+        {
             flush();
+        }
     }
 
     public void pushNamed(NamedRunnable runnable)

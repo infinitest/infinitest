@@ -34,7 +34,9 @@ public class InfinitestCoreClasspath
     {
         File proposedFile = new File(tempDir.getAbsolutePath() + "/infinitest.jar");
         while (proposedFile.exists())
+        {
             proposedFile = new File(tempDir.getAbsolutePath() + "/infinitest" + randInt() + ".jar");
+        }
         proposedFile.deleteOnExit();
         return proposedFile;
     }
@@ -53,7 +55,9 @@ public class InfinitestCoreClasspath
             Enumeration<?> e = plugin.getPluginBundle().findEntries("", "*infinitest-runner*.jar", true);
 
             if (e == null)
+            {
                 log(SEVERE, "Error creating testrunner classpath. Cannot find infinitest core bundle");
+            }
             else
             {
                 while (e.hasMoreElements())
@@ -77,7 +81,9 @@ public class InfinitestCoreClasspath
     private static void copyFile(InputStream fis, File out) throws IOException
     {
         if (!out.exists())
+        {
             out.createNewFile();
+        }
 
         FileOutputStream fos = new FileOutputStream(out);
         byte[] buf = new byte[1024];

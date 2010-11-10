@@ -1,16 +1,17 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import org.infinitest.intellij.plugin.SourceNavigator;
-import org.infinitest.testrunner.TestEvent;
-
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
+
+import org.infinitest.intellij.plugin.SourceNavigator;
+import org.infinitest.testrunner.TestEvent;
+
 public class ResultClickListener extends MouseAdapter
 {
-    private SourceNavigator navigator;
+    private final SourceNavigator navigator;
 
     public ResultClickListener(SourceNavigator navigator)
     {
@@ -21,7 +22,9 @@ public class ResultClickListener extends MouseAdapter
     public void mouseClicked(MouseEvent e)
     {
         if (e.getClickCount() != 2)
+        {
             return;
+        }
 
         JTree tree = (JTree) e.getSource();
         TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());

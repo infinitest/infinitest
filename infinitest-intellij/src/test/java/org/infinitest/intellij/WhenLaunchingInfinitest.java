@@ -1,15 +1,15 @@
 package org.infinitest.intellij;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import javax.swing.JPanel;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Matchers;
-import static org.mockito.Matchers.eq;
 
 public class WhenLaunchingInfinitest
 {
@@ -27,7 +27,7 @@ public class WhenLaunchingInfinitest
         ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
 
         InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry,
-                new FakeCompilationNotifier(), new FakeSourceNavigator());
+                        new FakeCompilationNotifier(), new FakeSourceNavigator());
         launcher.launchInfinitest();
 
         verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("Infinitest_foo"));

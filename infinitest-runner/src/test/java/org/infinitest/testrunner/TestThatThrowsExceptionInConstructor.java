@@ -10,7 +10,9 @@ public class TestThatThrowsExceptionInConstructor
     public TestThatThrowsExceptionInConstructor()
     {
         if (fail)
+        {
             throw new IllegalStateException();
+        }
     }
 
     @Test

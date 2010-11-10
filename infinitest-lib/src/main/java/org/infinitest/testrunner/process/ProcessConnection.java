@@ -1,6 +1,5 @@
 package org.infinitest.testrunner.process;
 
-
 import org.infinitest.testrunner.TestResults;
 
 public interface ProcessConnection

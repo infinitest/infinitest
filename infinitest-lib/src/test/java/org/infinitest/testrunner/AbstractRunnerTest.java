@@ -39,7 +39,9 @@ public abstract class AbstractRunnerTest
     {
         List<String> testNames = new LinkedList<String>();
         for (Class<?> each : tests)
+        {
             testNames.add(each.getName());
+        }
         getRunner().runTests(testNames);
         waitForCompletion();
     }

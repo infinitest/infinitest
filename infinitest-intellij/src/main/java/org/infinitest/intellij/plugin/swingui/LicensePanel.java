@@ -19,10 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
 public class LicensePanel extends JPanel
 {
+    private static final long serialVersionUID = -8203956850959996033L;
+
     private static final String INDIVIDUAL_LICENSE_TERMS = "If you are an individual, "
                     + "Improving Works grants to you, a personal, "
                     + "nonexclusive license to make and use copies of the SOFTWARE "
@@ -119,7 +122,7 @@ public class LicensePanel extends JPanel
         JTextArea licenseTerms = new JTextArea();
         licenseTerms.setLineWrap(true);
         licenseTerms.setText(INDIVIDUAL_LICENSE_TERMS);
-        licenseTerms.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
+        licenseTerms.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
         termsPanel.add(licenseTerms);
 
         termsPanel.add(rightAlign(new JButton("Accept Terms")));

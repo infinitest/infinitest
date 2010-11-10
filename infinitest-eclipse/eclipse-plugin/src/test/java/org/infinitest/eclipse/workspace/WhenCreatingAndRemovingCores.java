@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.eclipse.CoreLifecycleListener;
-import org.infinitest.eclipse.workspace.InfinitestCoreRegistry;
 import org.junit.Before;
 import org.junit.Test;
 

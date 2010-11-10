@@ -17,18 +17,18 @@ import java.util.Set;
 
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
-import org.infinitest.testrunner.TestResults;
 import org.infinitest.testrunner.TestEvent.TestState;
+import org.infinitest.testrunner.TestResults;
 
 public class EventSupport extends TestResultsAdapter implements StatusChangeListener, TestQueueListener
 {
-    private List<TestEvent> testEvents;
-    private Map<String, TestCaseEvent> testCaseEvents;
-    private List<PropertyChangeEvent> propertyEvents;
+    private final List<TestEvent> testEvents;
+    private final Map<String, TestCaseEvent> testCaseEvents;
+    private final List<PropertyChangeEvent> propertyEvents;
     private ThreadSafeFlag runComplete;
-    private List<TestQueueEvent> queueEvents;
-    private long timeout;
-    private ThreadSafeFlag reload;
+    private final List<TestQueueEvent> queueEvents;
+    private final long timeout;
+    private final ThreadSafeFlag reload;
     private int reloadCount;
 
     public EventSupport(long timeout)
@@ -47,6 +47,7 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
         this(5000);
     }
 
+    @Override
     public void testCaseStarting(TestEvent event)
     {
         testEvents.add(event);
@@ -81,7 +82,9 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
     {
         ArrayList<TestState> actualTypes = new ArrayList<TestState>();
         for (TestEvent event : testEvents)
+        {
             actualTypes.add(event.getType());
+        }
         assertEquals(asList(expectedTypes), actualTypes);
     }
 
@@ -140,7 +143,9 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
         synchronized (queueEvents)
         {
             while (queueEvents.size() < expectedEventCount)
+            {
                 queueEvents.wait(timeout);
+            }
         }
     }
 
@@ -169,7 +174,9 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
     {
         StringBuilder builder = new StringBuilder();
         for (TestEvent each : testEvents)
+        {
             builder.append(each.toString() + each.getErrorClassName() + each.getMessage());
+        }
         return builder.toString();
     }
 
@@ -177,7 +184,9 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
     {
         Set<String> tests = newHashSet();
         for (TestEvent event : testEvents)
+        {
             tests.add(event.getTestName());
+        }
         return tests;
     }
 
@@ -186,10 +195,13 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
         runComplete = new ThreadSafeFlag(timeout);
     }
 
+    @Override
     public void testCaseComplete(TestCaseEvent event)
     {
         for (TestEvent each : event.getFailureEvents())
+        {
             testEvents.add(each);
+        }
 
         testCaseEvents.put(event.getTestName(), event);
     }
@@ -204,8 +216,12 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
         // Also asserts the order
         List<String> startedTests = new ArrayList<String>();
         for (TestEvent event : testEvents)
+        {
             if (event.getType().equals(TEST_CASE_STARTING))
+            {
                 startedTests.add(event.getTestName());
+            }
+        }
         assertEquals(asList(testNames), startedTests);
     }
 
@@ -213,7 +229,9 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
     {
         List<String> testNames = newArrayList();
         for (Class<?> each : classes)
+        {
             testNames.add(each.getName());
+        }
         assertTestsStarted(newArray(testNames, String.class));
     }
 }

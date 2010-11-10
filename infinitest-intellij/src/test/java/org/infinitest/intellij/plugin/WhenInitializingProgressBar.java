@@ -1,5 +1,8 @@
 package org.infinitest.intellij.plugin;
 
+import static java.awt.Color.*;
+import static org.mockito.Mockito.*;
+
 import org.infinitest.FakeInfinitestCore;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.FakeInfinitestAnnotator;
@@ -7,10 +10,6 @@ import org.infinitest.intellij.FakeTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import static java.awt.Color.BLACK;
 
 public class WhenInitializingProgressBar
 {
@@ -33,7 +32,7 @@ public class WhenInitializingProgressBar
 
     private void createPresenterWith(InfinitestView view)
     {
-        new InfinitestPresenter(new ResultCollector(), new FakeInfinitestCore(), view,
-                new FakeTestControl(), new FakeInfinitestAnnotator());
+        new InfinitestPresenter(new ResultCollector(), new FakeInfinitestCore(), view, new FakeTestControl(),
+                        new FakeInfinitestAnnotator());
     }
 }

@@ -26,7 +26,9 @@ public class ThreadSafeFlag
     public synchronized void assertTripped() throws InterruptedException
     {
         if (!tripped)
+        {
             wait(timeout);
+        }
         assertTrue(tripped);
     }
 

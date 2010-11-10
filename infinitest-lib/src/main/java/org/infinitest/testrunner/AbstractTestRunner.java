@@ -14,7 +14,7 @@ import org.infinitest.TestQueueListener;
 
 abstract class AbstractTestRunner implements TestRunner
 {
-    private RunnerEventSupport eventSupport;
+    private final RunnerEventSupport eventSupport;
     private RuntimeEnvironment environment;
     private ConcurrencyController concurrencyController;
     private Comparator<String> testPriority;
@@ -33,7 +33,9 @@ abstract class AbstractTestRunner implements TestRunner
     protected ConcurrencyController getConcurrencySemaphore()
     {
         if (concurrencyController == null)
+        {
             concurrencyController = new SingleLockConcurrencyController();
+        }
         return concurrencyController;
     }
 
@@ -90,7 +92,9 @@ abstract class AbstractTestRunner implements TestRunner
     public void runTests(List<String> testNames)
     {
         for (String test : testNames)
+        {
             runTest(test);
+        }
     }
 
     public void setRuntimeEnvironment(RuntimeEnvironment environment)

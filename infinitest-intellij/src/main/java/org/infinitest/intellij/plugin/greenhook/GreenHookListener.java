@@ -12,7 +12,9 @@ public class GreenHookListener implements StatusChangeListener
     public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus)
     {
         if (PASSING.equals(newStatus))
+        {
             hook.execute();
+        }
     }
 
     public void add(GreenHook hook)

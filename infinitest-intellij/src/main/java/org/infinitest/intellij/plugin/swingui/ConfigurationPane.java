@@ -1,10 +1,14 @@
 package org.infinitest.intellij.plugin.swingui;
 
+import static java.awt.FlowLayout.*;
+import static javax.swing.Box.*;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
 import javax.swing.Box;
-import static javax.swing.Box.createHorizontalBox;
-import static javax.swing.Box.createHorizontalStrut;
-import static javax.swing.Box.createVerticalBox;
-import static javax.swing.Box.createVerticalStrut;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -12,12 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import static java.awt.FlowLayout.LEFT;
-import java.awt.Font;
 
 public class ConfigurationPane extends JPanel
 {
@@ -31,7 +29,7 @@ public class ConfigurationPane extends JPanel
         JTabbedPane pane = new JTabbedPane();
         pane.addTab("General", createGeneralTab());
         pane.addTab("Licensing", new LicensePanel());
-        add(pane, CENTER);
+        add(pane, BorderLayout.CENTER);
     }
 
     private Component createGeneralTab()

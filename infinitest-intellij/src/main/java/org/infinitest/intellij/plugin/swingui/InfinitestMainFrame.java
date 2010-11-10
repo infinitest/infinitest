@@ -1,15 +1,16 @@
 package org.infinitest.intellij.plugin.swingui;
 
-import org.infinitest.ResultCollector;
+import java.awt.Color;
+import java.awt.Component;
+import java.net.URL;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.tree.TreeModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.net.URL;
+
+import org.infinitest.ResultCollector;
 
 public class InfinitestMainFrame extends JFrame implements InfinitestView
 {
