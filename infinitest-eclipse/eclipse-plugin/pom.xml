@@ -278,6 +278,7 @@
             <plugin>
                 <groupId>org.infinitest.maven</groupId>
                 <artifactId>embedded-lib-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>process-lib-dir</id>
