@@ -6,12 +6,11 @@
 		<artifactId>infinitest-parent</artifactId>
 		<version>5.0.52-SNAPSHOT</version>
 	</parent>
+
+	<name>Infinitest Runner</name>
 	<artifactId>infinitest-runner</artifactId>
 	<packaging>jar</packaging>
-	<name>Infinitest Runner</name>
-	<properties>
-		<junit.version>4.8.1</junit.version>
-	</properties>
+
 	<build>
 		<resources>
 			<resource>

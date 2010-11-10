@@ -6,9 +6,11 @@
 		<artifactId>infinitest-parent</artifactId>
 		<version>5.0.52-SNAPSHOT</version>
 	</parent>
+
+	<name>Infinitest Lib</name>
 	<artifactId>infinitest-lib</artifactId>
 	<packaging>jar</packaging>
-	<name>Infinitest Lib</name>
+	
 	<build>
 		<resources>
 			<resource>

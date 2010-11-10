@@ -6,10 +6,11 @@
 		<artifactId>infinitest-eclipse</artifactId>
 		<version>5.0.52-SNAPSHOT</version>
 	</parent>
+	
 	<groupId>org.infinitest.eclipse</groupId>
 	<artifactId>eclipse-site</artifactId>
 	<name>Eclipse Update Site</name>
-	<packaging>jar</packaging>
+
 	<build>
 		<resources>
 			<resource>

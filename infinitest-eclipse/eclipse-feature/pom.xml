@@ -6,11 +6,12 @@
 		<artifactId>infinitest-eclipse</artifactId>
 		<version>5.0.52-SNAPSHOT</version>
 	</parent>
+
+	<name>Eclipse Plugin Feature</name>
+	<description>The Eclipse feature that wraps the references Eclipse plugin for the update site.</description>
 	<groupId>org.infinitest.eclipse</groupId>
 	<artifactId>eclipse-feature</artifactId>
-	<name>Eclipse Plugin Feature</name>
-	<packaging>jar</packaging>
-	<description>The Eclipse feature that wraps the references Eclipse plugin for the update site.</description>
+
 	<build>
 		<finalName>${feature.id}_${plugin.version}</finalName>
 		<resources>
