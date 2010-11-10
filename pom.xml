@@ -1,168 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.infinitest</groupId>
-    <artifactId>infinitest-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>5.0.52-SNAPSHOT</version>
-    <name>Infinitest Parent POM</name>
-    <url>http://infinitest.org/</url>
-
-    <modules>
-        <module>embedded-lib-maven-plugin</module>
-        <module>infinitest-lib</module>
-        <module>infinitest-runner</module>
-        <module>infinitest-intellij</module>
-        <module>infinitest-eclipse</module>
-  </modules>
-
-    <profiles>
-        <profile>
-            <id>integration</id>
-            <properties>
-                <test.include>**/*Simulation.java</test.include>
-            </properties>
-        </profile>
-    </profiles>
-
-    <developers>
-        <developer>
-            <id>benrady</id>
-            <name>Ben Rady</name>
-        </developer>
-        <developer>
-            <id>rfciii</id>
-            <name>Rod Coffin</name>
-        </developer>
-        <developer>
-            <name>Ryan Breidenbach</name>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:svn:http://infinitest.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://infinitest.googlecode.com/svn/trunk/</developerConnection>
-    </scm>
-
-    <issueManagement>
-        <system>Lighthouse</system>
-        <url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
-    </issueManagement>
-
-    <distributionManagement>
-        <repository>
-            <!-- Since we're not taking advantage of automatic deployment yet, just deploy to the target directory -->
-            <id>target</id>
-            <name>target repository</name>
-            <url>file:./target/deploy</url>
-        </repository>
-        <site>
-            <id>target</id>
-            <name>target repository</name>
-            <url>file:./target/deploy-site</url>
-        </site>
-    </distributionManagement>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>2.4</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>    
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.8.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>    
-    
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.5.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/When*.java</include>
-                        <include>**/Test*.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*TestCase.java</include>
-                        <include>${test.include}</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*$*</exclude>
-                        <exclude>com/fakeco/**</exclude>
-                    </excludes>
-                 <!--   <argLine>-Dapple.awt.UIElement</argLine> -->
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <configLocation>../infinitest-checkstyle.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failOnViolation>true</failOnViolation>
-                </configuration>
-            </plugin>
-
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0-beta-9</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-scm-plugin</artifactId>
-                    <version>1.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <configuration>
-                        <!-- Javadoc report generation fails because of test jars in project -->
-                        <generateReports>false</generateReports>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.infinitest</groupId>
+	<artifactId>infinitest-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>5.0.52-SNAPSHOT</version>
+	<name>Infinitest Parent POM</name>
+	<url>http://infinitest.org/</url>
+	<modules>
+		<module>embedded-lib-maven-plugin</module>
+		<module>infinitest-lib</module>
+		<module>infinitest-runner</module>
+		<module>infinitest-intellij</module>
+		<module>infinitest-eclipse</module>
+	</modules>
+	<profiles>
+		<profile>
+			<id>integration</id>
+			<properties>
+				<test.include>**/*Simulation.java</test.include>
+			</properties>
+		</profile>
+	</profiles>
+	<developers>
+		<developer>
+			<id>benrady</id>
+			<name>Ben Rady</name>
+		</developer>
+		<developer>
+			<id>rfciii</id>
+			<name>Rod Coffin</name>
+		</developer>
+		<developer>
+			<name>Ryan Breidenbach</name>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:svn:http://infinitest.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://infinitest.googlecode.com/svn/trunk/</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>Lighthouse</system>
+		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
+	</issueManagement>
+	<distributionManagement>
+		<repository>
+			<!-- Since we're not taking advantage of automatic deployment yet, just deploy to the target directory -->
+			<id>target</id>
+			<name>target repository</name>
+			<url>file:./target/deploy</url>
+		</repository>
+		<site>
+			<id>target</id>
+			<name>target repository</name>
+			<url>file:./target/deploy-site</url>
+		</site>
+	</distributionManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>2.4</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/When*.java</include>
+						<include>**/Test*.java</include>
+						<include>**/*Test.java</include>
+						<include>**/*TestCase.java</include>
+						<include>${test.include}</include>
+					</includes>
+					<excludes>
+						<exclude>**/*$*</exclude>
+						<exclude>com/fakeco/**</exclude>
+					</excludes>
+					<!--   <argLine>-Dapple.awt.UIElement</argLine> -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<configLocation>../infinitest-checkstyle.xml</configLocation>
+					<consoleOutput>true</consoleOutput>
+					<failOnViolation>true</failOnViolation>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0-beta-9</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-scm-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<configuration>
+						<!-- Javadoc report generation fails because of test jars in project -->
+						<generateReports>false</generateReports>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
