@@ -4,15 +4,19 @@
 
     <parent>
         <groupId>org.infinitest</groupId>
-        <artifactId>infinitest-core-parent</artifactId>
+        <artifactId>infinitest-parent</artifactId>
         <version>5.0.52-SNAPSHOT</version>
     </parent>
 
-    <artifactId>infinitest-lib</artifactId>
+    <artifactId>infinitest-runner</artifactId>
     <packaging>jar</packaging>
-    <name>Infinitest Lib</name>
-    <build>
+    <name>Infinitest Runner</name>
 
+	<properties>
+    	<junit.version>4.8.1</junit.version>
+    </properties>
+
+    <build>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
@@ -26,14 +30,6 @@
         </resources>
 
         <plugins>
-            <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <useManifestOnlyJar>false</useManifestOnlyJar>
-              <useSystemClassLoader>false</useSystemClassLoader>
-            </configuration>
-          </plugin>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jar-plugin</artifactId>
@@ -45,54 +41,47 @@
                   </execution>
               </executions>
            </plugin>
-
+            <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <executions>
+               <execution>
+                 <id>unpack</id>
+                 <phase>compile</phase>
+                 <goals>
+                   <goal>unpack</goal>
+                 </goals>
+                 <configuration>
+                   <artifactItems>
+                     <artifactItem>
+                       <groupId>junit</groupId>
+                       <artifactId>junit</artifactId>
+                       <version>${junit.version}</version>
+                       <type>jar</type>
+                       <overWrite>false</overWrite>
+                       <outputDirectory>target/classes</outputDirectory>
+                       <includes>**/*.*</includes>
+                       <excludes>org/hamcrest/**</excludes>
+                     </artifactItem>
+                   </artifactItems>
+                 </configuration>
+               </execution>
+             </executions>
+           </plugin>
         </plugins>
-
     </build>
-
+        
     <dependencies>
         <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>0.8</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.infinitest</groupId>
-            <artifactId>continuous-testing-toolkit</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.infinitest</groupId>
-            <artifactId>infinitest-runner</artifactId>
-            <version>5.0.52-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-          <groupId>org.jgrapht</groupId>
-          <artifactId>jgrapht-jdk1.5</artifactId>
-          <version>0.7.3</version>
-        </dependency>
-        <dependency>
-      		<groupId>javassist</groupId>
-      		<artifactId>javassist</artifactId>
-      		<version>3.7.1.GA</version>
-    	</dependency>
-        <dependency>
-            <groupId>org.infinitest</groupId>
-            <artifactId>infinitest-runner</artifactId>
-            <version>5.0.52-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>        
-        <dependency>
-          <groupId>org.easymock</groupId>
-          <artifactId>easymock</artifactId>
-          <version>2.4</version>
-          <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -102,19 +91,22 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.7.1.GA</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>0.8</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

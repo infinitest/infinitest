@@ -12,7 +12,8 @@
 
     <modules>
         <module>embedded-lib-maven-plugin</module>
-        <module>infinitest-core</module>
+        <module>infinitest-lib</module>
+        <module>infinitest-runner</module>
         <module>infinitest-intellij</module>
         <module>infinitest-eclipse</module>
   </modules>
