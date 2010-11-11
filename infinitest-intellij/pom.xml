@@ -9,7 +9,6 @@
 	
 	<name>Infinitest for IntelliJ</name>
 	<artifactId>infinitest-intellij</artifactId>
-	<packaging>jar</packaging>
 
 	<repositories>
 		<repository>
