@@ -1,7 +1,5 @@
 package org.infinitest.intellij.idea.facet;
 
-import java.util.Date;
-
 import org.infinitest.intellij.idea.IdeaCompilationNotifier;
 import org.infinitest.intellij.idea.IdeaModuleSettings;
 import org.infinitest.intellij.idea.IdeaSourceNavigator;
@@ -11,8 +9,6 @@ import org.infinitest.intellij.plugin.InfinitestConfiguration;
 import org.infinitest.intellij.plugin.InfinitestConfigurationListener;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl;
-import org.infinitest.keys.LicenseState;
-import org.infinitest.keys.LicenseStateFactory;
 import org.jdom.Attribute;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
@@ -34,11 +30,9 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 
     private Module module;
     private InfinitestConfigurationListener listener;
-    private final LicenseStateFactory licenseStateFactory = new LicenseStateFactory(new Date());
 
     public InfinitestFacetConfiguration()
     {
-        licenseStateFactory.setPluginReleaseDate(new Date());
     }
 
     public void setModule(Module module)
@@ -94,16 +88,6 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
     public void setScmUpdateEnabled(boolean scmUpdateGreenHook)
     {
         this.scmUpdateGreenHook = scmUpdateGreenHook;
-    }
-
-    public LicenseState getLicense()
-    {
-        return licenseStateFactory.createLicense(licenseKey == null ? null : licenseKey);
-    }
-
-    public void setLicenseKey(String licenseKey)
-    {
-        this.licenseKey = licenseKey;
     }
 
     public InfinitestLauncher createLauncher()

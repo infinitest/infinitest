@@ -1,7 +1,6 @@
 package org.infinitest.intellij;
 
 import static org.infinitest.intellij.idea.facet.ConfigurationElementBuilder.*;
-import static org.infinitest.keys.SampleKeys.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.intellij.idea.facet.InfinitestFacetConfiguration;
@@ -39,26 +38,5 @@ public class WhenReadingConfiguration
     {
         configuration.readExternal(configuration().build());
         assertFalse(configuration.isScmUpdateEnabled());
-    }
-
-    @Test
-    public void shouldReadLicenseKey() throws InvalidDataException
-    {
-        configuration.readExternal(configuration().withLicenseKey(VALID_KEY).build());
-        assertEquals("Corporate Use License", configuration.getLicense().getLicenseName());
-    }
-
-    @Test
-    public void shouldReadIndividualLicense() throws InvalidDataException
-    {
-        configuration.readExternal(configuration().withLicenseKey(INDIVIDUAL_LICENSE).build());
-        assertEquals("Individual Use License", configuration.getLicense().getLicenseName());
-    }
-
-    @Test
-    public void shouldTreatEmptyLicenseAsTrial() throws InvalidDataException
-    {
-        configuration.readExternal(configuration().build());
-        assertEquals("30 Day Trial License", configuration.getLicense().getLicenseName());
     }
 }

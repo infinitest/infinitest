@@ -1,10 +1,6 @@
 package org.infinitest.eclipse;
 
-import static org.infinitest.eclipse.InfinitestPlugin.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import java.util.Date;
 
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
@@ -61,11 +57,5 @@ public class WhenActivatingThePlugin
     {
         controller.disable();
         verify(eventQueue).pushNamed(markerClearingRunnable);
-    }
-
-    @Test
-    public void shouldDefaultToTheFarFutureIfNoPluginReleaseDateCanBeFound()
-    {
-        assertEquals(new Date(Long.MAX_VALUE), parseReleaseDate("not a date"));
     }
 }

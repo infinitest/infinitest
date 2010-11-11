@@ -3,12 +3,8 @@ package org.infinitest.eclipse;
 import static com.google.common.collect.Iterables.*;
 import static java.util.Arrays.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
-import static org.infinitest.keys.LicenseUtils.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 import static org.infinitest.util.InfinitestUtils.*;
-
-import java.text.ParseException;
-import java.util.Date;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -72,24 +68,6 @@ public class InfinitestPlugin extends AbstractUIPlugin
         store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
     }
 
-    public Date getPluginReleaseDate()
-    {
-        return parseReleaseDate(getPluginBundle().getHeaders().get("Plugin-Datestamp").toString());
-    }
-
-    static Date parseReleaseDate(String datestampString)
-    {
-        try
-        {
-            return parseDate(datestampString);
-        }
-        catch (ParseException e)
-        {
-            log("Could not parse plugin release date " + datestampString, e);
-            return new Date(Long.MAX_VALUE);
-        }
-    }
-
     // Only used for testing.
     public void setPluginBundle(Bundle bundle)
     {
@@ -98,7 +76,7 @@ public class InfinitestPlugin extends AbstractUIPlugin
 
     public Bundle getPluginBundle()
     {
-        if (pluginBundle == null && InfinitestPlugin.getInstance() != null)
+        if ((pluginBundle == null) && (InfinitestPlugin.getInstance() != null))
         {
             return InfinitestPlugin.getInstance().getBundle();
         }

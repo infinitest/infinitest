@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.infinitest.keys.LicenseState;
 import org.infinitest.util.Icon;
 
 public class IconCache
@@ -41,10 +40,4 @@ public class IconCache
         }
         return null;
     }
-
-    public static synchronized Image smallImageFor(LicenseState state)
-    {
-        return getSmallImage(state.getIcon());
-    }
-
 }
