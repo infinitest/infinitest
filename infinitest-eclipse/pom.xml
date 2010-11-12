@@ -12,8 +12,9 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<plugin.version>5.1.78</plugin.version>
-		<plugin.update.url>http://update.improvingworks.com</plugin.update.url>
+		<plugin.version>5.1.79</plugin.version>
+		<plugin.name>Infinitest</plugin.name>
+		<plugin.update.url>http://infinitest.github.com</plugin.update.url>
 		<plugin.id>org.infinitest.eclipse</plugin.id>
 		<feature.id>${plugin.id}.feature</feature.id>
 	</properties>

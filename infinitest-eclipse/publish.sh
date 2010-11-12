@@ -37,8 +37,6 @@ do
   if [ $REPLY = "p" ]; then
     mkdir -p $update_site/features
     mkdir -p $update_site/plugins
-    mkdir -p $main_site/features
-    mkdir -p $main_site/plugins
     echo "Pushing to update site..."
     cd $project_root/infinitest-eclipse
     printf "\n\n%s    %s    %s" "`date`" ${new_version} "${release_message}" >> ReleaseNotes.txt
@@ -46,8 +44,8 @@ do
     cp rss.xml ${update_site}/
     cp ReleaseNotes.txt ${update_site}/
     cp eclipse-site/target/classes/site.xml ${update_site}/
-    cp eclipse-feature/target/*.jar $main_site/features/
-    cp eclipse-plugin/target/*.jar $main_site/plugins/
+    cp eclipse-feature/target/*.jar ${update_site}/features/
+    cp eclipse-plugin/target/*.jar ${update_site}/plugins/
 
     #git commit -a -m "Releasing $new_version -- $release_message"
     #git push origin master

@@ -21,5 +21,5 @@ do
     break
   fi
 echo "Update site content is:"
-curl update.improvingworks.com/site.xml
+curl infinitest.guthub.com/site.xml
 done
