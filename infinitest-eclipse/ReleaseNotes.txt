@@ -35,3 +35,5 @@ Thu Mar 18 22:03:21 CDT 2010    5.1.76    Fixing installation verification issue
 Thu Mar 18 22:36:38 CDT 2010    5.1.77    Fixed issue with plugin manifest
 
 Thu Mar 18 22:51:06 CDT 2010    5.1.78    Fixed issue with missing libraries in the plugin
+
+Fri Nov 12 18:03:28 CET 2010    5.1.80    First GPL version
