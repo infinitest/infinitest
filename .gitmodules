@@ -1,12 +1,3 @@
-[submodule "infinitest-core"]
-	path = infinitest-core
-	url = git@github.com:infinitest/infinitest-core.git
-[submodule "infinitest-eclipse"]
-	path = infinitest-eclipse
-	url = git@github.com:infinitest/infinitest-eclipse.git
-[submodule "infinitest-intellij"]
-	path = infinitest-intellij
-	url = git@github.com:infinitest/infinitest-intellij.git
 [submodule "website/site"]
 	path = website/site
 	url = git@github.com:infinitest/infinitest.github.com.git
