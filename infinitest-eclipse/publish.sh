@@ -4,7 +4,6 @@ eclipse_root=`dirname $abspath`
 project_root=`dirname $eclipse_root`
 main_site=$project_root/website/site
 update_site=${main_site}/experimental
-plugin_name="Infinitest"
 
 # Increment Version
 # DEBT Replace some of this hackery with a maven properties file
@@ -18,7 +17,7 @@ mv pom.xml.new pom.xml
 cd $project_root 
 
 # Build it!
-mvn clean install -o -Dplugin.name="${plugin_name}" -Pintegration
+mvn clean install -o -Pintegration
 if [ "$?" -ne "0" ]; then
     cd $project_root
     git checkout infinitest-eclipse/pom.xml
@@ -30,7 +29,7 @@ echo "Please enter the newsfeed summary for this release:"
 read release_message
 
 # Prompt and update if accepted
-echo "Ready to upload ${plugin_name} version $new_version to ${update_site} site with message: $release_message"
+echo "Ready to upload version $new_version to ${update_site} site with message: $release_message"
 echo "Publish now?"
 select fname in [p]ush,[a]bort;
 do
