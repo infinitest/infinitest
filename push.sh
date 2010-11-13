@@ -37,7 +37,7 @@ git clone -slb "${BRANCH}" . .privatebuild
 cd .privatebuild
 
 # Build with maven
-mvn install
+mvn install -Pintegration
 if [ $? -ne 0 ]; then
 	exit_ko "Unable to build"
 fi
