@@ -64,20 +64,6 @@
 		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
 	</issueManagement>
 
-	<distributionManagement>
-		<repository>
-			<!-- Since we're not taking advantage of automatic deployment yet, just deploy to the target directory -->
-			<id>target</id>
-			<name>target repository</name>
-			<url>file:./target/deploy</url>
-		</repository>
-		<site>
-			<id>target</id>
-			<name>target repository</name>
-			<url>file:./target/deploy-site</url>
-		</site>
-	</distributionManagement>
-
 	<properties>
 		<mockito.version>1.8.2</mockito.version>
 		<easymock.version>2.4</easymock.version>
