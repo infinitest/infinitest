@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feature id="${feature.id}" label="${plugin.name}" version="${plugin.version}">
+<feature id="${feature.id}" label="Infinitest" version="${plugin.version}">
 	<description url="https://github.com/infinitest">
 	<![CDATA[Infinitest is a continuous test runner for JUnit tests. Whenever you change a class, Infinitest runs your tests for you. It’s smart about what tests to run, and only runs the ones you need. It reports test errors in the same way Eclipse reports compile errors, and provides additional information that helps you write better tests.]]>
 	</description>
 
-	<url>
-		<update label="Infinitest Update Site" url="${plugin.update.url}" />
-	</url>
-	
 	<requires>
 		<import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual" />
 	</requires>

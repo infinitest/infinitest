@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <site>
-    <description url="${plugin.update.url}">Infinitest Update Site</description>
-    <feature url="features/${feature.id}_${plugin.version}.jar" id="${feature.id}"
-             version="${plugin.version}">
-        <category name="Infinitest" />
-    </feature>
-    <category-def name="Infinitest" label="Infinitest for Eclipse" />
+	<description url="http://infinitest.github.com">Infinitest Update Site</description>
+	<feature url="features/${feature.id}_${plugin.version}.jar" id="${feature.id}" version="${plugin.version}">
+		<category name="Infinitest" />
+	</feature>
+	<category-def name="Infinitest" label="Infinitest for Eclipse" />
 </site>
