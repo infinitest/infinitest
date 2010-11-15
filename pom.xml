@@ -23,6 +23,17 @@
 				<test.include>**/*Simulation.java</test.include>
 			</properties>
 		</profile>
+		<profile>
+			<id>OSX</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<stop.stilling.focus>-Dapple.awt.UIElement=true</stop.stilling.focus>
+			</properties>
+		</profile>
 	</profiles>
 
 	<developers>
@@ -157,7 +168,7 @@
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
 					</excludes>
-					<!--   <argLine>-Dapple.awt.UIElement</argLine> -->
+					<argLine>${stop.stilling.focus}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
