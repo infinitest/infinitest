@@ -222,6 +222,7 @@ public class InfinitestUtils
     public static String listToMultilineString(Collection<?> listOfStringableObjects)
     {
         StringBuilder trace = new StringBuilder();
+
         Iterator<?> selectedItems = limit(listOfStringableObjects, MAX_LINE_COUNT).iterator();
         trace.append(join(selectedItems, LINE_SEP));
         if (listOfStringableObjects.size() > MAX_LINE_COUNT)

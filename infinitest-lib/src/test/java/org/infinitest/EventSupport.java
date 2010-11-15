@@ -253,6 +253,7 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
         {
             testNames.add(each.getName());
         }
-        assertTestsStarted(newArray(testNames, String.class));
+
+        assertTestsStarted(toArray(testNames, String.class));
     }
 }

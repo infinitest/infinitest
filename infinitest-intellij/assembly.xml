@@ -12,7 +12,7 @@
                 <include>org.infinitest:infinitest-lib</include>
                 <include>org.infinitest:infinitest-runner</include>
                 <include>org.infinitest:infinitest-intellij</include>
-                <include>com.google.collections:google-collections</include>
+                <include>com.google.guava:guava</include>
                 <include>javassist:javassist</include>
             </includes>
         </dependencySet>

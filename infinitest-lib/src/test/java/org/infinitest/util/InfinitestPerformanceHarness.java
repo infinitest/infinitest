@@ -22,7 +22,6 @@
 package org.infinitest.util;
 
 import static com.google.common.collect.Maps.*;
-import static com.google.common.collect.Multimaps.*;
 import static java.lang.System.*;
 import static java.util.Arrays.*;
 
@@ -38,11 +37,12 @@ import org.infinitest.InfinitestCoreBuilder;
 import org.infinitest.RuntimeEnvironment;
 import org.infinitest.filter.TestFilter;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 public class InfinitestPerformanceHarness
 {
-    private static final Multimap<String, Long> perfRecords = newArrayListMultimap();
+    private static final Multimap<String, Long> perfRecords = ArrayListMultimap.create();
     private static final Map<String, Long> lastStart = newHashMap();
 
     public static void main(String[] args)

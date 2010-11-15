@@ -68,6 +68,7 @@
 		<mockito.version>1.8.5</mockito.version>
 		<easymock.version>2.4</easymock.version>
 		<junit.version>4.8.2</junit.version>
+		<guava.version>r07</guava.version>
 	</properties>
 
 	<build>

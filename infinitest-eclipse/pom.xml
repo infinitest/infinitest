@@ -24,12 +24,4 @@
 		<module>eclipse-feature</module>
 		<module>eclipse-site</module>
 	</modules>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>0.8</version>
-		</dependency>
-	</dependencies>
 </project>

@@ -364,5 +364,10 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/maven-deps/org.eclipse.core.jobs_3.4.0.v20080512.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -23,7 +23,6 @@ package org.infinitest;
 
 import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Maps.*;
-import static com.google.common.collect.Multimaps.*;
 import static java.util.Collections.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.util.InfinitestUtils.*;
@@ -37,6 +36,7 @@ import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -58,7 +58,7 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
         resultMap = newHashMap();
         changeListeners = newArrayList();
         statusChangeListeners = newArrayList();
-        failuresByPointOfFailure = newArrayListMultimap();
+        failuresByPointOfFailure = ArrayListMultimap.create();
         status = SCANNING;
         queueAggregator = new QueueAggregator();
         queueAggregator.addListener(this);
