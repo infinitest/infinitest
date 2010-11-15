@@ -6,7 +6,7 @@
 	<packaging>pom</packaging>
 	<name>Infinitest Parent POM</name>
 	<version>5.0.53-SNAPSHOT</version>
-	<url>http://infinitest.org/</url>
+	<url>http://infinitest.github.com/</url>
 
 	<modules>
 		<module>embedded-lib-maven-plugin</module>
@@ -55,8 +55,8 @@
 	</developers>
 	
 	<scm>
-		<connection>scm:svn:http://infinitest.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://infinitest.googlecode.com/svn/trunk/</developerConnection>
+		<connection>scm:git://github.com/infinitest/infinitest.git</connection>
+		<developerConnection>scm:git@github.com:infinitest/infinitest.git</developerConnection>
 	</scm>
 	
 	<issueManagement>
@@ -82,10 +82,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.1</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-scm-plugin</artifactId>
-					<version>1.4</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-antrun-plugin</artifactId>
