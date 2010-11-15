@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.0.52-SNAPSHOT</version>
+		<version>5.0.53-SNAPSHOT</version>
 	</parent>
 	
 	<name>Infinitest for IntelliJ</name>
@@ -130,19 +130,19 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
-			<version>5.0.52-SNAPSHOT</version>
+			<version>5.0.53-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.52-SNAPSHOT</version>
+			<version>5.0.53-SNAPSHOT</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
-			<version>5.0.52-SNAPSHOT</version>
+			<version>5.0.53-SNAPSHOT</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>

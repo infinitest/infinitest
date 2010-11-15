@@ -35,14 +35,14 @@ public class WhenDiscoveringInfinitestJars
     {
         InfinitestJarLocator locator = new InfinitestJarLocator();
         List<String> jarNames = locator.findInfinitestJarNames();
-        assertThat(jarNames, hasItem("infinitest-lib-5.0.52-SNAPSHOT.jar"));
-        assertThat(jarNames, hasItem("infinitest-runner-5.0.52-SNAPSHOT.jar"));
+        assertThat(jarNames, hasItem("infinitest-lib-5.0.53-SNAPSHOT.jar"));
+        assertThat(jarNames, hasItem("infinitest-runner-5.0.53-SNAPSHOT.jar"));
     }
 
     @Test
     public void shouldDetermineInfinitestVersionFromEmbeddedPom()
     {
         InfinitestJarLocator locator = new InfinitestJarLocator();
-        assertThat(locator.findInfinitestVersion(), is("5.0.52-SNAPSHOT"));
+        assertThat(locator.findInfinitestVersion(), is("5.0.53-SNAPSHOT"));
     }
 }

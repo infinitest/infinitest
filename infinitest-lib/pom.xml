@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.0.52-SNAPSHOT</version>
+		<version>5.0.53-SNAPSHOT</version>
 	</parent>
 
 	<name>Infinitest Lib</name>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.52-SNAPSHOT</version>
+			<version>5.0.53-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jgrapht</groupId>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.52-SNAPSHOT</version>
+			<version>5.0.53-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
