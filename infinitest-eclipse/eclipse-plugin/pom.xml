@@ -10,7 +10,46 @@
 	<name>Infinitest for Eclipse</name>
 	<groupId>org.infinitest.eclipse</groupId>
 	<artifactId>eclipse-plugin</artifactId>
-	
+
+	<profiles>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<swt.version>3.5.2</swt.version>
+				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
+			</properties>
+		</profile>
+		<profile>
+			<id>Unix</id>
+			<activation>
+				<os>
+					<family>unix</family>
+				</os>
+			</activation>
+			<properties>
+				<swt.version>3.5.2.v3557f</swt.version>
+				<swt.jar>org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar</swt.jar>
+			</properties>
+		</profile>
+		<profile>
+			<id>OSX</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<swt.version>3.4.1.v3449c</swt.version>
+				<swt.jar>org.eclipse.swt.carbon.macosx_3.4.0.v3448f.jar</swt.jar>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<!-- Compile scope dependencies are automatically copied into the bundle -->
 		<dependency>
@@ -117,20 +156,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
-			<artifactId>swt-carbon-macosx</artifactId>
-			<version>3.4.1.v3449c</version>
+			<artifactId>eclipse.swt</artifactId>
+			<version>${swt.version}</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.swt.carbon.macosx_3.4.0.v3448f.jar</systemPath>
+			<systemPath>${basedir}/maven-deps/${swt.jar}</systemPath>
 		</dependency>
-		<!--
-        Apparently, you need this dependency to compile on windows. 
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>swt-win32</artifactId>
-            <version>3.5.2</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/maven-deps/swt-3.5.2-win32-win32-x86.jar</systemPath>
-        </dependency> -->
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
