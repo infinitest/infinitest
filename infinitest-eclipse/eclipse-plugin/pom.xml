@@ -50,8 +50,150 @@
 		</profile>
 	</profiles>
 
+	<build>
+		<finalName>${plugin.id}_${plugin.version}</finalName>
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>preferences.ini</include>
+					<include>lib/**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>META-INF/**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>icons/**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Run in 32 bit mode.  Otherwise tests relying on SWT will fail on Snow Leopard. -->
+					<argLine>-d32</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<configuration>
+					<buildNumberPropertyName>datestamp</buildNumberPropertyName>
+					<format>{0,date,MM/dd/yyyy}</format>
+					<items>
+						<item>timestamp</item>
+					</items>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeScope>compile</includeScope>
+							<excludeScope>test</excludeScope>
+							<excludeGroupIds>org.eclipse</excludeGroupIds>
+							<outputDirectory>${basedir}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.infinitest.maven</groupId>
+				<artifactId>embedded-lib-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>process-lib-dir</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>process-lib-dir</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.1.0</version>
+				<configuration>
+					<instructions>
+						<_include>-${project.build.directory}/osgi.bnd</_include>
+					</instructions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy todir="${basedir}/META-INF">
+									<fileset dir="${project.build.outputDirectory}/META-INF"/>
+								</copy>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<!-- Compile scope dependencies are automatically copied into the bundle -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
@@ -61,26 +203,24 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
-			<version>5.0.53-SNAPSHOT</version>
-			<scope>compile</scope>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>2.5.6</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
-			<version>5.0.53-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.53-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
@@ -225,141 +365,4 @@
 			<systemPath>${basedir}/maven-deps/org.eclipse.core.jobs_3.4.0.v20080512.jar</systemPath>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<finalName>${plugin.id}_${plugin.version}</finalName>
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>plugin.xml</include>
-					<include>preferences.ini</include>
-					<include>lib/**/*</include>
-				</includes>
-			</resource>
-			<resource>
-				<filtering>true</filtering>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>META-INF/**/*</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>icons/**/*</include>
-				</includes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- Run in 32 bit mode.  Otherwise tests relying on SWT will fail on Snow Leopard. -->
-					<argLine>-d32</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
-				<configuration>
-					<buildNumberPropertyName>datestamp</buildNumberPropertyName>
-					<format>{0,date,MM/dd/yyyy}</format>
-					<items>
-						<item>timestamp</item>
-					</items>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>compile</includeScope>
-							<excludeScope>test</excludeScope>
-							<excludeGroupIds>org.eclipse</excludeGroupIds>
-							<outputDirectory>${basedir}/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.infinitest.maven</groupId>
-				<artifactId>embedded-lib-maven-plugin</artifactId>
-				<version>1.0-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<id>process-lib-dir</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>process-lib-dir</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.1.0</version>
-				<configuration>
-					<instructions>
-						<_include>-${project.build.directory}/osgi.bnd</_include>
-					</instructions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<copy todir="${basedir}/META-INF">
-									<fileset dir="${project.build.outputDirectory}/META-INF"/>
-								</copy>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>

@@ -31,7 +31,7 @@
 				</os>
 			</activation>
 			<properties>
-				<stop.stilling.focus>-Dapple.awt.UIElement=true</stop.stilling.focus>
+				<stop.stealing.focus>-Dapple.awt.UIElement=true</stop.stealing.focus>
 			</properties>
 		</profile>
 	</profiles>
@@ -65,9 +65,9 @@
 	</issueManagement>
 
 	<properties>
-		<mockito.version>1.8.2</mockito.version>
+		<mockito.version>1.8.5</mockito.version>
 		<easymock.version>2.4</easymock.version>
-		<junit.version>4.8.1</junit.version>
+		<junit.version>4.8.2</junit.version>
 	</properties>
 
 	<build>
@@ -83,20 +83,12 @@
 					<version>2.1</version>
 				</plugin>
 				<plugin>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.0-beta-9</version>
-				</plugin>
-				<plugin>
 					<artifactId>maven-scm-plugin</artifactId>
 					<version>1.4</version>
 				</plugin>
 				<plugin>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>2.0.1</version>
-					<configuration>
-						<!-- Javadoc report generation fails because of test jars in project -->
-						<generateReports>false</generateReports>
-					</configuration>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.6</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -154,7 +146,7 @@
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
 					</excludes>
-					<argLine>${stop.stilling.focus}</argLine>
+					<argLine>${stop.stealing.focus}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -178,13 +170,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>

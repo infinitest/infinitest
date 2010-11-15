@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.53-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jgrapht</groupId>
@@ -62,14 +62,14 @@
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-runner</artifactId>
-			<version>5.0.53-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>2.4</version>
+			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
