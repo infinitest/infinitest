@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
@@ -137,6 +138,8 @@ public class ProcessLibDirectoryMojo extends AbstractMojo
         {
             libPathedJarFileNames[i] = "lib/" + jarFiles[i].getName();
         }
+        
+        Arrays.sort(libPathedJarFileNames);
 
         return libPathedJarFileNames;
     }
