@@ -33,6 +33,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.infinitest.eclipse.InfinitestPlugin;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
 {
@@ -46,6 +47,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     PreferencePage(PreferenceChangeHandler changeHandler)
     {
         handler = changeHandler;
+        handler.setSlowMarkerRegistry( InfinitestPlugin.getInstance().getBean(SlowMarkerRegistry.class) );
     }
 
     public void init(IWorkbench workbench)
@@ -91,5 +93,33 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     public void propertyChange(PropertyChangeEvent event)
     {
         handler.propertyChange(event);
+    }
+
+    @Override
+    public void performApply() 
+    {
+        handler.applyChanges();
+        super.performApply();
+    }
+    
+    @Override
+    public boolean performOk() 
+    {
+        handler.applyChanges();
+        return super.performOk();
+    }
+    
+    @Override
+    public boolean performCancel() 
+    {
+        handler.clearChanges();
+        return super.performCancel();
+    }
+    
+    @Override
+    public void performDefaults() 
+    {
+        handler.clearSlowMarkers();
+        super.performDefaults();
     }
 }

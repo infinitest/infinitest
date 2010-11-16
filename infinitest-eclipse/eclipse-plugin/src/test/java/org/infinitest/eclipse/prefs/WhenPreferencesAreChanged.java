@@ -31,9 +31,10 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.infinitest.eclipse.PluginActivationController;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 import org.infinitest.eclipse.workspace.CoreSettings;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.Before; 
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -51,6 +52,7 @@ public class WhenPreferencesAreChanged
         controller = createMock(PluginActivationController.class);
         coreSettings = Mockito.mock(CoreSettings.class);
         handler = new PreferenceChangeHandler(controller, coreSettings);
+        handler.setSlowMarkerRegistry(new SlowMarkerRegistry());
         preferenceName = AUTO_TEST;
         eventSource = new BooleanFieldEditor()
         {
