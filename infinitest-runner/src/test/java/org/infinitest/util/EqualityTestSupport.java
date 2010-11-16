@@ -21,7 +21,6 @@
  */
 package org.infinitest.util;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public abstract class EqualityTestSupport
         Object equal = createEqualInstance();
         for (Object other : createUnequalInstances())
         {
-            assertThat(equal, not(equalTo(other)));
+            assertFalse(equal.equals(other));
         }
     }
 
