@@ -4,5 +4,3 @@
 target/
 .DS_Store
 eclipse-plugin/META-INF/MANIFEST.MF
-eclipse-plugin/lib/infinitest-lib-*
-eclipse-plugin/lib/infinitest-runner-*
