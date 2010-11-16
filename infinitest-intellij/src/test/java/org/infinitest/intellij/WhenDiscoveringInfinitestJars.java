@@ -21,28 +21,51 @@
  */
 package org.infinitest.intellij;
 
+import static com.google.common.base.Charsets.*;
+import static org.apache.commons.lang.StringUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.io.Files;
+
 public class WhenDiscoveringInfinitestJars
 {
+    private static final String MAVEN_VERSION = mavenVersion();
+    private static final String INFINITEST_RUNNER_JAR = "infinitest-runner-" + MAVEN_VERSION + ".jar";
+    private static final String INFINITEST_SNAPSHOT_JAR = "infinitest-lib-" + MAVEN_VERSION + ".jar";
+
     @Test
     public void shouldDetermineFileNamesFromEmbeddedPom()
     {
         InfinitestJarLocator locator = new InfinitestJarLocator();
         List<String> jarNames = locator.findInfinitestJarNames();
-        assertThat(jarNames, hasItem("infinitest-lib-5.0.53-SNAPSHOT.jar"));
-        assertThat(jarNames, hasItem("infinitest-runner-5.0.53-SNAPSHOT.jar"));
+        assertThat(jarNames, hasItem(INFINITEST_SNAPSHOT_JAR));
+        assertThat(jarNames, hasItem(INFINITEST_RUNNER_JAR));
     }
 
     @Test
     public void shouldDetermineInfinitestVersionFromEmbeddedPom()
     {
         InfinitestJarLocator locator = new InfinitestJarLocator();
-        assertThat(locator.findInfinitestVersion(), is("5.0.53-SNAPSHOT"));
+        assertThat(locator.findInfinitestVersion(), is(MAVEN_VERSION));
+    }
+
+    private static String mavenVersion()
+    {
+        try
+        {
+            String pomXml = Files.toString(new File("pom.xml"), UTF_8);
+            return substringBetween(pomXml, "<version>", "</version>");
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Unable to read maven version", e);
+        }
     }
 }
