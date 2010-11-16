@@ -27,11 +27,11 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.infinitest.toolkit.EqualsHashCodeTestSupport;
+import org.infinitest.util.EqualityTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestCaseEventTest extends EqualsHashCodeTestSupport
+public class TestCaseEventTest extends EqualityTestSupport
 {
     private TestCaseEvent event;
     private List<TestEvent> methodEvents;
@@ -67,13 +67,13 @@ public class TestCaseEventTest extends EqualsHashCodeTestSupport
     }
 
     @Override
-    protected TestCaseEvent equal() throws Exception
+    protected TestCaseEvent createEqualInstance()
     {
         return new TestCaseEvent("testName", source, new TestResults());
     }
 
     @Override
-    protected Object notEqual() throws Exception
+    protected Object createUnequalInstance()
     {
         return new TestCaseEvent("testName2", source, new TestResults());
     }

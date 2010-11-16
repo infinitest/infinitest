@@ -31,11 +31,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.infinitest.eclipse.markers.SlowTestMarkerInfo;
 import org.infinitest.eclipse.workspace.ResourceLookup;
 import org.infinitest.testrunner.MethodStats;
-import org.infinitest.toolkit.EqualsHashCodeTestSupport;
+import org.infinitest.util.EqualityTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WhenMarkingTestsAsSlow extends EqualsHashCodeTestSupport
+public class WhenMarkingTestsAsSlow extends EqualityTestSupport
 {
     private static final String TEST_NAME = "com.foo.TestName";
     private SlowTestMarkerInfo marker;
@@ -72,13 +72,13 @@ public class WhenMarkingTestsAsSlow extends EqualsHashCodeTestSupport
     }
 
     @Override
-    protected Object equal() throws Exception
+    protected Object createEqualInstance()
     {
         return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup);
     }
 
     @Override
-    protected Object notEqual() throws Exception
+    protected Object createUnequalInstance()
     {
         return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup);
     }

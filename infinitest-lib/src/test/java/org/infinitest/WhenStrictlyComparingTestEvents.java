@@ -27,23 +27,23 @@ import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.testrunner.TestEvent;
-import org.infinitest.toolkit.EqualsHashCodeTestSupport;
+import org.infinitest.util.EqualityTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WhenStrictlyComparingTestEvents extends EqualsHashCodeTestSupport
+public class WhenStrictlyComparingTestEvents extends EqualityTestSupport
 {
     private Throwable throwable;
     private TestEventEqualityAdapter event1;
     private TestEventEqualityAdapter event2;
 
     @Before
-    public void inContext() throws Exception
+    public void inContext()
     {
         throwable = new Throwable();
         throwable.fillInStackTrace();
-        event1 = equal();
-        event2 = notEqual();
+        event1 = createEqualInstance();
+        event2 = createUnequalInstance();
     }
 
     @Test
@@ -77,13 +77,13 @@ public class WhenStrictlyComparingTestEvents extends EqualsHashCodeTestSupport
     }
 
     @Override
-    protected TestEventEqualityAdapter equal() throws Exception
+    protected TestEventEqualityAdapter createEqualInstance()
     {
         return adapterFor(methodFailed("message1", "testName", "methodName", throwable));
     }
 
     @Override
-    protected TestEventEqualityAdapter notEqual() throws Exception
+    protected TestEventEqualityAdapter createUnequalInstance()
     {
         return adapterFor(methodFailed("message2", "testName", "methodName", throwable));
     }

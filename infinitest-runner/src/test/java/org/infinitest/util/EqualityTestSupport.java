@@ -79,17 +79,4 @@ public abstract class EqualityTestSupport
     {
         assertFalse(createEqualInstance().equals(new Object()));
     }
-
-    /**
-     * For performance reasons
-     */
-    @Test
-    public void differentObjectsShouldHaveDifferentHashcodes()
-    {
-        Object equal = createEqualInstance();
-        for (Object other : createUnequalInstances())
-        {
-            assertThat(equal.hashCode(), not(equalTo(other.hashCode())));
-        }
-    }
 }

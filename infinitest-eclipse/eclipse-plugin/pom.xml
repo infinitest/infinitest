@@ -181,6 +181,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
 			<version>${project.parent.version}</version>
