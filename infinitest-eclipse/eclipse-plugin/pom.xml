@@ -62,7 +62,6 @@
 				</includes>
 			</resource>
 			<resource>
-				<filtering>true</filtering>
 				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>META-INF/**/*</include>
