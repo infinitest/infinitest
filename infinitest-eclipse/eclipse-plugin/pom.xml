@@ -68,12 +68,6 @@
 					<include>META-INF/**/*</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>icons/**/*</include>
-				</includes>
-			</resource>
 		</resources>
 		<plugins>
 			<plugin>
