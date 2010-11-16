@@ -1,6 +1,3 @@
-.classpath
-.project
-.settings/
-target/
-.DS_Store
-eclipse-plugin/META-INF/MANIFEST.MF
+bin/
+/build.properties
+/META-INF

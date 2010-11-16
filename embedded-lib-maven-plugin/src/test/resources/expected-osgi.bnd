@@ -1,7 +1,0 @@
-Import-Package: !*
-Export-Package: !*
-
-Bundle-Classpath: .,\
-  lib/a.jar,\
-  lib/b.jar,\
-  lib/c.jar

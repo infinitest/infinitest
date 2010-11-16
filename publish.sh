@@ -34,17 +34,17 @@ echo "Publish now?"
 select fname in [p]ush,[a]bort;
 do
   if [ $REPLY = "p" ]; then
-    mkdir -p $update_site/features
-    mkdir -p $update_site/plugins
+    mkdir -p ${update_site}/features
+    mkdir -p ${update_site}/plugins
     echo "Pushing to update site..."
     cd $project_root/infinitest-eclipse
     printf "\n\n%s    %s    %s" "`date`" ${new_version} "${release_message}" >> ReleaseNotes.txt
     ruby update_rss.rb ${new_version} "${release_message}"
     cp rss.xml ${update_site}/
     cp ReleaseNotes.txt ${update_site}/
-    cp eclipse-site/target/classes/site.xml ${update_site}/
-    cp eclipse-feature/target/*.jar ${update_site}/features/
-    cp eclipse-plugin/target/*.jar ${update_site}/plugins/
+    cp site.xml ${update_site}/
+    cp target/org.infinitest.eclipse.feature_${new_version}.jar ${update_site}/features/
+    cp target/org.infinitest.eclipse_${new_version}.jar ${update_site}/plugins/
 
     #git commit -a -m "Releasing $new_version -- $release_message"
     #git push origin master

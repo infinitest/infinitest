@@ -9,7 +9,6 @@
 	<url>http://infinitest.github.com/</url>
 
 	<modules>
-		<module>embedded-lib-maven-plugin</module>
 		<module>infinitest-lib</module>
 		<module>infinitest-runner</module>
 		<module>infinitest-intellij</module>
