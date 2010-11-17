@@ -39,3 +39,5 @@ Thu Mar 18 22:51:06 CDT 2010    5.1.78    Fixed issue with missing libraries in 
 Fri Nov 12 18:03:28 CET 2010    5.1.80    First GPL version
 
 Mon Nov 15 15:08:15 CET 2010    5.1.81    Built with Google Guava and Latest JUnit 4.8.2
+
+Mer 17 nov 2010 07:53:20 CET    5.1.82    Merge back 5.1.79 changes
