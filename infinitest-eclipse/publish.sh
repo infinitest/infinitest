@@ -17,7 +17,7 @@ mv pom.xml.new pom.xml
 cd $project_root 
 
 # Build it!
-mvn clean install -o -Pintegration
+mvn clean install -Pintegration
 if [ "$?" -ne "0" ]; then
     cd $project_root
     git checkout infinitest-eclipse/pom.xml
