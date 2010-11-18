@@ -60,6 +60,12 @@
 		<filters>
 			<filter>${project.build.directory}/classpath.properties</filter>
 		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -121,6 +127,9 @@
 							<descriptors>
 								<descriptor>src/main/assembly/assembly-plugin.xml</descriptor>
 							</descriptors>
+							<archive>
+								<manifestFile>${project.build.directory}/classes/META-INF/MANIFEST.MF</manifestFile>
+							</archive>
 						</configuration>
 					</execution>
 					<execution>
@@ -148,6 +157,7 @@
 					<instructions>
 						<_include>target/classes/META-INF/MANIFEST.MF</_include>
 						<Export-Package>!*</Export-Package>
+						<Import-Package>!*</Import-Package>
 						<Bundle-Activator>org.infinitest.eclipse.InfinitestPlugin</Bundle-Activator>
 						<Bundle-Version>${plugin.version}</Bundle-Version>
 						<Bundle-SymbolicName>${plugin.id}; singleton:=true</Bundle-SymbolicName>

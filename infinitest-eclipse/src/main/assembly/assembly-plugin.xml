@@ -8,8 +8,8 @@
 	<fileSets>
 		<fileSet>
 			<filtered>true</filtered>
-			<outputDirectory></outputDirectory>
 			<directory>target/classes</directory>
+			<outputDirectory></outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>

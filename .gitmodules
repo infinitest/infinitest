@@ -1,3 +1,0 @@
-[submodule "website/site"]
-	path = website/site
-	url = git@github.com:infinitest/infinitest.github.com.git
