@@ -103,18 +103,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.8</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
 					<additionalConfig>
 						<file>
 							<name>.settings/org.eclipse.jdt.core.prefs</name>
-							<location>artifacts/eclipse_settings/org.eclipse.jdt.core.prefs</location>
+							<location>${project.build.directory}/../../artifacts/eclipse_settings/org.eclipse.jdt.core.prefs</location>
 						</file>
 						<file>
 							<name>.settings/org.eclipse.jdt.ui.prefs</name>
-							<location>artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
+							<location>${project.build.directory}/../../artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
 						</file>
 					</additionalConfig>
 				</configuration>
