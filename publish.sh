@@ -61,5 +61,3 @@ rm update_rss.rb
 cd ${main_site}
 git add .
 git commit -am "${release_message}"
-git tag -f "$TAG" -m "$TAG"
-
