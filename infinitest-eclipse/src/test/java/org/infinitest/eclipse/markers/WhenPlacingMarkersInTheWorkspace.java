@@ -21,9 +21,10 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.infinitest.eclipse.workspace.ResourceLookup;
@@ -40,7 +41,7 @@ public class WhenPlacingMarkersInTheWorkspace
     @Before
     public void inContext()
     {
-        event = createEvent("methodName", "message");
+        event = createEvent();
         lookup = mock(ResourceLookup.class);
         workspaceRoot = mock(IWorkspaceRoot.class);
     }
@@ -54,5 +55,10 @@ public class WhenPlacingMarkersInTheWorkspace
         MarkerPlacement placement = placer.findPlacement(event);
 
         assertSame(workspaceRoot, placement.getResource());
+    }
+
+    private static TestEvent createEvent()
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
     }
 }

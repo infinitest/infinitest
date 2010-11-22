@@ -22,7 +22,7 @@
 package org.infinitest.intellij;
 
 import static org.hamcrest.Matchers.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.awt.event.MouseEvent;
@@ -36,15 +36,13 @@ import org.junit.Test;
 
 public class WhenDoubleClickingTestEvent
 {
-    private static final Exception EXCEPTION = new Exception();
-
     @Test
     public void shouldNavigateToSource()
     {
         FakeSourceNavigator navigator = new FakeSourceNavigator();
 
         ResultClickListener listener = new ResultClickListener(navigator);
-        listener.mouseClicked(doubleClick(createEvent("Test", EXCEPTION)));
+        listener.mouseClicked(doubleClick(eventWithError()));
 
         assertThat(navigator.getClassName(), is(getClass().getName()));
         assertThat(navigator.getLine(), not(0));
@@ -61,5 +59,10 @@ public class WhenDoubleClickingTestEvent
                 return new TreePath(event);
             }
         }, 0, 0, 0, 0, 0, 2, false);
+    }
+
+    private static TestEvent eventWithError()
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", new Exception());
     }
 }

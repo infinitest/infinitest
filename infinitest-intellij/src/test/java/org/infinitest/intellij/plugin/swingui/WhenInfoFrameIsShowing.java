@@ -24,13 +24,14 @@ package org.infinitest.intellij.plugin.swingui;
 import static com.google.common.collect.Lists.*;
 import static org.infinitest.intellij.plugin.swingui.EventInfoFrame.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Test;
 
 public class WhenInfoFrameIsShowing
@@ -69,5 +70,10 @@ public class WhenInfoFrameIsShowing
         EventInfoFrame frame = new EventInfoFrame(methodFailed("message", "", assertionError));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private static TestEvent withATest()
+    {
+        return new TestEvent(TEST_CASE_STARTING, "", "", "", null);
     }
 }

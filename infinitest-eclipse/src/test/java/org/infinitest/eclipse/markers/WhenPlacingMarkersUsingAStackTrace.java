@@ -22,12 +22,13 @@
 package org.infinitest.eclipse.markers;
 
 import static java.util.Arrays.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IResource;
 import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,5 +74,10 @@ public class WhenPlacingMarkersUsingAStackTrace
                         new StackTraceElement("com.myco.Bar", "method", "file", 10),
                         new StackTraceElement(secondElementClass, "method", "file", SECOND_ELEMENT_LINE_NUMBER) };
         when(error.getStackTrace()).thenReturn(stackTrace);
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", error);
     }
 }

@@ -22,8 +22,9 @@
 package org.infinitest;
 
 import static org.easymock.EasyMock.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
+import junit.framework.AssertionFailedError;
 
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
@@ -33,6 +34,8 @@ import org.junit.Test;
 
 public class WhenWatchingMultipleCores
 {
+    private static final String TEST_NAME = "com.fakeco.TestFoo";
+
     private ResultCollector collector;
     private InfinitestCore core;
 
@@ -74,5 +77,10 @@ public class WhenWatchingMultipleCores
 
         collector.detachCore(core);
         assertFalse(collector.hasFailures());
+    }
+
+    private static TestEvent withFailingMethod(String methodName)
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
     }
 }

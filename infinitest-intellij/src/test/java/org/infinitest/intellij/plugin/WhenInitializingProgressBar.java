@@ -24,7 +24,7 @@ package org.infinitest.intellij.plugin;
 import static java.awt.Color.*;
 import static org.mockito.Mockito.*;
 
-import org.infinitest.FakeInfinitestCore;
+import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.FakeInfinitestAnnotator;
 import org.infinitest.intellij.FakeTestControl;
@@ -53,7 +53,7 @@ public class WhenInitializingProgressBar
 
     private void createPresenterWith(InfinitestView view)
     {
-        new InfinitestPresenter(new ResultCollector(), new FakeInfinitestCore(), view, new FakeTestControl(),
+        new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(),
                         new FakeInfinitestAnnotator());
     }
 }

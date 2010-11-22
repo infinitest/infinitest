@@ -22,11 +22,12 @@
 package org.infinitest.intellij;
 
 import static org.hamcrest.Matchers.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.infinitest.util.CollectionUtils.*;
-import static org.infinitest.util.EventFakeSupport.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator;
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,5 +70,10 @@ public class WhenAnnotatingClass
 
             return null;
         }
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", error);
     }
 }

@@ -23,7 +23,7 @@ package org.infinitest;
 
 import static com.google.common.collect.Iterables.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -38,12 +38,15 @@ import com.google.common.collect.Iterables;
 
 public class WhenTrackingTestResults extends ResultCollectorTestSupport
 {
+    private static final String TEST_NAME = "com.fakeco.TestFoo";
+    private static final String TEST_METHOD = "someMethod";
+
     @Test
     public void shouldOrderMostRecentFailuresFirst()
     {
-        TestEvent mostRecentFailure = eventWithError(new NullPointerException());
+        TestEvent mostRecentFailure = eventWithError();
 
-        testRun(eventWithError(new AssertionFailedError()));
+        testRun(eventWithError());
         testRun(mostRecentFailure);
 
         assertEquals(mostRecentFailure.getPointOfFailure(), collector.getPointOfFailure(0));
@@ -54,8 +57,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     {
         Throwable pointOfFailure = new AssertionFailedError().fillInStackTrace();
 
-        testRun(createEvent("method1", pointOfFailure), createEvent("method2", pointOfFailure),
-                        createEvent("method3", new AssertionError()));
+        testRun(eventWithError(pointOfFailure), eventWithError(pointOfFailure), eventWithError(new AssertionError()));
 
         assertEquals(2, collector.getPointOfFailureCount());
         assertEquals(3, collector.getFailures().size());
@@ -66,7 +68,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     {
         assertTrue(listener.failures.isEmpty());
 
-        TestEvent failure = eventWithError(new AssertionFailedError());
+        TestEvent failure = eventWithError();
         testRun(failure);
         assertEquals(failure, getOnlyElement(listener.failures));
     }
@@ -74,7 +76,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     @Test
     public void shouldClearResultsWhenStatusChangesToReloading()
     {
-        TestEvent event = eventWithError(new AssertionFailedError());
+        TestEvent event = eventWithError();
         testRun(event);
         collector.reloading();
 
@@ -86,7 +88,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     @Test
     public void shouldIndicateFailures()
     {
-        testRun(eventWithError(new AssertionFailedError()));
+        testRun(eventWithError());
 
         assertTrue(collector.hasFailures());
     }
@@ -94,13 +96,13 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     @Test
     public void shouldFireUpdateEventsWhenFailuresChange()
     {
-        TestEvent event = eventWithError(new AssertionFailedError());
+        TestEvent event = eventWithError();
         testRun(event);
         assertTrue(listener.removed.isEmpty());
         assertTrue(listener.changed.isEmpty());
 
         listener.clear();
-        event = eventWithError(new AssertionFailedError("Different message"));
+        event = eventWithError();
         testRun(event);
 
         assertSame(event, getOnlyElement(listener.changed));
@@ -143,7 +145,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
     @Test
     public void canClearAllData()
     {
-        testRun(withFailingMethod("shouldFoo"));
+        testRun(eventWithError());
         List<TestEvent> failures = collector.getFailures();
 
         assertEquals(1, failures.size());
@@ -154,5 +156,15 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport
         failures = collector.getFailures();
         assertEquals(0, failures.size());
         assertEquals(0, collector.getFailuresForPointOfFailure(pointOfFailure).size());
+    }
+
+    private static TestEvent eventWithError()
+    {
+        return eventWithError(new AssertionFailedError());
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, "", TEST_NAME, TEST_METHOD, error);
     }
 }

@@ -26,10 +26,10 @@ import static org.easymock.EasyMock.*;
 import static org.eclipse.swt.SWT.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
+import static org.infinitest.testrunner.TestEvent.*;
 
 import java.util.Collections;
 
-import org.infinitest.EventSupport;
 import org.infinitest.TestQueueEvent;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.infinitest.testrunner.TestCaseEvent;
@@ -75,7 +75,8 @@ public class WhenShowingStatusInTheStatusBar
         expectFailingColors();
         replay(statusBar);
 
-        presenter.testCaseComplete(EventSupport.testCaseFailing("Test", "method", new AssertionError()));
+        presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "",
+                        new AssertionError()))));
         verify(statusBar);
     }
 

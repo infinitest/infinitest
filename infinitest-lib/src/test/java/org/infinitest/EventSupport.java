@@ -40,6 +40,7 @@ import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.testrunner.TestResults;
+import org.infinitest.util.ThreadSafeFlag;
 
 public class EventSupport extends TestResultsAdapter implements StatusChangeListener, TestQueueListener
 {

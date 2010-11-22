@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.infinitest.TestQueueAdapter;
-import org.infinitest.ThreadSafeFlag;
+import org.infinitest.util.ThreadSafeFlag;
 import org.junit.Test;
 
 import com.fakeco.fakeproduct.TestJUnit4TestCase;

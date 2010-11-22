@@ -22,7 +22,7 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.hamcrest.Matchers.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.awt.Component;
@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 
 import junit.framework.AssertionFailedError;
 
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,7 +85,7 @@ public class WhenShowingMainFrame
     @Test
     public void shouldHaveIconToIndicateFailingTest()
     {
-        Object node = eventWithError(new AssertionFailedError());
+        Object node = eventWithError();
         JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
                         false, 0, false);
         assertThat(treeCell.getIcon().toString(), is(expectedIcon("failure")));
@@ -95,5 +96,10 @@ public class WhenShowingMainFrame
         ImageIcon expectedIcon = new ImageIcon(getClass().getResource(
                         "/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
         return expectedIcon.toString();
+    }
+
+    private static TestEvent eventWithError()
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
     }
 }

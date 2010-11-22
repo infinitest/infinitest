@@ -21,7 +21,7 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.awt.event.KeyEvent;
@@ -70,7 +70,7 @@ public class WhenUserClicksOnResultTree
 
     private EventInfoFrame getFrame()
     {
-        return new EventInfoFrame(eventWithError(new AssertionFailedError()));
+        return new EventInfoFrame(eventWithError());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class WhenUserClicksOnResultTree
     @Test
     public void shouldNotPopUpOnSingleClick()
     {
-        JTree tree = createFakeTree(eventWithError(new AssertionFailedError()));
+        JTree tree = createFakeTree(eventWithError());
         simulateClickEvent(tree, 1);
         assertTrue(paneEvents.isEmpty());
     }
@@ -101,7 +101,7 @@ public class WhenUserClicksOnResultTree
     @Test
     public void shouldPopUpInfoFrameOnTestNodeEnterKey()
     {
-        JTree tree = createFakeTree(eventWithError(new AssertionFailedError()));
+        JTree tree = createFakeTree(eventWithError());
         tree.setSelectionRow(1);
         simulateEnterKeyEvent(tree, KeyEvent.VK_ENTER);
         assertFalse(paneEvents.isEmpty());
@@ -118,7 +118,7 @@ public class WhenUserClicksOnResultTree
     @Test
     public void shouldUseDefaultBehaviorForOtherKeys()
     {
-        JTree tree = createFakeTree(eventWithError(new AssertionFailedError()));
+        JTree tree = createFakeTree(eventWithError());
         simulateEnterKeyEvent(tree, KeyEvent.VK_LEFT);
         assertTrue(paneEvents.isEmpty());
     }
@@ -146,5 +146,10 @@ public class WhenUserClicksOnResultTree
             {
             }
         };
+    }
+
+    private static TestEvent eventWithError()
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
     }
 }

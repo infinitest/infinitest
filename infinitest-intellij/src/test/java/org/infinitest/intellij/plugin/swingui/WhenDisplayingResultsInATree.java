@@ -21,7 +21,8 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.util.EventFakeSupport.*;
+import static java.util.Arrays.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -36,15 +37,19 @@ import junit.framework.AssertionFailedError;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
-import org.infinitest.ResultCollectorTestSupport;
+import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WhenDisplayingResultsInATree extends ResultCollectorTestSupport implements TreeModelListener
+public class WhenDisplayingResultsInATree implements TreeModelListener
 {
+    private static final String DEFAULT_TEST_NAME = "testName";
+
     private TreeModel model;
     private List<TreeModelEvent> treeEvents;
+    private ResultCollector collector;
 
     @Before
     public void inContext()
@@ -147,5 +152,20 @@ public class WhenDisplayingResultsInATree extends ResultCollectorTestSupport imp
     public void treeStructureChanged(TreeModelEvent e)
     {
         treeEvents.add(e);
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, "", "", "", error);
+    }
+
+    private void testRun(TestEvent... events)
+    {
+        String testName = DEFAULT_TEST_NAME;
+        if (events.length != 0)
+        {
+            testName = events[0].getTestName();
+        }
+        collector.testCaseComplete(new TestCaseEvent(testName, this, new TestResults(asList(events))));
     }
 }

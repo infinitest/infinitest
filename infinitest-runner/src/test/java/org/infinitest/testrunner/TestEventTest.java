@@ -22,7 +22,7 @@
 package org.infinitest.testrunner;
 
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
@@ -33,11 +33,9 @@ import java.util.List;
 import jdave.test.JDaveUtils;
 
 import org.infinitest.util.EqualityTestSupport;
-import org.infinitest.util.EventFakeSupport;
 import org.junit.Before;
 import org.junit.Test;
 
-//Move this to infinitest-runners
 public class TestEventTest extends EqualityTestSupport
 {
     private TestEvent event;
@@ -102,7 +100,7 @@ public class TestEventTest extends EqualityTestSupport
         catch (AssertionError e)
         {
             error = e;
-            event = EventFakeSupport.eventWithError(e);
+            event = eventWithError(e);
             verifyPointOfFailureMessage(e.getStackTrace()[2].getLineNumber());
         }
     }
@@ -111,7 +109,7 @@ public class TestEventTest extends EqualityTestSupport
     public void shouldFilterJdaveElementsFromPointOfFailure()
     {
         error = JDaveUtils.createException();
-        event = EventFakeSupport.eventWithError(error);
+        event = eventWithError(error);
         verifyPointOfFailureMessage(error.getStackTrace()[1].getLineNumber());
     }
 
@@ -159,5 +157,10 @@ public class TestEventTest extends EqualityTestSupport
         List<Object> unequals = super.createUnequalInstances();
         unequals.add(methodFailed("boo", getClass().getName(), "testMethod", new RuntimeException()));
         return unequals;
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, error.getMessage(), "", "", error);
     }
 }

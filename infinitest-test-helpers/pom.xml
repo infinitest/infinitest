@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.infinitest</groupId>
+		<artifactId>infinitest-parent</artifactId>
+		<version>5.1.84-SNAPSHOT</version>
+	</parent>
+
+	<name>Infinitest Test Helpers</name>
+	<artifactId>infinitest-test-helpers</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+	</dependencies>
+</project>

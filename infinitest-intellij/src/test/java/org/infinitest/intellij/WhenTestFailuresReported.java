@@ -29,7 +29,6 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
-import org.infinitest.FakeInfinitestCore;
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
@@ -47,7 +46,8 @@ public class WhenTestFailuresReported
     @Before
     public void setUp()
     {
-        InfinitestCore core = new FakeInfinitestCore();
+        // InfinitestCore core = new FakeInfinitestCore();
+        InfinitestCore core = mock(InfinitestCore.class);
         annotator = mock(InfinitestAnnotator.class);
         presenter = new InfinitestPresenter(new ResultCollector(core), core, new FakeInfinitestView(),
                         new FakeTestControl(), annotator);

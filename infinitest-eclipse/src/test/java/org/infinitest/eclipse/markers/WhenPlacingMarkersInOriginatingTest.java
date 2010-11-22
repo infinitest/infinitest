@@ -22,7 +22,7 @@
 package org.infinitest.eclipse.markers;
 
 import static com.google.common.collect.Lists.*;
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -34,6 +34,8 @@ import org.junit.Test;
 
 public class WhenPlacingMarkersInOriginatingTest
 {
+    private static final String TEST_NAME = "com.fakeco.TestFoo";
+
     private TestNamePlacementStrategy strategy;
     private TestEvent event;
     private IResource testResource;
@@ -63,5 +65,10 @@ public class WhenPlacingMarkersInOriginatingTest
     public void shouldReturnNullIfTestCannotBeFoundInWorkspace()
     {
         assertNull(strategy.getPlacement(event));
+    }
+
+    private static TestEvent eventWithError(Throwable error)
+    {
+        return new TestEvent(METHOD_FAILURE, "", TEST_NAME, "", error);
     }
 }

@@ -20,17 +20,6 @@
 					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -45,6 +34,12 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.infinitest</groupId>
+			<artifactId>infinitest-test-helpers</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-jdk1.5</artifactId>
 			<version>0.7.3</version>
@@ -53,19 +48,6 @@
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.7.1.GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.infinitest</groupId>
-			<artifactId>infinitest-runner</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>${easymock.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -77,6 +59,12 @@
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock</artifactId>
 			<version>2.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

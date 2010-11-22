@@ -32,7 +32,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
-import org.infinitest.ControlledEventQueue;
 import org.infinitest.eclipse.ResourceEventSupport;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.junit.Before;
@@ -53,7 +52,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport
         projectSet = createMock(ProjectSet.class);
         projects.add(new ProjectFacade(project));
         coreRegistry = createMock(CoreRegistry.class);
-        CoreFactory coreFactory = new CoreFactory(new ControlledEventQueue());
+        CoreFactory coreFactory = new CoreFactory(null);
         workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
 
         expect(projectSet.projects()).andReturn(projects);

@@ -21,12 +21,13 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.util.EventFakeSupport.*;
+import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,5 +71,10 @@ public class WhenRenderingTreeNodes
     {
         return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"))
                         .toString();
+    }
+
+    private static TestEvent withATest()
+    {
+        return new TestEvent(TEST_CASE_STARTING, "", "", "", null);
     }
 }

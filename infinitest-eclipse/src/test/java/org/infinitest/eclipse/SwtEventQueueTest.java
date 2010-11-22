@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 import java.util.concurrent.Semaphore;
 
 import org.infinitest.QueueDispatchException;
-import org.infinitest.ThreadSafeFlag;
+import org.infinitest.util.ThreadSafeFlag;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

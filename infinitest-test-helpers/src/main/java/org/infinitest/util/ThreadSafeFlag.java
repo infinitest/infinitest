@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Infinitest.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.infinitest;
+package org.infinitest.util;
 
 import static org.junit.Assert.*;
 
