@@ -9,7 +9,7 @@
 	
 	<name>Infinitest Plugin for Eclipse</name>
 	<groupId>org.infinitest.eclipse</groupId>
-	<artifactId>eclipse-plugin</artifactId>
+	<artifactId>infinitest-eclipse</artifactId>
 
 	<properties>
 		<plugin.version>${project.version}</plugin.version>
