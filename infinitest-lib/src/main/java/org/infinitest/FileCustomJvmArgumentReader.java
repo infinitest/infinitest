@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.AutoCloseInputStream;
 
 public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader
 {
@@ -52,8 +53,7 @@ public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader
 
         try
         {
-            @SuppressWarnings("unchecked")
-            List<String> lines = IOUtils.readLines(new FileInputStream(file));
+            List<String> lines = IOUtils.readLines(new AutoCloseInputStream(new FileInputStream(file)));
             if (lines.isEmpty())
             {
                 return emptyList();

@@ -103,7 +103,7 @@ public class CoreDependencySupport
         mockery.checking(new Expectations()
         {
             {
-                allowing(graph).setClasspathProvider(with(a(RuntimeEnvironment.class)));
+                allowing(graph).setClasspathProvider(with(any(RuntimeEnvironment.class)));
                 allowing(graph).setClasspathProvider((ClasspathProvider) with(nullValue()));
                 allowing(graph).clear();
                 allowing(graph).getCurrentTests();
