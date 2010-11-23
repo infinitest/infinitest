@@ -115,11 +115,5 @@
 			<artifactId>infinitest-lib</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>picocontainer</groupId>
-			<artifactId>picocontainer</artifactId>
-			<version>1.2</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>
