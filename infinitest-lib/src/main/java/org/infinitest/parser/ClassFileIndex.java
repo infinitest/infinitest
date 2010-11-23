@@ -34,14 +34,23 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
+
 public class ClassFileIndex
 {
-    private ClassBuilder builder;
+    private final ClassBuilder builder;
     private DirectedGraph<JavaClass, DefaultEdge> graph;
 
     public ClassFileIndex(ClasspathProvider classpath)
     {
-        builder = new JavaClassBuilder(classpath);
+        this(new JavaClassBuilder(classpath));
+    }
+
+    @VisibleForTesting
+    ClassFileIndex(ClassBuilder classBuilder)
+    {
+        builder = classBuilder;
         graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
     }
 
@@ -76,19 +85,14 @@ public class ClassFileIndex
 
     private JavaClass findClass(String classname)
     {
-        for (JavaClass each : graph.vertexSet())
+        for (JavaClass jClass : graph.vertexSet())
         {
-            if (each.getName().equals(classname))
+            if (jClass.getName().equals(classname))
             {
-                return each;
+                return jClass;
             }
         }
         return null;
-    }
-
-    private Collection<JavaClass> getParents(JavaClass childClass)
-    {
-        return predecessorListOf(graph, childClass);
     }
 
     private void addToIndex(JavaClass newClass)
@@ -100,19 +104,21 @@ public class ClassFileIndex
 
     private void addToGraph(JavaClass newClass)
     {
-        if (graph.containsVertex(newClass))
+        if (!graph.addVertex(newClass))
         {
             replaceVertex(newClass);
         }
-        else
-        {
-            graph.addVertex(newClass);
-        }
+    }
+
+    private List<JavaClass> getParents(JavaClass childClass)
+    {
+        return predecessorListOf(graph, childClass);
     }
 
     private void replaceVertex(JavaClass newClass)
     {
-        List<JavaClass> incomingEdges = predecessorListOf(graph, newClass);
+        List<JavaClass> incomingEdges = getParents(newClass);
+
         graph.removeVertex(newClass);
         graph.addVertex(newClass);
         for (JavaClass each : incomingEdges)
@@ -146,22 +152,30 @@ public class ClassFileIndex
         return javaClass;
     }
 
-    void findParents(Set<JavaClass> classes, Set<JavaClass> parents, JavaClass jclass)
+    // Loop through all changed classes, adding their parents (and their parents)
+    // to another set of changed classes
+    public Set<JavaClass> findChangedParents(Set<JavaClass> classes)
     {
-        parents.add(jclass);
-        for (JavaClass parentClass : getParents(jclass))
+        Set<JavaClass> changedParents = Sets.newHashSet(classes);
+        for (JavaClass jclass : classes)
         {
-            // If a parent class hasn't been checked before
-            // (and it's not already marked to be run),
-            // add it to the list of changed classes
-            if (!classes.contains(parentClass) && !parents.contains(parentClass) && !parentClass.equals(jclass))
+            findParents(jclass, changedParents);
+        }
+        return changedParents;
+    }
+
+    private void findParents(JavaClass jclass, Set<JavaClass> changedParents)
+    {
+        for (JavaClass parent : getParents(jclass))
+        {
+            if (changedParents.add(parent))
             {
-                findParents(classes, parents, parentClass);
+                findParents(parent, changedParents);
             }
         }
     }
 
-    public synchronized void clear()
+    public void clear()
     {
         graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
     }
@@ -185,10 +199,5 @@ public class ClassFileIndex
             classes.add(each.getName());
         }
         return classes;
-    }
-
-    void setBuilder(ClassBuilder builder)
-    {
-        this.builder = builder;
     }
 }

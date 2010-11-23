@@ -62,14 +62,7 @@ public class ClassFileTestDetector implements TestDetector
 
         // Find changed classes
         Set<JavaClass> changedClasses = index.findClasses(changedFiles);
-
-        // Loop through all changed classes, adding their parents (and their parents)
-        // to another set of changed classes
-        Set<JavaClass> changedParents = new HashSet<JavaClass>();
-        for (JavaClass jclass : changedClasses)
-        {
-            index.findParents(changedClasses, changedParents, jclass);
-        }
+        Set<JavaClass> changedParents = index.findChangedParents(changedClasses);
 
         // combine two sets
         changedClasses.addAll(changedParents);

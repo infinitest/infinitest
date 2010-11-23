@@ -48,9 +48,8 @@ public class ClassFileIndexTest
     @Before
     public void inContext()
     {
-        index = new ClassFileIndex(fakeClasspath());
         builder = createMock(ClassBuilder.class);
-        index.setBuilder(builder);
+        index = new ClassFileIndex(builder);
     }
 
     @Test

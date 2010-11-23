@@ -26,12 +26,7 @@ public abstract class AbstractJavaClass implements JavaClass
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof JavaClass)
-        {
-            JavaClass other = (JavaClass) obj;
-            return other.getName().equals(getName());
-        }
-        return false;
+        return obj instanceof JavaClass && ((JavaClass) obj).getName().equals(getName());
     }
 
     @Override

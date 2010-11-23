@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -135,11 +134,7 @@ public class LargeWorkspacePerformanceSimulation
         for (ClassFileIndex each : indexes)
         {
             Set<JavaClass> classes = each.findClasses(files.subList(0, filesChanges++ % 10));
-            Set<JavaClass> changedParents = new HashSet<JavaClass>();
-            for (JavaClass jclass : classes)
-            {
-                each.findParents(classes, changedParents, jclass);
-            }
+            each.findChangedParents(classes);
             print(".");
         }
     }

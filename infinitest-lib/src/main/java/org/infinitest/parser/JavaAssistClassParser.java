@@ -128,11 +128,17 @@ public class JavaAssistClassParser implements ClassParser
     public JavaClass parse(File file) throws IOException
     {
         FileInputStream inputStream = new FileInputStream(file);
-        CtClass ctClass = getClassPool().makeClass(inputStream);
-        JavaAssistClass clazz = new JavaAssistClass(ctClass);
-        clazz.setClassFile(file);
-        inputStream.close();
-        return clazz;
+        try
+        {
+            CtClass ctClass = getClassPool().makeClass(inputStream);
+            JavaAssistClass clazz = new JavaAssistClass(ctClass);
+            clazz.setClassFile(file);
+            return clazz;
+        }
+        finally
+        {
+            inputStream.close();
+        }
     }
 
     public void clear()
