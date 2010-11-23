@@ -29,6 +29,14 @@
 				<swt.version>3.5.2</swt.version>
 				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
 			</properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
 		</profile>
 		<profile>
 			<id>Unix</id>
@@ -41,6 +49,17 @@
 				<swt.version>3.5.2.v3557f</swt.version>
 				<swt.jar>org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar</swt.jar>
 			</properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-d32</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
 		</profile>
 		<profile>
 			<id>OSX</id>
@@ -53,6 +72,17 @@
 				<swt.version>3.4.1.v3449c</swt.version>
 				<swt.jar>org.eclipse.swt.carbon.macosx_3.4.0.v3448f.jar</swt.jar>
 			</properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-d32</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
 		</profile>
 	</profiles>
 
@@ -67,13 +97,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-d32</argLine>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
