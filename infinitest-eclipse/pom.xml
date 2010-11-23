@@ -26,6 +26,7 @@
 				</os>
 			</activation>
 			<properties>
+				<surefire.params></surefire.params>
 				<swt.version>3.5.2</swt.version>
 				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
 			</properties>
@@ -38,6 +39,7 @@
 				</os>
 			</activation>
 			<properties>
+				<surefire.params>-d32</surefire.params>
 				<swt.version>3.5.2.v3557f</swt.version>
 				<swt.jar>org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar</swt.jar>
 			</properties>
@@ -50,6 +52,7 @@
 				</os>
 			</activation>
 			<properties>
+				<surefire.params>-d32</surefire.params>
 				<swt.version>3.4.1.v3449c</swt.version>
 				<swt.jar>org.eclipse.swt.carbon.macosx_3.4.0.v3448f.jar</swt.jar>
 			</properties>
@@ -67,13 +70,13 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-d32</argLine>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${surefire.params}</argLine>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
