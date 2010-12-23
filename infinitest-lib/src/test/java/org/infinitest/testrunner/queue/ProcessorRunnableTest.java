@@ -24,8 +24,8 @@ package org.infinitest.testrunner.queue;
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -60,31 +60,25 @@ public class ProcessorRunnableTest
                 return additions.add(o);
             }
         };
-        QueueProcessor processor = createMock(QueueProcessor.class);
-        processor.close();
-        replay(processor);
+        QueueProcessor processor = mock(QueueProcessor.class);
 
-        ProcessorRunnable runnable = new ProcessorRunnable(queue, processor, null, 1,
-                        createNiceMock(ConcurrencyController.class));
+        ProcessorRunnable runnable = new ProcessorRunnable(queue, processor, null, 1, mock(ConcurrencyController.class));
         Thread.currentThread().interrupt();
         runnable.run();
         assertTrue(additions.isEmpty());
-        verify(processor);
+        verify(processor).close();
     }
 
     @Test
     public void shouldReQueueTestIfEventDispatchFails() throws InterruptedException, IOException
     {
         Queue<String> testQueue = newLinkedList(asList("test1"));
-        QueueProcessor processor = createMock(QueueProcessor.class);
-        processor.process("test1");
-        expectLastCall().andThrow(new QueueDispatchException(new Throwable()));
-        replay(processor);
+        QueueProcessor processor = mock(QueueProcessor.class);
+        doThrow(new QueueDispatchException(new Throwable())).when(processor).process("test1");
 
         ProcessorRunnable runnable = new ProcessorRunnable(testQueue, processor, null, 1,
-                        createMock(ConcurrencyController.class));
+                        mock(ConcurrencyController.class));
         runnable.run();
-        verify(processor);
         assertEquals("test1", getOnlyElement(testQueue));
     }
 }

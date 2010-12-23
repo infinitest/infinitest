@@ -21,8 +21,8 @@
  */
 package org.infinitest.eclipse.console;
 
-import static org.easymock.EasyMock.*;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,25 +35,24 @@ public class ConsolePopulatingListenerTest
     @Before
     public void inContext()
     {
-        writer = createMock(TextOutputWriter.class);
+        writer = mock(TextOutputWriter.class);
         listener = new ConsolePopulatingListener(writer);
     }
 
     @Test
     public void shouldWriteTestConsoleOutputToTheEclipseConsole()
     {
-        writer.appendText("some new text");
-        replay(writer);
         listener.consoleOutputUpdate("some new text", STDOUT);
+
+        verify(writer).appendText("some new text");
     }
 
     @Test
     public void shouldActivateTheConsoleWhenStdErrorOutputIsWritten()
     {
-        writer.appendText("some new text");
-        writer.activate();
-        replay(writer);
-
         listener.consoleOutputUpdate("some new text", STDERR);
+
+        verify(writer).appendText("some new text");
+        verify(writer).activate();
     }
 }

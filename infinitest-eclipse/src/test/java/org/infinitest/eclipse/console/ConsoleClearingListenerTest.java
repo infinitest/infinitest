@@ -22,7 +22,7 @@
 package org.infinitest.eclipse.console;
 
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import org.infinitest.TestQueueEvent;
 import org.junit.Before;
@@ -36,36 +36,31 @@ public class ConsoleClearingListenerTest
     @Before
     public void inContext()
     {
-        writer = createMock(TextOutputWriter.class);
+        writer = mock(TextOutputWriter.class);
         listener = new ConsoleClearingListener(writer);
     }
 
     @Test
     public void shouldClearConsoleWhenTestRunIsStarted()
     {
-        writer.clearConsole();
-        replay(writer);
-
         listener.testQueueUpdated(new TestQueueEvent(asList("test"), 1));
-        verify(writer);
+
+        verify(writer).clearConsole();
     }
 
     @Test
     public void shouldNotClearTheConsoleWhenTestsAreRunning()
     {
-        replay(writer);
-
         listener.testQueueUpdated(new TestQueueEvent(asList("test"), 2));
-        verify(writer);
+
+        verify(writer, never()).clearConsole();
     }
 
     @Test
     public void shouldClearTheConsoleWhenTheCoreIsReloaded()
     {
-        writer.clearConsole();
-        replay(writer);
-
         listener.reloading();
-        verify(writer);
+
+        verify(writer).clearConsole();
     }
 }

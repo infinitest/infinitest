@@ -23,8 +23,8 @@ package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.URI;
@@ -52,7 +52,7 @@ public class FakeResourceFinder implements ResourceFinder, ResourceLookup
 
     public IResource findResourceForSourceFile(String sourceFile)
     {
-        return createNiceMock(IResource.class);
+        return mock(IResource.class);
     }
 
     public IProject getProject(URI projectUri)
@@ -72,7 +72,7 @@ public class FakeResourceFinder implements ResourceFinder, ResourceLookup
 
     public IWorkspaceRoot workspaceRoot()
     {
-        return createNiceMock(IWorkspaceRoot.class);
+        return mock(IWorkspaceRoot.class);
     }
 
     public File findFileFor(IPath path)

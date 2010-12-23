@@ -21,8 +21,8 @@
  */
 package org.infinitest;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
@@ -32,8 +32,7 @@ public class WhenDetachingACoreFromTheQueueAggregator
     public void shouldRemoveFromMap()
     {
         QueueAggregator aggregator = new QueueAggregator();
-        InfinitestCore core = createNiceMock(InfinitestCore.class);
-        replay(core);
+        InfinitestCore core = mock(InfinitestCore.class);
         aggregator.attach(core);
         aggregator.detach(core);
         assertTrue(aggregator.getCoreQueueListeners().isEmpty());

@@ -21,37 +21,28 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.infinitest.EventQueue;
 import org.infinitest.NamedRunnable;
-import org.junit.Before;
 import org.junit.Test;
 
 public class WhenRespondingToResourceChangeEvents
 {
-    private EventQueue queue;
-
     private CoreUpdateNotifier chain;
-
-    @Before
-    public void inContext()
-    {
-        queue = createMock(EventQueue.class);
-        chain = new CoreUpdateNotifier(queue);
-        chain.addProcessor(new MockProcessor());
-    }
 
     @Test
     public void shouldProcessEventsOnEventQueue()
     {
-        queue.pushNamed((NamedRunnable) anyObject());
-        IResourceChangeEvent event = createMock(IResourceChangeEvent.class);
-        replay(queue, event);
+        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+        EventQueue queue = mock(EventQueue.class);
 
+        chain = new CoreUpdateNotifier(queue);
+        chain.addProcessor(new MockProcessor());
         chain.processEvent(event);
 
-        verify(queue);
+        verify(queue).pushNamed(any(NamedRunnable.class));
     }
 }

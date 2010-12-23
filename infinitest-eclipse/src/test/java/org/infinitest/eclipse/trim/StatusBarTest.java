@@ -21,9 +21,9 @@
  */
 package org.infinitest.eclipse.trim;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.swt.SWT.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.layout.RowData;
 import org.infinitest.eclipse.PluginActivationController;
@@ -53,9 +53,7 @@ public class StatusBarTest
     @Test
     public void shouldRegisterStatusPluginController()
     {
-        final PluginActivationController mockController = createMock(PluginActivationController.class);
-        mockController.attachVisualStatus(isA(StatusBar.class));
-        replay(mockController);
+        final PluginActivationController mockController = mock(PluginActivationController.class);
         StatusBar statusBar = new StatusBar()
         {
             @Override
@@ -66,6 +64,6 @@ public class StatusBarTest
         };
         statusBar.init(null);
 
-        verify(mockController);
+        verify(mockController).attachVisualStatus(statusBar);
     }
 }

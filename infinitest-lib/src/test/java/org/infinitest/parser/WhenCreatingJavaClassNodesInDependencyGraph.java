@@ -24,10 +24,10 @@ package org.infinitest.parser;
 import static java.io.File.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
-import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,10 +99,10 @@ public class WhenCreatingJavaClassNodesInDependencyGraph
     @Test
     public void shouldReturnUnparsableClassIfErrorOccursWhileParsing()
     {
-        ClassParser parser = createMock(ClassParser.class);
-        expect(parser.getClass("MyClassName")).andThrow(new RuntimeException(new NotFoundException("")));
+        ClassParser parser = mock(ClassParser.class);
+        when(parser.getClass("MyClassName")).thenThrow(new RuntimeException(new NotFoundException("")));
+
         builder = new JavaClassBuilder(parser);
-        replay(parser);
 
         assertThat(builder.createClass("MyClassName"), instanceOf(UnparsableClass.class));
     }

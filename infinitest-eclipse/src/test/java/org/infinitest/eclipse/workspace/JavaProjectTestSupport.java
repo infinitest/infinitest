@@ -21,7 +21,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,31 +39,29 @@ public abstract class JavaProjectTestSupport
 
     public static void expectProjectLocationFor(IJavaProject project, String projectName) throws JavaModelException
     {
-        IResource projectResource = createMock(IResource.class);
-        expect(projectResource.getLocation()).andReturn(new Path(PATH_TO_WORKSPACE + projectName)).anyTimes();
-        expect(project.getCorrespondingResource()).andReturn(projectResource).anyTimes();
-        replay(projectResource);
+        IResource projectResource = mock(IResource.class);
+        when(projectResource.getLocation()).thenReturn(new Path(PATH_TO_WORKSPACE + projectName));
+        when(project.getCorrespondingResource()).thenReturn(projectResource);
     }
 
     public static void outputLocationExpectation(IJavaProject project, String baseDir) throws JavaModelException
     {
-        expect(project.getOutputLocation()).andReturn(new Path(baseDir + "/target/classes/")).anyTimes();
+        when(project.getOutputLocation()).thenReturn(new Path(baseDir + "/target/classes/"));
     }
 
     public static void expectClasspathFor(IJavaProject project, IClasspathEntry... entries) throws JavaModelException
     {
-        expect(project.getResolvedClasspath(true)).andReturn(entries).anyTimes();
+        when(project.getResolvedClasspath(true)).thenReturn(entries);
     }
 
     public static IJavaProject createMockProject(String projectPath, IClasspathEntry... entries)
                     throws JavaModelException, URISyntaxException
     {
-        IJavaProject javaProject = createMock(IJavaProject.class);
-        IProject project = createMock(IProject.class);
-        expect(project.getLocationURI()).andReturn(new URI(projectPath));
-        replay(project);
-        expect(javaProject.getProject()).andReturn(project);
-        expect(javaProject.getPath()).andReturn(new Path(projectPath)).anyTimes();
+        IJavaProject javaProject = mock(IJavaProject.class);
+        IProject project = mock(IProject.class);
+        when(project.getLocationURI()).thenReturn(new URI(projectPath));
+        when(javaProject.getProject()).thenReturn(project);
+        when(javaProject.getPath()).thenReturn(new Path(projectPath));
         expectProjectLocationFor(javaProject, projectPath);
         expectClasspathFor(javaProject, entries);
         outputLocationExpectation(javaProject, projectPath);

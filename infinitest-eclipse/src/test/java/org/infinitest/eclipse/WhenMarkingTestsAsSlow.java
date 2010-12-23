@@ -22,9 +22,9 @@
 package org.infinitest.eclipse;
 
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -44,7 +44,7 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport
     @Before
     public void inContext()
     {
-        resourceLookup = createMock(ResourceLookup.class);
+        resourceLookup = mock(ResourceLookup.class);
         MethodStats stats = new MethodStats("shouldRunSlowly");
         stats.stopTime = 5000;
         marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup);
@@ -53,9 +53,8 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport
     @Test
     public void shouldPlaceMarkerInSlowTest() throws CoreException
     {
-        IResource resource = createMock(IResource.class);
-        expect(resourceLookup.findResourcesForClassName(TEST_NAME)).andReturn(asList(resource));
-        replay(resourceLookup);
+        IResource resource = mock(IResource.class);
+        when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(asList(resource));
         assertSame(resource, marker.associatedResource());
     }
 

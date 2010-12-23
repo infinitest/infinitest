@@ -21,9 +21,10 @@
  */
 package org.infinitest.testrunner;
 
-import static org.easymock.EasyMock.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 
@@ -48,24 +49,22 @@ public class ResultProcessorTest
     public void inContext() throws IOException
     {
         eventAssert = new EventSupport();
-        factory = createMock(ProcessConnectionFactory.class);
+        factory = mock(ProcessConnectionFactory.class);
         runnerEventSupport = new RunnerEventSupport(this);
         runnerEventSupport.addTestQueueListener(eventAssert);
         runnerEventSupport.addTestStatusListener(eventAssert);
-        connection = createMock(ProcessConnection.class);
-        expect(factory.getConnection((RuntimeEnvironment) eq(null), (OutputStreamHandler) anyObject())).andReturn(
+        connection = mock(ProcessConnection.class);
+        when(factory.getConnection((RuntimeEnvironment) isNull(), any(OutputStreamHandler.class))).thenReturn(
                         connection);
-        replay(factory);
         reader = new TestQueueProcessor(runnerEventSupport, factory, null);
         connection.close();
 
-        expect(connection.runTest("test1")).andReturn(new TestResults());
+        when(connection.runTest("test1")).thenReturn(new TestResults());
     }
 
     @Test
     public void shouldRunGivenTest() throws Exception
     {
-        replay(connection);
         reader.process("test1");
         reader.close();
 
@@ -73,28 +72,26 @@ public class ResultProcessorTest
         eventAssert.assertTestPassed("test1");
         eventAssert.assertRunComplete();
 
-        verify(factory, connection);
+        verify(connection).runTest("test1");
     }
 
     @Test
     public void shouldOnlyOpenOneConnection() throws Exception
     {
-        expect(connection.runTest("test2")).andReturn(new TestResults());
+        when(connection.runTest("test2")).thenReturn(new TestResults());
 
-        replay(connection);
         reader.process("test1");
         reader.process("test2");
         reader.close();
         eventAssert.assertRunComplete();
 
-        verify(factory, connection);
+        verify(factory, times(1)).getConnection(any(RuntimeEnvironment.class), any(OutputStreamHandler.class));
     }
 
     @Test
     public void shouldFireStartingEventBeforeTestStarts() throws Exception
     {
-        expect(connection.runTest("test2")).andThrow(new RuntimeException());
-        replay(connection);
+        when(connection.runTest("test2")).thenThrow(new RuntimeException());
         try
         {
             reader.process("test2");
@@ -109,6 +106,6 @@ public class ResultProcessorTest
 
         eventAssert.assertEventsReceived(TEST_CASE_STARTING);
         eventAssert.assertRunComplete();
-        verify(factory);
+        verify(connection).runTest("test2");
     }
 }

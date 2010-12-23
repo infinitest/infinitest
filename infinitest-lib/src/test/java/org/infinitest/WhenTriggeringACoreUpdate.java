@@ -23,8 +23,8 @@ package org.infinitest;
 
 import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Sets.*;
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.Collections;
@@ -47,31 +47,28 @@ public class WhenTriggeringACoreUpdate
     public void inContext()
     {
         updatedFiles = newArrayList();
-        core = new DefaultInfinitestCore(createMock(TestRunner.class), new ControlledEventQueue());
-        testDetector = createMock(TestDetector.class);
-        expect(testDetector.getCurrentTests()).andReturn(Collections.<String> emptySet()).times(2);
+        core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
+        testDetector = mock(TestDetector.class);
+        when(testDetector.getCurrentTests()).thenReturn(Collections.<String> emptySet());
         core.setTestDetector(testDetector);
     }
 
     private void testsToExpect(JavaClass... tests)
     {
-        expect(testDetector.findTestsToRun(updatedFiles)).andReturn(newHashSet(tests));
+        when(testDetector.findTestsToRun(updatedFiles)).thenReturn(newHashSet(tests));
     }
 
     @Test
     public void canUseAKnownListOfChangedFilesToReduceFileSystemAccess()
     {
         testsToExpect();
-        replay(testDetector);
         core.update(updatedFiles);
-        verify(testDetector);
     }
 
     @Test
     public void shouldReturnTheNumberOfTestsRun()
     {
         testsToExpect(new FakeJavaClass("FakeTest"));
-        replay(testDetector);
 
         assertEquals(1, core.update(updatedFiles));
     }

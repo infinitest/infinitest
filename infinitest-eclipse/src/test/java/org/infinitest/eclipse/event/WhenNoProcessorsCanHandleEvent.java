@@ -21,7 +21,7 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import org.infinitest.EventQueue;
 import org.junit.Test;
@@ -31,11 +31,10 @@ public class WhenNoProcessorsCanHandleEvent
     @Test
     public void shouldDoNothing()
     {
-        EventQueue eventQueue = createMock(EventQueue.class);
-        replay(eventQueue);
+        EventQueue eventQueue = mock(EventQueue.class);
 
         CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
         factory.processEvent(null);
-        verify(eventQueue);
+        verifyZeroInteractions(eventQueue);
     }
 }

@@ -21,11 +21,10 @@
  */
 package org.infinitest;
 
-import static java.util.Collections.*;
-import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assume.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.Collection;
@@ -39,8 +38,6 @@ import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.InProcessRunner;
 import org.infinitest.util.InfinitestTestUtils;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.junit.Test;
 
 import com.fakeco.fakeproduct.TestFakeProduct;
@@ -95,24 +92,9 @@ public class CoreDependencySupport
         };
     }
 
-    @SuppressWarnings("unchecked")
     public static TestDetector withNoTestsToRun()
     {
-        Mockery mockery = new Mockery();
-        final TestDetector graph = mockery.mock(TestDetector.class);
-        mockery.checking(new Expectations()
-        {
-            {
-                allowing(graph).setClasspathProvider(with(any(RuntimeEnvironment.class)));
-                allowing(graph).setClasspathProvider((ClasspathProvider) with(nullValue()));
-                allowing(graph).clear();
-                allowing(graph).getCurrentTests();
-                will(returnValue(emptySet()));
-                allowing(graph).findTestsToRun(with(any(Set.class)));
-                will(returnValue(emptySet()));
-            }
-        });
-        return graph;
+        return mock(TestDetector.class);
     }
 
     public static ChangeDetector withChangedFiles(Class<?>... changedClasses)

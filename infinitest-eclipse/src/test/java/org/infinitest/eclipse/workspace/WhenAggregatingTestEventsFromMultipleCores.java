@@ -23,9 +23,9 @@ package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -49,27 +49,23 @@ public class WhenAggregatingTestEventsFromMultipleCores
     {
         events = newArrayList();
         aggregator = new TestResultAggregator();
-        core = createMock(InfinitestCore.class);
+        core = mock(InfinitestCore.class);
     }
 
     @Test
     public void shouldAttachToNewCores()
     {
-        core.addTestResultsListener(aggregator);
-        replay(core);
-
         aggregator.coreCreated(core);
-        verify(core);
+
+        verify(core).addTestResultsListener(aggregator);
     }
 
     @Test
     public void shouldDetachFromRemovedCores()
     {
-        core.removeTestResultsListener(aggregator);
-        replay(core);
-
         aggregator.coreRemoved(core);
-        verify(core);
+
+        verify(core).removeTestResultsListener(aggregator);
     }
 
     @Test

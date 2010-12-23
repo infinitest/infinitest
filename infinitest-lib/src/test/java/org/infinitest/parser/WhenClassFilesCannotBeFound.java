@@ -21,8 +21,9 @@
  */
 package org.infinitest.parser;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,11 +37,11 @@ public class WhenClassFilesCannotBeFound
     @Test
     public void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException
     {
-        ClassParser mockParser = createMock(ClassParser.class);
+        ClassParser mockParser = mock(ClassParser.class);
         JavaClassBuilder builder = new JavaClassBuilder(mockParser);
         NotFoundException cause = new NotFoundException("");
-        expect(mockParser.parse((File) anyObject())).andThrow(new RuntimeException(cause));
-        replay(mockParser);
+        when(mockParser.parse(any(File.class))).thenThrow(new RuntimeException(cause));
+
         assertNull(builder.loadClass(new File("")));
     }
 }

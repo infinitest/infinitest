@@ -21,8 +21,8 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.junit.Test;
@@ -33,8 +33,7 @@ public class WhenDispatchingEventProcessingOnTheEventQueue
     public void shouldInvokeTheProcessorFromARunnable()
     {
         MockProcessor processor = new MockProcessor();
-        IResourceChangeEvent event = createNiceMock(IResourceChangeEvent.class);
-        replay(event);
+        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
         EventProcessorRunnable runnable = new EventProcessorRunnable(processor, event);
         runnable.run();
         assertEquals(event, processor.getEvent());

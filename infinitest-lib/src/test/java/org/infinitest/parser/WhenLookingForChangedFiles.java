@@ -22,16 +22,15 @@
 package org.infinitest.parser;
 
 import static java.util.Collections.*;
-import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -77,12 +76,11 @@ public class WhenLookingForChangedFiles
     @Test
     public void shouldLookInClasspathForFiles()
     {
-        ClasspathProvider mockClasspath = createMock(ClasspathProvider.class);
-        expect(mockClasspath.classDirectoriesInClasspath()).andReturn(Collections.<File> emptyList());
-        replay(mockClasspath);
+        ClasspathProvider mockClasspath = mock(ClasspathProvider.class);
 
         new FileChangeDetector().setClasspathProvider(mockClasspath);
-        verify(mockClasspath);
+
+        verify(mockClasspath).classDirectoriesInClasspath();
     }
 
     @Test

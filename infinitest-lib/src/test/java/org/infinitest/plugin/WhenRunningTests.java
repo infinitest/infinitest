@@ -21,10 +21,10 @@
  */
 package org.infinitest.plugin;
 
-import static org.easymock.EasyMock.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.infinitest.ConcurrencyController;
 import org.infinitest.EventSupport;
@@ -49,7 +49,7 @@ public class WhenRunningTests
         if (eventHistory == null)
         {
             InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue());
-            builder.setUpdateSemaphore(createMock(ConcurrencyController.class));
+            builder.setUpdateSemaphore(mock(ConcurrencyController.class));
             builder.setFilter(new InfinitestTestFilter());
             InfinitestCore core = builder.createCore();
             collector = new ResultCollector(core);

@@ -22,12 +22,12 @@
 package org.infinitest.eclipse.markers;
 
 import static com.google.common.collect.Iterables.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.eclipse.PluginConstants.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
@@ -96,7 +96,7 @@ public class WhenCreatingMarkers
     @Test
     public void shouldIgnoredRemovedMarkersThatDontExist()
     {
-        registry.removeMarker(createMock(MarkerInfo.class));
+        registry.removeMarker(mock(MarkerInfo.class));
     }
 
     @Test

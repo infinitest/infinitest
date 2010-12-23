@@ -23,11 +23,11 @@ package org.infinitest.eclipse.resolution;
 
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,17 +66,14 @@ public class WhenDisplayingTestFailureDetails
     @Test
     public void printStackTraceWithSourceFileLinksUsingInternalJavaStackTraceConsole() throws Exception
     {
-        IMarker marker = createMock(IMarker.class);
+        IMarker marker = mock(IMarker.class);
         StackTraceElement element = new StackTraceElement("", "", "", 0);
         Object pickledStackTrace = pickle(new StackTraceElement[] { element });
-        expect(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE)).andReturn(pickledStackTrace);
-        expect(marker.getAttribute(MESSAGE)).andReturn("message");
-        replay(marker);
+        when(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE)).thenReturn(pickledStackTrace);
+        when(marker.getAttribute(MESSAGE)).thenReturn("message");
 
         resolution.run(marker);
         assertEquals(element, getOnlyElement(actualStackTrace));
         assertEquals("message", actualMessage);
-
-        verify(marker);
     }
 }

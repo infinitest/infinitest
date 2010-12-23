@@ -23,11 +23,12 @@ package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.eclipse.util.StatusMatchers.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.URI;
@@ -57,17 +58,17 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
     public void inContext() throws CoreException
     {
         projects = newArrayList();
-        projectSet = createMock(ProjectSet.class);
+        projectSet = mock(ProjectSet.class);
         projects.add(newFacade(project));
-        coreRegistry = createMock(CoreRegistry.class);
+        coreRegistry = mock(CoreRegistry.class);
         CoreFactory coreFactory = new CoreFactory(null);
-        workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
 
-        expect(projectSet.projects()).andReturn(projects);
-        expect(projectSet.hasErrors()).andReturn(false);
+        when(projectSet.projects()).thenReturn(projects);
+        when(projectSet.hasErrors()).thenReturn(false);
         List<File> outputDirs = emptyList();
-        expect(projectSet.outputDirectories((EclipseProject) anyObject())).andReturn(outputDirs).anyTimes();
-        replay(projectSet);
+        when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);
+
+        workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
     }
 
     private ProjectFacade newFacade(IJavaProject project)
@@ -85,20 +86,19 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
     @Test
     public void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException
     {
-        expect(coreRegistry.getCore(projectAUri())).andReturn(null);
-        coreRegistry.addCore(eq(projectAUri()), (InfinitestCore) anyObject());
-        replay(coreRegistry);
+        URI projectAUri = projectAUri();
+        when(coreRegistry.getCore(projectAUri)).thenReturn(null);
 
         workspace.updateProjects();
 
         assertStatusIs(noTestsRun());
+        verify(coreRegistry).addCore(eq(projectAUri), any(InfinitestCore.class));
     }
 
     @Test
     public void shouldFireAnEvent() throws CoreException
     {
-        expectCoreUpdateForProject(projectAUri());
-        replay(coreRegistry);
+        InfinitestCore core = prepateCore(projectAUri(), 10);
 
         workspace.addUpdateListeners(new UpdateListener()
         {
@@ -110,37 +110,44 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
 
         workspace.updateProjects();
         assertEquals(1, updates);
+        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
     }
 
     @Test
     public void shouldUpdateCoreOnAutoBuild() throws CoreException
     {
-        InfinitestCore core = expectCoreUpdateForProject(projectAUri());
-        replay(coreRegistry);
+        InfinitestCore core = prepateCore(projectAUri(), 10);
 
         workspace.updateProjects();
 
-        verify(coreRegistry, core);
         assertStatusIs(findingTests(0));
+        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+
+    }
+
+    private InfinitestCore prepateCore(URI projectAUri, int numberOfTestsRun)
+    {
+        InfinitestCore core = mock(InfinitestCore.class);
+        when(core.update()).thenReturn(numberOfTestsRun);
+        when(coreRegistry.getCore(projectAUri)).thenReturn(core);
+        return core;
     }
 
     @Test
     public void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException
     {
-        InfinitestCore core = expectCoreUpdateForProject(projectAUri(), 0);
-        replay(coreRegistry);
+        InfinitestCore core = prepateCore(projectAUri(), 0);
 
         workspace.updateProjects();
 
         assertStatusIs(noTestsRun());
-        verify(coreRegistry, core);
+        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
     }
 
     @Test
     public void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException
     {
         projects.clear();
-        replay(coreRegistry);
 
         workspace.updateProjects();
 
@@ -151,7 +158,6 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
     public void shouldFireEventIfStatusChanges() throws CoreException
     {
         projects.clear();
-        replay(coreRegistry);
         workspace.addStatusListeners(new WorkspaceStatusListener()
         {
             public void statusChanged(WorkspaceStatus newStatus)
@@ -172,32 +178,16 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
         URI projectBUri = projectB.getProject().getLocationURI();
         projects.add(newFacade(projectB));
 
-        InfinitestCore coreA = expectCoreUpdateForProject(projectAUri());
-        InfinitestCore coreB = expectCoreUpdateForProject(projectBUri);
-        replay(coreRegistry);
+        InfinitestCore coreA = prepateCore(projectAUri(), 10);
+        InfinitestCore coreB = prepateCore(projectBUri, 10);
 
         workspace.updateProjects();
-        verify(coreRegistry, coreA, coreB);
-    }
-
-    private InfinitestCore expectCoreUpdateForProject(URI projectAUri)
-    {
-        return expectCoreUpdateForProject(projectAUri, 10);
-    }
-
-    private InfinitestCore expectCoreUpdateForProject(URI projectAUri, int numberOfTestsRun)
-    {
-        InfinitestCore core = createMock(InfinitestCore.class);
-        expect(core.update()).andReturn(numberOfTestsRun);
-        core.setRuntimeEnvironment((RuntimeEnvironment) anyObject());
-        expect(coreRegistry.getCore(projectAUri)).andReturn(core);
-        replay(core);
-        return core;
+        verify(coreA).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+        verify(coreB).setRuntimeEnvironment(any(RuntimeEnvironment.class));
     }
 
     private void assertStatusIs(WorkspaceStatus expectedStatus)
     {
         assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
-        verify(coreRegistry);
     }
 }

@@ -23,11 +23,12 @@ package org.infinitest;
 
 import static com.google.common.collect.Iterables.*;
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 
@@ -50,13 +51,13 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport
     @Test
     public void canAttachToCore()
     {
-        InfinitestCore core = createMock(InfinitestCore.class);
-        core.addTestQueueListener(isA(TestQueueListener.class));
-        core.addTestResultsListener(isA(ResultCollector.class));
-        core.addDisabledTestListener(isA(DisabledTestListener.class));
-        replay(core);
+        InfinitestCore core = mock(InfinitestCore.class);
+
         new ResultCollector(core);
-        verify(core);
+
+        verify(core).addTestQueueListener(any(TestQueueListener.class));
+        verify(core).addTestResultsListener(any(ResultCollector.class));
+        verify(core).addDisabledTestListener(any(DisabledTestListener.class));
     }
 
     @Test

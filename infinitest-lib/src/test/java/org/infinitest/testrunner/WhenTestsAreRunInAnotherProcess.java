@@ -23,7 +23,6 @@ package org.infinitest.testrunner;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.logging.Level.*;
-import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
 import static org.infinitest.CoreDependencySupport.*;
@@ -34,6 +33,7 @@ import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.infinitest.util.InfinitestUtils.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -140,14 +140,13 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest
     @Test
     public void canControlParallelUpdatesOfCores() throws Exception
     {
-        ConcurrencyController controller = createMock(ConcurrencyController.class);
-        controller.acquire();
-        controller.release();
-        replay(controller);
+        ConcurrencyController controller = mock(ConcurrencyController.class);
 
         runner.setConcurrencyController(controller);
         runTest(PASSING_TEST.getName());
-        verify(controller);
+
+        verify(controller).acquire();
+        verify(controller).release();
     }
 
     // FIXME This is a horrible, horrible test...and guess what? It fails inconsistently!

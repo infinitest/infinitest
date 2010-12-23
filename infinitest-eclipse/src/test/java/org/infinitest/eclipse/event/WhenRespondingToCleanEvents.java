@@ -21,10 +21,12 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.net.URI;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -44,28 +46,25 @@ public class WhenRespondingToCleanEvents extends ResourceEventSupport
     @Before
     public void inContext()
     {
-        coreRegistry = createMock(CoreRegistry.class);
-        processor = new CleanEventProcessor(coreRegistry, createMock(ProjectSet.class));
+        coreRegistry = mock(CoreRegistry.class);
+        processor = new CleanEventProcessor(coreRegistry, mock(ProjectSet.class));
     }
 
     @Test
     public void shouldRemoveCoreOnACleanBuild() throws JavaModelException
     {
         processor = new CleanEventProcessor(coreRegistry, new FakeProjectSet(project));
-        coreRegistry.removeCore(eq(projectAUri()));
-        replay(coreRegistry);
-
         processEvent(cleanBuildEvent());
-        verify(coreRegistry);
+
+        URI projectAUri = projectAUri();
+        verify(coreRegistry).removeCore(projectAUri);
     }
 
     @Test
     public void shouldHandleACleanBuildOnAnUnIndexedProject() throws JavaModelException
     {
-        replay(coreRegistry);
-
         processEvent(cleanBuildEvent());
-        verify(coreRegistry);
+        verifyZeroInteractions(coreRegistry);
     }
 
     @Test

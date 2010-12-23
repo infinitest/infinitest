@@ -21,9 +21,10 @@
  */
 package org.infinitest;
 
-import static org.easymock.EasyMock.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import junit.framework.AssertionFailedError;
 
 import org.infinitest.testrunner.TestCaseEvent;
@@ -43,23 +44,21 @@ public class WhenWatchingMultipleCores
     public void inContext()
     {
         collector = new ResultCollector();
-        core = createMock(InfinitestCore.class);
+        core = mock(InfinitestCore.class);
     }
 
     @Test
     public void canAttachAndDetachFromCores()
     {
-        core.addTestQueueListener(isA(TestQueueListener.class));
-        core.addTestResultsListener(collector);
-        core.addDisabledTestListener(collector);
-        core.removeTestQueueListener(isA(TestQueueListener.class));
-        core.removeTestResultsListener(collector);
-        core.removeDisabledTestListener(collector);
-        replay(core);
-
         collector.attachCore(core);
         collector.detachCore(core);
-        verify(core);
+
+        verify(core).addTestQueueListener(any(TestQueueListener.class));
+        verify(core).addTestResultsListener(collector);
+        verify(core).addDisabledTestListener(collector);
+        verify(core).removeTestQueueListener(any(TestQueueListener.class));
+        verify(core).removeTestResultsListener(collector);
+        verify(core).removeDisabledTestListener(collector);
     }
 
     @Test
@@ -67,16 +66,17 @@ public class WhenWatchingMultipleCores
     {
         TestEvent event = withFailingMethod("method1");
         TestCaseEvent caseEvent = new TestCaseEvent(TEST_NAME, this, new TestResults(event));
-        core.removeTestQueueListener(null);
-        core.removeTestResultsListener(collector);
-        core.removeDisabledTestListener(collector);
-        expect(core.isEventSourceFor(caseEvent)).andReturn(true);
-        replay(core);
+        when(core.isEventSourceFor(caseEvent)).thenReturn(true);
+
         collector.testCaseComplete(caseEvent);
         assertTrue(collector.hasFailures());
 
         collector.detachCore(core);
         assertFalse(collector.hasFailures());
+
+        verify(core).removeTestQueueListener(null);
+        verify(core).removeTestResultsListener(collector);
+        verify(core).removeDisabledTestListener(collector);
     }
 
     private static TestEvent withFailingMethod(String methodName)

@@ -21,10 +21,10 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IMarker;
@@ -43,15 +43,14 @@ public class WhenGeneratingQuickFixesForErrorMarkers
     public void setUp()
     {
         generator = new MarkerResolutionGenerator();
-        marker = createMock(IMarker.class);
+        marker = mock(IMarker.class);
     }
 
     @Test
     public void shouldIncludePrintStackTraceIfMarkerHasAStackTrace() throws Exception
     {
-        expect(marker.getAttribute(TEST_NAME_ATTRIBUTE)).andReturn("TestName").anyTimes();
-        expect(marker.getAttribute(METHOD_NAME_ATTRIBUTE)).andReturn("methodName").anyTimes();
-        replay(marker);
+        when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenReturn("TestName");
+        when(marker.getAttribute(METHOD_NAME_ATTRIBUTE)).thenReturn("methodName");
 
         assertTrue(generator.hasResolutions(marker));
         IMarkerResolution resolution = generator.getResolutions(marker)[0];
@@ -61,20 +60,20 @@ public class WhenGeneratingQuickFixesForErrorMarkers
     @Test
     public void shouldNotAddResolutionsToMarkersWithNoStackTrace() throws Exception
     {
-        IMarker marker = createMock(IMarker.class);
-        expect(marker.getAttribute(TEST_NAME_ATTRIBUTE)).andReturn(null).anyTimes();
-        replay(marker);
+        IMarker marker = mock(IMarker.class);
+        when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenReturn(null);
 
         assertFalse(generator.hasResolutions(marker));
         assertEquals(0, generator.getResolutions(marker).length);
     }
+    
 
     @Test
     public void shouldNotHaveResolutionIfMarkerThrowsResourceException() throws CoreException
     {
-        IMarker marker = createMock(IMarker.class);
-        expect(marker.getAttribute(TEST_NAME_ATTRIBUTE)).andThrow(new ResourceException(createNiceMock(IStatus.class)));
-        replay(marker);
+        IMarker marker = mock(IMarker.class);
+        ResourceException resourceException = new ResourceException(mock(IStatus.class));
+        when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenThrow(resourceException);
 
         assertFalse(generator.hasResolutions(marker));
     }

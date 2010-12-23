@@ -21,8 +21,8 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +53,7 @@ public class WhenCreatingAndRemovingCores implements CoreLifecycleListener
     @Test
     public void shouldFireEventWhenCoresAreCreatedOrRemoved() throws URISyntaxException
     {
-        InfinitestCore mockCore = createNiceMock(InfinitestCore.class);
+        InfinitestCore mockCore = mock(InfinitestCore.class);
         registry.addLifecycleListener(this);
         registry.addCore(new URI("//someProject"), mockCore);
         assertSame(coreAdded, mockCore);

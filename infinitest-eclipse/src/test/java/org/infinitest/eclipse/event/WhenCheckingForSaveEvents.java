@@ -21,11 +21,12 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IResourceDelta.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
 import org.eclipse.core.resources.IResource;
@@ -47,86 +48,76 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport
     @Before
     public void inContext()
     {
-        detector = new SaveDetector(createMock(SaveListener.class));
+        detector = new SaveDetector(mock(SaveListener.class));
         deltaVisitor = new DeltaVisitor();
-        resource = createMock(IResource.class);
+        resource = mock(IResource.class);
     }
 
     @Test
     public void shouldLookForSavedResourcesUsingVisitor() throws CoreException
     {
-        IResourceDelta delta = createMock(IResourceDelta.class);
-        delta.accept(isA(DeltaVisitor.class), eq(true));
-        replay(delta);
+        IResourceDelta delta = mock(IResourceDelta.class);
 
         assertFalse(detector.canProcessEvent(buildEventWith(delta)));
-        verify(delta);
+
+        verify(delta).accept(any(DeltaVisitor.class), eq(true));
     }
 
     @Test
     public void shouldNotifyListenerWhenSavedResourceIsFound() throws CoreException
     {
-        SaveListener listener = createMock(SaveListener.class);
-        listener.filesSaved();
-        replay(listener);
+        SaveListener listener = mock(SaveListener.class);
+
         detector = new SaveDetector(listener);
         detector.processEvent(null);
-        verify(listener);
+
+        verify(listener).filesSaved();
     }
 
     @Test
     public void shouldIgnoreDerivedResourcesEvents() throws CoreException
     {
-        expect(resource.isDerived()).andReturn(true);
-        replay(resource);
+        when(resource.isDerived()).thenReturn(true);
 
         assertFalse(deltaVisitor.visit(resourceDelta(CONTENT)));
         assertFalse(deltaVisitor.savedResourceFound());
-        verify(resource);
     }
 
     @Test
     public void shouldDetectNonDerivedResources() throws CoreException
     {
-        expect(resource.getType()).andReturn(IResource.FILE);
-        expect(resource.isDerived()).andReturn(false);
-        replay(resource);
+        when(resource.getType()).thenReturn(IResource.FILE);
+        when(resource.isDerived()).thenReturn(false);
 
         assertFalse(deltaVisitor.visit(resourceDelta(CONTENT)));
         assertTrue(deltaVisitor.savedResourceFound());
-        verify(resource);
     }
 
     @Test
     public void shouldKeepLookingIfResourceIsNotAFile() throws CoreException
     {
-        expect(resource.isDerived()).andReturn(false);
-        expect(resource.getType()).andReturn(IResource.FOLDER);
-        replay(resource);
+        when(resource.isDerived()).thenReturn(false);
+        when(resource.getType()).thenReturn(IResource.FOLDER);
 
         assertTrue(deltaVisitor.visit(resourceDelta(CONTENT)));
         assertFalse(deltaVisitor.savedResourceFound());
-        verify(resource);
     }
 
     @Test
     public void shouldIgnoreMarkerOnlyChanges() throws CoreException
     {
-        expect(resource.getType()).andReturn(IResource.FILE);
-        expect(resource.isDerived()).andReturn(false);
-        replay(resource);
+        when(resource.getType()).thenReturn(IResource.FILE);
+        when(resource.isDerived()).thenReturn(false);
 
         assertFalse(deltaVisitor.visit(resourceDelta(MARKERS)));
         assertFalse(deltaVisitor.savedResourceFound());
-        verify(resource);
     }
 
     private IResourceDelta resourceDelta(int flags)
     {
-        IResourceDelta classResourceDelta = createMock(IResourceDelta.class);
-        expect(classResourceDelta.getResource()).andReturn(resource);
-        expect(classResourceDelta.getFlags()).andReturn(flags);
-        replay(classResourceDelta);
+        IResourceDelta classResourceDelta = mock(IResourceDelta.class);
+        when(classResourceDelta.getResource()).thenReturn(resource);
+        when(classResourceDelta.getFlags()).thenReturn(flags);
         return classResourceDelta;
     }
 
@@ -137,8 +128,8 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport
 
     protected IResourceDelta createSaveDelta() throws CoreException
     {
-        IResourceDelta javaResource = createMock(IResourceDelta.class);
-        expect(javaResource.getFullPath()).andReturn(new Path("a.java"));
+        IResourceDelta javaResource = mock(IResourceDelta.class);
+        when(javaResource.getFullPath()).thenReturn(new Path("a.java"));
         javaResource.accept((IResourceDeltaVisitor) anyObject());
 
         return createResourceDelta(project, new IResourceDelta[] { javaResource });

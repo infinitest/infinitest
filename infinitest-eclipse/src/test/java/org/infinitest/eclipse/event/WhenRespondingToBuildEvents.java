@@ -21,10 +21,10 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -43,20 +43,19 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport
     @Before
     public void inContext()
     {
-        workspace = createStrictMock(WorkspaceFacade.class);
+        workspace = mock(WorkspaceFacade.class);
         processor = new ClassFileChangeProcessor(workspace);
     }
 
     @After
     public void verifyWorkspace()
     {
-        verify(workspace);
+        verifyZeroInteractions(workspace);
     }
 
     @Test
     public void shouldNotRespondToPreBuildEvents()
     {
-        replay(workspace);
         IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
         assertFalse(processor.canProcessEvent(event));
     }
@@ -64,14 +63,12 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport
     @Test
     public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException
     {
-        replay(workspace);
         processor.processEvent(emptyEvent());
     }
 
     @Test
     public void shouldRespondToPostBuildEvents()
     {
-        replay(workspace);
         IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
         assertTrue(processor.canProcessEvent(event));
     }
@@ -79,7 +76,6 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport
     @Test
     public void shouldRespondToPostChangeEvents()
     {
-        replay(workspace);
         IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
         assertTrue(processor.canProcessEvent(event));
     }

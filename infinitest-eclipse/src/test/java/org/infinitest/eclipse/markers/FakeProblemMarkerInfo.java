@@ -21,7 +21,8 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -39,11 +40,10 @@ final class FakeProblemMarkerInfo extends ProblemMarkerInfo
     @Override
     public IResource associatedResource() throws CoreException
     {
-        IResource mockResource = createNiceMock(IResource.class);
-        IMarker marker = createNiceMock(IMarker.class);
-        expect(mockResource.createMarker(isA(String.class))).andReturn(marker);
+        IResource mockResource = mock(IResource.class);
+        IMarker marker = mock(IMarker.class);
+        when(mockResource.createMarker(any(String.class))).thenReturn(marker);
 
-        replay(mockResource);
         return mockResource;
     }
 }

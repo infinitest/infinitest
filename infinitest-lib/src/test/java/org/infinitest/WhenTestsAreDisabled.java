@@ -23,20 +23,18 @@ package org.infinitest;
 
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Sets.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.util.InfinitestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Set;
 
 import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
-import org.infinitest.testrunner.TestResultsListener;
 import org.infinitest.testrunner.TestRunner;
 import org.junit.Test;
 
@@ -48,15 +46,11 @@ public class WhenTestsAreDisabled
     @Test
     public void shouldFireAppropriateEvent()
     {
-        TestRunner runner = createMock(TestRunner.class);
-        runner.addTestResultsListener((TestResultsListener) anyObject());
-        runner.setTestPriority((Comparator<String>) anyObject());
-        TestDetector testDetector = createMock(TestDetector.class);
-        expect(testDetector.getCurrentTests()).andReturn(setify("MyClass", "OtherClass"));
-        expect(testDetector.getCurrentTests()).andReturn(setify("OtherClass"));
+        TestRunner runner = mock(TestRunner.class);
+        TestDetector testDetector = mock(TestDetector.class);
+        when(testDetector.getCurrentTests()).thenReturn(setify("MyClass", "OtherClass"), setify("OtherClass"));
         Set<JavaClass> emptyClassSet = Collections.<JavaClass> emptySet();
-        expect(testDetector.findTestsToRun((Collection<File>) anyObject())).andReturn(emptyClassSet);
-        replay(runner, testDetector);
+        when(testDetector.findTestsToRun(any(Collection.class))).thenReturn(emptyClassSet);
 
         DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
         core.setChangeDetector(withChangedFiles(PassingTest.class));
@@ -70,7 +64,6 @@ public class WhenTestsAreDisabled
             }
         });
         core.update();
-        verify(testDetector);
         assertEquals("MyClass", getOnlyElement(disabledTestList));
     }
 }

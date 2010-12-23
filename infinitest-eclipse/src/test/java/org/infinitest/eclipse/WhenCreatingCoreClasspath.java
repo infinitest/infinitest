@@ -22,9 +22,9 @@
 package org.infinitest.eclipse;
 
 import static java.util.Collections.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.URL;
@@ -42,12 +42,9 @@ public class WhenCreatingCoreClasspath
     @Before
     public void inContext()
     {
-        Bundle bundle = createNiceMock(Bundle.class);
+        Bundle bundle = mock(Bundle.class);
         List<URL> urls = Arrays.asList(getClass().getResource("WhenCreatingCoreClasspath.class"));
-        expect(bundle.findEntries("", "*infinitest-runner*.jar", true)).andReturn(enumeration(urls));
-        expect(bundle.findEntries("", "*infinitest-runner*.jar", true)).andReturn(enumeration(urls));
-        expectLastCall();
-        replay(bundle);
+        when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls));
         plugin = new InfinitestPlugin();
         plugin.setPluginBundle(bundle);
     }

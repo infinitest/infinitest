@@ -23,10 +23,11 @@ package org.infinitest.parser;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,49 +49,44 @@ public class ClassFileIndexTest
     @Before
     public void inContext()
     {
-        builder = createMock(ClassBuilder.class);
+        builder = mock(ClassBuilder.class);
         index = new ClassFileIndex(builder);
     }
 
     @Test
     public void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint()
     {
-        expect(builder.loadClass((File) anyObject())).andReturn(new FakeJavaClass(""));
-        builder.clear();
-
-        replay(builder);
+        when(builder.loadClass(any(File.class))).thenReturn(new FakeJavaClass(""));
 
         index.findClasses(asList(getFileForClass(FakeProduct.class)));
-        verify(builder);
+
+        verify(builder).clear();
     }
 
     @Test
     public void shouldReplaceEntriesInTheIndex()
     {
-        expect(builder.loadClass((File) anyObject())).andReturn(new FakeJavaClass("FakeProduct"));
         JavaClass secondClass = new FakeJavaClass("FakeProduct");
-        expect(builder.loadClass((File) anyObject())).andReturn(secondClass);
-        builder.clear();
-        expectLastCall().times(2);
-        replay(builder);
+        when(builder.loadClass(any(File.class))).thenReturn(new FakeJavaClass("FakeProduct"));
+        when(builder.loadClass(any(File.class))).thenReturn(secondClass);
 
         index.findClasses(asList(getFileForClass(FakeProduct.class)));
         index.findClasses(asList(getFileForClass(FakeProduct.class)));
+
         assertSame(secondClass, index.findJavaClass("FakeProduct"));
+        verify(builder, times(2)).clear();
     }
 
     @Test
     public void shouldDisposeOfJavaClassesAfterAddingToIndex()
     {
-        JavaClass mockClass = createMock(JavaClass.class);
-        expect(mockClass.locatedInClassFile()).andReturn(true);
-        expect(mockClass.getImports()).andReturn(Collections.<String> emptyList());
-        mockClass.dispose();
-        expect(builder.createClass("FakeClass")).andReturn(mockClass);
-        replay(builder, mockClass);
+        JavaClass mockClass = mock(JavaClass.class);
+        when(mockClass.locatedInClassFile()).thenReturn(true);
+        when(builder.createClass("FakeClass")).thenReturn(mockClass);
 
         index.findJavaClass("FakeClass");
-        verify(builder, mockClass);
+
+        verify(mockClass).dispose();
     }
 
     @Test

@@ -22,10 +22,10 @@
 package org.infinitest.eclipse.resolution;
 
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.swt.SWT.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 
@@ -63,7 +63,7 @@ public class WhenAStackTraceElementIsSelected
         shell = new FakeShell();
         stackTrace = Lists.newArrayList();
         stackTrace.add(new StackTraceElement("MyClassName", "someMethod", "MyClassName.java", 72));
-        resourceLookup = createMock(ResourceLookup.class);
+        resourceLookup = mock(ResourceLookup.class);
         listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace)
         {
             @Override
@@ -84,15 +84,14 @@ public class WhenAStackTraceElementIsSelected
 
     private void expectJumpTo(String className, int lineNumber) throws CoreException
     {
-        IResource resource = createMock(IResource.class);
-        expect(resourceLookup.findResourcesForClassName(className)).andReturn(asList(resource));
-        newMarker = createMock(IMarker.class);
-        IFile file = createMock(IFile.class);
-        expect(resource.getAdapter(IFile.class)).andReturn(file);
-        expect(file.createMarker(TEXT)).andReturn(newMarker);
+        IResource resource = mock(IResource.class);
+        when(resourceLookup.findResourcesForClassName(className)).thenReturn(asList(resource));
+        newMarker = mock(IMarker.class);
+        IFile file = mock(IFile.class);
+        when(resource.getAdapter(IFile.class)).thenReturn(file);
+        when(file.createMarker(TEXT)).thenReturn(newMarker);
         newMarker.setAttribute(LINE_NUMBER, lineNumber);
         newMarker.delete();
-        replay(newMarker, resource, file, resourceLookup);
     }
 
     @Test
@@ -130,8 +129,7 @@ public class WhenAStackTraceElementIsSelected
     @Test
     public void shouldDoNothingIfFileCannotBeFound()
     {
-        expect(resourceLookup.findResourcesForClassName("MissingClass")).andReturn(Collections.<IResource> emptyList());
-        replay(resourceLookup);
+        when(resourceLookup.findResourcesForClassName("MissingClass")).thenReturn(Collections.<IResource> emptyList());
         stackTrace.add(new StackTraceElement("MissingClass", "MissingMethod", "MissingClass.java", 72));
         list.setSelection(1);
         listener.keyPressed(keyEvent);

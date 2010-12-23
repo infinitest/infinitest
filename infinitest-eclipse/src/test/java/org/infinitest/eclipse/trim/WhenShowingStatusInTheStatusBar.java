@@ -22,11 +22,12 @@
 package org.infinitest.eclipse.trim;
 
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.swt.SWT.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.infinitest.testrunner.TestEvent.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 
@@ -46,7 +47,7 @@ public class WhenShowingStatusInTheStatusBar
     @Before
     public void inContext()
     {
-        statusBar = createMock(VisualStatus.class);
+        statusBar = mock(VisualStatus.class);
         presenter = new VisualStatusPresenter();
         presenter.updateVisualStatus(statusBar);
         firstEvent = new TestQueueEvent(asList("ATest"), 2);
@@ -56,11 +57,11 @@ public class WhenShowingStatusInTheStatusBar
     public void shouldDisplayTheNumberOfRunningTests()
     {
         WorkspaceStatus expectedStatus = runningTests(1, "ATest");
-        statusBar.setText(expectedStatus.getMessage());
-        statusBar.setToolTip(expectedStatus.getToolTip());
-        replay(statusBar);
+
         presenter.testQueueUpdated(firstEvent);
-        verify(statusBar);
+
+        verify(statusBar).setText(expectedStatus.getMessage());
+        verify(statusBar).setToolTip(expectedStatus.getToolTip());
     }
 
     @Test
@@ -72,23 +73,16 @@ public class WhenShowingStatusInTheStatusBar
     @Test
     public void shouldImmediatelySetStatusToFailingWhenATestFails()
     {
-        expectFailingColors();
-        replay(statusBar);
-
         presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "",
                         new AssertionError()))));
-        verify(statusBar);
+
+        verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+        verify(statusBar).setTextColor(COLOR_WHITE);
     }
 
     @Test
     public void shouldOnlyResetTestCounterWhenUpdateStarts()
     {
-        statusBar.setToolTip((String) anyObject());
-        expectLastCall().anyTimes();
-        statusBar.setText(startsWith("1 test cases ran at "));
-        statusBar.setText(startsWith("3 test cases ran at "));
-        statusBar.setText(startsWith("1 test cases ran at "));
-        replay(statusBar);
         presenter.testCaseComplete(testFinished("ATest"));
         presenter.testQueueUpdated(emptyQueueEvent(2));
         presenter.testCaseComplete(testFinished("BTest"));
@@ -98,69 +92,58 @@ public class WhenShowingStatusInTheStatusBar
         presenter.testCaseComplete(testFinished("DTest"));
         presenter.testQueueUpdated(emptyQueueEvent(2));
 
-        verify(statusBar);
+        verify(statusBar, times(2)).setText(startsWith("1 test cases ran at "));
+        verify(statusBar).setText(startsWith("3 test cases ran at "));
     }
 
     @Test
     public void shouldListTestsRunAsATooltip()
     {
-        statusBar.setText(startsWith("1 test cases ran at "));
-        statusBar.setToolTip("Tests Ran:\nATest");
-        replay(statusBar);
         presenter.testCaseComplete(testFinished("ATest"));
         presenter.testQueueUpdated(emptyQueueEvent(1));
-        verify(statusBar);
+
+        verify(statusBar).setText(startsWith("1 test cases ran at "));
+        verify(statusBar).setToolTip("Tests Ran:\nATest");
     }
 
     @Test
     public void shouldChangeToGreenWhenTestsPass()
     {
-        statusBar.setBackgroundColor(COLOR_DARK_GREEN);
-        statusBar.setTextColor(COLOR_WHITE);
-        replay(statusBar);
         presenter.coreStatusChanged(FAILING, PASSING);
-        verify(statusBar);
+
+        verify(statusBar).setBackgroundColor(COLOR_DARK_GREEN);
+        verify(statusBar).setTextColor(COLOR_WHITE);
     }
 
     @Test
     public void shouldChangeToRedWhenTestsFail()
     {
-        expectFailingColors();
-        replay(statusBar);
         presenter.coreStatusChanged(PASSING, FAILING);
-        verify(statusBar);
-    }
 
-    private void expectFailingColors()
-    {
-        statusBar.setBackgroundColor(COLOR_DARK_RED);
-        statusBar.setTextColor(COLOR_WHITE);
+        verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+        verify(statusBar).setTextColor(COLOR_WHITE);
     }
 
     @Test
     public void shouldChangeToYellowWhenStatusIsAWarning()
     {
         WorkspaceStatus warning = workspaceErrors();
-        statusBar.setBackgroundColor(COLOR_YELLOW);
-        statusBar.setTextColor(COLOR_BLACK);
-        statusBar.setText(warning.getMessage());
-        statusBar.setToolTip(warning.getToolTip());
-        replay(statusBar);
         presenter.statusChanged(warning);
-        verify(statusBar);
+
+        verify(statusBar).setBackgroundColor(COLOR_YELLOW);
+        verify(statusBar).setTextColor(COLOR_BLACK);
+        verify(statusBar).setText(warning.getMessage());
+        verify(statusBar).setToolTip(warning.getToolTip());
     }
 
     @Test
     public void shouldReportWhenAllTestsAreComplete()
     {
-        statusBar.setToolTip((String) anyObject());
-        expectLastCall().anyTimes();
-        statusBar.setText(startsWith("2 test cases ran at "));
-        replay(statusBar);
         presenter.testCaseComplete(testFinished("Test1"));
         presenter.testCaseComplete(testFinished("Test2"));
         presenter.testQueueUpdated(emptyQueueEvent(2));
-        verify(statusBar);
+
+        verify(statusBar).setText(startsWith("2 test cases ran at "));
     }
 
     private TestQueueEvent emptyQueueEvent(int initialSize)

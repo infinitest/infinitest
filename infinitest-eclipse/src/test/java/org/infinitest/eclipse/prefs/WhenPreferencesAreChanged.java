@@ -21,11 +21,11 @@
  */
 package org.infinitest.eclipse.prefs;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.jface.preference.FieldEditor.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
@@ -34,14 +34,12 @@ import org.infinitest.eclipse.PluginActivationController;
 import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 import org.infinitest.eclipse.workspace.CoreSettings;
 import org.junit.After;
-import org.junit.Before; 
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class WhenPreferencesAreChanged
 {
     private FieldEditor eventSource;
-    private String preferenceName;
     private PluginActivationController controller;
     private PreferenceChangeHandler handler;
     private CoreSettings coreSettings;
@@ -49,19 +47,12 @@ public class WhenPreferencesAreChanged
     @Before
     public void setUp()
     {
-        controller = createMock(PluginActivationController.class);
-        coreSettings = Mockito.mock(CoreSettings.class);
+        controller = mock(PluginActivationController.class);
+        coreSettings = mock(CoreSettings.class);
+        eventSource = mock(BooleanFieldEditor.class);
+
         handler = new PreferenceChangeHandler(controller, coreSettings);
         handler.setSlowMarkerRegistry(new SlowMarkerRegistry());
-        preferenceName = AUTO_TEST;
-        eventSource = new BooleanFieldEditor()
-        {
-            @Override
-            public String getPreferenceName()
-            {
-                return preferenceName;
-            }
-        };
     }
 
     @After
@@ -73,69 +64,60 @@ public class WhenPreferencesAreChanged
     @Test
     public void shouldStartContinouslyTestingIfSelectionIsChecked()
     {
-        controller.enable();
-        checkExpectations(AUTO_TEST, false, true);
+        when(eventSource.getPreferenceName()).thenReturn(AUTO_TEST);
+        changeProperty(VALUE, false, true);
+        verify(controller).enable();
     }
 
     @Test
     public void shouldStopContinouslyTestingIfSelectionIsChecked()
     {
-        controller.disable();
-        checkExpectations(AUTO_TEST, true, false);
+        when(eventSource.getPreferenceName()).thenReturn(AUTO_TEST);
+        changeProperty(VALUE, true, false);
+        verify(controller).disable();
     }
 
     @Test
     public void shouldIgnoreIfPropertyNameDoesNotMatch()
     {
-        preferenceName = "SomeEventName";
-        checkExpectations(preferenceName, true, false);
-    }
-
-    @Test
-    public void shouldPromptForLicenseIfPluginIsEnabledWithInvalidKey()
-    {
-        controller.enable();
-        // Show license dialog now
-        checkExpectations(AUTO_TEST, false, true);
+        when(eventSource.getPreferenceName()).thenReturn("SomeEventName");
+        changeProperty(VALUE, true, false);
+        verifyZeroInteractions(controller);
     }
 
     @Test
     public void shouldAdjustWarningTimeout()
     {
-        preferenceName = SLOW_TEST_WARNING;
-        checkExpectations(SLOW_TEST_WARNING, "500", "100");
+        when(eventSource.getPreferenceName()).thenReturn(SLOW_TEST_WARNING);
+        changeProperty(VALUE, "500", "100");
         assertEquals(100, getSlowTestTimeLimit());
     }
 
     @Test
     public void shouldAdjustSemaphorePermits()
     {
-        preferenceName = PARALLEL_CORES;
-        checkExpectations(PARALLEL_CORES, "1", "2");
-        Mockito.verify(coreSettings).setConcurrentCoreCount(2);
+        when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
+        changeProperty(VALUE, "1", "2");
+        verify(coreSettings).setConcurrentCoreCount(2);
     }
 
     @Test
     public void shouldIgnoreOtherPropertyTypes()
     {
-        replay(controller);
-        preferenceName = PARALLEL_CORES;
-        handler.propertyChange(new PropertyChangeEvent(eventSource, IS_VALID, false, true));
-        verify(controller);
+        when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
+        changeProperty(IS_VALID, false, true);
+        verifyZeroInteractions(controller);
     }
 
     @Test
     public void shouldIgnoreBlankValues()
     {
-        preferenceName = PARALLEL_CORES;
-        checkExpectations(PARALLEL_CORES, "", "");
+        when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
+        changeProperty(VALUE, "", "");
     }
 
-    private void checkExpectations(String propertyName, Object previousState, Object newState)
+    private void changeProperty(String type, Object oldValue, Object newValue)
     {
-        replay(controller);
-        handler.propertyChange(new PropertyChangeEvent(eventSource, VALUE, previousState, newState));
-        verify(controller);
+        handler.propertyChange(new PropertyChangeEvent(eventSource, type, oldValue, newValue));
     }
-
 }

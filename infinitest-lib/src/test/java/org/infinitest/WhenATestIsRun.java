@@ -21,8 +21,9 @@
  */
 package org.infinitest;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Comparator;
 
@@ -39,21 +40,20 @@ public class WhenATestIsRun
         assertNotNull(normalizer.consoleEventNormalizer(new ConsoleListenerAdapter()));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldFireEventsForConsoleUpdates()
     {
-        TestRunner runner = createMock(TestRunner.class);
-        runner.addTestResultsListener((TestResultsListener) anyObject());
-        runner.setTestPriority((Comparator<String>) anyObject());
-        runner.addConsoleOutputListener((ConsoleOutputListener) anyObject());
-        runner.removeConsoleOutputListener((ConsoleOutputListener) anyObject());
+        TestRunner runner = mock(TestRunner.class);
 
-        replay(runner);
         DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
         ConsoleListenerAdapter listener = new ConsoleListenerAdapter();
         core.addConsoleOutputListener(listener);
         core.removeConsoleOutputListener(listener);
-        verify(runner);
+
+        verify(runner).addTestResultsListener(any(TestResultsListener.class));
+        verify(runner).setTestPriority(any(Comparator.class));
+        verify(runner).addConsoleOutputListener(any(ConsoleOutputListener.class));
+        verify(runner).removeConsoleOutputListener(any(ConsoleOutputListener.class));
     }
 }

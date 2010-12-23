@@ -21,14 +21,15 @@
  */
 package org.infinitest.eclipse;
 
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Path;
 import org.infinitest.eclipse.workspace.JavaProjectBuilder;
@@ -75,26 +76,22 @@ public class ResourceEventSupport
 
     protected IResourceDelta createDelta(JavaProjectBuilder project)
     {
-        IResourceDelta classResource = createMock(IResourceDelta.class);
-        expect(classResource.getFullPath()).andReturn(new Path("a.class"));
+        IResourceDelta classResource = mock(IResourceDelta.class);
+        when(classResource.getFullPath()).thenReturn(new Path("a.class"));
 
         return createResourceDelta(project, new IResourceDelta[] { classResource });
     }
 
     protected IResourceDelta createResourceDelta(JavaProjectBuilder project, IResourceDelta... resourceDeltas)
     {
-        IResourceDelta projectDelta = createMock(IResourceDelta.class);
-        expect(projectDelta.getResource()).andReturn(project.getResource());
-        expect(projectDelta.getFullPath()).andReturn(new Path("/workspace/projectA"));
-        expect(projectDelta.getAffectedChildren()).andReturn(resourceDeltas);
+        IResourceDelta projectDelta = mock(IResourceDelta.class);
+        IResource resource = project.getResource();
+        when(projectDelta.getResource()).thenReturn(resource);
+        when(projectDelta.getFullPath()).thenReturn(new Path("/workspace/projectA"));
+        when(projectDelta.getAffectedChildren()).thenReturn(resourceDeltas);
 
-        IResourceDelta delta = createMock(IResourceDelta.class);
-        expect(delta.getAffectedChildren()).andReturn(new IResourceDelta[] { projectDelta });
-        replay(delta, projectDelta);
-        for (IResourceDelta each : resourceDeltas)
-        {
-            replay(each);
-        }
+        IResourceDelta delta = mock(IResourceDelta.class);
+        when(delta.getAffectedChildren()).thenReturn(new IResourceDelta[] { projectDelta });
         return delta;
     }
 }

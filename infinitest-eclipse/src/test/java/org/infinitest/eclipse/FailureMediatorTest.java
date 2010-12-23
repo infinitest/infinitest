@@ -35,6 +35,7 @@ import org.infinitest.eclipse.workspace.FakeResourceFinder;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class FailureMediatorTest
 {
@@ -48,7 +49,7 @@ public class FailureMediatorTest
     @Before
     public void inContext()
     {
-        registry = mock(ProblemMarkerRegistry.class);
+        registry = Mockito.mock(ProblemMarkerRegistry.class);
         finder = new FakeResourceFinder();
         mediator = new FailureMediator(registry, finder);
         event1 = event("method1");
@@ -64,8 +65,9 @@ public class FailureMediatorTest
 
         mediator.failureListChanged(failuresAdded, failuresRemoved);
 
-        verify(registry, times(2)).addMarker((MarkerInfo) anyObject());
-        verify(registry).removeMarker(new ProblemMarkerInfo(event3, finder));
+        verify(registry, times(2)).addMarker(any(MarkerInfo.class));
+        ProblemMarkerInfo markerInfo = new ProblemMarkerInfo(event3, finder);
+        verify(registry).removeMarker(markerInfo);
     }
 
     @Test
@@ -75,7 +77,7 @@ public class FailureMediatorTest
 
         mediator.failuresUpdated(updatedFailures);
 
-        verify(registry, times(2)).updateMarker((MarkerInfo) anyObject());
+        verify(registry, times(2)).updateMarker(any(MarkerInfo.class));
     }
 
     private TestEvent event(String methodName)

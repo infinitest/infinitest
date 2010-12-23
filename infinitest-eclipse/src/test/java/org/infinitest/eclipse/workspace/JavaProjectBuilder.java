@@ -22,11 +22,12 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Lists.*;
-import static org.easymock.EasyMock.*;
 import static org.eclipse.core.resources.IResource.*;
 import static org.eclipse.jdt.core.IClasspathEntry.*;
 import static org.eclipse.jdt.core.IJavaModelMarker.*;
 import static org.eclipse.jdt.core.IPackageFragmentRoot.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -179,10 +180,9 @@ public class JavaProjectBuilder implements IJavaProject
 
     public IResource getCorrespondingResource()
     {
-        IResource resource = createNiceMock(IResource.class);
-        expect(resource.getLocation()).andReturn(new Path(projectName)).anyTimes();
-        expect(resource.getFullPath()).andReturn(getPath());
-        replay(resource);
+        IResource resource = mock(IResource.class);
+        when(resource.getLocation()).thenReturn(new Path(projectName));
+        when(resource.getFullPath()).thenReturn(getPath());
         return resource;
     }
 
@@ -192,7 +192,7 @@ public class JavaProjectBuilder implements IJavaProject
         {
             try
             {
-                expect(resource.createMarker((String) anyObject())).andReturn(marker);
+                when(resource.createMarker(anyString())).thenReturn(marker);
                 resource.deleteMarkers((String) anyObject(), eq(true), eq(DEPTH_INFINITE));
             }
             catch (CoreException e)
@@ -221,13 +221,12 @@ public class JavaProjectBuilder implements IJavaProject
     {
         try
         {
-            IProject project = createMock(IProject.class);
-            expect(project.getLocationURI()).andReturn(new URI("/root/" + projectName));
-            expect(project.getLocation()).andReturn(new Path("/root/" + projectName));
-            expect(project.getName()).andReturn(projectName);
-            expect(project.findMaxProblemSeverity(JAVA_MODEL_PROBLEM_MARKER, false, DEPTH_INFINITE)).andReturn(-1);
+            IProject project = mock(IProject.class);
+            when(project.getLocationURI()).thenReturn(new URI("/root/" + projectName));
+            when(project.getLocation()).thenReturn(new Path("/root/" + projectName));
+            when(project.getName()).thenReturn(projectName);
+            when(project.findMaxProblemSeverity(JAVA_MODEL_PROBLEM_MARKER, false, DEPTH_INFINITE)).thenReturn(-1);
             addMarker(project);
-            replay(project);
             return project;
         }
         catch (URISyntaxException e)

@@ -21,10 +21,11 @@
  */
 package org.infinitest;
 
-import static org.easymock.EasyMock.*;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Comparator;
 
@@ -51,26 +52,22 @@ public class WhenTheRuntimeEnvironmentChanges
     public void shouldUpdateSupportingClassesInTheCore()
     {
         RuntimeEnvironment environment = fakeEnvironment();
-        TestRunner testRunner = createMock(TestRunner.class);
-        testRunner.setRuntimeEnvironment(environment);
-        testRunner.addTestResultsListener((TestResultsListener) anyObject());
-        testRunner.setTestPriority((Comparator<String>) anyObject());
-
-        TestDetector testDetector = createMock(TestDetector.class);
-        testDetector.clear();
-        testDetector.setClasspathProvider(environment);
-
-        ChangeDetector changeDetector = createMock(ChangeDetector.class);
-        changeDetector.setClasspathProvider(environment);
-        changeDetector.clear();
-        replay(testRunner, testDetector, changeDetector);
+        TestRunner testRunner = mock(TestRunner.class);
+        TestDetector testDetector = mock(TestDetector.class);
+        ChangeDetector changeDetector = mock(ChangeDetector.class);
 
         DefaultInfinitestCore core = new DefaultInfinitestCore(testRunner, new FakeEventQueue());
         core.setTestDetector(testDetector);
         core.setChangeDetector(changeDetector);
         core.setRuntimeEnvironment(environment);
 
-        verify(testDetector, testDetector, changeDetector);
+        verify(testRunner).setRuntimeEnvironment(environment);
+        verify(testRunner).addTestResultsListener(any(TestResultsListener.class));
+        verify(testRunner).setTestPriority(any(Comparator.class));
+        verify(testDetector).clear();
+        verify(testDetector).setClasspathProvider(environment);
+        verify(changeDetector).setClasspathProvider(environment);
+        verify(changeDetector).clear();
     }
 
     @Test

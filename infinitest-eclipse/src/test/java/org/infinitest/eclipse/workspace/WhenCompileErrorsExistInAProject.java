@@ -22,14 +22,13 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Lists.*;
-import static org.easymock.EasyMock.*;
 import static org.infinitest.eclipse.util.StatusMatchers.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.infinitest.eclipse.ResourceEventSupport;
@@ -49,35 +48,32 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport
     public void inContext() throws CoreException
     {
         projects = newArrayList();
-        projectSet = createMock(ProjectSet.class);
+        projectSet = mock(ProjectSet.class);
         projects.add(new ProjectFacade(project));
-        coreRegistry = createMock(CoreRegistry.class);
+        coreRegistry = mock(CoreRegistry.class);
         CoreFactory coreFactory = new CoreFactory(null);
         workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
 
-        expect(projectSet.projects()).andReturn(projects);
-        expect(projectSet.hasErrors()).andReturn(true);
-        replay(projectSet);
+        when(projectSet.projects()).thenReturn(projects);
+        when(projectSet.hasErrors()).thenReturn(true);
     }
 
     @Test
     public void shouldNotUpdateIt() throws CoreException
     {
-        IJavaProject project = createMock(IJavaProject.class);
-        IProject projectWithErrors = createMock(IProject.class);
+        IJavaProject project = mock(IJavaProject.class);
         projects.clear();
         projects.add(new ProjectFacade(project));
-        replay(coreRegistry, project, projectWithErrors);
 
         workspace.updateProjects();
 
         assertStatusIs(workspaceErrors());
-        verify(project, projectWithErrors);
+
+        verifyZeroInteractions(project);
     }
 
     private void assertStatusIs(WorkspaceStatus expectedStatus)
     {
         assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
-        verify(coreRegistry);
     }
 }

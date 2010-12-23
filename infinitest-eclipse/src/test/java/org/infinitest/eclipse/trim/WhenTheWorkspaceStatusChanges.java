@@ -21,7 +21,7 @@
  */
 package org.infinitest.eclipse.trim;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.junit.Test;
@@ -32,15 +32,13 @@ public class WhenTheWorkspaceStatusChanges
     public void shouldUpdateTheStatusBar()
     {
         VisualStatusPresenter presenter = new VisualStatusPresenter();
-        VisualStatus statusBar = createMock(VisualStatus.class);
+        VisualStatus statusBar = mock(VisualStatus.class);
         presenter.updateVisualStatus(statusBar);
-        statusBar.setText("New Status!");
-        statusBar.setToolTip("Tooltip");
-        replay(statusBar);
 
         presenter.statusChanged(new FakeStatus());
 
-        verify(statusBar);
+        verify(statusBar).setText("New Status!");
+        verify(statusBar).setToolTip("Tooltip");
     }
 
     private final class FakeStatus implements WorkspaceStatus

@@ -21,7 +21,7 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
@@ -37,27 +37,25 @@ public class WhenDispatchingResourceChangeEvents
     @Before
     public void inContext()
     {
-        eventQueue = createMock(EventQueue.class);
+        eventQueue = mock(EventQueue.class);
         notifier = new CoreUpdateNotifier(eventQueue);
     }
 
     @Test
     public void shouldIgnoreUnknownEvents()
     {
-        IResourceChangeEvent event = createMock(IResourceChangeEvent.class);
-        expect(event.getDelta()).andReturn(createNiceMock(IResourceDelta.class));
-        replay(eventQueue, event);
+        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+        IResourceDelta delta = mock(IResourceDelta.class);
+        when(event.getDelta()).thenReturn(delta);
 
         notifier.resourceChanged(event);
-        verify(eventQueue);
+        verifyZeroInteractions(eventQueue);
     }
 
     @Test
     public void shouldIgnoreEventsWithNoDelta()
     {
-        replay(eventQueue);
-
-        notifier.resourceChanged(createMock(IResourceChangeEvent.class));
-        verify(eventQueue);
+        notifier.resourceChanged(mock(IResourceChangeEvent.class));
+        verifyZeroInteractions(eventQueue);
     }
 }
