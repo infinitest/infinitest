@@ -30,7 +30,6 @@ import static org.infinitest.util.InfinitestGlobalSettings.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
-
-import org.junit.Test;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
@@ -147,22 +144,7 @@ public class InfinitestUtils
         return msg;
     }
 
-    public static boolean isJUnit4TestCase(Class<?> clazz)
-    {
-        try
-        {
-            TestClass testClass = new TestClass(clazz);
-            List<Method> testMethods = testClass.getAnnotatedMethods(Test.class);
-            return !testMethods.isEmpty();
-        }
-        catch (SecurityException e)
-        {
-            log(WARNING, "Error occurred while looking for @Test annotation on class [" + clazz + "]");
-            return false;
-        }
-    }
-
-    public static String getClassFile(Class<?> clazz)
+    private static String getClassFile(Class<?> clazz)
     {
         return clazz.getName().replace('.', '/') + ".class";
     }

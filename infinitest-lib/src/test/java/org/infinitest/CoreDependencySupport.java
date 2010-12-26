@@ -110,8 +110,6 @@ public class CoreDependencySupport
                 will(returnValue(emptySet()));
                 allowing(graph).findTestsToRun(with(any(Set.class)));
                 will(returnValue(emptySet()));
-                allowing(graph).isEmpty();
-                will(returnValue(true));
             }
         });
         return graph;

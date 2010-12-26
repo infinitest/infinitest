@@ -33,8 +33,6 @@ public interface TestDetector
 
     Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
 
-    boolean isEmpty();
-
     void setClasspathProvider(ClasspathProvider classpath);
 
     Set<String> getCurrentTests();

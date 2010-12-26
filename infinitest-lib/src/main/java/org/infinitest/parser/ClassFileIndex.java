@@ -185,11 +185,6 @@ public class ClassFileIndex
         return getIndexedClasses().contains(clazz.getName());
     }
 
-    public boolean isEmpty()
-    {
-        return graph.vertexSet().isEmpty();
-    }
-
     public Set<String> getIndexedClasses()
     {
         Set<String> classes = newHashSet();

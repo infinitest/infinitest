@@ -117,11 +117,6 @@ public class ClassFileTestDetector implements TestDetector
         return index.isIndexed(clazz);
     }
 
-    public boolean isEmpty()
-    {
-        return index.isEmpty();
-    }
-
     public Set<String> getIndexedClasses()
     {
         return index.getIndexedClasses();
