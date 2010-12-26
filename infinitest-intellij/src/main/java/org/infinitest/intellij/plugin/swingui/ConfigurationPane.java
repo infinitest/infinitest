@@ -49,7 +49,6 @@ public class ConfigurationPane extends JPanel
 
         JTabbedPane pane = new JTabbedPane();
         pane.addTab("General", createGeneralTab());
-        pane.addTab("Licensing", new LicensePanel());
         add(pane, BorderLayout.CENTER);
     }
 
