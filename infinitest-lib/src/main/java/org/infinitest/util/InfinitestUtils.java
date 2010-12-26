@@ -21,11 +21,11 @@
  */
 package org.infinitest.util;
 
+import static com.google.common.base.Joiner.*;
 import static com.google.common.collect.Iterables.*;
 import static java.io.File.*;
 import static java.util.Arrays.*;
 import static java.util.logging.Level.*;
-import static org.apache.commons.lang.StringUtils.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 
 import java.io.File;
@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
@@ -205,13 +204,13 @@ public class InfinitestUtils
     {
         StringBuilder trace = new StringBuilder();
 
-        Iterator<?> selectedItems = limit(listOfStringableObjects, MAX_LINE_COUNT).iterator();
-        trace.append(join(selectedItems, LINE_SEP));
+        Iterable<?> selectedItems = limit(listOfStringableObjects, MAX_LINE_COUNT);
+        trace.append(on(LINE_SEP).join(selectedItems));
         if (listOfStringableObjects.size() > MAX_LINE_COUNT)
         {
             trace.append(LINE_SEP);
             trace.append(listOfStringableObjects.size() - MAX_LINE_COUNT + " more...");
         }
-        return stripEnd(trace.toString(), LINE_SEP);
+        return trace.toString();
     }
 }

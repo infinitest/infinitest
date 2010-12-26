@@ -21,17 +21,17 @@
  */
 package org.infinitest;
 
+import static com.google.common.base.Charsets.*;
 import static com.google.common.collect.Lists.*;
+import static com.google.common.io.Files.*;
 import static org.infinitest.FileCustomJvmArgumentReader.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,7 +105,7 @@ public class WhenReadingCustomJvmArgumentsFromFile
     private String writeArguments(String arguments) throws IOException, FileNotFoundException
     {
         String singleArgument = arguments;
-        IOUtils.write(singleArgument, new FileOutputStream(file));
+        write(singleArgument, file, UTF_8);
         return singleArgument;
     }
 }

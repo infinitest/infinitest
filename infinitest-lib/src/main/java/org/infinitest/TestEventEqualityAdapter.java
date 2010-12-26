@@ -23,8 +23,9 @@ package org.infinitest;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.infinitest.testrunner.TestEvent;
+
+import com.google.common.base.Objects;
 
 public class TestEventEqualityAdapter
 {
@@ -46,9 +47,8 @@ public class TestEventEqualityAdapter
         if (obj instanceof TestEventEqualityAdapter)
         {
             TestEventEqualityAdapter other = (TestEventEqualityAdapter) obj;
-            return ObjectUtils.equals(event, other.event)
-                            && ObjectUtils.equals(event.getMessage(), other.event.getMessage())
-                            && ObjectUtils.equals(event.getPointOfFailure(), other.event.getPointOfFailure())
+            return Objects.equal(event, other.event) && Objects.equal(event.getMessage(), other.event.getMessage())
+                            && Objects.equal(event.getPointOfFailure(), other.event.getPointOfFailure())
                             && Arrays.equals(event.getStackTrace(), other.event.getStackTrace());
         }
         return false;
@@ -57,7 +57,7 @@ public class TestEventEqualityAdapter
     @Override
     public int hashCode()
     {
-        return ObjectUtils.hashCode(event) ^ ObjectUtils.hashCode(event.getMessage())
-                        ^ ObjectUtils.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
+        return Objects.hashCode(event) ^ Objects.hashCode(event.getMessage())
+                        ^ Objects.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
     }
 }

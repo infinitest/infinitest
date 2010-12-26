@@ -29,12 +29,13 @@ import static org.infinitest.util.InfinitestUtils.*;
 
 import java.util.Map;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.infinitest.eclipse.workspace.ResourceLookup;
 import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestEvent;
+
+import com.google.common.base.Objects;
 
 public class ProblemMarkerInfo extends AbstractMarkerInfo
 {
@@ -140,7 +141,7 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo
     @Override
     public int hashCode()
     {
-        return ObjectUtils.hashCode(event.getTestMethod()) ^ ObjectUtils.hashCode(event.getTestName());
+        return Objects.hashCode(event.getTestMethod()) ^ Objects.hashCode(event.getTestName());
     }
 
     @Override

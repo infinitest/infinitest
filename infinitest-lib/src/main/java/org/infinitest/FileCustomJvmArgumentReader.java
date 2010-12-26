@@ -25,12 +25,11 @@ import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.AutoCloseInputStream;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader
 {
@@ -53,14 +52,8 @@ public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader
 
         try
         {
-            List<String> lines = IOUtils.readLines(new AutoCloseInputStream(new FileInputStream(file)));
-            if (lines.isEmpty())
-            {
-                return emptyList();
-            }
-
+            List<String> lines = Files.readLines(file, Charsets.UTF_8);
             return buildArgumentList(lines);
-
         }
         catch (IOException e)
         {

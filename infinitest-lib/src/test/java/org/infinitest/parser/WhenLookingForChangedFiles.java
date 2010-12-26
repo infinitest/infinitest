@@ -21,6 +21,7 @@
  */
 package org.infinitest.parser;
 
+import static com.google.common.io.Files.*;
 import static java.util.Collections.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.util.FakeEnvironments.*;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.infinitest.ClasspathProvider;
 import org.infinitest.StandaloneClasspath;
 import org.infinitest.changedetect.ChangeDetector;
@@ -55,10 +55,11 @@ public class WhenLookingForChangedFiles
     private ClasspathProvider classpath;
 
     @Before
-    public void inContext() throws Exception
+    public void inContext()
     {
         altClassDir = new File("altClasses");
-        FileUtils.forceMkdir(altClassDir);
+
+        altClassDir.mkdirs();
         List<File> buildPaths = new ArrayList<File>();
         buildPaths.addAll(fakeBuildPaths());
         buildPaths.add(altClassDir);
@@ -70,7 +71,7 @@ public class WhenLookingForChangedFiles
     @After
     public void cleanup() throws Exception
     {
-        FileUtils.deleteDirectory(altClassDir);
+        deleteRecursively(altClassDir);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class WhenLookingForChangedFiles
         File newFile = createFileForClass(TestFakeProduct.class);
         assertThat(detector.findChangedFiles(), hasItem(newFile));
 
-        FileUtils.forceDelete(newFile);
+        newFile.delete();
 
         assertTrue(detector.filesWereRemoved());
         assertThat(detector.findChangedFiles(), not(hasItem(newFile)));

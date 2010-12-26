@@ -22,9 +22,9 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.*;
+import static com.google.common.io.Files.*;
 import static java.util.Arrays.*;
 import static java.util.logging.Level.*;
-import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.FakeEnvironments.*;
@@ -63,13 +63,13 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest
         runner.addTestQueueListener(eventAssert);
         outputPrinted = false;
         fakeJavaHome = new File("fakeJavaHome");
-        fakeJavaHome.mkdirs();
+        new File(fakeJavaHome, "bin").mkdirs();
     }
 
     @After
     public void cleanup() throws IOException
     {
-        deleteDirectory(fakeJavaHome);
+        deleteRecursively(fakeJavaHome);
     }
 
     @Override

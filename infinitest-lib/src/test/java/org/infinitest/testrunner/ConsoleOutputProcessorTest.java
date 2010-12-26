@@ -21,8 +21,8 @@
  */
 package org.infinitest.testrunner;
 
-import static org.apache.commons.io.IOUtils.*;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
+import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.ConsoleOutputListener;

@@ -21,11 +21,12 @@
  */
 package org.infinitest.eclipse.util;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.infinitest.eclipse.status.WorkspaceStatus;
+
+import com.google.common.base.Objects;
 
 public abstract class StatusMatchers
 {
@@ -35,7 +36,7 @@ public abstract class StatusMatchers
         {
             public boolean matches(Object item)
             {
-                if (ObjectUtils.equals(expectedStatus, item))
+                if (Objects.equal(expectedStatus, item))
                 {
                     return true;
                 }

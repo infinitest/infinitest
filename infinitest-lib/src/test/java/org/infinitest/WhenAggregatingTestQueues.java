@@ -29,15 +29,15 @@ import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.junit.Before;
 import org.junit.Test;
 
 public class WhenAggregatingTestQueues
 {
     private List<TestQueueListener> listeners;
-    private MutableInt finishCount;
+    private AtomicInteger finishCount;
     private List<TestQueueEvent> updateEvents;
 
     @Before
@@ -45,7 +45,7 @@ public class WhenAggregatingTestQueues
     {
         ResultCollector collector = new ResultCollector();
         updateEvents = newArrayList();
-        finishCount = new MutableInt();
+        finishCount = new AtomicInteger();
         listeners = newArrayList();
         collector.addTestQueueListener(new TestQueueAdapter()
         {
@@ -58,7 +58,7 @@ public class WhenAggregatingTestQueues
             @Override
             public void testRunComplete()
             {
-                finishCount.increment();
+                finishCount.incrementAndGet();
             }
         });
 

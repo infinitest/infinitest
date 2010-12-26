@@ -24,9 +24,12 @@ package org.infinitest.util;
 import static java.lang.Thread.*;
 import static org.infinitest.util.FakeEnvironments.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,7 @@ import org.infinitest.testrunner.InProcessRunner;
 import org.infinitest.testrunner.JUnit4Runner;
 
 import com.google.common.base.Predicate;
+import com.google.common.io.ByteStreams;
 
 public abstract class InfinitestTestUtils
 {
@@ -140,5 +144,15 @@ public abstract class InfinitestTestUtils
                 return stack;
             }
         };
+    }
+
+    public static InputStream toInputStream(String text)
+    {
+        return new ByteArrayInputStream(text.getBytes());
+    }
+
+    public static String toString(InputStream stream) throws IOException
+    {
+        return new String(ByteStreams.toByteArray(stream));
     }
 }

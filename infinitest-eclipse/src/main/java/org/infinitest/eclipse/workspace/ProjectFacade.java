@@ -21,6 +21,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
+import static com.google.common.base.Joiner.*;
 import static java.io.File.*;
 import static java.util.logging.Level.*;
 import static org.eclipse.core.resources.IMarker.*;
@@ -32,7 +33,6 @@ import static org.infinitest.util.InfinitestUtils.*;
 import java.io.File;
 import java.net.URI;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -168,7 +168,7 @@ class ProjectFacade implements EclipseProject
 
     public String rawClasspath() throws CoreException
     {
-        return StringUtils.join(computeDefaultRuntimeClassPath(project), pathSeparatorChar);
+        return on(pathSeparatorChar).join(computeDefaultRuntimeClassPath(project));
     }
 
     public IPath getDefaultOutputLocation()

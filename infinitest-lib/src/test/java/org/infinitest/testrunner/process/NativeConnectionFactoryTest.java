@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.SynchronousQueue;
 
-import org.apache.commons.io.IOUtils;
 import org.infinitest.ConsoleOutputListener.OutputType;
 import org.infinitest.testrunner.FailingRunner;
 import org.infinitest.testrunner.HangingRunner;
@@ -38,6 +37,7 @@ import org.infinitest.testrunner.OutputStreamHandler;
 import org.infinitest.testrunner.RunnerThatCannotBeCreated;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestRunnerProcess;
+import org.infinitest.util.InfinitestTestUtils;
 import org.junit.Test;
 
 public class NativeConnectionFactoryTest
@@ -99,7 +99,7 @@ public class NativeConnectionFactoryTest
             {
                 try
                 {
-                    errorMsg = IOUtils.toString(stream);
+                    errorMsg = InfinitestTestUtils.toString(stream);
                 }
                 catch (IOException e)
                 {

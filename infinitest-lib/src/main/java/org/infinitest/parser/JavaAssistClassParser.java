@@ -21,9 +21,9 @@
  */
 package org.infinitest.parser;
 
+import static com.google.common.base.Splitter.*;
 import static com.google.common.collect.Lists.*;
 import static java.io.File.*;
-import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,7 +75,7 @@ public class JavaAssistClassParser implements ClassParser
 
     private Iterable<String> getPathElements()
     {
-        List<String> entries = newArrayList(split(classpath, pathSeparator));
+        List<String> entries = newArrayList(on(pathSeparator).split(classpath));
         ListIterator<String> iter = entries.listIterator();
         while (iter.hasNext())
         {
