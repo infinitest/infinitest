@@ -27,13 +27,17 @@ import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.infinitest.eclipse.workspace.CoreSettings;
+import org.infinitest.util.InfinitestGlobalSettings;
 import org.infinitest.util.InfinitestUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Controls the plug-in life cycle.
@@ -97,7 +101,7 @@ public class InfinitestPlugin extends AbstractUIPlugin
 
     public Bundle getPluginBundle()
     {
-        if ((pluginBundle == null) && (InfinitestPlugin.getInstance() != null))
+        if (pluginBundle == null && InfinitestPlugin.getInstance() != null)
         {
             return InfinitestPlugin.getInstance().getBundle();
         }
@@ -117,9 +121,16 @@ public class InfinitestPlugin extends AbstractUIPlugin
             context = new ClassPathXmlApplicationContext(new String[] { "/META-INF/spring/plugin-context.xml",
                             "/META-INF/spring/eclipse-context.xml" });
 
-            getBean(CoreSettings.class).setConcurrentCoreCount(getPluginPreferences().getInt(PARALLEL_CORES));
+            restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
             InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
         }
         return (T) getOnlyElement(context.getBeansOfType(beanClass).values());
+    }
+
+    @VisibleForTesting
+    void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings)
+    {
+        coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
+        InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
     }
 }
