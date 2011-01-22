@@ -37,6 +37,7 @@ import com.fakeco.fakeproduct.JUnit4TestThatInherits;
 import com.fakeco.fakeproduct.LooksLikeAJUnit3TestButIsnt;
 import com.fakeco.fakeproduct.ParameterizedTest;
 import com.fakeco.fakeproduct.TestJunit3TestCase;
+import com.fakeco.fakeproduct.TestNGFakeProductTest;
 import com.fakeco.fakeproduct.TestThatInheritsACustomRunner;
 import com.fakeco.fakeproduct.TestWithACustomRunner;
 import com.fakeco.fakeproduct.ValidTestWithUnconventionalConstructor;
@@ -107,6 +108,12 @@ public class WhenLookingForTests
     {
         assertTrue(classFor(TestJunit3TestCase.class).isATest());
         assertFalse(classFor(LooksLikeAJUnit3TestButIsnt.class).isATest());
+    }
+
+    @Test
+    public void canDetectTestNGTests()
+    {
+        assertTrue(classFor(TestNGFakeProductTest.class).isATest());
     }
 
     private JavaAssistClass classFor(Class<?> testClass)

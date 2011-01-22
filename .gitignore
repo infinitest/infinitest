@@ -8,3 +8,4 @@ target/
 *.class
 .privatebuild/
 *.iml
+test-output/

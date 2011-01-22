@@ -61,7 +61,7 @@ public class JavaAssistClass extends AbstractJavaClass
     {
         imports = findImports(classReference);
         isATest = !isAbstract(classReference) && isAJUnitTest(classReference) && canInstantiate(classReference);
-        this.className = classReference.getName();
+        className = classReference.getName();
     }
 
     public Collection<String> getImports()
@@ -267,7 +267,9 @@ public class JavaAssistClass extends AbstractJavaClass
 
     private boolean isAJUnitTest(CtClass classReference)
     {
-        return hasJUnitTestMethods(classReference) || usesCustomRunner(classReference);
+        return hasJUnitTestMethods(classReference) //
+                        || hasTestNGTestMethods(classReference) //
+                        || usesCustomRunner(classReference);
     }
 
     private boolean usesCustomRunner(CtClass classReference)
@@ -300,6 +302,18 @@ public class JavaAssistClass extends AbstractJavaClass
                 return isAnnotatedWithCustomRunner(input);
             }
         };
+    }
+
+    private boolean hasTestNGTestMethods(CtClass classReference)
+    {
+        for (CtMethod ctMethod : classReference.getMethods())
+        {
+            if (isTestNGTestMethod(ctMethod))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasJUnitTestMethods(CtClass classReference)
@@ -358,6 +372,28 @@ public class JavaAssistClass extends AbstractJavaClass
             // ext/lib directory, but I'm not going to handle that case until we know we need to.
             return null;
         }
+    }
+
+    private boolean isTestNGTestMethod(CtMethod ctMethod)
+    {
+        MethodInfo methodInfo = ctMethod.getMethodInfo2();
+        List<?> attributes = methodInfo.getAttributes();
+        for (Object attribute : attributes)
+        {
+            if (attribute instanceof AnnotationsAttribute)
+            {
+                AnnotationsAttribute annotations = (AnnotationsAttribute) attribute;
+                for (Annotation each : annotations.getAnnotations())
+                {
+                    if (org.testng.annotations.Test.class.getName().equals(each.getTypeName()))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean isJUnit4TestMethod(CtMethod ctMethod)

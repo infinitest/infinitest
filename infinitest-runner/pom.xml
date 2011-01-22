@@ -34,6 +34,33 @@
 									<includes>**/*.*</includes>
 									<excludes>org/hamcrest/**</excludes>
 								</artifactItem>
+								<artifactItem>
+									<groupId>org.testng</groupId>
+									<artifactId>testng</artifactId>
+									<version>${testng.version}</version>
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>target/classes</outputDirectory>
+									<includes>**/*.*</includes>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.beust</groupId>
+									<artifactId>jcommander</artifactId>
+									<version>1.12</version>
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>target/classes</outputDirectory>
+									<includes>**/*.*</includes>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.beanshell</groupId>
+									<artifactId>bsh</artifactId>
+									<version>2.0b4</version>
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>target/classes</outputDirectory>
+									<includes>**/*.*</includes>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -52,6 +79,16 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>

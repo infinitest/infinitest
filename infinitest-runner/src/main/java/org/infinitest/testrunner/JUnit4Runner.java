@@ -23,7 +23,11 @@ package org.infinitest.testrunner;
 
 import static org.junit.runner.Request.*;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,29 +37,48 @@ import org.infinitest.MissingClassException;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Runner;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+import org.testng.TestNG;
 
 public class JUnit4Runner implements NativeRunner
 {
     public TestResults runTest(String testClass)
     {
-        JUnitCore core = new JUnitCore();
-        EventTranslator eventTranslator = new EventTranslator();
-        core.addListener(eventTranslator);
+        Class<?> clazz;
         try
         {
-            Class<?> clazz = Class.forName(testClass);
-            if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz))
-            {
-                core.run(new UninstantiableJUnit3TestRequest(clazz));
-            }
-            else
-            {
-                core.run(classWithoutSuiteMethod(clazz));
-            }
+            clazz = Class.forName(testClass);
         }
         catch (ClassNotFoundException e)
         {
             throw new MissingClassException(testClass);
+        }
+
+        if (isTestNGTest(clazz))
+        {
+            TestNG core = new TestNG();
+            TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
+            core.addListener(eventTranslator);
+
+            core.setTestClasses(new Class[] { clazz });
+            core.run();
+
+            return eventTranslator.getTestResults();
+        }
+
+        JUnitCore core = new JUnitCore();
+        EventTranslator eventTranslator = new EventTranslator();
+        core.addListener(eventTranslator);
+
+        if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz))
+        {
+            core.run(new UninstantiableJUnit3TestRequest(clazz));
+        }
+        else
+        {
+            core.run(classWithoutSuiteMethod(clazz));
         }
         return eventTranslator.getTestResults();
     }
@@ -109,6 +132,65 @@ public class JUnit4Runner implements NativeRunner
         public Runner getRunner()
         {
             return new UninstantiateableJUnit3TestRunner(testClass);
+        }
+    }
+
+    private boolean isTestNGTest(Class<?> clazz)
+    {
+        for (Method method : clazz.getMethods())
+        {
+            for (Annotation annotation : method.getAnnotations())
+            {
+                if (annotation.annotationType() == org.testng.annotations.Test.class)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static class TestNGEventTranslator implements ITestListener
+    {
+        private final List<TestEvent> eventsCollected = new ArrayList<TestEvent>();
+
+        public void onTestStart(ITestResult result)
+        {
+        }
+
+        public void onTestSuccess(ITestResult result)
+        {
+        }
+
+        public void onTestFailure(ITestResult failure)
+        {
+            eventsCollected.add(createEventFrom(failure));
+        }
+
+        private TestEvent createEventFrom(ITestResult failure)
+        {
+            return TestEvent.methodFailed(failure.getTestClass().getName(), failure.getName(), failure.getThrowable());
+        }
+
+        public TestResults getTestResults()
+        {
+            return new TestResults(eventsCollected);
+        }
+
+        public void onTestSkipped(ITestResult result)
+        {
+        }
+
+        public void onTestFailedButWithinSuccessPercentage(ITestResult result)
+        {
+        }
+
+        public void onStart(ITestContext context)
+        {
+        }
+
+        public void onFinish(ITestContext context)
+        {
         }
     }
 }

@@ -40,6 +40,7 @@ public class WhenRunningJUnitTests
     {
         TestThatThrowsExceptionInConstructor.fail = true;
         FailingTest.fail = true;
+        TestNGTest.fail = true;
         runner = new JUnit4Runner();
     }
 
@@ -95,11 +96,21 @@ public class WhenRunningJUnitTests
         runner.runTest("test");
     }
 
+    @Test
+    public void shouldSupportTestNG()
+    {
+        Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
+        TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError(
+                        "expected:<true> but was:<false>"));
+        assertEventsEquals(expectedEvent, getOnlyElement(events));
+    }
+
     private void assertEventsEquals(TestEvent expected, TestEvent actual)
     {
         assertEquals(expected, actual);
         assertEquals(expected.getMessage(), actual.getMessage());
         assertEquals(expected.getType(), actual.getType());
+        assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
     }
 
     public void testCaseStarting(TestEvent event)
