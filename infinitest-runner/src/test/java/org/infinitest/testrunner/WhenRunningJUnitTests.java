@@ -101,7 +101,7 @@ public class WhenRunningJUnitTests
     {
         Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
         TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError(
-                        "expected:<true> but was:<false>"));
+                        "expected:<false> but was:<true>"));
         assertEventsEquals(expectedEvent, getOnlyElement(events));
     }
 
