@@ -11,6 +11,7 @@ if [ ! -e ${main_site} ]; then
 fi
 
 # Clean working directory
+rm -Rf .privatebuild > /dev/null
 cd ${project_root}
 git stash save --quiet "Before publish"
 git clean -df
