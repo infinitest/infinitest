@@ -35,10 +35,5 @@ public class ConsolePopulatingListener implements ConsoleOutputListener
     public void consoleOutputUpdate(String newText, OutputType outputType)
     {
         writer.appendText(newText);
-
-        if (outputType == OutputType.STDERR)
-        {
-            writer.activate();
-        }
     }
 }

@@ -53,6 +53,6 @@ public class ConsolePopulatingListenerTest
         listener.consoleOutputUpdate("some new text", STDERR);
 
         verify(writer).appendText("some new text");
-        verify(writer).activate();
+        verify(writer, never()).activate();
     }
 }
