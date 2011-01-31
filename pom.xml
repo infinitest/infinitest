@@ -23,16 +23,9 @@
 		<guava.version>r07</guava.version>
 		<hamcrest.version>1.1</hamcrest.version>
 		<testng.version>5.14.6</testng.version>
-		<test.exclude>**/*Simulation.java</test.exclude>
 	</properties>
 
 	<profiles>
-		<profile>
-			<id>integration</id>
-			<properties>
-				<test.exclude>[EXCLUDE NOTHING]</test.exclude>
-			</properties>
-		</profile>
 		<profile>
 			<id>OSX</id>
 			<activation>
@@ -147,11 +140,11 @@
 						<include>**/Test*.java</include>
 						<include>**/*Test.java</include>
 						<include>**/*TestCase.java</include>
+						<include>**/*Simulation.java</include>
 					</includes>
 					<excludes>
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
-						<exclude>${test.exclude}</exclude>
 					</excludes>
 					<argLine>${stop.stealing.focus}</argLine>
 				</configuration>
