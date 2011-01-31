@@ -14,7 +14,7 @@ fi
 rm -Rf .privatebuild > /dev/null
 cd ${project_root}
 git stash save --quiet "Before publish"
-git clean -df
+git clean -xdf
 
 # Ask for version summary
 echo "Please enter the newsfeed summary for this release:"
