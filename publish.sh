@@ -36,7 +36,7 @@ git commit -am "${release_message}"
 git tag -f "$TAG" -m "$TAG"
 
 # Build it!
-mvn clean install -Pintegration
+mvn clean install
 if [ "$?" -ne 0 ]; then
 	echo "ERROR> Maven build failed aborting."
 	git reset --hard HEAD~1
