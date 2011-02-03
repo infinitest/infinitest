@@ -19,11 +19,23 @@
 	<properties>
 		<mockito.version>1.8.5</mockito.version>
 		<easymock.version>2.4</easymock.version>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.9b2</junit.version>
 		<guava.version>r08</guava.version>
 		<hamcrest.version>1.1</hamcrest.version>
 		<testng.version>5.14.6</testng.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://code.algodeal.com:8081/nexus/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<profiles>
 		<profile>

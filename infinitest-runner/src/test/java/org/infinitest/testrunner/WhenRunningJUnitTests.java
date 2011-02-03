@@ -77,7 +77,7 @@ public class WhenRunningJUnitTests
     public void shouldTreatUninstantiableTestsAsFailures()
     {
         Iterable<TestEvent> events = runner.runTest(TEST_CLASS.getName());
-        TestEvent expectedEvent = methodFailed(null, TEST_CLASS.getName(), "shouldPass", new IllegalStateException());
+        TestEvent expectedEvent = methodFailed("", TEST_CLASS.getName(), "shouldPass", new IllegalStateException());
         assertEventsEquals(expectedEvent, getOnlyElement(events));
     }
 
@@ -107,10 +107,10 @@ public class WhenRunningJUnitTests
 
     private void assertEventsEquals(TestEvent expected, TestEvent actual)
     {
-        assertEquals(expected, actual);
-        assertEquals(expected.getMessage(), actual.getMessage());
-        assertEquals(expected.getType(), actual.getType());
-        assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
+        assertEquals("event", expected, actual);
+        assertEquals("message", expected.getMessage(), actual.getMessage());
+        assertEquals("type", expected.getType(), actual.getType());
+        assertEquals("errorClassName", expected.getErrorClassName(), actual.getErrorClassName());
     }
 
     public void testCaseStarting(TestEvent event)

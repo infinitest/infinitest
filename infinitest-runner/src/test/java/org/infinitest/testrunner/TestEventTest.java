@@ -133,10 +133,12 @@ public class TestEventTest extends EqualityTestSupport
     private void verifyPointOfFailureMessage(int lineNumber)
     {
         String actual = event.getPointOfFailure().toString();
-        String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName()
-                        + "(" + error.getMessage() + ")";
 
-        assertEquals(expected, actual);
+        String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName();
+        String detailsJUnit48 = "(" + error.getMessage() + ")";
+        String detailsJUnit49 = "(null)".equals(detailsJUnit48) ? "" : detailsJUnit48;
+
+        assertTrue(actual.equals(expected + detailsJUnit48) || actual.equals(expected + detailsJUnit49));
     }
 
     @Override
