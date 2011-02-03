@@ -32,7 +32,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.infinitest.testrunner.CrashingTestRunner;
@@ -41,6 +40,8 @@ import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 public class WhenCreatingRunnerProcessConnection
 {
@@ -73,7 +74,6 @@ public class WhenCreatingRunnerProcessConnection
         return sendMessageWithServerSocket(new String[] { input });
     }
 
-    @SuppressWarnings("unchecked")
     private List<TestEvent> sendMessageWithServerSocket(String... messages) throws UnknownHostException, IOException,
                     ClassNotFoundException
     {
@@ -84,7 +84,7 @@ public class WhenCreatingRunnerProcessConnection
             Socket socket = serverSocket.accept();
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-            List<TestEvent> results = new ArrayList();
+            List<TestEvent> results = Lists.newArrayList();
             TestResults result = null;
             int i = 0;
             do
