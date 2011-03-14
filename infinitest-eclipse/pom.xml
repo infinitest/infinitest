@@ -60,40 +60,12 @@
 	</profiles>
 
 	<build>
-		<filters>
-			<filter>${project.build.directory}/classpath.properties</filter>
-		</filters>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<argLine>${surefire.params}</argLine>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>build-classpath</goal>
-						</goals>
-						<configuration>
-							<pathSeparator>,</pathSeparator>
-							<prefix>lib</prefix>
-							<includeScope>runtime</includeScope>
-							<outputFile>${project.build.directory}/classpath.properties</outputFile>
-							<outputFilterFile>true</outputFilterFile>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -151,10 +123,10 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.1.0</version>
+				<version>2.3.4</version>
+				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<_include>target/classes/META-INF/MANIFEST.MF</_include>
 						<Export-Package>!*</Export-Package>
 						<Import-Package>!*</Import-Package>
 						<Bundle-Activator>org.infinitest.eclipse.InfinitestPlugin</Bundle-Activator>
@@ -164,6 +136,10 @@
 						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
 						<Bundle-Vendor>infinitest.org</Bundle-Vendor>
 						<Require-Bundle>org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.core.resources,org.eclipse.jdt.core,org.junit4,org.eclipse.ui.ide,org.eclipse.ui.console;bundle-version="3.3.0",org.eclipse.jdt.debug.ui,org.eclipse.jface.text,org.eclipse.debug.core,org.eclipse.jdt.launching</Require-Bundle>
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<Embed-Directory>lib</Embed-Directory>
+						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 					</instructions>
 				</configuration>
 				<executions>
