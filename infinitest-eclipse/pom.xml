@@ -213,140 +213,140 @@
 			<artifactId>core.net</artifactId>
 			<version>1.0.0.I20070531</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.net_1.0.0.I20070531.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.net_1.0.0.I20070531.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>equinox-preferences</artifactId>
 			<version>3.2.200.v20080421-2006</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.equinox.preferences_3.2.200.v20080421-2006.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.equinox.preferences_3.2.200.v20080421-2006.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core-contenttype</artifactId>
 			<version>3.3.0.v20080604-1400</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.contenttype_3.3.0.v20080604-1400.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.contenttype_3.3.0.v20080604-1400.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jdt-launching</artifactId>
 			<version>3.4.0.v20080529-1300</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.jdt.launching_3.4.0.v20080529-1300.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.jdt.launching_3.4.0.v20080529-1300.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>debug-core</artifactId>
 			<version>3.4.0.v20080612</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.debug.core_3.4.0.v20080612.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.debug.core_3.4.0.v20080612.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>text</artifactId>
 			<version>3.4.0.v20080605-1800</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.text_3.4.0.v20080605-1800.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.text_3.4.0.v20080605-1800.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jdt-debug-ui</artifactId>
 			<version>3.3.1.v20080730_r341</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.jdt.debug.ui_3.3.0.v20080603.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.jdt.debug.ui_3.3.0.v20080603.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>console</artifactId>
 			<version>3.3.0.v20080529-1300</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.ui.console_3.3.0.v20080529-1300.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.ui.console_3.3.0.v20080529-1300.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>ui-ide</artifactId>
 			<version>3.4.1.M20080903-2000</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.ui.ide_3.4.0.I20080606-1300.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.ui.ide_3.4.0.I20080606-1300.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jdt-core</artifactId>
 			<version>3.4.2.v_883_R34x</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.jdt.core_3.4.0.v_874.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.jdt.core_3.4.0.v_874.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>eclipse.swt</artifactId>
 			<version>${swt.version}</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/${swt.jar}</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/${swt.jar}</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
 			<version>3.4.2.R34x_v20080826-1230</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.osgi_3.4.0.v20080605-1900.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.osgi_3.4.0.v20080605-1900.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core-resources</artifactId>
 			<version>3.4.1.R34x_v20080902</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.resources_3.4.0.v20080604-1400.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.resources_3.4.0.v20080604-1400.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core-runtime</artifactId>
 			<version>3.4.0.v20080512</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.runtime_3.4.0.v20080512.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.runtime_3.4.0.v20080512.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jface</artifactId>
 			<version>3.4.1.M20080827-2000</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.jface_3.4.0.I20080606-1300.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.jface_3.4.0.I20080606-1300.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>equinox-common</artifactId>
 			<version>3.4.0.v20080421-2006</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>ui-workbench</artifactId>
 			<version>3.4.1.M20080827-0800a</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.ui.workbench_3.4.0.I20080606-1300.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.ui.workbench_3.4.0.I20080606-1300.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>equinox-registry</artifactId>
 			<version>3.4.0.v20080516-0950</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core-commands</artifactId>
 			<version>3.4.0.I20080509-2000</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.commands_3.4.0.I20080509-2000.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.commands_3.4.0.I20080509-2000.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core-job</artifactId>
 			<version>3.4.0.v20080512</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/maven-deps/org.eclipse.core.jobs_3.4.0.v20080512.jar</systemPath>
+			<systemPath>${user.dir}/artifacts/eclipse-deps/org.eclipse.core.jobs_3.4.0.v20080512.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
