@@ -9,3 +9,4 @@ target/
 .privatebuild/
 *.iml
 test-output/
+lib/
