@@ -23,12 +23,27 @@
 			<activation>
 				<os>
 					<family>windows</family>
+					<arch>x86</arch>
 				</os>
 			</activation>
 			<properties>
 				<surefire.params></surefire.params>
 				<swt.version>3.5.2</swt.version>
 				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows64</id>
+			<activation>
+				<os>
+					<family>windows</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<properties>
+				<surefire.params></surefire.params>
+				<swt.version>3.6.2</swt.version>
+				<swt.jar>org.eclipse.swt.win32.win32.x86_64_3.6.2.v3659c.jar</swt.jar>
 			</properties>
 		</profile>
 		<profile>
@@ -39,9 +54,9 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params>-d32</surefire.params>
+				<surefire.params></surefire.params>
 				<swt.version>3.5.2.v3557f</swt.version>
-				<swt.jar>org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar</swt.jar>
+				<swt.jar>org.eclipse.swt.gtk.linux.x86_64_3.6.2.v3659b.jar</swt.jar>
 			</properties>
 		</profile>
 		<profile>
@@ -52,9 +67,9 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params>-d32</surefire.params>
+				<surefire.params>-XstartOnFirstThread</surefire.params>
 				<swt.version>3.4.1.v3449c</swt.version>
-				<swt.jar>org.eclipse.swt.carbon.macosx_3.4.0.v3448f.jar</swt.jar>
+				<swt.jar>org.eclipse.swt.cocoa.macosx.x86_64_3.6.2.v3659b.jar</swt.jar>
 			</properties>
 		</profile>
 	</profiles>
