@@ -127,8 +127,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>!*</Export-Package>
-						<Import-Package>!*</Import-Package>
+						<Export-Package>org.infinitest.eclipse</Export-Package>
+						<Import-Package>org.eclipse.ui</Import-Package>
 						<Bundle-Activator>org.infinitest.eclipse.InfinitestPlugin</Bundle-Activator>
 						<Bundle-Version>${plugin.version}</Bundle-Version>
 						<Bundle-SymbolicName>${plugin.id}; singleton:=true</Bundle-SymbolicName>
