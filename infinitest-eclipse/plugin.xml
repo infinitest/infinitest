@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension id="org.infinitest.eclipse.marker" point="org.eclipse.core.resources.markers" name="Infinitest Test Failure">
+		<persistent value="false"/>
+		<super type="org.eclipse.core.resources.problemmarker"/>
+	</extension>
+	<extension point="org.eclipse.ui.ide.markerResolution">
+		<markerResolutionGenerator class="org.infinitest.eclipse.resolution.MarkerResolutionGenerator">
+     </markerResolutionGenerator>
+	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page name="Infinitest" class="org.infinitest.eclipse.prefs.PreferencePage" id="org.infinitest.eclipse.prefs.view">
+     </page>
+	</extension>
+	<extension point="org.eclipse.ui.startup">
+		<startup class="org.infinitest.eclipse.ContinuousTestingStarter"/>
+	</extension>
+	<extension id="org.infinitest.eclipse.slowmarker" name="Infinitest Slow Test Warning" point="org.eclipse.core.resources.markers">
+		<persistent value="false">
+     </persistent>
+		<super type="org.eclipse.core.resources.problemmarker">
+     </super>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<group id="org.infinitest.eclipse.trimwidget" separatorsVisible="true">
+			<location>
+				<bar type="trim">
+           </bar>
+				<order position="before" relativeTo="status">
+           </order>
+			</location>
+		</group>
+		<widget class="org.infinitest.eclipse.trim.StatusBar" id="org.infinitest.eclipse.trim.status">
+			<location>
+				<bar path="org.infinitest.eclipse.trimwidget" type="trim">
+           </bar>
+			</location>
+		</widget>
+	</extension>
+</plugin>
