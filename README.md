@@ -28,7 +28,7 @@ You need [maven](http://maven.apache.org/download.html). Did I mention that?
 Finding your way around
 ------------------------
 
-`infinitest-lib` and `infinitest-runner` are included in every plugin. `infinitest-intellij` is the IntelliJ plugin, while `infinitest-eclipse` is a multi-module project that contains 3 sub-projects necessary for the eclipse plugin. `eclipse-feature` and `eclipse-site` just include metadata necessary for creating and packaging the plugin.
+`infinitest-lib` and `infinitest-runner` are included in every plugin. `infinitest-intellij` is the IntelliJ plugin, while `infinitest-eclipse` is the eclipse plugin.
 
 `testWorkspace` is a collection of sample projects that we use for exploratory testing. If you find something in the wild that makes Infinitest break, it's a good idea to reproduce it in testWorkspace, fix it, and then try it again to be sure you've really fixed it.
 
@@ -43,6 +43,10 @@ Running `publish.sh` copies the plugin to the experimental [update site](http://
 
 Running and Debugging Infinitest in Eclipse
 --------------------------------------------
+
+First, tell maven to generate eclipse project files (.project and .classpath):
+
+	mvn eclipse:eclipse
 
 Right-click in the Eclipse Package Explorer -> Import -> Existing Projects info Workspace -> Choose the root of your infinitest-repository -> Your maven-built-projects are displayed -> DON'T copy into workspace -> Finish.
 The "Eclipse Application" Runtime Configuration in eclipse allows you to fire up another Eclipse instance with the Infinitest plugin loaded into it. You can also debug this instance (which can be a very effective way to explore what the Eclipse SDK actually does): 

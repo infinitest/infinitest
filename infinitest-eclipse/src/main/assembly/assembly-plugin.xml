@@ -14,6 +14,15 @@
 				<include>**/*</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<filtered>true</filtered>
+			<directory>${basedir}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>plugin.xml</include>
+				<include>preferences.ini</include>
+			</includes>
+		</fileSet>
 	</fileSets>
 	<dependencySets>
 		<dependencySet>
