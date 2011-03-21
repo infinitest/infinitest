@@ -44,9 +44,9 @@ Running `publish.sh` copies the plugin to the experimental [update site](http://
 Running and Debugging Infinitest in Eclipse
 --------------------------------------------
 
-First, tell maven to generate eclipse project files (.project and .classpath) and Manifest file:
+First, tell maven to generate eclipse project files (.project and .classpath):
 
-	mvn eclipse:eclipse org.apache.felix:maven-bundle-plugin:manifest
+	mvn eclipse:eclipse
 
 Right-click in the Eclipse Package Explorer -> Import -> Existing Projects info Workspace -> Choose the root of your infinitest-repository -> Your maven-built-projects are displayed -> DON'T copy into workspace -> Finish.
 The "Eclipse Application" Runtime Configuration in eclipse allows you to fire up another Eclipse instance with the Infinitest plugin loaded into it. You can also debug this instance (which can be a very effective way to explore what the Eclipse SDK actually does): 
