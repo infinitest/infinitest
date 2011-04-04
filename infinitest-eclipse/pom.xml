@@ -47,7 +47,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>Unix</id>
+			<id>Unix32</id>
 			<activation>
 				<os>
 					<family>unix</family>
@@ -61,7 +61,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>Unix</id>
+			<id>Unix64</id>
 			<activation>
 				<os>
 					<family>unix</family>
