@@ -21,6 +21,8 @@
  */
 package org.infinitest;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.io.File;
 
 import org.infinitest.changedetect.FileChangeDetector;
@@ -47,12 +49,14 @@ public class InfinitestCoreBuilder
 
     public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue)
     {
+        checkNotNull(environment, "No runtime environment is configured. Maybe because the project has no jdk.");
+
         runtimeEnvironment = environment;
         this.eventQueue = eventQueue;
         String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator
                         + "infinitest.filters";
-        this.filterList = new RegexFileFilter(new File(filterFileLocation));
-        this.runnerClass = MultiProcessRunner.class;
+        filterList = new RegexFileFilter(new File(filterFileLocation));
+        runnerClass = MultiProcessRunner.class;
         controller = new SingleLockConcurrencyController();
     }
 
@@ -82,7 +86,7 @@ public class InfinitestCoreBuilder
      */
     public void setFilter(TestFilter testFilter)
     {
-        this.filterList = testFilter;
+        filterList = testFilter;
     }
 
     private TestRunner createRunner()
@@ -109,6 +113,6 @@ public class InfinitestCoreBuilder
 
     public void setUpdateSemaphore(ConcurrencyController semaphore)
     {
-        this.controller = semaphore;
+        controller = semaphore;
     }
 }
