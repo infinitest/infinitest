@@ -42,7 +42,6 @@ import org.junit.Test;
 import com.fakeco.fakeproduct.JUnit3TestWithExceptionInConstructor;
 import com.fakeco.fakeproduct.TestFakeProduct;
 import com.fakeco.fakeproduct.TestJUnit4TestCase;
-import com.google.common.base.Strings;
 
 @SuppressWarnings("unused")
 public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener
@@ -228,7 +227,7 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
         assertEquals("Error event count", 1, methodEvents.size());
 
         TestEvent e = methodEvents.get(0);
-        assertTrue(Strings.isNullOrEmpty(e.getMessage()));
+        assertNull(e.toString(), e.getMessage());
         assertTrue(e.getErrorClassName().equals(IllegalArgumentException.class.getSimpleName()));
         assertEquals("Test Case Name", TestFakeProduct.class.getName(), e.getTestName());
         assertEquals("testNumber1", e.getTestMethod());

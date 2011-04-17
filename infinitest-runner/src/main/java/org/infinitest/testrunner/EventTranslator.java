@@ -84,9 +84,8 @@ class EventTranslator extends RunListener
         Description testDescription = failure.getDescription();
         String testCaseName = getTestCaseName(testDescription);
         Throwable exception = failure.getException();
-        String message = null == failure.getMessage() ? "" : failure.getMessage();
-
-        return methodFailed(message, testCaseName, getMethodName(testDescription), exception);
+        TestEvent event = methodFailed(failure.getMessage(), testCaseName, getMethodName(testDescription), exception);
+        return event;
     }
 
     private static String getTestCaseName(Description description)
