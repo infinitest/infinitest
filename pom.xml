@@ -25,18 +25,6 @@
 		<testng.version>5.14.6</testng.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://code.algodeal.com:8081/nexus/content/groups/public</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<profiles>
 		<profile>
 			<id>OSX</id>
