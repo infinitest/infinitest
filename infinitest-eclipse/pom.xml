@@ -129,7 +129,7 @@
 								<descriptor>src/main/assembly/assembly-plugin.xml</descriptor>
 							</descriptors>
 							<archive>
-								<manifestFile>${project.build.directory}/classes/META-INF/MANIFEST.MF</manifestFile>
+								<manifestFile>META-INF/MANIFEST.MF</manifestFile>
 							</archive>
 						</configuration>
 					</execution>
@@ -171,6 +171,7 @@
 						<Embed-Directory>lib</Embed-Directory>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 					</instructions>
+					<manifestLocation>META-INF/</manifestLocation>
 				</configuration>
 				<executions>
 					<execution>
@@ -181,6 +182,13 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<manifestFile>${baseDir}/META-INF/MANIFEST.MF</manifestFile>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
