@@ -97,16 +97,15 @@
 				<version>2.1</version>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>process-sources</phase>
+						<id>libraries</id>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
+							<excludeScope>system</excludeScope>
 						</configuration>
 					</execution>
 				</executions>
