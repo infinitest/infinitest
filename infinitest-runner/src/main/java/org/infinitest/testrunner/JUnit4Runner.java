@@ -34,6 +34,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.infinitest.MissingClassException;
+import org.infinitest.TestNGConfiguration;
+import org.infinitest.TestNGConfigurator;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Runner;
@@ -63,6 +65,8 @@ public class JUnit4Runner implements NativeRunner
             core.addListener(eventTranslator);
 
             core.setTestClasses(new Class[] { clazz });
+
+            addGroupFilters(core);
             core.run();
 
             return eventTranslator.getTestResults();
@@ -81,6 +85,23 @@ public class JUnit4Runner implements NativeRunner
             core.run(classWithoutSuiteMethod(clazz));
         }
         return eventTranslator.getTestResults();
+    }
+
+    private void addGroupFilters(TestNG core)
+    {
+        TestNGConfiguration config = TestNGConfiguration.INSTANCE;
+        if (!config.isChecked())
+        {
+            new TestNGConfigurator();
+        }
+        if (config.getExcludedGroups() != null)
+        {
+            core.setExcludedGroups(config.getExcludedGroups());
+        }
+        if (config.getGroups() != null)
+        {
+            core.setGroups(config.getGroups());
+        }
     }
 
     private boolean isJUnit3TestCase(Class<?> clazz)
