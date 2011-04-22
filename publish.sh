@@ -2,7 +2,7 @@
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 project_root=`dirname ${abspath}`
 main_site=${project_root}/../infinitest.github.com
-update_site=${main_site}/experimental
+update_site=${main_site}
 
 # Test for web project existence
 if [ ! -e ${main_site} ]; then
@@ -62,3 +62,4 @@ rm update_rss.rb
 cd ${main_site}
 git add .
 git commit -am "${release_message}"
+git tag -f "$TAG" -m "$TAG"

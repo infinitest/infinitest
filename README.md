@@ -41,7 +41,7 @@ The `publish.sh` script will build a new version of the plugin, incrementing the
 
 Running `publish.sh` copies the plugin to the experimental [update site](http://update.improvingworks.com/experimental). It's suggested that you publish and then test the plugin before promoting it to the main [update site](http://update.improvingworks.com). You do this using the `promote.sh` script.
 
-Running and Debugging Infinitest in Eclipse
+Open Infinitest in Eclipse
 --------------------------------------------
 
 First, tell maven to generate eclipse project files (.project and .classpath):
@@ -50,6 +50,11 @@ First, tell maven to generate eclipse project files (.project and .classpath):
 
 Right-click in the Eclipse Package Explorer -> Import -> Existing Projects info Workspace -> Choose the root of your infinitest-repository -> Your maven-built-projects are displayed -> DON'T copy into workspace -> Finish.
 The "Eclipse Application" Runtime Configuration in eclipse allows you to fire up another Eclipse instance with the Infinitest plugin loaded into it. You can also debug this instance (which can be a very effective way to explore what the Eclipse SDK actually does): 
+
+Running and Debugging Infinitest in Eclipse
+--------------------------------------------
+
+	mvn eclipse:eclipse install -Dmaven.test.skip=true
 
 Right-click plugin.xml -> Open With -> Plug-in Manifest Editor
 Tab Overview -> Launch/Debug an Eclipse application

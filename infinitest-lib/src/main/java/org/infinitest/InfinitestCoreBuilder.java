@@ -21,6 +21,8 @@
  */
 package org.infinitest;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.io.File;
 
 import org.infinitest.changedetect.FileChangeDetector;
@@ -49,11 +51,14 @@ public class InfinitestCoreBuilder
 
     public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue)
     {
+        checkNotNull(environment, "No runtime environment is configured. Maybe because the project has no jdk.");
+
         runtimeEnvironment = environment;
         this.eventQueue = eventQueue;
         File filterFile = getFilterFile(environment);
         filterList = new RegexFileFilter(filterFile);
         testNGConfigurator = new TestNGConfigurator(filterFile);
+
         runnerClass = MultiProcessRunner.class;
         controller = new SingleLockConcurrencyController();
     }

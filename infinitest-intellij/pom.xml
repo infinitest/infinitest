@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.1.87-SNAPSHOT</version>
+		<version>5.1.90-SNAPSHOT</version>
 	</parent>
 	
 	<name>Infinitest for IntelliJ</name>
@@ -18,6 +18,12 @@
 	</repositories>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.1.87-SNAPSHOT</version>
+		<version>5.1.90-SNAPSHOT</version>
 	</parent>
 	
 	<name>Infinitest Plugin for Eclipse</name>
@@ -27,7 +27,7 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params/>
+				<surefire.params></surefire.params>
 				<swt.version>3.5.2</swt.version>
 				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
 			</properties>
@@ -47,15 +47,30 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>Unix</id>
+			<id>Unix32</id>
 			<activation>
 				<os>
 					<family>unix</family>
+					<arch>i386</arch>
+				</os>
+			</activation>
+			<properties>
+				<surefire.params>-d32</surefire.params>
+				<swt.version>3.5.2.v3557f</swt.version>
+				<swt.jar>org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar</swt.jar>
+			</properties>
+		</profile>
+		<profile>
+			<id>Unix64</id>
+			<activation>
+				<os>
+					<family>unix</family>
+					<arch>amd64</arch>
 				</os>
 			</activation>
 			<properties>
 				<surefire.params></surefire.params>
-				<swt.version>3.5.2.v3557f</swt.version>
+				<swt.version>3.6.2.v3659b</swt.version>
 				<swt.jar>org.eclipse.swt.gtk.linux.x86_64_3.6.2.v3659b.jar</swt.jar>
 			</properties>
 		</profile>
@@ -73,6 +88,7 @@
 			</properties>
 		</profile>
 	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -81,16 +97,15 @@
 				<version>2.1</version>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>process-sources</phase>
+						<id>libraries</id>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
+							<excludeScope>system</excludeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -148,7 +163,7 @@
 								<descriptor>src/main/assembly/assembly-plugin.xml</descriptor>
 							</descriptors>
 							<archive>
-								<manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
+								<manifestFile>META-INF/MANIFEST.MF</manifestFile>
 							</archive>
 						</configuration>
 					</execution>
@@ -175,10 +190,9 @@
 				<version>2.3.4</version>
 				<extensions>true</extensions>
 				<configuration>
-					<manifestLocation>${basedir}/META-INF</manifestLocation>
 					<instructions>
-						<Export-Package>org.infinitest.eclipse</Export-Package>
-						<Import-Package>org.eclipse.ui</Import-Package>
+						<Export-Package>!*</Export-Package>
+						<Import-Package>!*</Import-Package>
 						<Bundle-Activator>org.infinitest.eclipse.InfinitestPlugin</Bundle-Activator>
 						<Bundle-Version>${plugin.version}</Bundle-Version>
 						<Bundle-SymbolicName>${plugin.id}; singleton:=true</Bundle-SymbolicName>
@@ -191,6 +205,7 @@
 						<Embed-Directory>lib</Embed-Directory>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 					</instructions>
+					<manifestLocation>META-INF/</manifestLocation>
 				</configuration>
 				<executions>
 					<execution>
@@ -201,6 +216,13 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<manifestFile>${baseDir}/META-INF/MANIFEST.MF</manifestFile>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
