@@ -26,6 +26,7 @@ import java.io.File;
 import org.infinitest.changedetect.FileChangeDetector;
 import org.infinitest.filter.RegexFileFilter;
 import org.infinitest.filter.TestFilter;
+import org.infinitest.filter.TestNGConfigurator;
 import org.infinitest.parser.ClassFileTestDetector;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.MultiProcessRunner;
@@ -44,15 +45,16 @@ public class InfinitestCoreBuilder
     private final EventQueue eventQueue;
     private String coreName = "";
     private ConcurrencyController controller;
+    private final TestNGConfigurator testNGConfigurator;
 
     public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue)
     {
         runtimeEnvironment = environment;
         this.eventQueue = eventQueue;
-        String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator
-                        + "infinitest.filters";
-        this.filterList = new RegexFileFilter(new File(filterFileLocation));
-        this.runnerClass = MultiProcessRunner.class;
+        File filterFile = getFilterFile(environment);
+        filterList = new RegexFileFilter(filterFile);
+        testNGConfigurator = new TestNGConfigurator(filterFile);
+        runnerClass = MultiProcessRunner.class;
         controller = new SingleLockConcurrencyController();
     }
 
@@ -67,6 +69,7 @@ public class InfinitestCoreBuilder
         core.setName(coreName);
         core.setChangeDetector(new FileChangeDetector());
         core.setTestDetector(createTestDetector(filterList));
+        core.addTestQueueListener(testNGConfigurator);
         core.setRuntimeEnvironment(runtimeEnvironment);
         return core;
     }
@@ -82,7 +85,7 @@ public class InfinitestCoreBuilder
      */
     public void setFilter(TestFilter testFilter)
     {
-        this.filterList = testFilter;
+        filterList = testFilter;
     }
 
     private TestRunner createRunner()
@@ -109,6 +112,14 @@ public class InfinitestCoreBuilder
 
     public void setUpdateSemaphore(ConcurrencyController semaphore)
     {
-        this.controller = semaphore;
+        controller = semaphore;
+    }
+
+    public static File getFilterFile(RuntimeEnvironment environment)
+    {
+        final String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator
+                        + "infinitest.filters";
+        File filterFile = new File(filterFileLocation);
+        return filterFile;
     }
 }

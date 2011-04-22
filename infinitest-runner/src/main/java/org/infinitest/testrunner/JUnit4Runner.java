@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.infinitest.MissingClassException;
+import org.infinitest.TestNGConfiguration;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Runner;
@@ -46,6 +47,8 @@ public class JUnit4Runner implements NativeRunner
 {
     public TestResults runTest(String testClass)
     {
+        TestNGConfiguration config = TestNGConfiguration.INSTANCE;
+
         Class<?> clazz;
         try
         {
@@ -61,8 +64,12 @@ public class JUnit4Runner implements NativeRunner
             TestNG core = new TestNG();
             TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
             core.addListener(eventTranslator);
-
             core.setTestClasses(new Class[] { clazz });
+
+            if (config.getExcludedGroups() != null)
+            {
+                core.setExcludedGroups(config.getExcludedGroups());
+            }
             core.run();
 
             return eventTranslator.getTestResults();
