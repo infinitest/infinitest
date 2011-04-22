@@ -117,11 +117,11 @@ public class TestNGConfigurator implements TestQueueListener
 
     public void testQueueUpdated(TestQueueEvent event)
     {
-        // TODO Auto-generated method stub
+        // from TestQueueListener but not needed here
     }
 
     public void testRunComplete()
     {
-        // TODO Auto-generated method stub
+        // from TestQueueListener but not needed here
     }
 }

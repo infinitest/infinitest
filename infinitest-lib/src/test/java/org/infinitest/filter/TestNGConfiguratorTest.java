@@ -78,6 +78,12 @@ public class TestNGConfiguratorTest
     }
 
     @Test
+    public void testReadingTestNGFile()
+    {
+
+    }
+
+    @Test
     public void testEmptyFile()
     {
         File file = new File("testng.config");
