@@ -27,7 +27,7 @@ public enum TestNGConfiguration
 {
     INSTANCE;
 
-    private String excludedGroups;
+    private volatile String excludedGroups;
 
     public void setExcludedGroups(String excludedGroups)
     {

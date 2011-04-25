@@ -47,8 +47,6 @@ public class JUnit4Runner implements NativeRunner
 {
     public TestResults runTest(String testClass)
     {
-        TestNGConfiguration config = TestNGConfiguration.INSTANCE;
-
         Class<?> clazz;
         try
         {
@@ -66,6 +64,7 @@ public class JUnit4Runner implements NativeRunner
             core.addListener(eventTranslator);
             core.setTestClasses(new Class[] { clazz });
 
+            TestNGConfiguration config = TestNGConfiguration.INSTANCE;
             if (config.getExcludedGroups() != null)
             {
                 core.setExcludedGroups(config.getExcludedGroups());
