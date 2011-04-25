@@ -37,21 +37,21 @@ import org.junit.Test;
 public class WhenRunningTestNGTests
 {
     private JUnit4Runner runner;
-    private static final String CLASS_UNDER_TEST = TestWithTestNG.class.getName();
+    private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
 
     @Before
     public void inContext()
     {
         runner = new JUnit4Runner();
-        TestWithTestNG.fail = true;
-        TestWithTestNG.dependencyFail = true;
+        TestWithTestNGGroups.fail = true;
+        TestWithTestNGGroups.dependencyFail = true;
     }
 
     @After
     public void cleanup()
     {
-        TestWithTestNG.fail = false;
-        TestWithTestNG.dependencyFail = false;
+        TestWithTestNGGroups.fail = false;
+        TestWithTestNGGroups.dependencyFail = false;
         TestNGConfiguration.INSTANCE.clear();
     }
 
@@ -79,7 +79,7 @@ public class WhenRunningTestNGTests
     @Test
     public void shouldExecuteDependentTestIfMasterGroupWorked()
     {
-        TestWithTestNG.fail = false;
+        TestWithTestNGGroups.fail = false;
         TestResults results = runner.runTest(CLASS_UNDER_TEST);
         TestEvent testEvent = getOnlyElement(results);
         assertEquals("shouldNoBeTestedDueToDependencyOnFilteredGroup", testEvent.getTestMethod());
@@ -94,15 +94,29 @@ public class WhenRunningTestNGTests
         assertEquals(0, size(results));
     }
 
-    //
-    // /** TODO testng file is still to implement */
-    // @Test
-    // public void shouldNotFailWithTestNGXMLSet()
-    // {
-    // TestNGConfiguration.INSTANCE.setExcludedGroups("slow, manual");
-    // TestResults results = runner.runTest(CLASS_UNDER_TEST);
-    // assertEquals(0, size(results));
-    // }
-    // TODO this class breaks infinitest-tests???
+    @Test
+    public void shouldExecuteOnlyTheSpecifiedGroup()
+    {
+        TestNGConfiguration.INSTANCE.setGroups("slow");
+        TestResults results = runner.runTest(CLASS_UNDER_TEST);
+        assertEquals(2, size(results));
+
+        TestNGConfiguration.INSTANCE.setGroups("shouldbetested");
+        results = runner.runTest(CLASS_UNDER_TEST);
+        assertEquals(0, size(results));
+    }
+
+    /**
+     * if the group "slow" is included, but "mixed" excluded, a test with groups = "mixed", "slow"
+     * will not be executed
+     */
+    @Test
+    public void combineIncludedAndExcludedGroups()
+    {
+        TestNGConfiguration.INSTANCE.setGroups("slow");
+        TestNGConfiguration.INSTANCE.setExcludedGroups("mixed");
+        TestResults results = runner.runTest(CLASS_UNDER_TEST);
+        assertEquals(1, size(results));
+    }
 
 }

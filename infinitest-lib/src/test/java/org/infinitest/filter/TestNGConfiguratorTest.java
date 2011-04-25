@@ -42,9 +42,11 @@ import com.google.common.io.Files;
 
 public class TestNGConfiguratorTest
 {
+    private static final String GROUPS = "quick";
     private static final File TEMP_FILE = new File("temp.filter");
     private static final String EXCLUDED = "slow, broken, manual";
-    private static final String FILTERLINE = "## excluded-groups=" + EXCLUDED;
+    private static final String EXCLUDEDLINE = "## excluded-groups=" + EXCLUDED;
+    private static final String GROUPSLINE = "## groups=" + GROUPS;
 
     private File filterFile = null;
     private RuntimeEnvironment environment;
@@ -69,7 +71,7 @@ public class TestNGConfiguratorTest
     @Test
     public void testFilterList() throws IOException
     {
-        File file = createTestFile();
+        File file = createTestFile(EXCLUDEDLINE);
 
         assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
         new TestNGConfigurator(file);
@@ -78,9 +80,44 @@ public class TestNGConfiguratorTest
     }
 
     @Test
-    public void testReadingTestNGFile()
+    public void testReadingIncludedGroup() throws IOException
     {
+        File file = createTestFile(GROUPSLINE);
+        assertNull(TestNGConfiguration.INSTANCE.getGroups());
 
+        new TestNGConfigurator(file);
+        assertNotNull(TestNGConfiguration.INSTANCE.getGroups());
+        assertEquals(GROUPS, TestNGConfiguration.INSTANCE.getGroups());
+    }
+
+    @Test
+    public void testReadingIncludedAndExcludedGroups() throws IOException
+    {
+        File file = createTestFile(GROUPSLINE, EXCLUDEDLINE);
+        assertNull(TestNGConfiguration.INSTANCE.getGroups());
+        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
+
+        new TestNGConfigurator(file);
+        assertNotNull(TestNGConfiguration.INSTANCE.getGroups());
+        assertEquals(GROUPS, TestNGConfiguration.INSTANCE.getGroups());
+        assertEquals(EXCLUDED, TestNGConfiguration.INSTANCE.getExcludedGroups());
+    }
+
+    @Test
+    public void testEmptyGroups() throws IOException
+    {
+        File file = createTestFile("## excluded-groups= ");
+        new TestNGConfigurator(file);
+        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
+    }
+
+    @Test
+    public void testSpacesInGroupsLine() throws IOException
+    {
+        final String halloGroup = "hallo";
+        File file = createTestFile("##excluded-groups = " + halloGroup + " ");
+        new TestNGConfigurator(file);
+        assertEquals(halloGroup, TestNGConfiguration.INSTANCE.getExcludedGroups());
     }
 
     @Test
@@ -95,7 +132,7 @@ public class TestNGConfiguratorTest
     @Test
     public void testReloading() throws IOException
     {
-        File file = createTestFile();
+        File file = createTestFile(EXCLUDEDLINE);
         TestNGConfigurator testNGConfigurator = new TestNGConfigurator(file);
         assertNotNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
         setDifferentEXCLUDEDGroup();
@@ -132,7 +169,7 @@ public class TestNGConfiguratorTest
         final PrintWriter writer = new PrintWriter(filterFile);
         try
         {
-            writer.append(FILTERLINE);
+            writer.append(EXCLUDEDLINE);
         }
         finally
         {
@@ -140,7 +177,7 @@ public class TestNGConfiguratorTest
         }
     }
 
-    private File createTestFile() throws IOException
+    private File createTestFile(String... additionalLines) throws IOException
     {
         final File file = File.createTempFile("filter", "conf");
         file.deleteOnExit();
@@ -148,7 +185,10 @@ public class TestNGConfiguratorTest
         try
         {
             writer.println("## TestNG Configuration");
-            writer.println(FILTERLINE);
+            for (String line : additionalLines)
+            {
+                writer.println(line);
+            }
             writer.println("#foo.bar");
             writer.println("Some other content");
         }

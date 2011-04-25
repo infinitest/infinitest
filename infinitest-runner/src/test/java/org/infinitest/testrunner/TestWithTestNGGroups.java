@@ -27,7 +27,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 /** Provides a set of TestNG-tests as a base to test the TestNG-configuration */
-public class TestWithTestNG
+public class TestWithTestNGGroups
 {
     public static boolean fail;
     public static boolean dependencyFail;

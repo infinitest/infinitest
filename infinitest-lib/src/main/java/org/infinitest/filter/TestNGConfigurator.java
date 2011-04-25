@@ -29,6 +29,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.infinitest.TestNGConfiguration;
@@ -37,7 +39,11 @@ import org.infinitest.TestQueueListener;
 
 public class TestNGConfigurator implements TestQueueListener
 {
-    private static final String EXCLUDED_GROUPS = "excluded-groups=";
+    private static final String EXCLUDED_GROUPS = "excluded-groups";
+    private static final String INCLUDED_GROUPS = "groups";
+    private static final Pattern EXCLUDED = Pattern.compile("^\\s*##\\s?" + EXCLUDED_GROUPS + "\\s?=\\s?(.+)");
+    private static final Pattern INCLUDED = Pattern.compile("^\\s*##\\s?" + INCLUDED_GROUPS + "\\s?=\\s?(.+)");
+
     private final File file;
     private final TestNGConfiguration testNGConfiguration;
 
@@ -101,9 +107,20 @@ public class TestNGConfigurator implements TestQueueListener
     {
         if (StringUtils.startsWith(line, "##"))
         {
-            if (line.contains(EXCLUDED_GROUPS))
+            Matcher matcher = EXCLUDED.matcher(line.trim());
+            if (matcher.matches())
             {
-                testNGConfiguration.setExcludedGroups(StringUtils.substringAfter(line, EXCLUDED_GROUPS).trim());
+                String excludedGroups = matcher.group(1);
+                testNGConfiguration.setExcludedGroups(excludedGroups);
+            }
+            else
+            {
+                matcher = INCLUDED.matcher(line);
+                if (matcher.matches())
+                {
+                    String includedGroups = matcher.group(1).trim();
+                    testNGConfiguration.setGroups(includedGroups);
+                }
             }
         }
 

@@ -69,6 +69,10 @@ public class JUnit4Runner implements NativeRunner
             {
                 core.setExcludedGroups(config.getExcludedGroups());
             }
+            if (config.getGroups() != null)
+            {
+                core.setGroups(config.getGroups());
+            }
             core.run();
 
             return eventTranslator.getTestResults();

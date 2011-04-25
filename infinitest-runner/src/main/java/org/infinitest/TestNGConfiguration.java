@@ -22,12 +22,13 @@
  */
 package org.infinitest;
 
-/** singleton to provide testNG-settings */
+/** singleton to provide testNG-settings. Just a data-provider, no logic here. */
 public enum TestNGConfiguration
 {
     INSTANCE;
 
-    private volatile String excludedGroups;
+    private String excludedGroups;
+    private String groups;
 
     public void setExcludedGroups(String excludedGroups)
     {
@@ -39,9 +40,20 @@ public enum TestNGConfiguration
         return excludedGroups;
     }
 
+    public void setGroups(String groupList)
+    {
+        groups = groupList;
+    }
+
+    public String getGroups()
+    {
+        return groups;
+    }
+
     /** set the current configuration to null */
     public void clear()
     {
         excludedGroups = null;
+        groups = null;
     }
 }
