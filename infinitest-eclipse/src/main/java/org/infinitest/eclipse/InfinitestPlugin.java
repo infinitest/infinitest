@@ -55,27 +55,25 @@ public class InfinitestPlugin extends AbstractUIPlugin
         addLoggingListener(new EclipseLoggingListener());
     }
 
+    @Override
     // CHECKSTYLE:OFF
     // Idiomatic OSGI and checkstyle don't like each other
-    @Override
     public void start(BundleContext context) throws Exception
+    // CHECKSTYLE:ON
     {
         super.start(context);
         sharedInstance = this;
     }
 
-    // CHECKSTYLE:ON
-
+    @Override
     // CHECKSTYLE:OFF
     // Idiomatic OSGI and checkstyle don't like each other
-    @Override
     public void stop(BundleContext context) throws Exception
+    // CHECKSTYLE:ON
     {
         sharedInstance = null;
         super.stop(context);
     }
-
-    // CHECKSTYLE:ON
 
     // Idiomatic OSGI
     public static InfinitestPlugin getInstance()
@@ -136,103 +134,3 @@ public class InfinitestPlugin extends AbstractUIPlugin
         InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
     }
 }
-
-// /**
-// * Controls the plug-in life cycle.
-// */
-// public class InfinitestPlugin extends AbstractUIPlugin
-// {
-// public static final String PLUGIN_ID = "org.infinitest.eclipse";
-// private static InfinitestPlugin sharedInstance;
-// private static Bundle pluginBundle;
-//
-// private ClassPathXmlApplicationContext context;
-//
-// static
-// {
-// addLoggingListener(new EclipseLoggingListener());
-// }
-//
-// // CHECKSTYLE:OFF
-// // Idiomatic OSGI and checkstyle don't like each other
-// @Override
-// public void start(BundleContext context) throws Exception
-// {
-// super.start(context);
-// sharedInstance = this;
-// }
-//
-// // CHECKSTYLE:ON
-//
-// // CHECKSTYLE:OFF
-// // Idiomatic OSGI and checkstyle don't like each other
-// @Override
-// public void stop(BundleContext context) throws Exception
-// {
-// sharedInstance = null;
-// super.stop(context);
-// }
-//
-// // CHECKSTYLE:ON
-//
-// // Idiomatic OSGI
-// public static InfinitestPlugin getInstance()
-// {
-// return sharedInstance;
-// }
-//
-// public void startContinuouslyTesting()
-// {
-// getPluginController().enable();
-// }
-//
-// @Override
-// protected void initializeDefaultPreferences(IPreferenceStore store)
-// {
-// store.setDefault(PARALLEL_CORES, 1);
-// store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
-// }
-//
-// // Only used for testing.
-// public void setPluginBundle(Bundle bundle)
-// {
-// pluginBundle = bundle;
-// }
-//
-// public Bundle getPluginBundle()
-// {
-// if (pluginBundle == null && InfinitestPlugin.getInstance() != null)
-// {
-// return InfinitestPlugin.getInstance().getBundle();
-// }
-// return pluginBundle;
-// }
-//
-// public PluginActivationController getPluginController()
-// {
-// return getBean(PluginActivationController.class);
-// }
-//
-// @SuppressWarnings("unchecked")
-// public <T> T getBean(Class<T> beanClass)
-// {
-// if (context == null)
-// {
-// context = new ClassPathXmlApplicationContext(new String[] {
-// "/META-INF/spring/plugin-context.xml",
-// "/META-INF/spring/eclipse-context.xml" });
-//
-// restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
-// InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
-// }
-// return (T) getOnlyElement(context.getBeansOfType(beanClass).values());
-// }
-//
-// @VisibleForTesting
-// void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings)
-// {
-// coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
-// InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
-// }
-// }
-

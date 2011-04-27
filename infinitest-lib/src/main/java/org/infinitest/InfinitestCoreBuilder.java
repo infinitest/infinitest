@@ -28,7 +28,6 @@ import java.io.File;
 import org.infinitest.changedetect.FileChangeDetector;
 import org.infinitest.filter.RegexFileFilter;
 import org.infinitest.filter.TestFilter;
-import org.infinitest.filter.TestNGConfigurator;
 import org.infinitest.parser.ClassFileTestDetector;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.MultiProcessRunner;
@@ -47,7 +46,6 @@ public class InfinitestCoreBuilder
     private final EventQueue eventQueue;
     private String coreName = "";
     private ConcurrencyController controller;
-    private final TestNGConfigurator testNGConfigurator;
 
     public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue)
     {
@@ -57,8 +55,6 @@ public class InfinitestCoreBuilder
         this.eventQueue = eventQueue;
         File filterFile = getFilterFile(environment);
         filterList = new RegexFileFilter(filterFile);
-        testNGConfigurator = new TestNGConfigurator(filterFile);
-
         runnerClass = MultiProcessRunner.class;
         controller = new SingleLockConcurrencyController();
     }
@@ -74,7 +70,6 @@ public class InfinitestCoreBuilder
         core.setName(coreName);
         core.setChangeDetector(new FileChangeDetector());
         core.setTestDetector(createTestDetector(filterList));
-        core.addTestQueueListener(testNGConfigurator);
         core.setRuntimeEnvironment(runtimeEnvironment);
         return core;
     }
@@ -90,7 +85,7 @@ public class InfinitestCoreBuilder
      */
     public void setFilter(TestFilter testFilter)
     {
-        filterList = testFilter;
+        this.filterList = testFilter;
     }
 
     private TestRunner createRunner()
@@ -117,7 +112,7 @@ public class InfinitestCoreBuilder
 
     public void setUpdateSemaphore(ConcurrencyController semaphore)
     {
-        controller = semaphore;
+        this.controller = semaphore;
     }
 
     public static File getFilterFile(RuntimeEnvironment environment)

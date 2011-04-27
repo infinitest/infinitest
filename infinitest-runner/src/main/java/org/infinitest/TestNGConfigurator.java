@@ -20,10 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Infinitest.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.infinitest.filter;
-
-import static java.util.logging.Level.*;
-import static org.infinitest.util.InfinitestUtils.*;
+package org.infinitest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,29 +29,33 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.infinitest.TestNGConfiguration;
-import org.infinitest.TestQueueEvent;
-import org.infinitest.TestQueueListener;
-
-public class TestNGConfigurator implements TestQueueListener
+public class TestNGConfigurator
 {
     private static final String EXCLUDED_GROUPS = "excluded-groups";
     private static final String INCLUDED_GROUPS = "groups";
     private static final Pattern EXCLUDED = Pattern.compile("^\\s*##\\s?" + EXCLUDED_GROUPS + "\\s?=\\s?(.+)");
     private static final Pattern INCLUDED = Pattern.compile("^\\s*##\\s?" + INCLUDED_GROUPS + "\\s?=\\s?(.+)");
+    private static final File FILTERFILE = new File("infinitest.filters");
+    private File file = null;
 
-    private final File file;
     private final TestNGConfiguration testNGConfiguration;
+
+    public TestNGConfigurator()
+    {
+        testNGConfiguration = TestNGConfiguration.INSTANCE;
+        testNGConfiguration.setChecked(true);
+        if (file == null)
+        {
+            file = FILTERFILE;
+        }
+        updateFilterList();
+    }
 
     public TestNGConfigurator(File filterFile)
     {
         testNGConfiguration = TestNGConfiguration.INSTANCE;
         file = filterFile;
-        if (!file.exists())
-        {
-            log(INFO, "Filter file " + file + " does not exist.");
-        }
+        testNGConfiguration.setChecked(true);
 
         updateFilterList();
     }
@@ -94,7 +95,10 @@ public class TestNGConfigurator implements TestQueueListener
             do
             {
                 line = reader.readLine();
-                addFilter(line);
+                if (line != null)
+                {
+                    addFilter(line);
+                }
             } while (line != null);
         }
         finally
@@ -105,40 +109,20 @@ public class TestNGConfigurator implements TestQueueListener
 
     private void addFilter(String line)
     {
-        if (StringUtils.startsWith(line, "##"))
+        Matcher matcher = EXCLUDED.matcher(line.trim());
+        if (matcher.matches())
         {
-            Matcher matcher = EXCLUDED.matcher(line.trim());
+            String excludedGroups = matcher.group(1);
+            testNGConfiguration.setExcludedGroups(excludedGroups);
+        }
+        else
+        {
+            matcher = INCLUDED.matcher(line);
             if (matcher.matches())
             {
-                String excludedGroups = matcher.group(1);
-                testNGConfiguration.setExcludedGroups(excludedGroups);
-            }
-            else
-            {
-                matcher = INCLUDED.matcher(line);
-                if (matcher.matches())
-                {
-                    String includedGroups = matcher.group(1).trim();
-                    testNGConfiguration.setGroups(includedGroups);
-                }
+                String includedGroups = matcher.group(1).trim();
+                testNGConfiguration.setGroups(includedGroups);
             }
         }
-
-    }
-
-    public void reloading()
-    {
-        TestNGConfiguration.INSTANCE.clear();
-        updateFilterList();
-    }
-
-    public void testQueueUpdated(TestQueueEvent event)
-    {
-        // from TestQueueListener but not needed here
-    }
-
-    public void testRunComplete()
-    {
-        // from TestQueueListener but not needed here
     }
 }

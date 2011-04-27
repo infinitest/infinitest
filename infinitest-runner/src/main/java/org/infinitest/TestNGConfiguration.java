@@ -29,6 +29,7 @@ public enum TestNGConfiguration
 
     private String excludedGroups;
     private String groups;
+    private boolean isChecked;
 
     public void setExcludedGroups(String excludedGroups)
     {
@@ -55,5 +56,16 @@ public enum TestNGConfiguration
     {
         excludedGroups = null;
         groups = null;
+        isChecked = false;
+    }
+
+    public boolean isChecked()
+    {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked)
+    {
+        isChecked = checked;
     }
 }
