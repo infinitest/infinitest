@@ -53,9 +53,8 @@ public class InfinitestCoreBuilder
 
         runtimeEnvironment = environment;
         this.eventQueue = eventQueue;
-        String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator
-                        + "infinitest.filters";
-        filterList = new RegexFileFilter(new File(filterFileLocation));
+        File filterFile = getFilterFile(environment);
+        filterList = new RegexFileFilter(filterFile);
         runnerClass = MultiProcessRunner.class;
         controller = new SingleLockConcurrencyController();
     }
@@ -86,7 +85,7 @@ public class InfinitestCoreBuilder
      */
     public void setFilter(TestFilter testFilter)
     {
-        filterList = testFilter;
+        this.filterList = testFilter;
     }
 
     private TestRunner createRunner()
@@ -113,6 +112,14 @@ public class InfinitestCoreBuilder
 
     public void setUpdateSemaphore(ConcurrencyController semaphore)
     {
-        controller = semaphore;
+        this.controller = semaphore;
+    }
+
+    public static File getFilterFile(RuntimeEnvironment environment)
+    {
+        final String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator
+                        + "infinitest.filters";
+        File filterFile = new File(filterFileLocation);
+        return filterFile;
     }
 }
