@@ -46,6 +46,8 @@ import org.testng.TestNG;
 
 public class JUnit4Runner implements NativeRunner
 {
+    private TestNGConfiguration config = null;
+
     public TestResults runTest(String testClass)
     {
         Class<?> clazz;
@@ -89,10 +91,9 @@ public class JUnit4Runner implements NativeRunner
 
     private void addGroupFilters(TestNG core)
     {
-        TestNGConfiguration config = TestNGConfiguration.INSTANCE;
-        if (!config.isChecked())
+        if (config == null)
         {
-            new TestNGConfigurator();
+            config = new TestNGConfigurator().getConfig();
         }
         if (config.getExcludedGroups() != null)
         {
@@ -213,5 +214,10 @@ public class JUnit4Runner implements NativeRunner
         public void onFinish(ITestContext context)
         {
         }
+    }
+
+    public void setTestNGConfiguration(TestNGConfiguration configuration)
+    {
+        config = configuration;
     }
 }
