@@ -22,16 +22,12 @@
  */
 package org.infinitest;
 
-import com.google.common.annotations.VisibleForTesting;
 
-/** singleton to provide testNG-settings. Just a data-provider, no logic here. */
-public enum TestNGConfiguration
+/** Provides testNG-settings. Just a data-provider, no logic here. */
+public class TestNGConfiguration
 {
-    INSTANCE;
-
     private String excludedGroups;
     private String groups;
-    private boolean isChecked;
 
     public void setExcludedGroups(String excludedGroups)
     {
@@ -51,24 +47,5 @@ public enum TestNGConfiguration
     public String getGroups()
     {
         return groups;
-    }
-
-    /** set the current configuration to null */
-    @VisibleForTesting
-    public void clear()
-    {
-        excludedGroups = null;
-        groups = null;
-        isChecked = false;
-    }
-
-    public boolean isChecked()
-    {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked)
-    {
-        isChecked = checked;
     }
 }

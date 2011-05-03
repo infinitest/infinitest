@@ -33,8 +33,8 @@ public class TestNGConfigurator
 {
     private static final String EXCLUDED_GROUPS = "excluded-groups";
     private static final String INCLUDED_GROUPS = "groups";
-    private static final Pattern EXCLUDED = Pattern.compile("^\\s*##\\s?" + EXCLUDED_GROUPS + "\\s?=\\s?(.+)");
-    private static final Pattern INCLUDED = Pattern.compile("^\\s*##\\s?" + INCLUDED_GROUPS + "\\s?=\\s?(.+)");
+    private static final Pattern EXCLUDED = Pattern.compile("^\\s*#+\\s?" + EXCLUDED_GROUPS + "\\s?=\\s?(.+)");
+    private static final Pattern INCLUDED = Pattern.compile("^\\s*#+\\s?" + INCLUDED_GROUPS + "\\s?=\\s?(.+)");
     private static final File FILTERFILE = new File("infinitest.filters");
 
     private final TestNGConfiguration testNGConfiguration;
@@ -42,8 +42,7 @@ public class TestNGConfigurator
 
     public TestNGConfigurator()
     {
-        testNGConfiguration = TestNGConfiguration.INSTANCE;
-        testNGConfiguration.setChecked(true);
+        testNGConfiguration = new TestNGConfiguration();
         if (file == null)
         {
             file = FILTERFILE;
@@ -53,9 +52,8 @@ public class TestNGConfigurator
 
     public TestNGConfigurator(File filterFile)
     {
-        testNGConfiguration = TestNGConfiguration.INSTANCE;
+        testNGConfiguration = new TestNGConfiguration();
         file = filterFile;
-        testNGConfiguration.setChecked(true);
 
         updateFilterList();
     }
@@ -71,6 +69,11 @@ public class TestNGConfigurator
         {
             tryToReadFilterFile();
         }
+    }
+
+    public TestNGConfiguration getConfig()
+    {
+        return testNGConfiguration;
     }
 
     private void tryToReadFilterFile()
