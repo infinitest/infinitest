@@ -38,11 +38,14 @@ public class WhenRunningTestNGTests
 {
     private JUnit4Runner runner;
     private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
+    private TestNGConfiguration config;
 
     @Before
     public void inContext()
     {
         runner = new JUnit4Runner();
+        config = new TestNGConfiguration();
+        runner.setTestNGConfiguration(config);
         TestWithTestNGGroups.fail = true;
         TestWithTestNGGroups.dependencyFail = true;
     }
@@ -52,7 +55,7 @@ public class WhenRunningTestNGTests
     {
         TestWithTestNGGroups.fail = false;
         TestWithTestNGGroups.dependencyFail = false;
-        TestNGConfiguration.INSTANCE.clear();
+        runner.setTestNGConfiguration(null);
     }
 
     /**
@@ -89,7 +92,7 @@ public class WhenRunningTestNGTests
     @Test
     public void shouldNotFailWithFilteredGroupsSet()
     {
-        TestNGConfiguration.INSTANCE.setExcludedGroups("slow, manual");
+        config.setExcludedGroups("slow, manual");
         TestResults results = runner.runTest(CLASS_UNDER_TEST);
         assertEquals(0, size(results));
     }
@@ -97,11 +100,11 @@ public class WhenRunningTestNGTests
     @Test
     public void shouldExecuteOnlyTheSpecifiedGroup()
     {
-        TestNGConfiguration.INSTANCE.setGroups("slow");
+        config.setGroups("slow");
         TestResults results = runner.runTest(CLASS_UNDER_TEST);
         assertEquals(2, size(results));
 
-        TestNGConfiguration.INSTANCE.setGroups("shouldbetested");
+        config.setGroups("shouldbetested");
         results = runner.runTest(CLASS_UNDER_TEST);
         assertEquals(0, size(results));
     }
@@ -113,8 +116,8 @@ public class WhenRunningTestNGTests
     @Test
     public void combineIncludedAndExcludedGroups()
     {
-        TestNGConfiguration.INSTANCE.setGroups("slow");
-        TestNGConfiguration.INSTANCE.setExcludedGroups("mixed");
+        config.setGroups("slow");
+        config.setExcludedGroups("mixed");
         TestResults results = runner.runTest(CLASS_UNDER_TEST);
         assertEquals(1, size(results));
     }

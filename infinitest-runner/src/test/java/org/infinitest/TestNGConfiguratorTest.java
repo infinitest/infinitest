@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class TestNGConfiguratorTest
@@ -38,53 +37,68 @@ public class TestNGConfiguratorTest
     private static final String EXCLUDEDLINE = "## excluded-groups=" + EXCLUDED;
     private static final String GROUPSLINE = "## groups=" + GROUPS;
 
-    @Before
-    public void setup()
-    {
-        TestNGConfiguration.INSTANCE.clear();
-    }
-
     @Test
     public void testFilterList() throws IOException
     {
+        TestNGConfiguration testNGConfiguration = new TestNGConfiguration();
         File file = createTestFile(EXCLUDEDLINE);
 
-        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
-        new TestNGConfigurator(file);
-        assertNotNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
-        assertEquals(EXCLUDED, TestNGConfiguration.INSTANCE.getExcludedGroups());
+        assertNull(testNGConfiguration.getExcludedGroups());
+        testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNotNull(testNGConfiguration.getExcludedGroups());
+        assertEquals(EXCLUDED, testNGConfiguration.getExcludedGroups());
+    }
+
+    @Test
+    public void testWithOne() throws IOException
+    {
+        File file = createTestFile(EXCLUDEDLINE.substring(1));
+        TestNGConfiguration testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNotNull(testNGConfiguration.getExcludedGroups());
+        assertEquals(EXCLUDED, testNGConfiguration.getExcludedGroups());
+    }
+
+    @Test
+    public void testWithThree() throws IOException
+    {
+        File file = createTestFile("#" + EXCLUDEDLINE);
+        TestNGConfiguration testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNotNull(testNGConfiguration.getExcludedGroups());
+        assertEquals(EXCLUDED, testNGConfiguration.getExcludedGroups());
     }
 
     @Test
     public void testReadingIncludedGroup() throws IOException
     {
+        TestNGConfiguration testNGConfiguration = new TestNGConfiguration();
         File file = createTestFile(GROUPSLINE);
-        assertNull(TestNGConfiguration.INSTANCE.getGroups());
+        assertNull(testNGConfiguration.getGroups());
 
-        new TestNGConfigurator(file);
-        assertNotNull(TestNGConfiguration.INSTANCE.getGroups());
-        assertEquals(GROUPS, TestNGConfiguration.INSTANCE.getGroups());
+        testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNotNull(testNGConfiguration.getGroups());
+        assertEquals(GROUPS, testNGConfiguration.getGroups());
     }
 
     @Test
     public void testReadingIncludedAndExcludedGroups() throws IOException
     {
+        TestNGConfiguration testNGConfiguration = new TestNGConfiguration();
         File file = createTestFile(GROUPSLINE, EXCLUDEDLINE);
-        assertNull(TestNGConfiguration.INSTANCE.getGroups());
-        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
+        assertNull(testNGConfiguration.getGroups());
+        assertNull(testNGConfiguration.getExcludedGroups());
 
-        new TestNGConfigurator(file);
-        assertNotNull(TestNGConfiguration.INSTANCE.getGroups());
-        assertEquals(GROUPS, TestNGConfiguration.INSTANCE.getGroups());
-        assertEquals(EXCLUDED, TestNGConfiguration.INSTANCE.getExcludedGroups());
+        testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNotNull(testNGConfiguration.getGroups());
+        assertEquals(GROUPS, testNGConfiguration.getGroups());
+        assertEquals(EXCLUDED, testNGConfiguration.getExcludedGroups());
     }
 
     @Test
     public void testEmptyGroups() throws IOException
     {
         File file = createTestFile("## excluded-groups= ");
-        new TestNGConfigurator(file);
-        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
+        TestNGConfiguration testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNull(testNGConfiguration.getExcludedGroups());
     }
 
     @Test
@@ -92,17 +106,18 @@ public class TestNGConfiguratorTest
     {
         final String halloGroup = "hallo";
         File file = createTestFile("##excluded-groups = " + halloGroup + " ");
-        new TestNGConfigurator(file);
-        assertEquals(halloGroup, TestNGConfiguration.INSTANCE.getExcludedGroups());
+        TestNGConfiguration testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertEquals(halloGroup, testNGConfiguration.getExcludedGroups());
     }
 
     @Test
     public void testEmptyFile()
     {
+        TestNGConfiguration testNGConfiguration = new TestNGConfiguration();
         File file = new File("testng.config");
-        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
-        new TestNGConfigurator(file);
-        assertNull(TestNGConfiguration.INSTANCE.getExcludedGroups());
+        assertNull(testNGConfiguration.getExcludedGroups());
+        testNGConfiguration = new TestNGConfigurator(file).getConfig();
+        assertNull(testNGConfiguration.getExcludedGroups());
     }
 
     private File createTestFile(String... additionalLines) throws IOException
