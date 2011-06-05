@@ -40,6 +40,7 @@ public class WhenTestRunCompleted
     private InfinitestPresenter presenter;
     private InfinitestCore mockCore;
     private PresenterListener mockPresenterListener;
+    private PresenterListener mockPresenterListenerBis;
 
     @Before
     public void inContext()
@@ -47,6 +48,7 @@ public class WhenTestRunCompleted
         mockView = mock(InfinitestView.class);
         mockCore = mock(InfinitestCore.class);
         mockPresenterListener = mock(PresenterListener.class);
+        mockPresenterListenerBis = mock(PresenterListener.class);
 
         TestControl mockTestControl = mock(TestControl.class);
 
@@ -63,6 +65,16 @@ public class WhenTestRunCompleted
     }
 
     @Test
+    public void shouldDoNothingWhenNull()
+    {
+        presenter.addPresenterListener(null);
+
+        presenter.testRunComplete();
+
+        verify(mockPresenterListener, never()).testRunCompleted();
+    }
+
+    @Test
     public void shouldCallPresenterListener()
     {
         presenter.addPresenterListener(mockPresenterListener);
@@ -70,5 +82,31 @@ public class WhenTestRunCompleted
         presenter.testRunComplete();
 
         verify(mockPresenterListener).testRunCompleted();
+    }
+
+    @Test
+    public void shouldCallTwoPresenterListener()
+    {
+        presenter.addPresenterListener(mockPresenterListener);
+        presenter.addPresenterListener(mockPresenterListenerBis);
+
+        presenter.testRunComplete();
+
+        verify(mockPresenterListener).testRunCompleted();
+        verify(mockPresenterListenerBis).testRunCompleted();
+    }
+
+    @Test
+    public void shouldRemoveAPresenterListener()
+    {
+        presenter.addPresenterListener(mockPresenterListener);
+        presenter.addPresenterListener(mockPresenterListenerBis);
+
+        presenter.removePresenterListener(mockPresenterListener);
+
+        presenter.testRunComplete();
+
+        verify(mockPresenterListener, never()).testRunCompleted();
+        verify(mockPresenterListenerBis).testRunCompleted();
     }
 }

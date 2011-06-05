@@ -130,4 +130,9 @@ public class InfinitestBuilder
     {
         presenter.addPresenterListener(listener);
     }
+
+    public void removePresenterListener(PresenterListener listener)
+    {
+        presenter.removePresenterListener(listener);
+    }
 }
