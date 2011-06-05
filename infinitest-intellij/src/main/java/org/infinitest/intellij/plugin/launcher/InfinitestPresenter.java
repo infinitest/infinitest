@@ -50,6 +50,8 @@ import org.infinitest.util.InfinitestUtils;
  */
 public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener
 {
+    private PresenterListener presenterListener;
+
     private final InfinitestView view;
     private final StateMonitor monitor;
     private final ResultCollector resultCollector;
@@ -155,7 +157,10 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 
     public void testRunComplete()
     {
-        // nothing to do here
+        if (presenterListener != null)
+        {
+            presenterListener.testRunCompleted();
+        }
     }
 
     public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
@@ -177,5 +182,10 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
             annotator.clearAnnotation(updated);
             annotator.annotate(updated);
         }
+    }
+
+    public void addPresenterListener(PresenterListener listener)
+    {
+        this.presenterListener = listener;
     }
 }

@@ -125,4 +125,9 @@ public class InfinitestBuilder
     {
         resultCollector.removeStatusChangeListener(listener);
     }
+
+    public void addPresenterListener(PresenterListener listener)
+    {
+        presenter.addPresenterListener(listener);
+    }
 }
