@@ -21,6 +21,7 @@
  */
 package org.infinitest.intellij.idea.facet;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import org.infinitest.intellij.idea.IdeaCompilationNotifier;
 import org.infinitest.intellij.idea.IdeaModuleSettings;
 import org.infinitest.intellij.idea.IdeaSourceNavigator;
@@ -115,7 +116,8 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
     {
         InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(new IdeaModuleSettings(module),
                         new IdeaToolWindowRegistry(module.getProject()), new IdeaCompilationNotifier(
-                                        module.getProject()), new IdeaSourceNavigator(module.getProject()));
+                                        module.getProject()), new IdeaSourceNavigator(module.getProject()),
+                                        FileEditorManager.getInstance(module.getProject()));
 
         if (isScmUpdateEnabled())
         {

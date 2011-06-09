@@ -21,11 +21,13 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.awt.Color.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
 
 import java.awt.Color;
 import java.util.Collection;
+import java.util.List;
 
 import org.infinitest.CoreStatus;
 import org.infinitest.FailureListListener;
@@ -50,6 +52,8 @@ import org.infinitest.util.InfinitestUtils;
  */
 public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener
 {
+    private final List<PresenterListener> presenterListeners = newArrayList();
+
     private final InfinitestView view;
     private final StateMonitor monitor;
     private final ResultCollector resultCollector;
@@ -155,7 +159,10 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 
     public void testRunComplete()
     {
-        // nothing to do here
+        for (PresenterListener presenterListener : presenterListeners)
+        {
+            presenterListener.testRunCompleted();
+        }
     }
 
     public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
@@ -176,6 +183,14 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
         {
             annotator.clearAnnotation(updated);
             annotator.annotate(updated);
+        }
+    }
+
+    public void addPresenterListener(PresenterListener listener)
+    {
+        if (listener != null)
+        {
+            this.presenterListeners.add(listener);
         }
     }
 }

@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import org.apache.log4j.Logger;
 import org.infinitest.InfinitestCoreBuilder;
 import org.infinitest.intellij.CompilationNotifier;
@@ -50,9 +51,11 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
     private final InfinitestBuilder infinitestBuilder;
     private IdeaCompilationListener testControl;
     private final GreenHookListener greenHookListener;
+    private final FileEditorListener fileEditorListener;
 
     public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry,
-                    CompilationNotifier compilationNotifier, SourceNavigator navigator)
+                    CompilationNotifier compilationNotifier, SourceNavigator navigator,
+                    FileEditorManager fileEditorManager)
     {
         this.moduleSettings = moduleSettings;
         this.toolWindowRegistry = toolWindowRegistry;
@@ -60,6 +63,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
         this.navigator = navigator;
         this.greenHookListener = new GreenHookListener();
         this.infinitestBuilder = createInfinitestBuilder();
+        this.fileEditorListener = new FileEditorListener(fileEditorManager);
     }
 
     public void launchInfinitest()
@@ -72,6 +76,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
         addCompilationStatusListener();
         addScmGreenHookListener();
         addResultClickListener();
+        addFileEditorListener();
     }
 
     private void addResultClickListener()
@@ -124,5 +129,10 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
         InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(),
                         new SwingEventQueue());
         return new InfinitestBuilder(coreBuilder.createCore());
+    }
+
+    private void addFileEditorListener()
+    {
+        infinitestBuilder.addPresenterListener(fileEditorListener);
     }
 }
