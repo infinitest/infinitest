@@ -95,18 +95,4 @@ public class WhenTestRunCompleted
         verify(mockPresenterListener).testRunCompleted();
         verify(mockPresenterListenerBis).testRunCompleted();
     }
-
-    @Test
-    public void shouldRemoveAPresenterListener()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        presenter.addPresenterListener(mockPresenterListenerBis);
-
-        presenter.removePresenterListener(mockPresenterListener);
-
-        presenter.testRunComplete();
-
-        verify(mockPresenterListener, never()).testRunCompleted();
-        verify(mockPresenterListenerBis).testRunCompleted();
-    }
 }

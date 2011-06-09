@@ -193,9 +193,4 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
             this.presenterListeners.add(listener);
         }
     }
-
-    public void removePresenterListener(PresenterListener listener)
-    {
-        this.presenterListeners.remove(listener);
-    }
 }
