@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.log4j.Logger;
 import org.infinitest.InfinitestCoreBuilder;
 import org.infinitest.intellij.CompilationNotifier;
@@ -52,10 +53,11 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
     private IdeaCompilationListener testControl;
     private final GreenHookListener greenHookListener;
     private final FileEditorListener fileEditorListener;
+    private final ToolWindowListener toolWindowListener;
 
     public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry,
                     CompilationNotifier compilationNotifier, SourceNavigator navigator,
-                    FileEditorManager fileEditorManager)
+                    FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager)
     {
         this.moduleSettings = moduleSettings;
         this.toolWindowRegistry = toolWindowRegistry;
@@ -64,6 +66,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
         this.greenHookListener = new GreenHookListener();
         this.infinitestBuilder = createInfinitestBuilder();
         this.fileEditorListener = new FileEditorListener(fileEditorManager);
+        this.toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
     }
 
     public void launchInfinitest()
@@ -77,6 +80,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
         addScmGreenHookListener();
         addResultClickListener();
         addFileEditorListener();
+        addToolWindowListener();
     }
 
     private void addResultClickListener()
@@ -134,5 +138,10 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
     private void addFileEditorListener()
     {
         infinitestBuilder.addPresenterListener(fileEditorListener);
+    }
+
+    private void addToolWindowListener()
+    {
+        infinitestBuilder.addPresenterListener(toolWindowListener);
     }
 }
