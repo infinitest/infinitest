@@ -44,4 +44,24 @@ public class FileEditorListener implements PresenterListener
             }
         }
     }
+
+    public void testRunSucceed()
+    {
+        // nothing to do here
+    }
+
+    public void testRunFailed()
+    {
+        // nothing to do here
+    }
+
+    public void testRunStarted()
+    {
+        // nothing to do here
+    }
+
+    public void testRunWaiting()
+    {
+        // nothing to do here
+    }
 }

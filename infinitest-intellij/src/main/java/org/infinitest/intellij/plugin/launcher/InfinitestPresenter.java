@@ -89,6 +89,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
         view.setProgressBarColor(BLACK);
         view.setMaximumProgress(1);
         view.setProgress(1);
+        onWait();
     }
 
     public void coreStatusChanged(CoreStatus oldStatus, final CoreStatus newStatus)
@@ -120,6 +121,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
         {
         case RUNNING:
             view.setProgressBarColor(UNKNOWN_COLOR);
+            onRun();
             break;
         case FAILING:
             view.setProgressBarColor(FAILING_COLOR);
@@ -159,10 +161,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 
     public void testRunComplete()
     {
-        for (PresenterListener presenterListener : presenterListeners)
-        {
-            presenterListener.testRunCompleted();
-        }
+        onComplete();
     }
 
     public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
@@ -191,6 +190,44 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
         if (listener != null)
         {
             this.presenterListeners.add(listener);
+        }
+    }
+
+    /*private*/ void onComplete()
+    {
+        for (PresenterListener presenterListener : presenterListeners)
+        {
+            presenterListener.testRunCompleted();
+
+            if(isSuccess())
+            {
+                presenterListener.testRunSucceed();
+            }
+            else
+            {
+                presenterListener.testRunFailed();
+            }
+        }
+    }
+
+    /*private*/ boolean isSuccess()
+    {
+        return !resultCollector.hasFailures();
+    }
+
+    /*private*/ void onRun()
+    {
+        for (PresenterListener presenterListener : presenterListeners)
+        {
+            presenterListener.testRunStarted();
+        }
+    }
+
+    /*private*/ void onWait()
+    {
+        for (PresenterListener presenterListener : presenterListeners)
+        {
+            presenterListener.testRunWaiting();
         }
     }
 }
