@@ -40,4 +40,9 @@ public class IdeaCompilationNotifier implements CompilationNotifier
     {
         CompilerManager.getInstance(project).addCompilationStatusListener(compilationListener);
     }
+
+    public void removeCompilationStatusListener(CompilationStatusListener compilationListener)
+    {
+        CompilerManager.getInstance(project).removeCompilationStatusListener(compilationListener);
+    }
 }

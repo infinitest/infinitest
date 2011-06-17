@@ -73,6 +73,9 @@ public class ToolWindowListener implements PresenterListener
     private void editToolWindowIcon(Icon icon)
     {
         ToolWindow toolWindow = toolWindowManager.getToolWindow(toolWindowId);
-        toolWindow.setIcon(icon);
+        if(toolWindow != null)
+        {
+            toolWindow.setIcon(icon);
+        }
     }
 }
