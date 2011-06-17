@@ -121,6 +121,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher
     {
         toolWindowRegistry.unregisterToolWindow(toolWindowId());
         infinitestBuilder.removeStatusListener(greenHookListener);
+        compilationNotifier.removeCompilationStatusListener(testControl);
     }
 
     private String toolWindowId()

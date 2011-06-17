@@ -26,4 +26,6 @@ import com.intellij.openapi.compiler.CompilationStatusListener;
 public interface CompilationNotifier
 {
     void addCompilationStatusListener(CompilationStatusListener compilationListener);
+
+    void removeCompilationStatusListener(CompilationStatusListener compilationListener);
 }

@@ -29,4 +29,8 @@ public class FakeCompilationNotifier implements CompilationNotifier
     public void addCompilationStatusListener(CompilationStatusListener compilationListener)
     {
     }
+
+    public void removeCompilationStatusListener(CompilationStatusListener compilationListener)
+    {
+    }
 }
