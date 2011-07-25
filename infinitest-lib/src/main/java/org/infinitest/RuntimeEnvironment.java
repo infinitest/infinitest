@@ -22,12 +22,14 @@
 package org.infinitest;
 
 import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Maps.*;
 import static java.io.File.*;
 import static java.util.logging.Level.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.infinitest.testrunner.TestRunnerProcess;
 
@@ -76,10 +78,17 @@ public class RuntimeEnvironment implements ClasspathProvider
     public List<String> createProcessArguments()
     {
         String memorySetting = "-mx" + getHeapSize() + "m";
-        List<String> args = newArrayList(getJavaExecutable(), "-cp", getCompleteClasspath(), memorySetting);
+        List<String> args = newArrayList(getJavaExecutable(), memorySetting);
         args.addAll(additionalArgs);
         args.addAll(addCustomArguments());
         return args;
+    }
+
+    public Map<String, String> createProcessEnvironment()
+    {
+        Map<String, String> environment = newHashMap();
+        environment.put("CLASSPATH", getCompleteClasspath());
+        return environment;
     }
 
     private List<String> addCustomArguments()
