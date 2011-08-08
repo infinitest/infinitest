@@ -67,8 +67,7 @@ public class JUnit4Runner implements NativeRunner
             core.addListener(eventTranslator);
 
             core.setTestClasses(new Class[] { clazz });
-
-            addGroupFilters(core);
+            addTestNGSettings(core);
             core.run();
 
             return eventTranslator.getTestResults();
@@ -89,19 +88,25 @@ public class JUnit4Runner implements NativeRunner
         return eventTranslator.getTestResults();
     }
 
-    private void addGroupFilters(TestNG core)
+    private void addTestNGSettings(TestNG core)
     {
         if (config == null)
         {
             config = new TestNGConfigurator().getConfig();
         }
-        if (config.getExcludedGroups() != null)
+        core.setExcludedGroups(config.getExcludedGroups());
+        core.setGroups(config.getGroups());
+        setListeners(core);
+    }
+
+    private void setListeners(TestNG core)
+    {
+        if (config.getListeners() != null)
         {
-            core.setExcludedGroups(config.getExcludedGroups());
-        }
-        if (config.getGroups() != null)
-        {
-            core.setGroups(config.getGroups());
+            for (Object listener : config.getListeners())
+            {
+                core.addListener(listener);
+            }
         }
     }
 
