@@ -22,12 +22,18 @@
  */
 package org.infinitest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.testng.xml.XmlSuite;
 
 /** Provides testNG-settings. Just a data-provider, no logic here. */
 public class TestNGConfiguration
 {
     private String excludedGroups;
     private String groups;
+    private List<XmlSuite> suite;
+    private List<Object> listeners;
 
     public void setExcludedGroups(String excludedGroups)
     {
@@ -47,5 +53,28 @@ public class TestNGConfiguration
     public String getGroups()
     {
         return groups;
+    }
+
+    public List<XmlSuite> getSuite()
+    {
+        return suite;
+    }
+
+    public void setSuite(XmlSuite suite)
+    {
+        List<XmlSuite> suites = new ArrayList<XmlSuite>();
+        suites.add(suite);
+        this.suite = suites;
+    }
+
+    public List<Object> getListeners()
+    {
+        return listeners;
+    }
+
+    public void setListeners(List<Object> listenerList)
+    {
+        listeners = listenerList;
+
     }
 }
