@@ -26,15 +26,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestNGConfigurator
 {
+    private static final String SUFFIX = "\\s?=\\s?(.+)";
+    private static final String PREFIX = "^\\s*#+\\s?";
     private static final String EXCLUDED_GROUPS = "excluded-groups";
     private static final String INCLUDED_GROUPS = "groups";
-    private static final Pattern EXCLUDED = Pattern.compile("^\\s*#+\\s?" + EXCLUDED_GROUPS + "\\s?=\\s?(.+)");
-    private static final Pattern INCLUDED = Pattern.compile("^\\s*#+\\s?" + INCLUDED_GROUPS + "\\s?=\\s?(.+)");
+    private static final String LISTENERS = "listeners";
+    private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
+    private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
+    private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
     private static final File FILTERFILE = new File("infinitest.filters");
 
     private final TestNGConfiguration testNGConfiguration;
@@ -126,6 +132,34 @@ public class TestNGConfigurator
                 String includedGroups = matcher.group(1).trim();
                 testNGConfiguration.setGroups(includedGroups);
             }
+            else
+            {
+                matcher = LISTENER.matcher(line);
+                if (matcher.matches())
+                {
+                    final List<Object> listenerList = createListenerList(matcher.group(1).trim());
+                    testNGConfiguration.setListeners(listenerList);
+                }
+            }
         }
+    }
+
+    private List<Object> createListenerList(String listeners)
+    {
+        final String[] listenerTypes = listeners.split("\\s*,\\s*");
+        final List<Object> listenerList = new ArrayList<Object>();
+        for (final String listenername : listenerTypes)
+        {
+            try
+            {
+                listenerList.add(Class.forName(listenername).newInstance());
+            }
+            catch (final ReflectiveOperationException e)
+            {
+                // unable to add this listener, just continue with the next.
+                e.printStackTrace();
+            }
+        }
+        return listenerList;
     }
 }
