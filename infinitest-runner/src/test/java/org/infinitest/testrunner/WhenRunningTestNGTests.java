@@ -25,20 +25,29 @@ package org.infinitest.testrunner;
 import static com.google.common.collect.Iterables.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.infinitest.TestNGConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.testng.ITestResult;
+import org.testng.reporters.JUnitXMLReporter;
+import org.testng.xml.XmlSuite;
 
 public class WhenRunningTestNGTests
 {
     private JUnit4Runner runner;
     private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
     private TestNGConfiguration config;
+    private boolean wasCalled = false;
 
     @Before
     public void inContext()
@@ -48,6 +57,7 @@ public class WhenRunningTestNGTests
         runner.setTestNGConfiguration(config);
         TestWithTestNGGroups.fail = true;
         TestWithTestNGGroups.dependencyFail = true;
+        wasCalled = false;
     }
 
     @After
@@ -122,4 +132,63 @@ public class WhenRunningTestNGTests
         assertEquals(1, size(results));
     }
 
+    @Test
+    public void shouldReactToListener()
+    {
+        MyJUnitXMLReporter testListener = new MyJUnitXMLReporter();
+        List<Object> reporters = new ArrayList<Object>();
+        reporters.add(testListener);
+        config.setListeners(reporters);
+        runner.runTest(CLASS_UNDER_TEST);
+        assertTrue(wasCalled);
+    }
+
+    @Test
+    public void shouldExecuteDependingOnSuiteFile() throws IOException
+    {
+        File file = createTestngXML();
+        XmlSuite suite = new XmlSuite();
+        List<String> suiteNames = new ArrayList<String>();
+        suiteNames.add(file.getName());
+        suite.setSuiteFiles(suiteNames);
+        config.setSuite(suite);
+
+        TestResults results = runner.runTest(CLASS_UNDER_TEST);
+        assertEquals(3, size(results));
+        assertTrue(wasCalled);
+    }
+
+    private class MyJUnitXMLReporter extends JUnitXMLReporter
+    {
+        @Override
+        public void onTestStart(ITestResult result)
+        {
+            wasCalled = true;
+        }
+    }
+
+    private File createTestngXML() throws IOException
+    {
+        final File file = File.createTempFile("testng", "xml");
+        file.deleteOnExit();
+        final PrintWriter writer = new PrintWriter(file);
+        try
+        {
+            writer.println("<suite>");
+            writer.println("<groups>");
+            writer.println("<run>");
+            writer.println("<exclude name=\"manual\"/>");
+            writer.println("</run>");
+            writer.println("</groups>");
+            writer.println("<listeners>");
+            writer.println("<listener class-name=\"org.infinitest.testrunner.WhenRunningTestNGTests.MyJUnitXMLReporter\" />");
+            writer.println("</listeners>");
+            writer.println("</suite>");
+        }
+        finally
+        {
+            writer.close();
+        }
+        return file;
+    }
 }

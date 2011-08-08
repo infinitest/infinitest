@@ -67,8 +67,7 @@ public class JUnit4Runner implements NativeRunner
             core.addListener(eventTranslator);
 
             core.setTestClasses(new Class[] { clazz });
-
-            addGroupFilters(core);
+            addTestNGSettings(core);
             core.run();
 
             return eventTranslator.getTestResults();
@@ -89,7 +88,7 @@ public class JUnit4Runner implements NativeRunner
         return eventTranslator.getTestResults();
     }
 
-    private void addGroupFilters(TestNG core)
+    private void addTestNGSettings(TestNG core)
     {
         if (config == null)
         {
@@ -102,6 +101,20 @@ public class JUnit4Runner implements NativeRunner
         if (config.getGroups() != null)
         {
             core.setGroups(config.getGroups());
+        }
+
+        if (config.getListeners() != null)
+        {
+            for (Object listener : config.getListeners())
+            {
+                core.addListener(listener);
+            }
+
+        }
+        // core.setTestSuites(suites) this is just the filename => parses every time
+        if (config.getSuite() != null)
+        {
+            core.setXmlSuites(config.getSuite());
         }
     }
 
