@@ -31,20 +31,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.testng.xml.XmlSuite;
-
 public class TestNGConfigurator
 {
     private static final String SUFFIX = "\\s?=\\s?(.+)";
     private static final String PREFIX = "^\\s*#+\\s?";
     private static final String EXCLUDED_GROUPS = "excluded-groups";
     private static final String INCLUDED_GROUPS = "groups";
-    private static final String SUITE_XML_FILE = "suiteXmlFile";
     private static final String LISTENERS = "listeners";
     private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
     private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
-    private static final Pattern SUITE = Pattern.compile(PREFIX + SUITE_XML_FILE + SUFFIX);
-    private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);;
+    private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
     private static final File FILTERFILE = new File("infinitest.filters");
 
     private final TestNGConfiguration testNGConfiguration;
@@ -138,20 +134,11 @@ public class TestNGConfigurator
             }
             else
             {
-                matcher = SUITE.matcher(line);
+                matcher = LISTENER.matcher(line);
                 if (matcher.matches())
                 {
-                    final XmlSuite suite = createSuite(matcher.group(1).trim());
-                    testNGConfiguration.setSuite(suite);
-                }
-                else
-                {
-                    matcher = LISTENER.matcher(line);
-                    if (matcher.matches())
-                    {
-                        final List<Object> listenerList = createListenerList(matcher.group(1).trim());
-                        testNGConfiguration.setListeners(listenerList);
-                    }
+                    final List<Object> listenerList = createListenerList(matcher.group(1).trim());
+                    testNGConfiguration.setListeners(listenerList);
                 }
             }
         }
@@ -170,17 +157,9 @@ public class TestNGConfigurator
             catch (final ReflectiveOperationException e)
             {
                 // unable to add this listener, just continue with the next.
+                e.printStackTrace();
             }
         }
         return listenerList;
-    }
-
-    private XmlSuite createSuite(String filename)
-    {
-        final List<String> suiteFiles = new ArrayList<String>();
-        suiteFiles.add(filename);
-        final XmlSuite suite = new XmlSuite();
-        suite.setSuiteFiles(suiteFiles);
-        return suite;
     }
 }

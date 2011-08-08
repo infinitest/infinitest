@@ -94,27 +94,19 @@ public class JUnit4Runner implements NativeRunner
         {
             config = new TestNGConfigurator().getConfig();
         }
-        if (config.getExcludedGroups() != null)
-        {
-            core.setExcludedGroups(config.getExcludedGroups());
-        }
-        if (config.getGroups() != null)
-        {
-            core.setGroups(config.getGroups());
-        }
+        core.setExcludedGroups(config.getExcludedGroups());
+        core.setGroups(config.getGroups());
+        setListeners(core);
+    }
 
+    private void setListeners(TestNG core)
+    {
         if (config.getListeners() != null)
         {
             for (Object listener : config.getListeners())
             {
                 core.addListener(listener);
             }
-
-        }
-        // core.setTestSuites(suites) this is just the filename => parses every time
-        if (config.getSuite() != null)
-        {
-            core.setXmlSuites(config.getSuite());
         }
     }
 

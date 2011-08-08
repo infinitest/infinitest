@@ -30,7 +30,6 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import org.junit.Test;
-import org.testng.xml.XmlSuite;
 
 public class TestNGConfiguratorTest
 {
@@ -39,10 +38,8 @@ public class TestNGConfiguratorTest
     private static final String GROUPS = "quick";
     private static final String EXCLUDED = "slow, broken, manual";
     private static final Object LISTENERS = LISTENER1 + ", " + LISTENER2;
-    private static final String SUITEXMLFILE = "testng.xml";
     private static final String EXCLUDEDLINE = "## excluded-groups=" + EXCLUDED;
     private static final String GROUPSLINE = "## groups=" + GROUPS;
-    private static final String SUITELINE = "## suiteXmlFile=" + SUITEXMLFILE;
     private static final String LISTENERLINE = "## listeners=" + LISTENERS;
 
     @Test
@@ -126,15 +123,6 @@ public class TestNGConfiguratorTest
         assertNull(testNGConfiguration.getExcludedGroups());
         testNGConfiguration = new TestNGConfigurator(file).getConfig();
         assertNull(testNGConfiguration.getExcludedGroups());
-    }
-
-    @Test
-    public void testReadingXMLSuite() throws IOException
-    {
-        File file = createTestFile(SUITELINE);
-        TestNGConfiguration testNGConfiguration = new TestNGConfigurator(file).getConfig();
-        List<XmlSuite> suites = testNGConfiguration.getSuite();
-        assertEquals(SUITEXMLFILE, suites.get(0).getSuiteFiles().get(0));
     }
 
     @Test

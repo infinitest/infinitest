@@ -25,9 +25,6 @@ package org.infinitest.testrunner;
 import static com.google.common.collect.Iterables.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,7 +37,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testng.ITestResult;
 import org.testng.reporters.JUnitXMLReporter;
-import org.testng.xml.XmlSuite;
 
 public class WhenRunningTestNGTests
 {
@@ -143,21 +139,6 @@ public class WhenRunningTestNGTests
         assertTrue(wasCalled);
     }
 
-    @Test
-    public void shouldExecuteDependingOnSuiteFile() throws IOException
-    {
-        File file = createTestngXML();
-        XmlSuite suite = new XmlSuite();
-        List<String> suiteNames = new ArrayList<String>();
-        suiteNames.add(file.getName());
-        suite.setSuiteFiles(suiteNames);
-        config.setSuite(suite);
-
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        assertEquals(3, size(results));
-        assertTrue(wasCalled);
-    }
-
     private class MyJUnitXMLReporter extends JUnitXMLReporter
     {
         @Override
@@ -165,30 +146,5 @@ public class WhenRunningTestNGTests
         {
             wasCalled = true;
         }
-    }
-
-    private File createTestngXML() throws IOException
-    {
-        final File file = File.createTempFile("testng", "xml");
-        file.deleteOnExit();
-        final PrintWriter writer = new PrintWriter(file);
-        try
-        {
-            writer.println("<suite>");
-            writer.println("<groups>");
-            writer.println("<run>");
-            writer.println("<exclude name=\"manual\"/>");
-            writer.println("</run>");
-            writer.println("</groups>");
-            writer.println("<listeners>");
-            writer.println("<listener class-name=\"org.infinitest.testrunner.WhenRunningTestNGTests.MyJUnitXMLReporter\" />");
-            writer.println("</listeners>");
-            writer.println("</suite>");
-        }
-        finally
-        {
-            writer.close();
-        }
-        return file;
     }
 }
