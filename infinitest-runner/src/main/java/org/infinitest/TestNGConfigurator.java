@@ -154,7 +154,17 @@ public class TestNGConfigurator
             {
                 listenerList.add(Class.forName(listenername).newInstance());
             }
-            catch (final ReflectiveOperationException e)
+            catch (InstantiationException e)
+            {
+                // unable to add this listener, just continue with the next.
+                e.printStackTrace();
+            }
+            catch (IllegalAccessException e)
+            {
+                // unable to add this listener, just continue with the next.
+                e.printStackTrace();
+            }
+            catch (ClassNotFoundException e)
             {
                 // unable to add this listener, just continue with the next.
                 e.printStackTrace();
