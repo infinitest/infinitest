@@ -73,6 +73,22 @@ public class FakeEnvironments
                         "classpath", currentJavaHome());
     }
 
+    public static RuntimeEnvironment fakeVeryLongClasspathEnvironment() {
+        return new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), fakeVeryLongClassPaths(), currentJavaHome());
+    }
+
+    private static String fakeVeryLongClassPaths() {
+        int veryLongClasspathLength=32768;
+        StringBuilder veryLongClassPath = new StringBuilder(veryLongClasspathLength);
+        String systemClasspath = systemClasspath();
+
+        while(veryLongClassPath.length()< veryLongClasspathLength){
+            veryLongClassPath.append(systemClasspath).append(File.pathSeparator);
+        }
+
+        return veryLongClassPath.toString();
+    }
+
     public static String systemClasspath()
     {
         // This is a workaround for the maven surefire plugin classpath issue listed here:
