@@ -72,11 +72,13 @@ public class NativeConnectionFactory implements ProcessConnectionFactory
         // http://wiki.eclipse.org/FAQ_How_do_I_launch_a_Java_program%3F
         ProcessBuilder builder = new ProcessBuilder();
         builder.directory(environment.getWorkingDirectory());
+
         List<String> arguments = environment.createProcessArguments();
-
         arguments.addAll(buildRunnerArgs(port));
-
         builder.command(arguments);
+
+        builder.environment().putAll(environment.createProcessEnvironment());
+
         logProcessEnvironment(builder);
         return builder;
     }

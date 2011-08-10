@@ -110,6 +110,15 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest
         assertThat(stdErr.toString(), not(containsString("Hello")));
     }
 
+    @Test
+    public void shouldHandleVeryLongClasspath() throws Exception
+    {
+        runner.setRuntimeEnvironment(fakeVeryLongClasspathEnvironment());
+        runTest(StubStatefulTest.class.getName());
+        eventSupport.assertTestsStarted(StubStatefulTest.class);
+        eventSupport.assertTestPassed(StubStatefulTest.class);
+    }
+
     public static class TestWithLotsOfConsoleOutput
     {
         @Test
