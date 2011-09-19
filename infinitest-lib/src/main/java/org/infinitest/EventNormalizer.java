@@ -128,7 +128,7 @@ class EventNormalizer
         if (!proxyCache.containsKey(key))
         {
             ClassLoader classLoader = getClass().getClassLoader();
-            Class[] interfaces = { proxyInterface };
+            Class<?>[] interfaces = { proxyInterface };
             proxyCache.put(key, newProxyInstance(classLoader, interfaces, createHandler(listener)));
         }
         return (T) proxyCache.get(key);
