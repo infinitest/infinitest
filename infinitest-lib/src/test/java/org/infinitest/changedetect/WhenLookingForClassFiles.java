@@ -39,7 +39,7 @@ public class WhenLookingForClassFiles
     }
 
     @Test
-    public void shouldIngnoreCase()
+    public void shouldIgnoreCase()
     {
         assertTrue(filter.accept(new File("foo.ClAsS")));
     }
