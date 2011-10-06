@@ -73,20 +73,6 @@ public class TestFilterList
     }
 
     @Test
-    public void testAddFilter() throws IOException
-    {
-        File file = File.createTempFile("filter", "conf");
-        file.deleteOnExit();
-
-        RegexFileFilter filters = new RegexFileFilter(file);
-        filters.appendFilter(TEST_FILTER_LIST_REGEX);
-        assertTrue(filters.match(TestFilterList.class.getName()));
-
-        filters = new RegexFileFilter(file);
-        assertTrue(filters.match(TestFilterList.class.getName()));
-    }
-
-    @Test
     public void testFiltering()
     {
         RegexFileFilter filters = new RegexFileFilter();

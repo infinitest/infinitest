@@ -26,10 +26,8 @@ import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
@@ -97,21 +95,5 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter
         {
             fileReader.close();
         }
-    }
-
-    public void appendFilter(String regex) throws IOException
-    {
-        PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-
-        try
-        {
-            writer.println(regex);
-        }
-        finally
-        {
-            writer.close();
-        }
-
-        updateFilterList();
     }
 }
