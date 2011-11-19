@@ -1,12 +1,20 @@
+# IntelliJ IDEA files
 .idea
-.DS_Store
+*.iml
+test-output/
+
+# Eclipse files
 .classpath
 .metadata
 .project
 .settings/
+bin/
+
+# Maven files
 target/
+
+# Other files
+.DS_Store
 *.class
 .privatebuild/
-*.iml
-test-output/
 lib/
