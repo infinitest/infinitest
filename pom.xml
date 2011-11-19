@@ -17,6 +17,8 @@
 	</modules>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<mockito.version>1.9.0-rc1</mockito.version>
 		<easymock.version>2.4</easymock.version>
 		<junit.version>4.8.2</junit.version>
@@ -110,7 +112,6 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
-					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -128,12 +129,6 @@
 							<location>${user.dir}/artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
 						</file>
 					</additionalConfig>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -174,7 +169,6 @@
 					<configLocation>${user.dir}/artifacts/infinitest-checkstyle.xml</configLocation>
 					<consoleOutput>true</consoleOutput>
 					<failOnViolation>true</failOnViolation>
-					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 		</plugins>
