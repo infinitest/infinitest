@@ -40,12 +40,14 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 
     private final Project project;
     private final Document document;
+    private final MarkupModel model;
 
-    protected InfinitestLineMarkersPass(Project project, Document document)
+    protected InfinitestLineMarkersPass(Project project, Document document, MarkupModel model)
     {
         super(project, document);
         this.project = project;
         this.document = document;
+        this.model = model;
     }
 
     @Override
@@ -66,7 +68,6 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 
     public void execute(PsiClass psiClass)
     {
-        MarkupModel model = document.getMarkupModel(project);
         clearInfinitestMarkersFrom(model);
 
         for (InnerClassFriendlyTestEvent each : IdeaInfinitestAnnotator.getInstance().getTestEvents())

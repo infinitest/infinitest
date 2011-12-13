@@ -48,7 +48,8 @@ public class InfinitestHighlightingPassFactory implements TextEditorHighlighting
         {
             return null;
         }
-        return new InfinitestLineMarkersPass(module.getProject(), editor.getDocument());
+
+        return new InfinitestLineMarkersPass(module.getProject(), editor.getDocument(), editor.getMarkupModel());
     }
 
     public void projectOpened()
