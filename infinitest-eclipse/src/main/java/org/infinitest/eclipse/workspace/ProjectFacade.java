@@ -21,8 +21,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.base.Joiner.*;
-import static java.io.File.*;
 import static java.util.logging.Level.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.core.resources.IResource.*;
@@ -55,8 +53,7 @@ class ProjectFacade implements EclipseProject
      */
     public File workingDirectory()
     {
-        IPath workingPath = project.getProject().getLocation();
-        return workingPath.toFile();
+        return project.getProject().getLocation().toFile();
     }
 
     // RISK Untested
@@ -168,7 +165,7 @@ class ProjectFacade implements EclipseProject
 
     public String rawClasspath() throws CoreException
     {
-        return on(pathSeparatorChar).join(computeDefaultRuntimeClassPath(project));
+        return new ClassPathResolver(new EclipseFacade()).rawClasspath(project);
     }
 
     public IPath getDefaultOutputLocation()
