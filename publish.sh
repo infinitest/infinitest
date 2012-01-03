@@ -25,22 +25,19 @@ CURRENT=`grep "<version>" -i pom.xml --max-count 1 | sed -e "s/.*<version>\(.*\)
 MAJOR_VERSION=`echo $CURRENT | sed -e "s/\([0-9]*\.[0-9]*\.\)\([0-9]*\)/\1/"`
 MINOR_VERSION=`echo $CURRENT | sed -e "s/\([0-9]*\.[0-9]*\.\)\([0-9]*\)/\2/"`
 NEXT=$MAJOR_VERSION`expr $MINOR_VERSION + 1`-SNAPSHOT
-TAG=VERSION${CURRENT}
 
 find . -name "*.xml" | xargs perl -pi -e "s/${CURRENT}-SNAPSHOT/${NEXT}/g"
 git stash save "Preparing ${NEXT}"
 find . -name "*.xml" | xargs perl -pi -e "s/${CURRENT}-SNAPSHOT/${CURRENT}/g"
 
 # Commit main project
-git commit -am "${release_message}"
-git tag -f "$TAG" -m "$TAG"
+git commit -am "VERSION${CURRENT} - ${release_message}"
 
 # Build it!
 mvn clean install
 if [ "$?" -ne 0 ]; then
 	echo "ERROR> Maven build failed aborting."
 	git reset --hard HEAD~1
-	git tag -d "$TAG"
 	exit 1
 fi
 
@@ -61,5 +58,4 @@ rm update_rss.rb
 
 cd ${main_site}
 git add .
-git commit -am "${release_message}"
-git tag -f "$TAG" -m "$TAG"
+git commit -am "VERSION${CURRENT} - ${release_message}"
