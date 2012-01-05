@@ -127,6 +127,12 @@ public class TestEventTest extends EqualityTestSupport
         assertEquals("java.lang.RuntimeException", methodFailed("", "", new RuntimeException()).getFullErrorClassName());
     }
 
+    @Test
+    public void shouldSupportExceptionsWithoutStackTrace()
+    {
+        methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
+    }
+
     private int getLineNumber()
     {
         return error.getStackTrace()[0].getLineNumber();
@@ -164,5 +170,15 @@ public class TestEventTest extends EqualityTestSupport
     private static TestEvent eventWithError(Throwable error)
     {
         return new TestEvent(METHOD_FAILURE, error.getMessage(), "", "", error);
+    }
+
+    @SuppressWarnings("serial")
+    private static class ExceptionWithoutStackTrace extends RuntimeException
+    {
+        @Override
+        public synchronized Throwable fillInStackTrace()
+        {
+            return this;
+        }
     }
 }

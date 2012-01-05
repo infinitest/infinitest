@@ -119,7 +119,20 @@ public class TestEvent implements Serializable
 
     private String getPointOfFailureClass()
     {
+        if (stackTrace.length == 0) // Temporary fix
+        {
+            return fullErrorClassName;
+        }
         return getPointOfFailureElement().getClassName();
+    }
+
+    private int getPointOfFailureLineNumber()
+    {
+        if (stackTrace.length == 0) // Temporary fix
+        {
+            return 0;
+        }
+        return getPointOfFailureElement().getLineNumber();
     }
 
     private StackTraceElement getPointOfFailureElement()
@@ -136,11 +149,6 @@ public class TestEvent implements Serializable
     {
         return className.startsWith("org.junit") || className.startsWith("junit.framework")
                         || className.startsWith("jdave");
-    }
-
-    private int getPointOfFailureLineNumber()
-    {
-        return getPointOfFailureElement().getLineNumber();
     }
 
     public PointOfFailure getPointOfFailure()
