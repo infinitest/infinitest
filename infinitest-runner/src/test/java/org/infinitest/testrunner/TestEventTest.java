@@ -36,6 +36,8 @@ import org.infinitest.util.EqualityTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.base.Strings;
+
 public class TestEventTest extends EqualityTestSupport
 {
     private TestEvent event;
@@ -134,7 +136,7 @@ public class TestEventTest extends EqualityTestSupport
     {
         String actual = event.getPointOfFailure().toString();
         String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName()
-                        + "(" + error.getMessage() + ")";
+                        + "(" + Strings.nullToEmpty(error.getMessage()) + ")";
 
         assertEquals(expected, actual);
     }

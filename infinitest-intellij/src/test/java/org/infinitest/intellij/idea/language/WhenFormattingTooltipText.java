@@ -25,29 +25,25 @@ import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class WhenFormattingTooltipText
 {
-    private static final RuntimeException ERROR = new RuntimeException((String) null);
-    private InfinitestGutterIconRenderer renderer;
-
-    @Before
-    public void setUp()
-    {
-        renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(methodFailed(null, "", ERROR)));
-    }
-
     @Test
     public void shouldIncludeExceptionType()
     {
+        InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(
+                        methodFailed(null, "", new RuntimeException("BUG"))));
+
         assertThat(renderer.getTooltipText(), containsString("RuntimeException"));
     }
 
     @Test
-    public void shouldReplaceNullMessageWithNullString()
+    public void shouldIncludeMessage()
     {
-        assertThat(renderer.getTooltipText(), containsString("no message"));
+        InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(
+                        methodFailed(null, "", new RuntimeException("BUG"))));
+
+        assertThat(renderer.getTooltipText(), containsString("BUG"));
     }
 }

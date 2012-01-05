@@ -26,6 +26,8 @@ import static org.infinitest.testrunner.TestEvent.TestState.*;
 
 import java.io.Serializable;
 
+import com.google.common.base.Strings;
+
 /**
  * @author <a href="mailto:benrady@gmail.com">Ben Rady</a>
  */
@@ -86,7 +88,7 @@ public class TestEvent implements Serializable
 
     public String getMessage()
     {
-        return message;
+        return Strings.nullToEmpty(message);
     }
 
     public String getTestName()
@@ -146,7 +148,7 @@ public class TestEvent implements Serializable
         if (getErrorClassName() != null)
         {
             return new PointOfFailure(getPointOfFailureClass(), getPointOfFailureLineNumber(), getErrorClassName(),
-                            getMessage());
+                            Strings.nullToEmpty(getMessage()));
         }
         return null;
     }
