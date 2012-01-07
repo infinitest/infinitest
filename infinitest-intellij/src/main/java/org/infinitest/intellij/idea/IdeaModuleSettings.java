@@ -38,11 +38,11 @@ import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings
@@ -180,13 +180,12 @@ public class IdeaModuleSettings implements ModuleSettings
     @Nullable
     private File getSdkHomePath()
     {
-        for (Sdk each : ProjectJdkTable.getInstance().getAllJdks())
+        Sdk projectJdk = ProjectRootManager.getInstance(module.getProject()).getProjectJdk();
+        if (projectJdk == null)
         {
-            if (!"IDEA JDK".equals(each.getSdkType().getName()))
-            {
-                return new File(each.getHomePath());
-            }
+            return null;
         }
-        return null;
+
+        return new File(projectJdk.getHomePath());
     }
 }
