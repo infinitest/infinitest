@@ -59,6 +59,5 @@ public class TestNGConfiguration
     public void setListeners(List<Object> listenerList)
     {
         listeners = listenerList;
-
     }
 }
