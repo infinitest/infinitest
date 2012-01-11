@@ -33,8 +33,6 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
-import com.google.common.base.Strings;
-
 class EventTranslator extends RunListener
 {
     private final List<TestEvent> eventsCollected;
@@ -86,7 +84,12 @@ class EventTranslator extends RunListener
         Description testDescription = failure.getDescription();
         String testCaseName = getTestCaseName(testDescription);
         Throwable exception = failure.getException();
-        String message = Strings.nullToEmpty(failure.getMessage());
+        String message = failure.getMessage();
+        if (null == message)
+        {
+            message = "";
+        }
+
         return methodFailed(message, testCaseName, getMethodName(testDescription), exception);
     }
 
