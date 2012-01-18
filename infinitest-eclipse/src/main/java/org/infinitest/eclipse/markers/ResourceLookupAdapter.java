@@ -45,28 +45,22 @@ public class ResourceLookupAdapter implements ResourceLookup
 
     public List<IResource> findResourcesForClassName(String className)
     {
-        List<IResource> resources = newArrayList();
-        for (String sourceFile : possibleFilenamesOf(className))
+        IResource resource = finder.findResourceForSourceFile(sourceFilename(className));
+        if (resource == null)
         {
-            IResource resource = finder.findResourceForSourceFile(sourceFile);
-            if (resource != null)
-            {
-                resources.add(resource);
-            }
+            return newArrayList();
         }
-        return resources;
+
+        return newArrayList(resource);
     }
 
-    private Iterable<String> possibleFilenamesOf(String className)
+    private static String sourceFilename(String className)
     {
-        // Add .groovy, .scala?
-        // Maybe this should happen in the resource finder?
-        return newArrayList(className.replace(".", "/") + ".java");
+        return className.replace(".", "/") + ".java";
     }
 
     public IWorkspaceRoot workspaceRoot()
     {
         return finder.workspaceRoot();
     }
-
 }
