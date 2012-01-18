@@ -26,7 +26,10 @@ import static org.eclipse.core.resources.IMarker.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.infinitest.eclipse.markers.SlowTestMarkerInfo;
 import org.infinitest.eclipse.workspace.ResourceLookup;
@@ -56,6 +59,15 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport
         IResource resource = mock(IResource.class);
         when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(asList(resource));
         assertSame(resource, marker.associatedResource());
+    }
+
+    @Test
+    public void shouldFallbackToWorkspaceInSlowTest() throws CoreException
+    {
+        when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(new ArrayList<IResource>());
+        IWorkspaceRoot workspaceRootResource = mock(IWorkspaceRoot.class);
+        when(resourceLookup.workspaceRoot()).thenReturn(workspaceRootResource);
+        assertSame(workspaceRootResource, marker.associatedResource());
     }
 
     @Test
