@@ -78,6 +78,8 @@ class ProjectFacade implements EclipseProject
         {
             return jvmInstall.getInstallLocation();
         }
+
+        log(WARNING, "Cannot find any JVM. Using the one from JAVA_HOME.");
         return new File(System.getProperty("java.home"));
     }
 
