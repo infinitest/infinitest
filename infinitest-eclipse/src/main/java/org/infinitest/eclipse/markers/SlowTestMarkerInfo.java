@@ -52,7 +52,7 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo
         List<IResource> resources = lookup.findResourcesForClassName(testName);
         if (resources.isEmpty())
         {
-            return null;
+            return lookup.workspaceRoot();
         }
         return resources.get(0);
     }
