@@ -27,12 +27,14 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IJavaProject;
@@ -80,21 +82,42 @@ class WorkspaceResourceFinder implements ResourceFinder
 
     public IResource findResourceForSourceFile(String sourceFile)
     {
-        // RISK Just taking the first resource here. What if we have the same class defined in
-        // multiple places?
         try
         {
-            Object[] elements = sourceContainer.findSourceElements(sourceFile);
-            if (elements.length > 0)
-            {
-                return (IResource) elements[0];
-            }
-            return null;
+            return findMostSpecific(sourceFile);
         }
         catch (CoreException e)
         {
             throw new RuntimeException(e);
         }
+    }
+
+    private IResource findMostSpecific(String sourceFile) throws CoreException
+    {
+        IResource resolved = null;
+        int shortestPath = Integer.MAX_VALUE;
+        for (ISourceContainer container : sourceContainer.getSourceContainers())
+        {
+            Object[] paths = container.findSourceElements(sourceFile);
+            for (Object path : paths)
+            {
+                if (path instanceof IFile)
+                {
+                    IFile file = (IFile) path;
+                    IPath p = file.getFullPath();
+                    if (p instanceof Path)
+                    {
+                        int count = ((Path) p).segmentCount();
+                        if (count < shortestPath)
+                        {
+                            shortestPath = count;
+                            resolved = file;
+                        }
+                    }
+                }
+            }
+        }
+        return resolved;
     }
 
     public IWorkspaceRoot workspaceRoot()
