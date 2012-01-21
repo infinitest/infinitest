@@ -224,6 +224,17 @@
 					<manifestFile>${baseDir}/META-INF/MANIFEST.MF</manifestFile>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<additionalConfig>
+						<file>
+							<name>infinitest.args</name>
+							<content>-Djava.awt.headless=true ${surefire.params}</content>
+						</file>
+					</additionalConfig>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
