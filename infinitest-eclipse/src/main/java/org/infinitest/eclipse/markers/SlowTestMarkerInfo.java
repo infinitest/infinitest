@@ -28,9 +28,14 @@ import static org.infinitest.util.InfinitestUtils.*;
 import java.util.List;
 import java.util.Map;
 
+import javassist.CtClass;
+import javassist.CtMethod;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.infinitest.ClasspathProvider;
 import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.infinitest.parser.JavaAssistClassParser;
 import org.infinitest.testrunner.MethodStats;
 
 public class SlowTestMarkerInfo extends AbstractMarkerInfo
@@ -38,12 +43,15 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo
     private final String testName;
     private final MethodStats methodStats;
     private final ResourceLookup lookup;
+    private final ClasspathProvider classpathProvider;
 
-    public SlowTestMarkerInfo(String testName, MethodStats methodStats, ResourceLookup lookup)
+    public SlowTestMarkerInfo(String testName, MethodStats methodStats, ResourceLookup lookup,
+                    ClasspathProvider classpathProvider)
     {
         this.testName = testName;
         this.methodStats = methodStats;
         this.lookup = lookup;
+        this.classpathProvider = classpathProvider;
     }
 
     @Override
@@ -61,9 +69,25 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo
     {
         Map<String, Object> markerAttributes = newLinkedHashMap();
         markerAttributes.put(SEVERITY, SEVERITY_WARNING);
+        markerAttributes.put(LINE_NUMBER, getLineNumber());
         markerAttributes.put(MESSAGE, buildMessage());
 
         return markerAttributes;
+    }
+
+    private int getLineNumber()
+    {
+        JavaAssistClassParser javaAssistClassParser = new JavaAssistClassParser(
+                        classpathProvider.getCompleteClasspath());
+        CtClass cc = javaAssistClassParser.getCachedClass(testName);
+        for (CtMethod m : cc.getMethods())
+        {
+            if (methodStats.methodName.equals(m.getName()))
+            {
+                return Math.max(1, m.getMethodInfo().getLineNumber(0));
+            }
+        }
+        return 1;
     }
 
     private String buildMessage()

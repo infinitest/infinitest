@@ -42,6 +42,8 @@ public interface TestRunner
 
     void setRuntimeEnvironment(RuntimeEnvironment environment);
 
+    RuntimeEnvironment getRuntimeEnvironment();
+
     void addConsoleOutputListener(ConsoleOutputListener listener);
 
     void removeConsoleOutputListener(ConsoleOutputListener listener);

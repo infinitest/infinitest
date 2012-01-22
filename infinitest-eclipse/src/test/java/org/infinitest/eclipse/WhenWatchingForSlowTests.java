@@ -27,6 +27,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
+import org.infinitest.ClasspathProvider;
 import org.infinitest.eclipse.markers.MarkerInfo;
 import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 import org.infinitest.eclipse.markers.SlowTestMarkerInfo;
@@ -52,7 +53,8 @@ public class WhenWatchingForSlowTests
         mockMarkerRegistry = mock(SlowMarkerRegistry.class);
         methodStats = new MethodStats("shouldRunSlowly");
         ResourceLookup resourceLookup = mock(ResourceLookup.class);
-        expectedMarker = new SlowTestMarkerInfo("MyTest", methodStats, resourceLookup);
+        ClasspathProvider classpathProvider = mock(ClasspathProvider.class);
+        expectedMarker = new SlowTestMarkerInfo("MyTest", methodStats, resourceLookup, classpathProvider);
         setSlowTestTimeLimit(2000);
         observer = new SlowTestObserver(mockMarkerRegistry, resourceLookup);
 
