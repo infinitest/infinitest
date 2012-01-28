@@ -123,7 +123,7 @@ abstract class AbstractTestRunner implements TestRunner
         this.environment = environment;
     }
 
-    protected RuntimeEnvironment getRuntimeEnvironment()
+    public RuntimeEnvironment getRuntimeEnvironment()
     {
         return environment;
     }

@@ -25,6 +25,7 @@ import static org.infinitest.util.InfinitestGlobalSettings.*;
 
 import java.util.Collection;
 
+import org.infinitest.ClasspathProvider;
 import org.infinitest.DisabledTestListener;
 import org.infinitest.eclipse.markers.MarkerRegistry;
 import org.infinitest.eclipse.markers.SlowMarkerRegistry;
@@ -34,6 +35,7 @@ import org.infinitest.testrunner.MethodStats;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,12 +52,14 @@ public class SlowTestObserver implements TestResultsListener, DisabledTestListen
         this.lookup = lookup;
     }
 
-    private void runStatsUpdated(String testName, MethodStats newStats)
+    private void runStatsUpdated(TestCaseEvent event, MethodStats newStats)
     {
         // DEBT This class wants to share a lot of code with ResultCollector
         // The whole process of detecting passing/failing/ignored/disabled tests is remarkably
         // similar to the process of detecting slow/fast/ignored/disabled tests.
-        SlowTestMarkerInfo marker = new SlowTestMarkerInfo(testName, newStats, lookup);
+        String testName = event.getTestName();
+        ClasspathProvider classpathProvider = ((TestRunner) event.getSource()).getRuntimeEnvironment();
+        SlowTestMarkerInfo marker = new SlowTestMarkerInfo(testName, newStats, lookup, classpathProvider);
         if (newStats.duration() > getSlowTestTimeLimit())
         {
             slowMarkerRegistry.addMarker(marker);
@@ -70,7 +74,7 @@ public class SlowTestObserver implements TestResultsListener, DisabledTestListen
     {
         for (MethodStats methodStat : event.getRunStats())
         {
-            runStatsUpdated(event.getTestName(), methodStat);
+            runStatsUpdated(event, methodStat);
         }
     }
 

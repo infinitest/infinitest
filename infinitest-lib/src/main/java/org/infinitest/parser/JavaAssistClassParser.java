@@ -113,7 +113,7 @@ public class JavaAssistClassParser implements ClassParser
         return cachedClass.getClassFile2() == null;
     }
 
-    private CtClass getCachedClass(String className)
+    public CtClass getCachedClass(String className)
     {
         try
         {

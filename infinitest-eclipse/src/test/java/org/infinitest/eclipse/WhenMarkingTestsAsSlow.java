@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.infinitest.ClasspathProvider;
 import org.infinitest.eclipse.markers.SlowTestMarkerInfo;
 import org.infinitest.eclipse.workspace.ResourceLookup;
 import org.infinitest.testrunner.MethodStats;
@@ -43,14 +44,16 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport
     private static final String TEST_NAME = "com.foo.TestName";
     private SlowTestMarkerInfo marker;
     private ResourceLookup resourceLookup;
+    private ClasspathProvider classpathProvider;
 
     @Before
     public void inContext()
     {
         resourceLookup = mock(ResourceLookup.class);
+        classpathProvider = mock(ClasspathProvider.class);
         MethodStats stats = new MethodStats("shouldRunSlowly");
         stats.stopTime = 5000;
-        marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup);
+        marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup, classpathProvider);
     }
 
     @Test
@@ -85,12 +88,12 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport
     @Override
     protected Object createEqualInstance()
     {
-        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup);
+        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup, classpathProvider);
     }
 
     @Override
     protected Object createUnequalInstance()
     {
-        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup);
+        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup, classpathProvider);
     }
 }
