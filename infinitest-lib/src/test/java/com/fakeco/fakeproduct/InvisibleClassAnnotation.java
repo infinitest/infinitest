@@ -23,10 +23,9 @@ package com.fakeco.fakeproduct;
 
 import static java.lang.annotation.RetentionPolicy.*;
 
-import java.lang.annotation.Retention;
+import java.lang.annotation.*;
 
 @Retention(CLASS)
-public @interface InvisibleClassAnnotation
-{
-    // marker
+public @interface InvisibleClassAnnotation {
+	// marker
 }

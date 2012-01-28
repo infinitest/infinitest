@@ -24,95 +24,77 @@ package org.infinitest.intellij.plugin.swingui;
 import static java.awt.FlowLayout.*;
 import static javax.swing.Box.*;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 
-public class ConfigurationPane extends JPanel
-{
-    private static final long serialVersionUID = -1L;
-    private JRadioButton enableScmButton;
+public class ConfigurationPane extends JPanel {
+	private static final long serialVersionUID = -1L;
+	private JRadioButton enableScmButton;
 
-    public ConfigurationPane()
-    {
-        setLayout(new BorderLayout());
+	public ConfigurationPane() {
+		setLayout(new BorderLayout());
 
-        JTabbedPane pane = new JTabbedPane();
-        pane.addTab("General", createGeneralTab());
-        add(pane, BorderLayout.CENTER);
-    }
+		JTabbedPane pane = new JTabbedPane();
+		pane.addTab("General", createGeneralTab());
+		add(pane, BorderLayout.CENTER);
+	}
 
-    private Component createGeneralTab()
-    {
-        JPanel panel = new JPanel(new FlowLayout(LEFT));
+	private Component createGeneralTab() {
+		JPanel panel = new JPanel(new FlowLayout(LEFT));
 
-        Box box = createHorizontalBox();
+		Box box = createHorizontalBox();
 
-        box.add(logo());
-        box.add(createHorizontalStrut(20));
-        box.add(scmUpdatePane());
+		box.add(logo());
+		box.add(createHorizontalStrut(20));
+		box.add(scmUpdatePane());
 
-        panel.add(box);
+		panel.add(box);
 
-        return panel;
-    }
+		return panel;
+	}
 
-    private JComponent logo()
-    {
-        ImageIcon logo = new ImageIcon(getClass().getResource("/infinitestMed.png"));
-        return new JLabel(logo);
-    }
+	private JComponent logo() {
+		ImageIcon logo = new ImageIcon(getClass().getResource("/infinitestMed.png"));
+		return new JLabel(logo);
+	}
 
-    private JComponent scmUpdatePane()
-    {
-        Box box = createVerticalBox();
+	private JComponent scmUpdatePane() {
+		Box box = createVerticalBox();
 
-        JLabel heading = new JLabel("Green Hooks");
-        heading.setFont(new Font(null, Font.BOLD, 14));
+		JLabel heading = new JLabel("Green Hooks");
+		heading.setFont(new Font(null, Font.BOLD, 14));
 
-        box.add(heading);
-        box.add(createVerticalStrut(10));
-        box.add(new JLabel("Automatically perform SCM update when tests pass?"));
-        box.add(optionsBox());
+		box.add(heading);
+		box.add(createVerticalStrut(10));
+		box.add(new JLabel("Automatically perform SCM update when tests pass?"));
+		box.add(optionsBox());
 
-        return box;
-    }
+		return box;
+	}
 
-    private Box optionsBox()
-    {
-        ButtonGroup options = new ButtonGroup();
+	private Box optionsBox() {
+		ButtonGroup options = new ButtonGroup();
 
-        enableScmButton = new JRadioButton("Yes, please");
-        options.add(enableScmButton);
+		enableScmButton = new JRadioButton("Yes, please");
+		options.add(enableScmButton);
 
-        JRadioButton noButton = new JRadioButton("No, thanks");
-        noButton.setSelected(true);
-        options.add(noButton);
+		JRadioButton noButton = new JRadioButton("No, thanks");
+		noButton.setSelected(true);
+		options.add(noButton);
 
-        Box optionsBox = createVerticalBox();
-        optionsBox.add(enableScmButton);
-        optionsBox.add(noButton);
+		Box optionsBox = createVerticalBox();
+		optionsBox.add(enableScmButton);
+		optionsBox.add(noButton);
 
-        return optionsBox;
-    }
+		return optionsBox;
+	}
 
-    public boolean isScmUpdateEnabled()
-    {
-        return enableScmButton.isSelected();
-    }
+	public boolean isScmUpdateEnabled() {
+		return enableScmButton.isSelected();
+	}
 
-    public void setScmUpdateEnabled(boolean scmUpdateEnabled)
-    {
-        enableScmButton.setSelected(scmUpdateEnabled);
-    }
+	public void setScmUpdateEnabled(boolean scmUpdateEnabled) {
+		enableScmButton.setSelected(scmUpdateEnabled);
+	}
 }

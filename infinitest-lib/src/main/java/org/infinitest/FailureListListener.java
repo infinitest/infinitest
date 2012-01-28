@@ -21,13 +21,12 @@
  */
 package org.infinitest;
 
-import java.util.Collection;
+import java.util.*;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-public interface FailureListListener
-{
-    void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved);
+public interface FailureListListener {
+	void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved);
 
-    void failuresUpdated(Collection<TestEvent> updatedFailures);
+	void failuresUpdated(Collection<TestEvent> updatedFailures);
 }

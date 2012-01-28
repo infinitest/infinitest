@@ -21,13 +21,11 @@
  */
 package org.infinitest.eclipse.util;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 
-public abstract class GraphicsUtils
-{
-    public static Color getColor(int color)
-    {
-        return Display.getCurrent().getSystemColor(color);
-    }
+public abstract class GraphicsUtils {
+	public static Color getColor(int color) {
+		return Display.getCurrent().getSystemColor(color);
+	}
 }

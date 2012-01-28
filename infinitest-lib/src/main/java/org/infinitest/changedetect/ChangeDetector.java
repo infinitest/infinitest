@@ -21,19 +21,17 @@
  */
 package org.infinitest.changedetect;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.ClasspathProvider;
+import org.infinitest.*;
 
-public interface ChangeDetector
-{
-    Set<File> findChangedFiles() throws IOException;
+public interface ChangeDetector {
+	Set<File> findChangedFiles() throws IOException;
 
-    void clear();
+	void clear();
 
-    boolean filesWereRemoved();
+	boolean filesWereRemoved();
 
-    void setClasspathProvider(ClasspathProvider classpath);
+	void setClasspathProvider(ClasspathProvider classpath);
 }

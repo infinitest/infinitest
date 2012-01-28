@@ -21,7 +21,6 @@
  */
 package com.fakeco.fakeproduct;
 
-public class UntestedClass
-{
+public class UntestedClass {
 
 }

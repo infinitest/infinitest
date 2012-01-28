@@ -21,31 +21,26 @@
  */
 package org.infinitest.eclipse.markers;
 
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.resources.IResource;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.TestEvent;
+import org.eclipse.core.resources.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
 
-public class StackTracePlacementStrategy implements MarkerPlacementStrategy
-{
-    private final ResourceLookup lookup;
+public class StackTracePlacementStrategy implements MarkerPlacementStrategy {
+	private final ResourceLookup lookup;
 
-    public StackTracePlacementStrategy(ResourceLookup lookup)
-    {
-        this.lookup = lookup;
-    }
+	public StackTracePlacementStrategy(ResourceLookup lookup) {
+		this.lookup = lookup;
+	}
 
-    public MarkerPlacement getPlacement(TestEvent event)
-    {
-        for (StackTraceElement element : event.getStackTrace())
-        {
-            List<IResource> resources = lookup.findResourcesForClassName(element.getClassName());
-            if (!resources.isEmpty())
-            {
-                return new MarkerPlacement(resources.get(0), element.getLineNumber());
-            }
-        }
-        return null;
-    }
+	public MarkerPlacement getPlacement(TestEvent event) {
+		for (StackTraceElement element : event.getStackTrace()) {
+			List<IResource> resources = lookup.findResourcesForClassName(element.getClassName());
+			if (!resources.isEmpty()) {
+				return new MarkerPlacement(resources.get(0), element.getLineNumber());
+			}
+		}
+		return null;
+	}
 }

@@ -26,50 +26,41 @@ import static com.google.common.collect.Sets.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.parser.FakeJavaClass;
-import org.infinitest.parser.JavaClass;
-import org.infinitest.parser.TestDetector;
-import org.infinitest.testrunner.TestRunner;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.parser.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenTriggeringACoreUpdate
-{
-    private List<File> updatedFiles;
-    private DefaultInfinitestCore core;
-    private TestDetector testDetector;
+public class WhenTriggeringACoreUpdate {
+	private List<File> updatedFiles;
+	private DefaultInfinitestCore core;
+	private TestDetector testDetector;
 
-    @Before
-    public void inContext()
-    {
-        updatedFiles = newArrayList();
-        core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
-        testDetector = mock(TestDetector.class);
-        when(testDetector.getCurrentTests()).thenReturn(Collections.<String> emptySet());
-        core.setTestDetector(testDetector);
-    }
+	@Before
+	public void inContext() {
+		updatedFiles = newArrayList();
+		core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
+		testDetector = mock(TestDetector.class);
+		when(testDetector.getCurrentTests()).thenReturn(Collections.<String> emptySet());
+		core.setTestDetector(testDetector);
+	}
 
-    private void testsToExpect(JavaClass... tests)
-    {
-        when(testDetector.findTestsToRun(updatedFiles)).thenReturn(newHashSet(tests));
-    }
+	private void testsToExpect(JavaClass... tests) {
+		when(testDetector.findTestsToRun(updatedFiles)).thenReturn(newHashSet(tests));
+	}
 
-    @Test
-    public void canUseAKnownListOfChangedFilesToReduceFileSystemAccess()
-    {
-        testsToExpect();
-        core.update(updatedFiles);
-    }
+	@Test
+	public void canUseAKnownListOfChangedFilesToReduceFileSystemAccess() {
+		testsToExpect();
+		core.update(updatedFiles);
+	}
 
-    @Test
-    public void shouldReturnTheNumberOfTestsRun()
-    {
-        testsToExpect(new FakeJavaClass("FakeTest"));
+	@Test
+	public void shouldReturnTheNumberOfTestsRun() {
+		testsToExpect(new FakeJavaClass("FakeTest"));
 
-        assertEquals(1, core.update(updatedFiles));
-    }
+		assertEquals(1, core.update(updatedFiles));
+	}
 }

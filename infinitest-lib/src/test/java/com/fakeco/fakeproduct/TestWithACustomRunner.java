@@ -21,10 +21,9 @@
  */
 package com.fakeco.fakeproduct;
 
-import org.junit.runner.RunWith;
+import org.junit.runner.*;
 
 @SuppressWarnings("all")
 @RunWith(CustomRunner.class)
-public class TestWithACustomRunner
-{
+public class TestWithACustomRunner {
 }

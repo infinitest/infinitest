@@ -24,25 +24,22 @@ package org.infinitest.eclipse.event;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.infinitest.EventQueue;
-import org.infinitest.NamedRunnable;
-import org.junit.Test;
+import org.eclipse.core.resources.*;
+import org.infinitest.*;
+import org.junit.*;
 
-public class WhenRespondingToResourceChangeEvents
-{
-    private CoreUpdateNotifier chain;
+public class WhenRespondingToResourceChangeEvents {
+	private CoreUpdateNotifier chain;
 
-    @Test
-    public void shouldProcessEventsOnEventQueue()
-    {
-        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
-        EventQueue queue = mock(EventQueue.class);
+	@Test
+	public void shouldProcessEventsOnEventQueue() {
+		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+		EventQueue queue = mock(EventQueue.class);
 
-        chain = new CoreUpdateNotifier(queue);
-        chain.addProcessor(new MockProcessor());
-        chain.processEvent(event);
+		chain = new CoreUpdateNotifier(queue);
+		chain.addProcessor(new MockProcessor());
+		chain.processEvent(event);
 
-        verify(queue).pushNamed(any(NamedRunnable.class));
-    }
+		verify(queue).pushNamed(any(NamedRunnable.class));
+	}
 }

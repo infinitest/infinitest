@@ -23,23 +23,21 @@ package org.infinitest.intellij.plugin.swingui.harness;
 
 import static org.infinitest.intellij.plugin.swingui.harness.SwingPanelHarness.*;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
-import org.infinitest.intellij.plugin.swingui.InfinitestLogPane;
+import org.infinitest.intellij.plugin.swingui.*;
 
-public class LogPaneHarness extends JFrame
-{
-    private static final long serialVersionUID = -1L;
-    private static final Exception EXCEPTION = new Exception("Uh-oh!");
+public class LogPaneHarness extends JFrame {
+	private static final long serialVersionUID = -1L;
+	private static final Exception EXCEPTION = new Exception("Uh-oh!");
 
-    public static void main(String args[])
-    {
-        InfinitestLogPane logPane = new InfinitestLogPane();
+	public static void main(String args[]) {
+		InfinitestLogPane logPane = new InfinitestLogPane();
 
-        displayPanel(logPane);
+		displayPanel(logPane);
 
-        logPane.writeMessage("Something interesting happened");
-        logPane.writeMessage("Something else interesting happened");
-        logPane.writeError("Oops!", EXCEPTION);
-    }
+		logPane.writeMessage("Something interesting happened");
+		logPane.writeMessage("Something else interesting happened");
+		logPane.writeError("Oops!", EXCEPTION);
+	}
 }

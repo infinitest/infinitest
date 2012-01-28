@@ -23,126 +23,105 @@ package org.infinitest.intellij.plugin.launcher;
 
 import static org.infinitest.intellij.idea.window.InfinitestToolWindow.*;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.wm.ToolWindowManager;
-import org.apache.log4j.Logger;
-import org.infinitest.InfinitestCoreBuilder;
-import org.infinitest.intellij.CompilationNotifier;
-import org.infinitest.intellij.InfinitestLoggingListener;
-import org.infinitest.intellij.ModuleSettings;
-import org.infinitest.intellij.ToolWindowRegistry;
-import org.infinitest.intellij.idea.IdeaCompilationListener;
-import org.infinitest.intellij.plugin.SourceNavigator;
-import org.infinitest.intellij.plugin.greenhook.GreenHook;
-import org.infinitest.intellij.plugin.greenhook.GreenHookListener;
-import org.infinitest.intellij.plugin.swingui.ResultClickListener;
-import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
-import org.infinitest.util.InfinitestUtils;
+import org.apache.log4j.*;
+import org.infinitest.*;
+import org.infinitest.intellij.*;
+import org.infinitest.intellij.idea.*;
+import org.infinitest.intellij.plugin.*;
+import org.infinitest.intellij.plugin.greenhook.*;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.infinitest.util.*;
 
-public class InfinitestLauncherImpl implements InfinitestLauncher
-{
-    private final ModuleSettings moduleSettings;
-    private final ToolWindowRegistry toolWindowRegistry;
-    private final CompilationNotifier compilationNotifier;
-    private final SourceNavigator navigator;
-    private final InfinitestBuilder infinitestBuilder;
-    private IdeaCompilationListener testControl;
-    private final GreenHookListener greenHookListener;
-    private final FileEditorListener fileEditorListener;
-    private final ToolWindowListener toolWindowListener;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.wm.*;
 
-    public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry,
-                    CompilationNotifier compilationNotifier, SourceNavigator navigator,
-                    FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager)
-    {
-        this.moduleSettings = moduleSettings;
-        this.toolWindowRegistry = toolWindowRegistry;
-        this.compilationNotifier = compilationNotifier;
-        this.navigator = navigator;
-        this.greenHookListener = new GreenHookListener();
-        this.infinitestBuilder = createInfinitestBuilder();
-        this.fileEditorListener = new FileEditorListener(fileEditorManager);
-        this.toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
-    }
+public class InfinitestLauncherImpl implements InfinitestLauncher {
+	private final ModuleSettings moduleSettings;
+	private final ToolWindowRegistry toolWindowRegistry;
+	private final CompilationNotifier compilationNotifier;
+	private final SourceNavigator navigator;
+	private final InfinitestBuilder infinitestBuilder;
+	private IdeaCompilationListener testControl;
+	private final GreenHookListener greenHookListener;
+	private final FileEditorListener fileEditorListener;
+	private final ToolWindowListener toolWindowListener;
 
-    public void launchInfinitest()
-    {
-        moduleSettings.writeToLogger(Logger.getLogger(getClass()));
+	public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry, CompilationNotifier compilationNotifier, SourceNavigator navigator, FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager) {
+		this.moduleSettings = moduleSettings;
+		this.toolWindowRegistry = toolWindowRegistry;
+		this.compilationNotifier = compilationNotifier;
+		this.navigator = navigator;
+		greenHookListener = new GreenHookListener();
+		infinitestBuilder = createInfinitestBuilder();
+		fileEditorListener = new FileEditorListener(fileEditorManager);
+		toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
+	}
 
-        testControl = new IdeaCompilationListener(infinitestBuilder.getCore(), moduleSettings);
-        initializeInfinitestLogging();
-        registerInfinitestWindow();
-        addCompilationStatusListener();
-        addScmGreenHookListener();
-        addResultClickListener();
-        addFileEditorListener();
-        addToolWindowListener();
-    }
+	public void launchInfinitest() {
+		moduleSettings.writeToLogger(Logger.getLogger(getClass()));
 
-    private void addResultClickListener()
-    {
-        infinitestBuilder.addResultClickListener(new ResultClickListener(navigator));
-    }
+		testControl = new IdeaCompilationListener(infinitestBuilder.getCore(), moduleSettings);
+		initializeInfinitestLogging();
+		registerInfinitestWindow();
+		addCompilationStatusListener();
+		addScmGreenHookListener();
+		addResultClickListener();
+		addFileEditorListener();
+		addToolWindowListener();
+	}
 
-    public void addGreenHook(GreenHook hook)
-    {
-        greenHookListener.add(hook);
-    }
+	private void addResultClickListener() {
+		infinitestBuilder.addResultClickListener(new ResultClickListener(navigator));
+	}
 
-    private void initializeInfinitestLogging()
-    {
-        InfinitestUtils.addLoggingListener(new InfinitestLoggingListener(infinitestBuilder.getView()));
-    }
+	public void addGreenHook(GreenHook hook) {
+		greenHookListener.add(hook);
+	}
 
-    private void addCompilationStatusListener()
-    {
-        compilationNotifier.addCompilationStatusListener(testControl);
-    }
+	private void initializeInfinitestLogging() {
+		InfinitestUtils.addLoggingListener(new InfinitestLoggingListener(infinitestBuilder.getView()));
+	}
 
-    private void addScmGreenHookListener()
-    {
-        infinitestBuilder.addStatusListener(greenHookListener);
-    }
+	private void addCompilationStatusListener() {
+		compilationNotifier.addCompilationStatusListener(testControl);
+	}
 
-    private void registerInfinitestWindow()
-    {
-        JPanel rootPanel = new JPanel(new BorderLayout());
+	private void addScmGreenHookListener() {
+		infinitestBuilder.addStatusListener(greenHookListener);
+	}
 
-        rootPanel.add(infinitestBuilder.createPluginComponent(testControl), BorderLayout.CENTER);
+	private void registerInfinitestWindow() {
+		JPanel rootPanel = new JPanel(new BorderLayout());
 
-        toolWindowRegistry.registerToolWindow(rootPanel, toolWindowId());
-    }
+		rootPanel.add(infinitestBuilder.createPluginComponent(testControl), BorderLayout.CENTER);
 
-    public void stop()
-    {
-        toolWindowRegistry.unregisterToolWindow(toolWindowId());
-        infinitestBuilder.removeStatusListener(greenHookListener);
-        compilationNotifier.removeCompilationStatusListener(testControl);
-    }
+		toolWindowRegistry.registerToolWindow(rootPanel, toolWindowId());
+	}
 
-    private String toolWindowId()
-    {
-        return TOOL_WINDOW_ID + "_" + moduleSettings.getName();
-    }
+	public void stop() {
+		toolWindowRegistry.unregisterToolWindow(toolWindowId());
+		infinitestBuilder.removeStatusListener(greenHookListener);
+		compilationNotifier.removeCompilationStatusListener(testControl);
+	}
 
-    private InfinitestBuilder createInfinitestBuilder()
-    {
-        InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(),
-                        new SwingEventQueue());
-        return new InfinitestBuilder(coreBuilder.createCore());
-    }
+	private String toolWindowId() {
+		return TOOL_WINDOW_ID + "_" + moduleSettings.getName();
+	}
 
-    private void addFileEditorListener()
-    {
-        infinitestBuilder.addPresenterListener(fileEditorListener);
-    }
+	private InfinitestBuilder createInfinitestBuilder() {
+		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(), new SwingEventQueue());
+		return new InfinitestBuilder(coreBuilder.createCore());
+	}
 
-    private void addToolWindowListener()
-    {
-        infinitestBuilder.addPresenterListener(toolWindowListener);
-    }
+	private void addFileEditorListener() {
+		infinitestBuilder.addPresenterListener(fileEditorListener);
+	}
+
+	private void addToolWindowListener() {
+		infinitestBuilder.addPresenterListener(toolWindowListener);
+	}
 }

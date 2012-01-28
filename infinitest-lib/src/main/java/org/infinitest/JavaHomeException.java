@@ -21,14 +21,12 @@
  */
 package org.infinitest;
 
-import java.io.File;
+import java.io.*;
 
-public class JavaHomeException extends RuntimeException
-{
-    private static final long serialVersionUID = -1L;
+public class JavaHomeException extends RuntimeException {
+	private static final long serialVersionUID = -1L;
 
-    JavaHomeException(File javaHome)
-    {
-        super("Could not find java executable at " + javaHome.getAbsolutePath());
-    }
+	JavaHomeException(File javaHome) {
+		super("Could not find java executable at " + javaHome.getAbsolutePath());
+	}
 }

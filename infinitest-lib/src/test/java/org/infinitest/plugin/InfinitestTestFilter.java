@@ -21,17 +21,14 @@
  */
 package org.infinitest.plugin;
 
-import org.infinitest.filter.TestFilter;
+import org.infinitest.filter.*;
 
-class InfinitestTestFilter implements TestFilter
-{
-    public boolean match(String className)
-    {
-        return !className.startsWith("com.fakeco.fakeproduct.simple");
-    }
+class InfinitestTestFilter implements TestFilter {
+	public boolean match(String className) {
+		return !className.startsWith("com.fakeco.fakeproduct.simple");
+	}
 
-    public void updateFilterList()
-    {
-        // nothing to do here
-    }
+	public void updateFilterList() {
+		// nothing to do here
+	}
 }

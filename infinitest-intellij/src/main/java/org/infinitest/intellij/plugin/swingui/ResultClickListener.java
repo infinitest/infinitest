@@ -21,49 +21,41 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import org.infinitest.intellij.plugin.SourceNavigator;
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.intellij.plugin.*;
+import org.infinitest.testrunner.*;
 
-public class ResultClickListener extends MouseAdapter
-{
-    private final SourceNavigator navigator;
+public class ResultClickListener extends MouseAdapter {
+	private final SourceNavigator navigator;
 
-    public ResultClickListener(SourceNavigator navigator)
-    {
-        this.navigator = navigator;
-    }
+	public ResultClickListener(SourceNavigator navigator) {
+		this.navigator = navigator;
+	}
 
-    @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        if (e.getClickCount() != 2)
-        {
-            return;
-        }
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (e.getClickCount() != 2) {
+			return;
+		}
 
-        JTree tree = (JTree) e.getSource();
-        TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
-        Object treeNode = path.getLastPathComponent();
-        if (treeNode instanceof TestEvent)
-        {
-            TestEvent event = (TestEvent) treeNode;
-            navigator.open(classFor(event)).line(lineFor(event));
-        }
-    }
+		JTree tree = (JTree) e.getSource();
+		TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
+		Object treeNode = path.getLastPathComponent();
+		if (treeNode instanceof TestEvent) {
+			TestEvent event = (TestEvent) treeNode;
+			navigator.open(classFor(event)).line(lineFor(event));
+		}
+	}
 
-    private int lineFor(TestEvent event)
-    {
-        return event.getPointOfFailure().getLineNumber();
-    }
+	private int lineFor(TestEvent event) {
+		return event.getPointOfFailure().getLineNumber();
+	}
 
-    private String classFor(TestEvent event)
-    {
-        return event.getPointOfFailure().getClassName();
-    }
+	private String classFor(TestEvent event) {
+		return event.getPointOfFailure().getClassName();
+	}
 }

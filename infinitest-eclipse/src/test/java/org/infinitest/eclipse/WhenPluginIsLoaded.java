@@ -25,36 +25,32 @@ import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.runtime.Preferences;
-import org.infinitest.eclipse.workspace.CoreSettings;
-import org.infinitest.util.InfinitestGlobalSettings;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.util.*;
+import org.junit.*;
 
-public class WhenPluginIsLoaded
-{
-    private InfinitestPlugin plugin;
-    private Preferences preferences;
-    private CoreSettings coreSettings;
+public class WhenPluginIsLoaded {
+	private InfinitestPlugin plugin;
+	private Preferences preferences;
+	private CoreSettings coreSettings;
 
-    @Before
-    public void inContext()
-    {
-        preferences = mock(Preferences.class);
-        coreSettings = mock(CoreSettings.class);
+	@Before
+	public void inContext() {
+		preferences = mock(Preferences.class);
+		coreSettings = mock(CoreSettings.class);
 
-        plugin = new InfinitestPlugin();
-    }
+		plugin = new InfinitestPlugin();
+	}
 
-    @Test
-    public void shouldRestoreSavedPreferences()
-    {
-        when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
-        when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
+	@Test
+	public void shouldRestoreSavedPreferences() {
+		when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
+		when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
 
-        plugin.restoreSavedPreferences(preferences, coreSettings);
+		plugin.restoreSavedPreferences(preferences, coreSettings);
 
-        verify(coreSettings).setConcurrentCoreCount(4);
-        assertEquals(1000L, InfinitestGlobalSettings.getSlowTestTimeLimit());
-    }
+		verify(coreSettings).setConcurrentCoreCount(4);
+		assertEquals(1000L, InfinitestGlobalSettings.getSlowTestTimeLimit());
+	}
 }

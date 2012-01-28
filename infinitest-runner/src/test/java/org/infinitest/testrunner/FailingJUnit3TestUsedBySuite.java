@@ -21,17 +21,14 @@
  */
 package org.infinitest.testrunner;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-public final class FailingJUnit3TestUsedBySuite extends TestCase
-{
-    FailingJUnit3TestUsedBySuite()
-    {
-        super("testShouldFail");
-    }
+public final class FailingJUnit3TestUsedBySuite extends TestCase {
+	FailingJUnit3TestUsedBySuite() {
+		super("testShouldFail");
+	}
 
-    public void testShouldFail()
-    {
-        fail();
-    }
+	public void testShouldFail() {
+		fail();
+	}
 }

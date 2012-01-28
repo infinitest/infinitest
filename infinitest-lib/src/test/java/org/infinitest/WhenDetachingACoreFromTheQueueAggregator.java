@@ -24,17 +24,15 @@ package org.infinitest;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenDetachingACoreFromTheQueueAggregator
-{
-    @Test
-    public void shouldRemoveFromMap()
-    {
-        QueueAggregator aggregator = new QueueAggregator();
-        InfinitestCore core = mock(InfinitestCore.class);
-        aggregator.attach(core);
-        aggregator.detach(core);
-        assertTrue(aggregator.getCoreQueueListeners().isEmpty());
-    }
+public class WhenDetachingACoreFromTheQueueAggregator {
+	@Test
+	public void shouldRemoveFromMap() {
+		QueueAggregator aggregator = new QueueAggregator();
+		InfinitestCore core = mock(InfinitestCore.class);
+		aggregator.attach(core);
+		aggregator.detach(core);
+		assertTrue(aggregator.getCoreQueueListeners().isEmpty());
+	}
 }

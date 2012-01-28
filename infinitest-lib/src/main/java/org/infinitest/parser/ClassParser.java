@@ -21,14 +21,12 @@
  */
 package org.infinitest.parser;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
-interface ClassParser
-{
-    JavaClass getClass(String className);
+interface ClassParser {
+	JavaClass getClass(String className);
 
-    JavaClass parse(File file) throws IOException;
+	JavaClass parse(File file) throws IOException;
 
-    void clear();
+	void clear();
 }

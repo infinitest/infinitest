@@ -27,128 +27,112 @@ import static org.eclipse.swt.SWT.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Collections;
+import java.util.*;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Event;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.ui.PartInitException;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.ui.*;
+import org.infinitest.eclipse.workspace.*;
+import org.junit.*;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 
-public class WhenAStackTraceElementIsSelected
-{
-    private FakeShell shell;
-    private KeyEvent keyEvent;
-    private StackElementSelectionListener listener;
-    private IMarker selectedMarker;
-    private IMarker newMarker;
-    private List list;
-    private ResourceLookup resourceLookup;
-    private java.util.List<StackTraceElement> stackTrace;
-    private Event event;
+public class WhenAStackTraceElementIsSelected {
+	private FakeShell shell;
+	private KeyEvent keyEvent;
+	private StackElementSelectionListener listener;
+	private IMarker selectedMarker;
+	private IMarker newMarker;
+	private List list;
+	private ResourceLookup resourceLookup;
+	private java.util.List<StackTraceElement> stackTrace;
+	private Event event;
 
-    @Before
-    public void inContext()
-    {
-        shell = new FakeShell();
-        stackTrace = Lists.newArrayList();
-        stackTrace.add(new StackTraceElement("MyClassName", "someMethod", "MyClassName.java", 72));
-        resourceLookup = mock(ResourceLookup.class);
-        listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace)
-        {
-            @Override
-            protected void jumpToMarker(IMarker marker) throws PartInitException
-            {
-                selectedMarker = marker;
-            }
-        };
-        event = new Event();
-        list = new List(shell, 0);
-        list.add("Entry 1");
-        list.add("Entry 2");
-        list.setSelection(0);
-        event.widget = list;
-        keyEvent = new KeyEvent(event);
-        keyEvent.keyCode = SWT.CR;
-    }
+	@Before
+	public void inContext() {
+		shell = new FakeShell();
+		stackTrace = Lists.newArrayList();
+		stackTrace.add(new StackTraceElement("MyClassName", "someMethod", "MyClassName.java", 72));
+		resourceLookup = mock(ResourceLookup.class);
+		listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace) {
+			@Override
+			protected void jumpToMarker(IMarker marker) throws PartInitException {
+				selectedMarker = marker;
+			}
+		};
+		event = new Event();
+		list = new List(shell, 0);
+		list.add("Entry 1");
+		list.add("Entry 2");
+		list.setSelection(0);
+		event.widget = list;
+		keyEvent = new KeyEvent(event);
+		keyEvent.keyCode = SWT.CR;
+	}
 
-    private void expectJumpTo(String className, int lineNumber) throws CoreException
-    {
-        IResource resource = mock(IResource.class);
-        when(resourceLookup.findResourcesForClassName(className)).thenReturn(asList(resource));
-        newMarker = mock(IMarker.class);
-        IFile file = mock(IFile.class);
-        when(resource.getAdapter(IFile.class)).thenReturn(file);
-        when(file.createMarker(TEXT)).thenReturn(newMarker);
-        newMarker.setAttribute(LINE_NUMBER, lineNumber);
-        newMarker.delete();
-    }
+	private void expectJumpTo(String className, int lineNumber) throws CoreException {
+		IResource resource = mock(IResource.class);
+		when(resourceLookup.findResourcesForClassName(className)).thenReturn(asList(resource));
+		newMarker = mock(IMarker.class);
+		IFile file = mock(IFile.class);
+		when(resource.getAdapter(IFile.class)).thenReturn(file);
+		when(file.createMarker(TEXT)).thenReturn(newMarker);
+		newMarker.setAttribute(LINE_NUMBER, lineNumber);
+		newMarker.delete();
+	}
 
-    @Test
-    public void shouldOnlyReactToReturnKeyEvents()
-    {
-        keyEvent.keyCode = ARROW_DOWN;
-        listener.keyPressed(keyEvent);
-        assertFalse(shell.disposed);
-    }
+	@Test
+	public void shouldOnlyReactToReturnKeyEvents() {
+		keyEvent.keyCode = ARROW_DOWN;
+		listener.keyPressed(keyEvent);
+		assertFalse(shell.disposed);
+	}
 
-    @Test
-    public void shouldDoNothingIfNoLineSelected()
-    {
-        list.setSelection(-1);
-        listener.keyPressed(keyEvent);
-        assertFalse(shell.disposed);
-    }
+	@Test
+	public void shouldDoNothingIfNoLineSelected() {
+		list.setSelection(-1);
+		listener.keyPressed(keyEvent);
+		assertFalse(shell.disposed);
+	}
 
-    @Test
-    public void shouldCloseTheDialog() throws CoreException
-    {
-        expectJumpTo("MyClassName", 72);
-        listener.keyPressed(keyEvent);
-        assertTrue(shell.disposed);
-    }
+	@Test
+	public void shouldCloseTheDialog() throws CoreException {
+		expectJumpTo("MyClassName", 72);
+		listener.keyPressed(keyEvent);
+		assertTrue(shell.disposed);
+	}
 
-    @Test
-    public void shouldJumpToThatLine() throws CoreException
-    {
-        expectJumpToTheOtherClass();
-        listener.keyPressed(keyEvent);
-        assertSame(newMarker, selectedMarker);
-    }
+	@Test
+	public void shouldJumpToThatLine() throws CoreException {
+		expectJumpToTheOtherClass();
+		listener.keyPressed(keyEvent);
+		assertSame(newMarker, selectedMarker);
+	}
 
-    @Test
-    public void shouldDoNothingIfFileCannotBeFound()
-    {
-        when(resourceLookup.findResourcesForClassName("MissingClass")).thenReturn(Collections.<IResource> emptyList());
-        stackTrace.add(new StackTraceElement("MissingClass", "MissingMethod", "MissingClass.java", 72));
-        list.setSelection(1);
-        listener.keyPressed(keyEvent);
-        assertFalse(shell.disposed);
-    }
+	@Test
+	public void shouldDoNothingIfFileCannotBeFound() {
+		when(resourceLookup.findResourcesForClassName("MissingClass")).thenReturn(Collections.<IResource> emptyList());
+		stackTrace.add(new StackTraceElement("MissingClass", "MissingMethod", "MissingClass.java", 72));
+		list.setSelection(1);
+		listener.keyPressed(keyEvent);
+		assertFalse(shell.disposed);
+	}
 
-    @Test
-    public void shouldJumpToThatLineWhenYouDoubleClickWithTheMouseToo() throws CoreException
-    {
-        expectJumpToTheOtherClass();
-        listener.mouseDoubleClick(new MouseEvent(event));
-        assertSame(newMarker, selectedMarker);
-    }
+	@Test
+	public void shouldJumpToThatLineWhenYouDoubleClickWithTheMouseToo() throws CoreException {
+		expectJumpToTheOtherClass();
+		listener.mouseDoubleClick(new MouseEvent(event));
+		assertSame(newMarker, selectedMarker);
+	}
 
-    private void expectJumpToTheOtherClass() throws CoreException
-    {
-        expectJumpTo("TheOtherClass", 21);
-        stackTrace.add(new StackTraceElement("TheOtherClass", "", "TheOtherClass.java", 21));
-        list.add("This also doesn't matter");
-        list.setSelection(1);
-    }
+	private void expectJumpToTheOtherClass() throws CoreException {
+		expectJumpTo("TheOtherClass", 21);
+		stackTrace.add(new StackTraceElement("TheOtherClass", "", "TheOtherClass.java", 21));
+		list.add("This also doesn't matter");
+		list.setSelection(1);
+	}
 }

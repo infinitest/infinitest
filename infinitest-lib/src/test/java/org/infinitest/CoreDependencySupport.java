@@ -26,119 +26,95 @@ import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assume.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.changedetect.ChangeDetector;
-import org.infinitest.changedetect.FakeChangeDetector;
-import org.infinitest.parser.FakeJavaClass;
-import org.infinitest.parser.JavaClass;
-import org.infinitest.parser.TestDetector;
-import org.infinitest.testrunner.InProcessRunner;
-import org.infinitest.util.InfinitestTestUtils;
-import org.junit.Test;
+import org.infinitest.changedetect.*;
+import org.infinitest.parser.*;
+import org.infinitest.testrunner.*;
+import org.infinitest.util.*;
+import org.junit.*;
 
-import com.fakeco.fakeproduct.TestFakeProduct;
+import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.simple.*;
 import com.fakeco.fakeproduct.simple.FailingTest;
-import com.fakeco.fakeproduct.simple.PassingTest;
 
-public class CoreDependencySupport
-{
-    public static final Class<?> FAILING_TEST = FailingTest.class;
-    public static final Class<?> PASSING_TEST = PassingTest.class;
-    public static final Class<?> SLOW_TEST = SlowTest.class;
+public class CoreDependencySupport {
+	public static final Class<?> FAILING_TEST = FailingTest.class;
+	public static final Class<?> PASSING_TEST = PassingTest.class;
+	public static final Class<?> SLOW_TEST = SlowTest.class;
 
-    public static class SlowTest
-    {
-        @Test
-        public void shouldBeReallySlow() throws Exception
-        {
-            assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
-            Thread.sleep(1000000);
-        }
-    }
+	public static class SlowTest {
+		@Test
+		public void shouldBeReallySlow() throws Exception {
+			assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
+			Thread.sleep(1000000);
+		}
+	}
 
-    private CoreDependencySupport()
-    {
-        // nothing to do here
-    }
+	private CoreDependencySupport() {
+		// nothing to do here
+	}
 
-    public static TestDetector withTests(final Class<?>... testClasses)
-    {
-        return new StubTestDetector()
-        {
-            @Override
-            public Set<JavaClass> findTestsToRun(Collection<File> changedFiles)
-            {
-                Set<JavaClass> testsToRun = new HashSet<JavaClass>();
-                if (!isCleared())
-                {
-                    for (Class<?> each : testClasses)
-                    {
-                        testsToRun.add(new FakeJavaClass(each.getName()));
-                    }
-                }
+	public static TestDetector withTests(final Class<?>... testClasses) {
+		return new StubTestDetector() {
+			@Override
+			public Set<JavaClass> findTestsToRun(Collection<File> changedFiles) {
+				Set<JavaClass> testsToRun = new HashSet<JavaClass>();
+				if (!isCleared()) {
+					for (Class<?> each : testClasses) {
+						testsToRun.add(new FakeJavaClass(each.getName()));
+					}
+				}
 
-                return testsToRun;
-            }
+				return testsToRun;
+			}
 
-            @Override
-            public boolean isEmpty()
-            {
-                return false;
-            }
-        };
-    }
+			@Override
+			public boolean isEmpty() {
+				return false;
+			}
+		};
+	}
 
-    public static TestDetector withNoTestsToRun()
-    {
-        return mock(TestDetector.class);
-    }
+	public static TestDetector withNoTestsToRun() {
+		return mock(TestDetector.class);
+	}
 
-    public static ChangeDetector withChangedFiles(Class<?>... changedClasses)
-    {
-        if (changedClasses.length == 0)
-        {
-            createChangeDetector(new Class<?>[] { TestFakeProduct.class });
-        }
-        return createChangeDetector(changedClasses);
-    }
+	public static ChangeDetector withChangedFiles(Class<?>... changedClasses) {
+		if (changedClasses.length == 0) {
+			createChangeDetector(new Class<?>[] { TestFakeProduct.class });
+		}
+		return createChangeDetector(changedClasses);
+	}
 
-    private static ChangeDetector createChangeDetector(Class<?>... changedClasses)
-    {
-        Set<File> changedFiles = new HashSet<File>();
-        for (Class<?> each : changedClasses)
-        {
-            changedFiles.add(getFileForClass(each));
-        }
-        return new FakeChangeDetector(changedFiles, false);
-    }
+	private static ChangeDetector createChangeDetector(Class<?>... changedClasses) {
+		Set<File> changedFiles = new HashSet<File>();
+		for (Class<?> each : changedClasses) {
+			changedFiles.add(getFileForClass(each));
+		}
+		return new FakeChangeDetector(changedFiles, false);
+	}
 
-    public static ChangeDetector withNoChangedFiles()
-    {
-        return createChangeDetector();
-    }
+	public static ChangeDetector withNoChangedFiles() {
+		return createChangeDetector();
+	}
 
-    static DefaultInfinitestCore createCore(ChangeDetector changedFiles, TestDetector tests)
-    {
-        return createCore(changedFiles, tests, new FakeEventQueue());
-    }
+	static DefaultInfinitestCore createCore(ChangeDetector changedFiles, TestDetector tests) {
+		return createCore(changedFiles, tests, new FakeEventQueue());
+	}
 
-    static DefaultInfinitestCore createCore(ChangeDetector changedFiles, TestDetector tests, EventQueue eventQueue)
-    {
-        DefaultInfinitestCore core = new DefaultInfinitestCore(new InProcessRunner(), eventQueue);
-        core.setChangeDetector(changedFiles);
-        core.setTestDetector(tests);
-        return core;
-    }
+	static DefaultInfinitestCore createCore(ChangeDetector changedFiles, TestDetector tests, EventQueue eventQueue) {
+		DefaultInfinitestCore core = new DefaultInfinitestCore(new InProcessRunner(), eventQueue);
+		core.setChangeDetector(changedFiles);
+		core.setTestDetector(tests);
+		return core;
+	}
 
-    static DefaultInfinitestCore createAsyncCore(ChangeDetector changeDetector, TestDetector testDetector)
-    {
-        DefaultInfinitestCore core = new DefaultInfinitestCore(createRunner(), new FakeEventQueue());
-        core.setChangeDetector(changeDetector);
-        core.setTestDetector(testDetector);
-        return core;
-    }
+	static DefaultInfinitestCore createAsyncCore(ChangeDetector changeDetector, TestDetector testDetector) {
+		DefaultInfinitestCore core = new DefaultInfinitestCore(createRunner(), new FakeEventQueue());
+		core.setChangeDetector(changeDetector);
+		core.setTestDetector(testDetector);
+		return core;
+	}
 }

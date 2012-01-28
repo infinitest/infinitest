@@ -21,11 +21,10 @@
  */
 package org.infinitest.intellij;
 
-import com.intellij.openapi.compiler.CompilationStatusListener;
+import com.intellij.openapi.compiler.*;
 
-public interface CompilationNotifier
-{
-    void addCompilationStatusListener(CompilationStatusListener compilationListener);
+public interface CompilationNotifier {
+	void addCompilationStatusListener(CompilationStatusListener compilationListener);
 
-    void removeCompilationStatusListener(CompilationStatusListener compilationListener);
+	void removeCompilationStatusListener(CompilationStatusListener compilationListener);
 }

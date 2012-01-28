@@ -21,9 +21,8 @@
  */
 package org.infinitest.eclipse;
 
-import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.*;
 
-public interface AggregateResultsListener extends TestResultsListener
-{
+public interface AggregateResultsListener extends TestResultsListener {
 
 }

@@ -27,69 +27,57 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
+import java.util.*;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.eclipse.AggregateResultsListener;
-import org.infinitest.eclipse.TestResultAggregator;
-import org.infinitest.testrunner.TestCaseEvent;
-import org.infinitest.testrunner.TestEvent;
-import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.*;
+import org.infinitest.eclipse.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenAggregatingTestEventsFromMultipleCores
-{
-    private TestResultAggregator aggregator;
-    private InfinitestCore core;
-    private List<Object> events;
+public class WhenAggregatingTestEventsFromMultipleCores {
+	private TestResultAggregator aggregator;
+	private InfinitestCore core;
+	private List<Object> events;
 
-    @Before
-    public void inContext()
-    {
-        events = newArrayList();
-        aggregator = new TestResultAggregator();
-        core = mock(InfinitestCore.class);
-    }
+	@Before
+	public void inContext() {
+		events = newArrayList();
+		aggregator = new TestResultAggregator();
+		core = mock(InfinitestCore.class);
+	}
 
-    @Test
-    public void shouldAttachToNewCores()
-    {
-        aggregator.coreCreated(core);
+	@Test
+	public void shouldAttachToNewCores() {
+		aggregator.coreCreated(core);
 
-        verify(core).addTestResultsListener(aggregator);
-    }
+		verify(core).addTestResultsListener(aggregator);
+	}
 
-    @Test
-    public void shouldDetachFromRemovedCores()
-    {
-        aggregator.coreRemoved(core);
+	@Test
+	public void shouldDetachFromRemovedCores() {
+		aggregator.coreRemoved(core);
 
-        verify(core).removeTestResultsListener(aggregator);
-    }
+		verify(core).removeTestResultsListener(aggregator);
+	}
 
-    @Test
-    public void shouldNotifyListenersOfAggregatedEvents()
-    {
-        aggregator.addListeners(new AggregateResultsListener()
-        {
-            public void testCaseStarting(TestEvent event)
-            {
-                events.add(event);
-            }
+	@Test
+	public void shouldNotifyListenersOfAggregatedEvents() {
+		aggregator.addListeners(new AggregateResultsListener() {
+			public void testCaseStarting(TestEvent event) {
+				events.add(event);
+			}
 
-            public void testCaseComplete(TestCaseEvent event)
-            {
-                events.add(event);
-            }
-        });
+			public void testCaseComplete(TestCaseEvent event) {
+				events.add(event);
+			}
+		});
 
-        TestEvent startingEvent = testCaseStarting("Test1");
-        aggregator.testCaseStarting(startingEvent);
-        assertSame(startingEvent, getOnlyElement(events));
+		TestEvent startingEvent = testCaseStarting("Test1");
+		aggregator.testCaseStarting(startingEvent);
+		assertSame(startingEvent, getOnlyElement(events));
 
-        TestCaseEvent completeEvent = new TestCaseEvent("Test1", this, new TestResults());
-        aggregator.testCaseComplete(completeEvent);
-        assertSame(completeEvent, get(events, 1));
-    }
+		TestCaseEvent completeEvent = new TestCaseEvent("Test1", this, new TestResults());
+		aggregator.testCaseComplete(completeEvent);
+		assertSame(completeEvent, get(events, 1));
+	}
 }

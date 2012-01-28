@@ -21,11 +21,10 @@
  */
 package org.infinitest.eclipse.console;
 
-public interface TextOutputWriter
-{
-    void clearConsole();
+public interface TextOutputWriter {
+	void clearConsole();
 
-    void appendText(String newText);
+	void appendText(String newText);
 
-    void activate();
+	void activate();
 }

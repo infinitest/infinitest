@@ -21,13 +21,12 @@
  */
 package org.infinitest.testrunner.process;
 
-import org.infinitest.testrunner.TestResults;
+import org.infinitest.testrunner.*;
 
-public interface ProcessConnection
-{
-    TestResults runTest(String testName);
+public interface ProcessConnection {
+	TestResults runTest(String testName);
 
-    void close();
+	void close();
 
-    boolean abort();
+	boolean abort();
 }

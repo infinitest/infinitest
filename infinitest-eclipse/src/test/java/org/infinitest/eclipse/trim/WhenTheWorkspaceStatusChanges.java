@@ -23,39 +23,33 @@ package org.infinitest.eclipse.trim;
 
 import static org.mockito.Mockito.*;
 
-import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.junit.Test;
+import org.infinitest.eclipse.status.*;
+import org.junit.*;
 
-public class WhenTheWorkspaceStatusChanges
-{
-    @Test
-    public void shouldUpdateTheStatusBar()
-    {
-        VisualStatusPresenter presenter = new VisualStatusPresenter();
-        VisualStatus statusBar = mock(VisualStatus.class);
-        presenter.updateVisualStatus(statusBar);
+public class WhenTheWorkspaceStatusChanges {
+	@Test
+	public void shouldUpdateTheStatusBar() {
+		VisualStatusPresenter presenter = new VisualStatusPresenter();
+		VisualStatus statusBar = mock(VisualStatus.class);
+		presenter.updateVisualStatus(statusBar);
 
-        presenter.statusChanged(new FakeStatus());
+		presenter.statusChanged(new FakeStatus());
 
-        verify(statusBar).setText("New Status!");
-        verify(statusBar).setToolTip("Tooltip");
-    }
+		verify(statusBar).setText("New Status!");
+		verify(statusBar).setToolTip("Tooltip");
+	}
 
-    private final class FakeStatus implements WorkspaceStatus
-    {
-        public String getMessage()
-        {
-            return "New Status!";
-        }
+	private final class FakeStatus implements WorkspaceStatus {
+		public String getMessage() {
+			return "New Status!";
+		}
 
-        public String getToolTip()
-        {
-            return "Tooltip";
-        }
+		public String getToolTip() {
+			return "Tooltip";
+		}
 
-        public boolean warningMessage()
-        {
-            return false;
-        }
-    }
+		public boolean warningMessage() {
+			return false;
+		}
+	}
 }

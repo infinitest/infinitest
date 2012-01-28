@@ -23,16 +23,14 @@ package org.infinitest.intellij.plugin.swingui.harness;
 
 import static org.infinitest.intellij.plugin.swingui.harness.SwingPanelHarness.*;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
-import org.infinitest.intellij.plugin.swingui.ConfigurationPane;
+import org.infinitest.intellij.plugin.swingui.*;
 
-public class FacetPaneHarness extends JFrame
-{
-    private static final long serialVersionUID = -1L;
+public class FacetPaneHarness extends JFrame {
+	private static final long serialVersionUID = -1L;
 
-    public static void main(String args[])
-    {
-        displayPanel(new ConfigurationPane());
-    }
+	public static void main(String args[]) {
+		displayPanel(new ConfigurationPane());
+	}
 }

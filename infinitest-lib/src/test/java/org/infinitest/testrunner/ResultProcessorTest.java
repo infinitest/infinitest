@@ -26,86 +26,74 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
+import java.io.*;
 
-import org.infinitest.EventSupport;
-import org.infinitest.RuntimeEnvironment;
-import org.infinitest.testrunner.process.ProcessConnection;
-import org.infinitest.testrunner.process.ProcessConnectionFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.*;
+import org.infinitest.testrunner.process.*;
+import org.junit.*;
 
-public class ResultProcessorTest
-{
-    private TestQueueProcessor reader;
+public class ResultProcessorTest {
+	private TestQueueProcessor reader;
 
-    private ProcessConnectionFactory factory;
-    private EventSupport eventAssert;
-    private RunnerEventSupport runnerEventSupport;
+	private ProcessConnectionFactory factory;
+	private EventSupport eventAssert;
+	private RunnerEventSupport runnerEventSupport;
 
-    private ProcessConnection connection;
+	private ProcessConnection connection;
 
-    @Before
-    public void inContext() throws IOException
-    {
-        eventAssert = new EventSupport();
-        factory = mock(ProcessConnectionFactory.class);
-        runnerEventSupport = new RunnerEventSupport(this);
-        runnerEventSupport.addTestQueueListener(eventAssert);
-        runnerEventSupport.addTestStatusListener(eventAssert);
-        connection = mock(ProcessConnection.class);
-        when(factory.getConnection((RuntimeEnvironment) isNull(), any(OutputStreamHandler.class))).thenReturn(
-                        connection);
-        reader = new TestQueueProcessor(runnerEventSupport, factory, null);
-        connection.close();
+	@Before
+	public void inContext() throws IOException {
+		eventAssert = new EventSupport();
+		factory = mock(ProcessConnectionFactory.class);
+		runnerEventSupport = new RunnerEventSupport(this);
+		runnerEventSupport.addTestQueueListener(eventAssert);
+		runnerEventSupport.addTestStatusListener(eventAssert);
+		connection = mock(ProcessConnection.class);
+		when(factory.getConnection((RuntimeEnvironment) isNull(), any(OutputStreamHandler.class))).thenReturn(connection);
+		reader = new TestQueueProcessor(runnerEventSupport, factory, null);
+		connection.close();
 
-        when(connection.runTest("test1")).thenReturn(new TestResults());
-    }
+		when(connection.runTest("test1")).thenReturn(new TestResults());
+	}
 
-    @Test
-    public void shouldRunGivenTest() throws Exception
-    {
-        reader.process("test1");
-        reader.close();
+	@Test
+	public void shouldRunGivenTest() throws Exception {
+		reader.process("test1");
+		reader.close();
 
-        eventAssert.assertTestsStarted("test1");
-        eventAssert.assertTestPassed("test1");
-        eventAssert.assertRunComplete();
+		eventAssert.assertTestsStarted("test1");
+		eventAssert.assertTestPassed("test1");
+		eventAssert.assertRunComplete();
 
-        verify(connection).runTest("test1");
-    }
+		verify(connection).runTest("test1");
+	}
 
-    @Test
-    public void shouldOnlyOpenOneConnection() throws Exception
-    {
-        when(connection.runTest("test2")).thenReturn(new TestResults());
+	@Test
+	public void shouldOnlyOpenOneConnection() throws Exception {
+		when(connection.runTest("test2")).thenReturn(new TestResults());
 
-        reader.process("test1");
-        reader.process("test2");
-        reader.close();
-        eventAssert.assertRunComplete();
+		reader.process("test1");
+		reader.process("test2");
+		reader.close();
+		eventAssert.assertRunComplete();
 
-        verify(factory, times(1)).getConnection(any(RuntimeEnvironment.class), any(OutputStreamHandler.class));
-    }
+		verify(factory, times(1)).getConnection(any(RuntimeEnvironment.class), any(OutputStreamHandler.class));
+	}
 
-    @Test
-    public void shouldFireStartingEventBeforeTestStarts() throws Exception
-    {
-        when(connection.runTest("test2")).thenThrow(new RuntimeException());
-        try
-        {
-            reader.process("test2");
-            fail("shouldHaveThrownException");
-        }
-        catch (RuntimeException expected)
-        {
-            // ok
-        }
+	@Test
+	public void shouldFireStartingEventBeforeTestStarts() throws Exception {
+		when(connection.runTest("test2")).thenThrow(new RuntimeException());
+		try {
+			reader.process("test2");
+			fail("shouldHaveThrownException");
+		} catch (RuntimeException expected) {
+			// ok
+		}
 
-        reader.close();
+		reader.close();
 
-        eventAssert.assertEventsReceived(TEST_CASE_STARTING);
-        eventAssert.assertRunComplete();
-        verify(connection).runTest("test2");
-    }
+		eventAssert.assertEventsReceived(TEST_CASE_STARTING);
+		eventAssert.assertRunComplete();
+		verify(connection).runTest("test2");
+	}
 }

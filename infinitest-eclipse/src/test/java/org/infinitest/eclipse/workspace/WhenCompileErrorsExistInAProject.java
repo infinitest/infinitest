@@ -27,53 +27,48 @@ import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
+import org.infinitest.eclipse.*;
+import org.infinitest.eclipse.status.*;
+import org.junit.*;
 
 // DEBT Duplication with WhenUpdatingTheProjectsInTheWorkspace
-public class WhenCompileErrorsExistInAProject extends ResourceEventSupport
-{
-    private List<ProjectFacade> projects;
-    private CoreRegistry coreRegistry;
-    private ProjectSet projectSet;
-    private EclipseWorkspace workspace;
+public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
+	private List<ProjectFacade> projects;
+	private CoreRegistry coreRegistry;
+	private ProjectSet projectSet;
+	private EclipseWorkspace workspace;
 
-    @Before
-    public void inContext() throws CoreException
-    {
-        projects = newArrayList();
-        projectSet = mock(ProjectSet.class);
-        projects.add(new ProjectFacade(project));
-        coreRegistry = mock(CoreRegistry.class);
-        CoreFactory coreFactory = new CoreFactory(null);
-        workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
+	@Before
+	public void inContext() throws CoreException {
+		projects = newArrayList();
+		projectSet = mock(ProjectSet.class);
+		projects.add(new ProjectFacade(project));
+		coreRegistry = mock(CoreRegistry.class);
+		CoreFactory coreFactory = new CoreFactory(null);
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
 
-        when(projectSet.projects()).thenReturn(projects);
-        when(projectSet.hasErrors()).thenReturn(true);
-    }
+		when(projectSet.projects()).thenReturn(projects);
+		when(projectSet.hasErrors()).thenReturn(true);
+	}
 
-    @Test
-    public void shouldNotUpdateIt() throws CoreException
-    {
-        IJavaProject project = mock(IJavaProject.class);
-        projects.clear();
-        projects.add(new ProjectFacade(project));
+	@Test
+	public void shouldNotUpdateIt() throws CoreException {
+		IJavaProject project = mock(IJavaProject.class);
+		projects.clear();
+		projects.add(new ProjectFacade(project));
 
-        workspace.updateProjects();
+		workspace.updateProjects();
 
-        assertStatusIs(workspaceErrors());
+		assertStatusIs(workspaceErrors());
 
-        verifyZeroInteractions(project);
-    }
+		verifyZeroInteractions(project);
+	}
 
-    private void assertStatusIs(WorkspaceStatus expectedStatus)
-    {
-        assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
-    }
+	private void assertStatusIs(WorkspaceStatus expectedStatus) {
+		assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
+	}
 }

@@ -21,17 +21,14 @@
  */
 package com.fakeco.fakeproduct;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-public class TestJunit3TestCase extends TestCase
-{
-    public TestJunit3TestCase(String name)
-    {
-        super(name);
-    }
+public class TestJunit3TestCase extends TestCase {
+	public TestJunit3TestCase(String name) {
+		super(name);
+	}
 
-    public void testTrueIsTrue()
-    {
-        assertTrue(true);
-    }
+	public void testTrueIsTrue() {
+		assertTrue(true);
+	}
 }

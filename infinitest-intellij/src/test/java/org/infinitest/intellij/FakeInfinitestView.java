@@ -21,71 +21,55 @@
  */
 package org.infinitest.intellij;
 
-import java.awt.Color;
+import java.awt.*;
 
-import javax.swing.Action;
-import javax.swing.tree.TreeModel;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.infinitest.intellij.plugin.swingui.ResultClickListener;
+import org.infinitest.intellij.plugin.swingui.*;
 
 @SuppressWarnings("all")
-public class FakeInfinitestView implements InfinitestView
-{
-    public void setAngerBasedOnTime(long timeSinceGreen)
-    {
-    }
+public class FakeInfinitestView implements InfinitestView {
+	public void setAngerBasedOnTime(long timeSinceGreen) {
+	}
 
-    public void setVisible(boolean b)
-    {
-    }
+	public void setVisible(boolean b) {
+	}
 
-    public void setProgress(int progress)
-    {
-    }
+	public void setProgress(int progress) {
+	}
 
-    public void setProgressBarColor(Color yellow)
-    {
-    }
+	public void setProgressBarColor(Color yellow) {
+	}
 
-    public void setMaximumProgress(int maxProgress)
-    {
-    }
+	public void setMaximumProgress(int maxProgress) {
+	}
 
-    public int getMaximumProgress()
-    {
-        return 0;
-    }
+	public int getMaximumProgress() {
+		return 0;
+	}
 
-    public void setCycleTime(String timeStamp)
-    {
-    }
+	public void setCycleTime(String timeStamp) {
+	}
 
-    public void setCurrentTest(String testName)
-    {
-    }
+	public void setCurrentTest(String testName) {
+	}
 
-    public void addAction(Action action)
-    {
-    }
+	public void addAction(Action action) {
+	}
 
-    public void setResultsModel(TreeModel results)
-    {
-    }
+	public void setResultsModel(TreeModel results) {
+	}
 
-    public void setStatusMessage(String string)
-    {
-    }
+	public void setStatusMessage(String string) {
+	}
 
-    public void writeLogMessage(String message)
-    {
-    }
+	public void writeLogMessage(String message) {
+	}
 
-    public void writeError(String message)
-    {
-    }
+	public void writeError(String message) {
+	}
 
-    public void addResultClickListener(ResultClickListener listener)
-    {
-    }
+	public void addResultClickListener(ResultClickListener listener) {
+	}
 }

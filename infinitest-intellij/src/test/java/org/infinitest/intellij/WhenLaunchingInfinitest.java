@@ -24,39 +24,32 @@ package org.infinitest.intellij;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
-import org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
+import org.infinitest.intellij.plugin.launcher.*;
+import org.junit.*;
+import org.mockito.*;
 
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.wm.*;
 
-public class WhenLaunchingInfinitest
-{
-    private ModuleSettings moduleSettings;
+public class WhenLaunchingInfinitest {
+	private ModuleSettings moduleSettings;
 
-    @Before
-    public void setUp()
-    {
-        moduleSettings = new FakeModuleSettings("foo");
-    }
+	@Before
+	public void setUp() {
+		moduleSettings = new FakeModuleSettings("foo");
+	}
 
-    @Test
-    public void shouldNameToolWindowAfterModule()
-    {
-        ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
-        FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
-        ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
+	@Test
+	public void shouldNameToolWindowAfterModule() {
+		ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
+		FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
+		ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
 
-        InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry,
-                        new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock,
-                        toolWindowManagerMock);
-        launcher.launchInfinitest();
+		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
+		launcher.launchInfinitest();
 
-        verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("Infinitest_foo"));
-    }
+		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("Infinitest_foo"));
+	}
 }

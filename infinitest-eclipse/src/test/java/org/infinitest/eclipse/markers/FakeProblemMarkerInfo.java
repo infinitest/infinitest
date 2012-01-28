@@ -24,26 +24,22 @@ package org.infinitest.eclipse.markers;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.infinitest.eclipse.workspace.FakeResourceFinder;
-import org.infinitest.testrunner.TestEvent;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
 
-final class FakeProblemMarkerInfo extends ProblemMarkerInfo
-{
-    public FakeProblemMarkerInfo(TestEvent event)
-    {
-        super(event, new FakeResourceFinder());
-    }
+final class FakeProblemMarkerInfo extends ProblemMarkerInfo {
+	public FakeProblemMarkerInfo(TestEvent event) {
+		super(event, new FakeResourceFinder());
+	}
 
-    @Override
-    public IResource associatedResource() throws CoreException
-    {
-        IResource mockResource = mock(IResource.class);
-        IMarker marker = mock(IMarker.class);
-        when(mockResource.createMarker(any(String.class))).thenReturn(marker);
+	@Override
+	public IResource associatedResource() throws CoreException {
+		IResource mockResource = mock(IResource.class);
+		IMarker marker = mock(IMarker.class);
+		when(mockResource.createMarker(any(String.class))).thenReturn(marker);
 
-        return mockResource;
-    }
+		return mockResource;
+	}
 }

@@ -21,34 +21,28 @@
  */
 package org.infinitest.testrunner;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
-import org.infinitest.ConcurrencyController;
-import org.infinitest.ConsoleOutputListener;
-import org.infinitest.ReloadListener;
-import org.infinitest.RuntimeEnvironment;
-import org.infinitest.TestQueueListener;
+import org.infinitest.*;
 
-public interface TestRunner
-{
-    void setTestPriority(Comparator<String> testPriority);
+public interface TestRunner {
+	void setTestPriority(Comparator<String> testPriority);
 
-    void runTests(List<String> testNames);
+	void runTests(List<String> testNames);
 
-    void addTestResultsListener(TestResultsListener listener);
+	void addTestResultsListener(TestResultsListener listener);
 
-    void removeTestStatusListener(TestResultsListener listener);
+	void removeTestStatusListener(TestResultsListener listener);
 
-    void setRuntimeEnvironment(RuntimeEnvironment environment);
+	void setRuntimeEnvironment(RuntimeEnvironment environment);
 
-    void addConsoleOutputListener(ConsoleOutputListener listener);
+	void addConsoleOutputListener(ConsoleOutputListener listener);
 
-    void removeConsoleOutputListener(ConsoleOutputListener listener);
+	void removeConsoleOutputListener(ConsoleOutputListener listener);
 
-    void addTestQueueListener(TestQueueListener listener);
+	void addTestQueueListener(TestQueueListener listener);
 
-    void removeTestQueueListener(ReloadListener testQueueNormalizer);
+	void removeTestQueueListener(ReloadListener testQueueNormalizer);
 
-    void setConcurrencyController(ConcurrencyController semaphore);
+	void setConcurrencyController(ConcurrencyController semaphore);
 }

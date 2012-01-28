@@ -21,17 +21,14 @@
  */
 package org.infinitest.intellij;
 
-import org.infinitest.TestControl;
+import org.infinitest.*;
 
 @SuppressWarnings("all")
-public class FakeTestControl implements TestControl
-{
-    public void setRunTests(boolean shouldRunTests)
-    {
-    }
+public class FakeTestControl implements TestControl {
+	public void setRunTests(boolean shouldRunTests) {
+	}
 
-    public boolean shouldRunTests()
-    {
-        return false;
-    }
+	public boolean shouldRunTests() {
+		return false;
+	}
 }

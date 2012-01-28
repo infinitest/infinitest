@@ -21,9 +21,8 @@
  */
 package org.infinitest.eclipse.markers;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-public interface MarkerPlacementStrategy
-{
-    MarkerPlacement getPlacement(TestEvent event);
+public interface MarkerPlacementStrategy {
+	MarkerPlacement getPlacement(TestEvent event);
 }

@@ -21,9 +21,8 @@
  */
 package org.infinitest;
 
-public interface TestControl
-{
-    void setRunTests(boolean shouldRunTests);
+public interface TestControl {
+	void setRunTests(boolean shouldRunTests);
 
-    boolean shouldRunTests();
+	boolean shouldRunTests();
 }

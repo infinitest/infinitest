@@ -24,76 +24,57 @@ package org.infinitest.filter;
 import static java.util.logging.Level.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
-public class RegexFileFilter extends ClassNameFilter implements TestFilter
-{
-    private File file;
+public class RegexFileFilter extends ClassNameFilter implements TestFilter {
+	private File file;
 
-    public RegexFileFilter(File filterFile)
-    {
-        file = filterFile;
-        if (!file.exists())
-        {
-            log(INFO, "Filter file " + file + " does not exist.");
-        }
+	public RegexFileFilter(File filterFile) {
+		file = filterFile;
+		if (!file.exists()) {
+			log(INFO, "Filter file " + file + " does not exist.");
+		}
 
-        updateFilterList();
-    }
+		updateFilterList();
+	}
 
-    public RegexFileFilter()
-    {
-        super();
-    }
+	public RegexFileFilter() {
+		super();
+	}
 
-    public void updateFilterList()
-    {
-        if (file == null)
-        {
-            return;
-        }
+	public void updateFilterList() {
+		if (file == null) {
+			return;
+		}
 
-        clearFilters();
-        if (file.exists())
-        {
-            tryToReadFilterFile();
-        }
-    }
+		clearFilters();
+		if (file.exists()) {
+			tryToReadFilterFile();
+		}
+	}
 
-    private void tryToReadFilterFile()
-    {
-        try
-        {
-            readFilterFile();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Something horrible happened to the filter file", e);
-        }
-    }
+	private void tryToReadFilterFile() {
+		try {
+			readFilterFile();
+		} catch (IOException e) {
+			throw new RuntimeException("Something horrible happened to the filter file", e);
+		}
+	}
 
-    private void readFilterFile() throws IOException
-    {
-        FileReader fileReader = new FileReader(file);
-        try
-        {
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line;
-            do
-            {
-                line = reader.readLine();
-                addFilter(line);
-            } while (line != null);
-        }
-        finally
-        {
-            fileReader.close();
-        }
-    }
+	private void readFilterFile() throws IOException {
+		FileReader fileReader = new FileReader(file);
+		try {
+			BufferedReader reader = new BufferedReader(fileReader);
+			String line;
+			do {
+				line = reader.readLine();
+				addFilter(line);
+			} while (line != null);
+		} finally {
+			fileReader.close();
+		}
+	}
 }

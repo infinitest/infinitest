@@ -26,54 +26,43 @@ import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.infinitest.util.CollectionUtils.*;
 import static org.junit.Assert.*;
 
-import org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator;
-import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.intellij.idea.language.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenAnnotatingClass
-{
-    private IdeaInfinitestAnnotator annotator;
+public class WhenAnnotatingClass {
+	private IdeaInfinitestAnnotator annotator;
 
-    @Before
-    public void setUp()
-    {
-        annotator = IdeaInfinitestAnnotator.getInstance();
-    }
+	@Before
+	public void setUp() {
+		annotator = IdeaInfinitestAnnotator.getInstance();
+	}
 
-    @Test
-    public void shouldAnnotateTopLevelClass()
-    {
-        annotator.annotate(eventWithError(new Exception()));
-        assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName(), is(getClass().getName()));
-    }
+	@Test
+	public void shouldAnnotateTopLevelClass() {
+		annotator.annotate(eventWithError(new Exception()));
+		assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName(), is(getClass().getName()));
+	}
 
-    @Test
-    public void shouldAnnotateContainingClassOfInnerClassFailures()
-    {
-        annotator.annotate(eventWithError(InnerClass.createException()));
-        assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName(), is(getClass().getName()));
-    }
+	@Test
+	public void shouldAnnotateContainingClassOfInnerClassFailures() {
+		annotator.annotate(eventWithError(InnerClass.createException()));
+		assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName(), is(getClass().getName()));
+	}
 
-    static class InnerClass
-    {
-        public static Throwable createException()
-        {
-            try
-            {
-                fail("Intentional exception");
-            }
-            catch (Throwable e)
-            {
-                return e;
-            }
+	static class InnerClass {
+		public static Throwable createException() {
+			try {
+				fail("Intentional exception");
+			} catch (Throwable e) {
+				return e;
+			}
 
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 
-    private static TestEvent eventWithError(Throwable error)
-    {
-        return new TestEvent(METHOD_FAILURE, "", "", "", error);
-    }
+	private static TestEvent eventWithError(Throwable error) {
+		return new TestEvent(METHOD_FAILURE, "", "", "", error);
+	}
 }

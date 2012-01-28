@@ -27,110 +27,94 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static org.junit.Assert.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
+import java.util.concurrent.atomic.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenAggregatingTestQueues
-{
-    private List<TestQueueListener> listeners;
-    private AtomicInteger finishCount;
-    private List<TestQueueEvent> updateEvents;
+public class WhenAggregatingTestQueues {
+	private List<TestQueueListener> listeners;
+	private AtomicInteger finishCount;
+	private List<TestQueueEvent> updateEvents;
 
-    @Before
-    public void inContext()
-    {
-        ResultCollector collector = new ResultCollector();
-        updateEvents = newArrayList();
-        finishCount = new AtomicInteger();
-        listeners = newArrayList();
-        collector.addTestQueueListener(new TestQueueAdapter()
-        {
-            @Override
-            public void testQueueUpdated(TestQueueEvent event)
-            {
-                updateEvents.add(event);
-            }
+	@Before
+	public void inContext() {
+		ResultCollector collector = new ResultCollector();
+		updateEvents = newArrayList();
+		finishCount = new AtomicInteger();
+		listeners = newArrayList();
+		collector.addTestQueueListener(new TestQueueAdapter() {
+			@Override
+			public void testQueueUpdated(TestQueueEvent event) {
+				updateEvents.add(event);
+			}
 
-            @Override
-            public void testRunComplete()
-            {
-                finishCount.incrementAndGet();
-            }
-        });
+			@Override
+			public void testRunComplete() {
+				finishCount.incrementAndGet();
+			}
+		});
 
-        collector.attachCore(new FakeInfinitestCore()
-        {
-            @Override
-            public void addTestQueueListener(TestQueueListener listener)
-            {
-                listeners.add(listener);
-            }
-        });
+		collector.attachCore(new FakeInfinitestCore() {
+			@Override
+			public void addTestQueueListener(TestQueueListener listener) {
+				listeners.add(listener);
+			}
+		});
 
-        collector.attachCore(new FakeInfinitestCore()
-        {
-            @Override
-            public void addTestQueueListener(TestQueueListener listener)
-            {
-                listeners.add(listener);
-            }
-        });
-    }
+		collector.attachCore(new FakeInfinitestCore() {
+			@Override
+			public void addTestQueueListener(TestQueueListener listener) {
+				listeners.add(listener);
+			}
+		});
+	}
 
-    @Test
-    public void shouldOnlyFireTestRunCompleteWhenAllQueuesAreEmpty()
-    {
-        listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1"), 1));
-        listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test3"), 1));
-        listenerForCore(0).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
-        listenerForCore(0).testRunComplete();
-        assertEquals(0, finishCount.intValue());
+	@Test
+	public void shouldOnlyFireTestRunCompleteWhenAllQueuesAreEmpty() {
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1"), 1));
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test3"), 1));
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
+		listenerForCore(0).testRunComplete();
+		assertEquals(0, finishCount.intValue());
 
-        listenerForCore(1).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
-        listenerForCore(1).testRunComplete();
-        assertEquals(1, finishCount.intValue());
-    }
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
+		listenerForCore(1).testRunComplete();
+		assertEquals(1, finishCount.intValue());
+	}
 
-    @Test
-    public void shouldTrackCoresUsingInternalListenerInstances()
-    {
-        assertEquals(2, listeners.size());
-    }
+	@Test
+	public void shouldTrackCoresUsingInternalListenerInstances() {
+		assertEquals(2, listeners.size());
+	}
 
-    @Test
-    public void shouldCalculateTestQueueSizeBasedOnTheAggregatedQueues()
-    {
-        listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
-        assertEquals(2, lastEvent().getInitialSize());
-        assertEquals(2, lastEvent().getTestQueue().size());
+	@Test
+	public void shouldCalculateTestQueueSizeBasedOnTheAggregatedQueues() {
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
+		assertEquals(2, lastEvent().getInitialSize());
+		assertEquals(2, lastEvent().getTestQueue().size());
 
-        listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test2", "test3"), 2));
-        assertEquals(4, lastEvent().getInitialSize());
-        assertEquals(4, lastEvent().getTestQueue().size());
-        assertEquals(2, updateEvents.size());
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test2", "test3"), 2));
+		assertEquals(4, lastEvent().getInitialSize());
+		assertEquals(4, lastEvent().getTestQueue().size());
+		assertEquals(2, updateEvents.size());
 
-        List<String> emptyQueue = emptyList();
-        listenerForCore(0).testQueueUpdated(new TestQueueEvent(emptyQueue, 2));
-        listenerForCore(1).testQueueUpdated(new TestQueueEvent(emptyQueue, 2));
-        assertEquals(0, lastEvent().getTestQueue().size());
-        assertEquals(4, lastEvent().getInitialSize());
+		List<String> emptyQueue = emptyList();
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(emptyQueue, 2));
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(emptyQueue, 2));
+		assertEquals(0, lastEvent().getTestQueue().size());
+		assertEquals(4, lastEvent().getInitialSize());
 
-        listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
-        assertEquals(2, lastEvent().getTestQueue().size());
-        assertEquals(2, lastEvent().getInitialSize());
-    }
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
+		assertEquals(2, lastEvent().getTestQueue().size());
+		assertEquals(2, lastEvent().getInitialSize());
+	}
 
-    private TestQueueEvent lastEvent()
-    {
-        return getLast(updateEvents);
-    }
+	private TestQueueEvent lastEvent() {
+		return getLast(updateEvents);
+	}
 
-    private TestQueueListener listenerForCore(int coreNum)
-    {
-        return listeners.get(coreNum);
-    }
+	private TestQueueListener listenerForCore(int coreNum) {
+		return listeners.get(coreNum);
+	}
 }

@@ -26,133 +26,107 @@ import static javax.swing.BorderFactory.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.font.TextLayout;
+import java.awt.*;
+import java.awt.font.*;
 
-import javax.swing.JProgressBar;
+import javax.swing.*;
 
-class CustomProgressBar extends JProgressBar
-{
-    private static final long serialVersionUID = -1L;
+class CustomProgressBar extends JProgressBar {
+	private static final long serialVersionUID = -1L;
 
-    private String currentTest;
-    private String statusMsg;
+	private String currentTest;
+	private String statusMsg;
 
-    public CustomProgressBar()
-    {
-        setBorder(createLineBorder(getBackground(), 2));
-        setBorderPainted(true);
-        setMaximum(0);
-        setMinimum(0);
-        setFont(Font.decode("Arial-16"));
-    }
+	public CustomProgressBar() {
+		setBorder(createLineBorder(getBackground(), 2));
+		setBorderPainted(true);
+		setMaximum(0);
+		setMinimum(0);
+		setFont(Font.decode("Arial-16"));
+	}
 
-    @Override
-    public void addNotify()
-    {
-        super.addNotify();
-        Dimension textSize = getGraphics().getFontMetrics().getStringBounds("100%", getGraphics()).getBounds()
-                        .getSize();
-        Dimension minSize = new Dimension(textSize.width, textSize.height + getInsetHeight());
-        setPreferredSize(minSize);
-        validate();
-    }
+	@Override
+	public void addNotify() {
+		super.addNotify();
+		Dimension textSize = getGraphics().getFontMetrics().getStringBounds("100%", getGraphics()).getBounds().getSize();
+		Dimension minSize = new Dimension(textSize.width, textSize.height + getInsetHeight());
+		setPreferredSize(minSize);
+		validate();
+	}
 
-    @Override
-    protected void paintComponent(Graphics g)
-    {
-        Graphics2D g2 = (Graphics2D) g.create();
-        drawBackground(g2);
-        drawProgressBar(g2);
-        drawText(g2);
-        g2.dispose();
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		drawBackground(g2);
+		drawProgressBar(g2);
+		drawText(g2);
+		g2.dispose();
+	}
 
-    void drawText(Graphics2D g2)
-    {
-        if (BLACK.equals(getForeground()))
-        {
-            g2.setColor(WHITE);
-        }
-        else
-        {
-            g2.setColor(BLACK);
-        }
-        g2.setFont(getFont());
-        TextLayout layout = new TextLayout(getStatusMessage(), getFont(), g2.getFontRenderContext());
-        layout.draw(g2, 10, getHeight() / 2 + getBaselineOffset(layout));
-    }
+	void drawText(Graphics2D g2) {
+		if (BLACK.equals(getForeground())) {
+			g2.setColor(WHITE);
+		} else {
+			g2.setColor(BLACK);
+		}
+		g2.setFont(getFont());
+		TextLayout layout = new TextLayout(getStatusMessage(), getFont(), g2.getFontRenderContext());
+		layout.draw(g2, 10, (getHeight() / 2) + getBaselineOffset(layout));
+	}
 
-    private float getBaselineOffset(TextLayout layout)
-    {
-        return (layout.getAscent() - layout.getDescent()) / 2;
-    }
+	private float getBaselineOffset(TextLayout layout) {
+		return (layout.getAscent() - layout.getDescent()) / 2;
+	}
 
-    String getStatusMessage()
-    {
-        if (statusMsg == null)
-        {
-            return getMessage(INDEXING);
-        }
-        String msg = statusMsg.replace("$TEST_COUNT", Integer.toString(getMaximum()));
-        msg = msg.replace("$TESTS_RAN", Integer.toString(getValue()));
-        msg = msg.replace("$CURRENT_TEST", getCurrentTest());
-        return msg;
-    }
+	String getStatusMessage() {
+		if (statusMsg == null) {
+			return getMessage(INDEXING);
+		}
+		String msg = statusMsg.replace("$TEST_COUNT", Integer.toString(getMaximum()));
+		msg = msg.replace("$TESTS_RAN", Integer.toString(getValue()));
+		msg = msg.replace("$CURRENT_TEST", getCurrentTest());
+		return msg;
+	}
 
-    public String getCurrentTest()
-    {
-        if (currentTest == null)
-        {
-            return "";
-        }
-        return currentTest;
-    }
+	public String getCurrentTest() {
+		if (currentTest == null) {
+			return "";
+		}
+		return currentTest;
+	}
 
-    private void drawProgressBar(Graphics2D g2)
-    {
-        int width = (int) (getPercentComplete() * getSize().getWidth());
-        int height = getSize().height;
-        Rectangle rectangle = new Rectangle(0, 0, width, height);
-        g2.setColor(getForeground());
-        Insets insets = getInsets();
-        int insetWidth = getInsetWidth();
-        int insetHeight = getInsetHeight();
-        g2.fillRoundRect(insets.left, insets.top, rectangle.width - insetWidth, rectangle.height - (insetHeight + 1),
-                        15, 15);
-    }
+	private void drawProgressBar(Graphics2D g2) {
+		int width = (int) (getPercentComplete() * getSize().getWidth());
+		int height = getSize().height;
+		Rectangle rectangle = new Rectangle(0, 0, width, height);
+		g2.setColor(getForeground());
+		Insets insets = getInsets();
+		int insetWidth = getInsetWidth();
+		int insetHeight = getInsetHeight();
+		g2.fillRoundRect(insets.left, insets.top, rectangle.width - insetWidth, rectangle.height - (insetHeight + 1), 15, 15);
+	}
 
-    private int getInsetWidth()
-    {
-        Insets insets = getInsets();
-        return insets.left + insets.right;
-    }
+	private int getInsetWidth() {
+		Insets insets = getInsets();
+		return insets.left + insets.right;
+	}
 
-    private int getInsetHeight()
-    {
-        Insets insets = getInsets();
-        return insets.top + insets.bottom;
-    }
+	private int getInsetHeight() {
+		Insets insets = getInsets();
+		return insets.top + insets.bottom;
+	}
 
-    private void drawBackground(Graphics2D g2)
-    {
-        Rectangle rectangle = new Rectangle(getSize());
-        g2.setColor(getBackground());
-        g2.fill(rectangle);
-    }
+	private void drawBackground(Graphics2D g2) {
+		Rectangle rectangle = new Rectangle(getSize());
+		g2.setColor(getBackground());
+		g2.fill(rectangle);
+	}
 
-    public void setCurrentTest(String testName)
-    {
-        currentTest = testName;
-    }
+	public void setCurrentTest(String testName) {
+		currentTest = testName;
+	}
 
-    public void setStatusMessage(String statusMessage)
-    {
-        statusMsg = statusMessage;
-    }
+	public void setStatusMessage(String statusMessage) {
+		statusMsg = statusMessage;
+	}
 }

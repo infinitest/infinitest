@@ -25,160 +25,130 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import jdave.test.JDaveUtils;
+import jdave.test.*;
 
-import org.infinitest.util.EqualityTestSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.util.*;
+import org.junit.*;
 
-import com.google.common.base.Strings;
+import com.google.common.base.*;
 
-public class TestEventTest extends EqualityTestSupport
-{
-    private TestEvent event;
-    private Throwable error;
+public class TestEventTest extends EqualityTestSupport {
+	private TestEvent event;
+	private Throwable error;
 
-    @Before
-    public void inContext()
-    {
-        try
-        {
-            throw new UnserializableException("Exception Message");
-        }
-        catch (UnserializableException e)
-        {
-            error = e;
-        }
-        event = eventWithError(error);
-    }
+	@Before
+	public void inContext() {
+		try {
+			throw new UnserializableException("Exception Message");
+		} catch (UnserializableException e) {
+			error = e;
+		}
+		event = eventWithError(error);
+	}
 
-    @SuppressWarnings("serial")
-    public class UnserializableException extends RuntimeException
-    {
-        public UnserializableException(String string)
-        {
-            super(string);
-        }
+	@SuppressWarnings("serial")
+	public class UnserializableException extends RuntimeException {
+		public UnserializableException(String string) {
+			super(string);
+		}
 
-        private final OutputStream ostream = System.out;
+		private final OutputStream ostream = System.out;
 
-        {
-            assertNotNull(ostream);
-        }
-    }
+		{
+			assertNotNull(ostream);
+		}
+	}
 
-    @Test
-    public void shouldHandleUnserializeableExceptions() throws Exception
-    {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-        objStream.writeObject(event);
-    }
+	@Test
+	public void shouldHandleUnserializeableExceptions() throws Exception {
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+		objStream.writeObject(event);
+	}
 
-    @Test
-    public void shouldStoreExceptionClassesAsStrings()
-    {
-        assertEquals(UnserializableException.class.getSimpleName(), event.getErrorClassName());
-    }
+	@Test
+	public void shouldStoreExceptionClassesAsStrings() {
+		assertEquals(UnserializableException.class.getSimpleName(), event.getErrorClassName());
+	}
 
-    @Test
-    public void shouldPointOfFailure()
-    {
-        verifyPointOfFailureMessage(getLineNumber());
-    }
+	@Test
+	public void shouldPointOfFailure() {
+		verifyPointOfFailureMessage(getLineNumber());
+	}
 
-    @Test
-    public void shouldFilterJunitElementsFromPointOfFailure()
-    {
-        try
-        {
-            fail();
-        }
-        catch (AssertionError e)
-        {
-            error = e;
-            event = eventWithError(e);
-            verifyPointOfFailureMessage(e.getStackTrace()[2].getLineNumber());
-        }
-    }
+	@Test
+	public void shouldFilterJunitElementsFromPointOfFailure() {
+		try {
+			fail();
+		} catch (AssertionError e) {
+			error = e;
+			event = eventWithError(e);
+			verifyPointOfFailureMessage(e.getStackTrace()[2].getLineNumber());
+		}
+	}
 
-    @Test
-    public void shouldFilterJdaveElementsFromPointOfFailure()
-    {
-        error = JDaveUtils.createException();
-        event = eventWithError(error);
-        verifyPointOfFailureMessage(error.getStackTrace()[1].getLineNumber());
-    }
+	@Test
+	public void shouldFilterJdaveElementsFromPointOfFailure() {
+		error = JDaveUtils.createException();
+		event = eventWithError(error);
+		verifyPointOfFailureMessage(error.getStackTrace()[1].getLineNumber());
+	}
 
-    @Test
-    public void shouldHaveUserPresentableToString()
-    {
-        assertEquals(event.getTestName() + "." + event.getTestMethod(), event.toString());
-    }
+	@Test
+	public void shouldHaveUserPresentableToString() {
+		assertEquals(event.getTestName() + "." + event.getTestMethod(), event.toString());
+	}
 
-    @Test
-    public void shouldProvideFullErrorClassName()
-    {
-        assertEquals("java.lang.RuntimeException", methodFailed("", "", new RuntimeException()).getFullErrorClassName());
-    }
+	@Test
+	public void shouldProvideFullErrorClassName() {
+		assertEquals("java.lang.RuntimeException", methodFailed("", "", new RuntimeException()).getFullErrorClassName());
+	}
 
-    @Test
-    public void shouldSupportExceptionsWithoutStackTrace()
-    {
-        methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
-    }
+	@Test
+	public void shouldSupportExceptionsWithoutStackTrace() {
+		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
+	}
 
-    private int getLineNumber()
-    {
-        return error.getStackTrace()[0].getLineNumber();
-    }
+	private int getLineNumber() {
+		return error.getStackTrace()[0].getLineNumber();
+	}
 
-    private void verifyPointOfFailureMessage(int lineNumber)
-    {
-        String actual = event.getPointOfFailure().toString();
-        String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName()
-                        + "(" + Strings.nullToEmpty(error.getMessage()) + ")";
+	private void verifyPointOfFailureMessage(int lineNumber) {
+		String actual = event.getPointOfFailure().toString();
+		String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName() + "(" + Strings.nullToEmpty(error.getMessage()) + ")";
 
-        assertEquals(expected, actual);
-    }
+		assertEquals(expected, actual);
+	}
 
-    @Override
-    protected Object createEqualInstance()
-    {
-        return testCaseStarting(getClass().getName());
-    }
+	@Override
+	protected Object createEqualInstance() {
+		return testCaseStarting(getClass().getName());
+	}
 
-    @Override
-    protected Object createUnequalInstance()
-    {
-        return testCaseStarting(Object.class.getName());
-    }
+	@Override
+	protected Object createUnequalInstance() {
+		return testCaseStarting(Object.class.getName());
+	}
 
-    @Override
-    protected List<Object> createUnequalInstances()
-    {
-        List<Object> unequals = super.createUnequalInstances();
-        unequals.add(methodFailed("boo", getClass().getName(), "testMethod", new RuntimeException()));
-        return unequals;
-    }
+	@Override
+	protected List<Object> createUnequalInstances() {
+		List<Object> unequals = super.createUnequalInstances();
+		unequals.add(methodFailed("boo", getClass().getName(), "testMethod", new RuntimeException()));
+		return unequals;
+	}
 
-    private static TestEvent eventWithError(Throwable error)
-    {
-        return new TestEvent(METHOD_FAILURE, error.getMessage(), "", "", error);
-    }
+	private static TestEvent eventWithError(Throwable error) {
+		return new TestEvent(METHOD_FAILURE, error.getMessage(), "", "", error);
+	}
 
-    @SuppressWarnings("serial")
-    private static class ExceptionWithoutStackTrace extends RuntimeException
-    {
-        @Override
-        public synchronized Throwable fillInStackTrace()
-        {
-            return this;
-        }
-    }
+	@SuppressWarnings("serial")
+	private static class ExceptionWithoutStackTrace extends RuntimeException {
+		@Override
+		public synchronized Throwable fillInStackTrace() {
+			return this;
+		}
+	}
 }

@@ -23,39 +23,33 @@ package org.infinitest.eclipse.event;
 
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceDelta;
-import org.infinitest.EventQueue;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.resources.*;
+import org.infinitest.*;
+import org.junit.*;
 
-public class WhenDispatchingResourceChangeEvents
-{
-    private CoreUpdateNotifier notifier;
-    private EventQueue eventQueue;
+public class WhenDispatchingResourceChangeEvents {
+	private CoreUpdateNotifier notifier;
+	private EventQueue eventQueue;
 
-    @Before
-    public void inContext()
-    {
-        eventQueue = mock(EventQueue.class);
-        notifier = new CoreUpdateNotifier(eventQueue);
-    }
+	@Before
+	public void inContext() {
+		eventQueue = mock(EventQueue.class);
+		notifier = new CoreUpdateNotifier(eventQueue);
+	}
 
-    @Test
-    public void shouldIgnoreUnknownEvents()
-    {
-        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
-        IResourceDelta delta = mock(IResourceDelta.class);
-        when(event.getDelta()).thenReturn(delta);
+	@Test
+	public void shouldIgnoreUnknownEvents() {
+		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+		IResourceDelta delta = mock(IResourceDelta.class);
+		when(event.getDelta()).thenReturn(delta);
 
-        notifier.resourceChanged(event);
-        verifyZeroInteractions(eventQueue);
-    }
+		notifier.resourceChanged(event);
+		verifyZeroInteractions(eventQueue);
+	}
 
-    @Test
-    public void shouldIgnoreEventsWithNoDelta()
-    {
-        notifier.resourceChanged(mock(IResourceChangeEvent.class));
-        verifyZeroInteractions(eventQueue);
-    }
+	@Test
+	public void shouldIgnoreEventsWithNoDelta() {
+		notifier.resourceChanged(mock(IResourceChangeEvent.class));
+		verifyZeroInteractions(eventQueue);
+	}
 }

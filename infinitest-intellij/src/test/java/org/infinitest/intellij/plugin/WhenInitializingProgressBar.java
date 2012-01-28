@@ -24,36 +24,29 @@ package org.infinitest.intellij.plugin;
 import static java.awt.Color.*;
 import static org.mockito.Mockito.*;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.ResultCollector;
-import org.infinitest.intellij.FakeInfinitestAnnotator;
-import org.infinitest.intellij.FakeTestControl;
-import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Test;
+import org.infinitest.*;
+import org.infinitest.intellij.*;
+import org.infinitest.intellij.plugin.launcher.*;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.junit.*;
 
-public class WhenInitializingProgressBar
-{
-    @Test
-    public void shouldSetBackgroundColorToBlack()
-    {
-        InfinitestView view = mock(InfinitestView.class);
-        createPresenterWith(view);
-        verify(view).setProgressBarColor(BLACK);
-    }
+public class WhenInitializingProgressBar {
+	@Test
+	public void shouldSetBackgroundColorToBlack() {
+		InfinitestView view = mock(InfinitestView.class);
+		createPresenterWith(view);
+		verify(view).setProgressBarColor(BLACK);
+	}
 
-    @Test
-    public void shouldSetMaximumProgress()
-    {
-        InfinitestView view = mock(InfinitestView.class);
-        createPresenterWith(view);
-        verify(view).setMaximumProgress(1);
-        verify(view).setProgress(1);
-    }
+	@Test
+	public void shouldSetMaximumProgress() {
+		InfinitestView view = mock(InfinitestView.class);
+		createPresenterWith(view);
+		verify(view).setMaximumProgress(1);
+		verify(view).setProgress(1);
+	}
 
-    private void createPresenterWith(InfinitestView view)
-    {
-        new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(),
-                        new FakeInfinitestAnnotator());
-    }
+	private void createPresenterWith(InfinitestView view) {
+		new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(), new FakeInfinitestAnnotator());
+	}
 }

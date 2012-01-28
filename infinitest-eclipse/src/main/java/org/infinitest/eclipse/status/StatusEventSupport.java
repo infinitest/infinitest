@@ -23,22 +23,18 @@ package org.infinitest.eclipse.status;
 
 import static com.google.common.collect.Lists.*;
 
-import java.util.List;
+import java.util.*;
 
-public class StatusEventSupport
-{
-    private final List<StatusEventListener> listeners = newArrayList();
+public class StatusEventSupport {
+	private final List<StatusEventListener> listeners = newArrayList();
 
-    public void addListener(StatusEventListener listener)
-    {
-        listeners.add(listener);
-    }
+	public void addListener(StatusEventListener listener) {
+		listeners.add(listener);
+	}
 
-    public void fireStatusChange(WorkspaceStatus status)
-    {
-        for (StatusEventListener each : listeners)
-        {
-            each.statusChanged(status);
-        }
-    }
+	public void fireStatusChange(WorkspaceStatus status) {
+		for (StatusEventListener each : listeners) {
+			each.statusChanged(status);
+		}
+	}
 }

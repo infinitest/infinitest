@@ -26,57 +26,48 @@ import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.internal.events.ResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.runtime.CoreException;
-import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.workspace.WorkspaceFacade;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.internal.events.*;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.*;
+import org.infinitest.eclipse.workspace.*;
+import org.junit.*;
 
-public class WhenRespondingToBuildEvents extends ResourceEventSupport
-{
-    private ClassFileChangeProcessor processor;
-    private WorkspaceFacade workspace;
+public class WhenRespondingToBuildEvents extends ResourceEventSupport {
+	private ClassFileChangeProcessor processor;
+	private WorkspaceFacade workspace;
 
-    @Before
-    public void inContext()
-    {
-        workspace = mock(WorkspaceFacade.class);
-        processor = new ClassFileChangeProcessor(workspace);
-    }
+	@Before
+	public void inContext() {
+		workspace = mock(WorkspaceFacade.class);
+		processor = new ClassFileChangeProcessor(workspace);
+	}
 
-    @After
-    public void verifyWorkspace()
-    {
-        verifyZeroInteractions(workspace);
-    }
+	@After
+	public void verifyWorkspace() {
+		verifyZeroInteractions(workspace);
+	}
 
-    @Test
-    public void shouldNotRespondToPreBuildEvents()
-    {
-        IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
-        assertFalse(processor.canProcessEvent(event));
-    }
+	@Test
+	public void shouldNotRespondToPreBuildEvents() {
+		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
+		assertFalse(processor.canProcessEvent(event));
+	}
 
-    @Test
-    public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException
-    {
-        processor.processEvent(emptyEvent());
-    }
+	@Test
+	public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
+		processor.processEvent(emptyEvent());
+	}
 
-    @Test
-    public void shouldRespondToPostBuildEvents()
-    {
-        IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
-        assertTrue(processor.canProcessEvent(event));
-    }
+	@Test
+	public void shouldRespondToPostBuildEvents() {
+		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
+		assertTrue(processor.canProcessEvent(event));
+	}
 
-    @Test
-    public void shouldRespondToPostChangeEvents()
-    {
-        IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
-        assertTrue(processor.canProcessEvent(event));
-    }
+	@Test
+	public void shouldRespondToPostChangeEvents() {
+		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
+		assertTrue(processor.canProcessEvent(event));
+	}
 }

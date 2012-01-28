@@ -25,44 +25,38 @@ import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import org.infinitest.intellij.plugin.swingui.ResultClickListener;
-import org.infinitest.testrunner.TestEvent;
-import org.junit.Test;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenDoubleClickingTestEvent
-{
-    @Test
-    public void shouldNavigateToSource()
-    {
-        FakeSourceNavigator navigator = new FakeSourceNavigator();
+public class WhenDoubleClickingTestEvent {
+	@Test
+	public void shouldNavigateToSource() {
+		FakeSourceNavigator navigator = new FakeSourceNavigator();
 
-        ResultClickListener listener = new ResultClickListener(navigator);
-        listener.mouseClicked(doubleClick(eventWithError()));
+		ResultClickListener listener = new ResultClickListener(navigator);
+		listener.mouseClicked(doubleClick(eventWithError()));
 
-        assertThat(navigator.getClassName(), is(getClass().getName()));
-        assertThat(navigator.getLine(), not(0));
-    }
+		assertThat(navigator.getClassName(), is(getClass().getName()));
+		assertThat(navigator.getLine(), not(0));
+	}
 
-    @SuppressWarnings("serial")
-    private MouseEvent doubleClick(final TestEvent event)
-    {
-        return new MouseEvent(new JTree()
-        {
-            @Override
-            public TreePath getClosestPathForLocation(int x, int y)
-            {
-                return new TreePath(event);
-            }
-        }, 0, 0, 0, 0, 0, 2, false);
-    }
+	@SuppressWarnings("serial")
+	private MouseEvent doubleClick(final TestEvent event) {
+		return new MouseEvent(new JTree() {
+			@Override
+			public TreePath getClosestPathForLocation(int x, int y) {
+				return new TreePath(event);
+			}
+		}, 0, 0, 0, 0, 0, 2, false);
+	}
 
-    private static TestEvent eventWithError()
-    {
-        return new TestEvent(METHOD_FAILURE, "", "", "", new Exception());
-    }
+	private static TestEvent eventWithError() {
+		return new TestEvent(METHOD_FAILURE, "", "", "", new Exception());
+	}
 }

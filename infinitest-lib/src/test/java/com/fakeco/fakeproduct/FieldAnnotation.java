@@ -23,10 +23,9 @@ package com.fakeco.fakeproduct;
 
 import static java.lang.annotation.ElementType.*;
 
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Target(FIELD)
-public @interface FieldAnnotation
-{
-    // marker
+public @interface FieldAnnotation {
+	// marker
 }

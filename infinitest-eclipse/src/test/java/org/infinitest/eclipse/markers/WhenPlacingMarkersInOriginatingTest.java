@@ -26,49 +26,43 @@ import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IResource;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.resources.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenPlacingMarkersInOriginatingTest
-{
-    private static final String TEST_NAME = "com.fakeco.TestFoo";
+public class WhenPlacingMarkersInOriginatingTest {
+	private static final String TEST_NAME = "com.fakeco.TestFoo";
 
-    private TestNamePlacementStrategy strategy;
-    private TestEvent event;
-    private IResource testResource;
-    private ResourceLookup lookup;
+	private TestNamePlacementStrategy strategy;
+	private TestEvent event;
+	private IResource testResource;
+	private ResourceLookup lookup;
 
-    @Before
-    public void inContext()
-    {
-        testResource = mock(IResource.class);
-        lookup = mock(ResourceLookup.class);
-        strategy = new TestNamePlacementStrategy(lookup);
-        event = eventWithError(new AssertionError());
-    }
+	@Before
+	public void inContext() {
+		testResource = mock(IResource.class);
+		lookup = mock(ResourceLookup.class);
+		strategy = new TestNamePlacementStrategy(lookup);
+		event = eventWithError(new AssertionError());
+	}
 
-    @Test
-    public void shouldUseTestNameInEvent()
-    {
-        when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(newArrayList(testResource));
+	@Test
+	public void shouldUseTestNameInEvent() {
+		when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(newArrayList(testResource));
 
-        MarkerPlacement placement = strategy.getPlacement(event);
+		MarkerPlacement placement = strategy.getPlacement(event);
 
-        assertSame(testResource, placement.getResource());
-        assertEquals("Line zero indicates we don't know where to place the marker", 0, placement.getLineNumber());
-    }
+		assertSame(testResource, placement.getResource());
+		assertEquals("Line zero indicates we don't know where to place the marker", 0, placement.getLineNumber());
+	}
 
-    @Test
-    public void shouldReturnNullIfTestCannotBeFoundInWorkspace()
-    {
-        assertNull(strategy.getPlacement(event));
-    }
+	@Test
+	public void shouldReturnNullIfTestCannotBeFoundInWorkspace() {
+		assertNull(strategy.getPlacement(event));
+	}
 
-    private static TestEvent eventWithError(Throwable error)
-    {
-        return new TestEvent(METHOD_FAILURE, "", TEST_NAME, "", error);
-    }
+	private static TestEvent eventWithError(Throwable error) {
+		return new TestEvent(METHOD_FAILURE, "", TEST_NAME, "", error);
+	}
 }

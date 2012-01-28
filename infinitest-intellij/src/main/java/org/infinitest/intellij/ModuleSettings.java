@@ -21,14 +21,13 @@
  */
 package org.infinitest.intellij;
 
-import org.apache.log4j.Logger;
-import org.infinitest.RuntimeEnvironment;
+import org.apache.log4j.*;
+import org.infinitest.*;
 
-public interface ModuleSettings
-{
-    void writeToLogger(Logger log);
+public interface ModuleSettings {
+	void writeToLogger(Logger log);
 
-    String getName();
+	String getName();
 
-    RuntimeEnvironment getRuntimeEnvironment();
+	RuntimeEnvironment getRuntimeEnvironment();
 }

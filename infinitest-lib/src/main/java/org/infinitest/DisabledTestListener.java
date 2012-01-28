@@ -21,9 +21,8 @@
  */
 package org.infinitest;
 
-import java.util.Collection;
+import java.util.*;
 
-public interface DisabledTestListener
-{
-    void testsDisabled(Collection<String> testName);
+public interface DisabledTestListener {
+	void testsDisabled(Collection<String> testName);
 }

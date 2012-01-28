@@ -24,21 +24,19 @@ package org.infinitest.intellij;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Test;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.junit.*;
 
-public class WhenLoggingError
-{
-    private static final Exception ERROR = new Exception("test");
+public class WhenLoggingError {
+	private static final Exception ERROR = new Exception("test");
 
-    @Test
-    public void shouldDisplayErrorInView()
-    {
-        InfinitestView view = mock(InfinitestView.class);
+	@Test
+	public void shouldDisplayErrorInView() {
+		InfinitestView view = mock(InfinitestView.class);
 
-        InfinitestLoggingListener listener = new InfinitestLoggingListener(view);
-        listener.logError("test message", ERROR);
+		InfinitestLoggingListener listener = new InfinitestLoggingListener(view);
+		listener.logError("test message", ERROR);
 
-        verify(view).writeError(contains("test message"));
-    }
+		verify(view).writeError(contains("test message"));
+	}
 }

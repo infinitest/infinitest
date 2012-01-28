@@ -26,46 +26,40 @@ import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.osgi.framework.Bundle;
+import org.junit.*;
+import org.osgi.framework.*;
 
-public class WhenCreatingCoreClasspath
-{
-    private InfinitestPlugin plugin;
+public class WhenCreatingCoreClasspath {
+	private InfinitestPlugin plugin;
 
-    @Before
-    public void inContext()
-    {
-        Bundle bundle = mock(Bundle.class);
-        List<URL> urls = Arrays.asList(getClass().getResource("WhenCreatingCoreClasspath.class"));
-        when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls));
-        plugin = new InfinitestPlugin();
-        plugin.setPluginBundle(bundle);
-    }
+	@Before
+	public void inContext() {
+		Bundle bundle = mock(Bundle.class);
+		List<URL> urls = Arrays.asList(getClass().getResource("WhenCreatingCoreClasspath.class"));
+		when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls));
+		plugin = new InfinitestPlugin();
+		plugin.setPluginBundle(bundle);
+	}
 
-    @Test
-    public void shouldWriteInfinitestCoreOutToTempDirectory()
-    {
-        File coreJarLocation = getCoreJarLocation(plugin);
-        assertTrue(coreJarLocation.exists());
-        assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
-    }
+	@Test
+	public void shouldWriteInfinitestCoreOutToTempDirectory() {
+		File coreJarLocation = getCoreJarLocation(plugin);
+		assertTrue(coreJarLocation.exists());
+		assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
+	}
 
-    @Test
-    public void shouldRecreateJarIfItIsDeleted()
-    {
-        File coreJarLocation = getCoreJarLocation(plugin);
-        assertTrue(coreJarLocation.exists());
-        assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
-        assertTrue(coreJarLocation.delete());
+	@Test
+	public void shouldRecreateJarIfItIsDeleted() {
+		File coreJarLocation = getCoreJarLocation(plugin);
+		assertTrue(coreJarLocation.exists());
+		assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
+		assertTrue(coreJarLocation.delete());
 
-        coreJarLocation = getCoreJarLocation(plugin);
-        assertTrue(coreJarLocation.exists());
-    }
+		coreJarLocation = getCoreJarLocation(plugin);
+		assertTrue(coreJarLocation.exists());
+	}
 }

@@ -23,32 +23,27 @@ package org.infinitest.intellij;
 
 import static java.lang.String.*;
 
-import java.util.logging.Level;
+import java.util.logging.*;
 
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.infinitest.util.LoggingListener;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.infinitest.util.*;
 
-public class InfinitestLoggingListener implements LoggingListener
-{
-    private final InfinitestView view;
+public class InfinitestLoggingListener implements LoggingListener {
+	private final InfinitestView view;
 
-    public InfinitestLoggingListener(InfinitestView view)
-    {
-        this.view = view;
-    }
+	public InfinitestLoggingListener(InfinitestView view) {
+		this.view = view;
+	}
 
-    public void logError(String message, Throwable throwable)
-    {
-        view.writeError(message);
-    }
+	public void logError(String message, Throwable throwable) {
+		view.writeError(message);
+	}
 
-    public void logMessage(Level level, String message)
-    {
-        view.writeLogMessage(leftAlign(level) + " " + message);
-    }
+	public void logMessage(Level level, String message) {
+		view.writeLogMessage(leftAlign(level) + " " + message);
+	}
 
-    private String leftAlign(Level info)
-    {
-        return format("%-10s", info.getName());
-    }
+	private String leftAlign(Level info) {
+		return format("%-10s", info.getName());
+	}
 }

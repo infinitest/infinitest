@@ -21,11 +21,10 @@
  */
 package org.infinitest.eclipse;
 
-import org.infinitest.InfinitestCore;
+import org.infinitest.*;
 
-public interface CoreLifecycleListener
-{
-    void coreCreated(InfinitestCore core);
+public interface CoreLifecycleListener {
+	void coreCreated(InfinitestCore core);
 
-    void coreRemoved(InfinitestCore core);
+	void coreRemoved(InfinitestCore core);
 }

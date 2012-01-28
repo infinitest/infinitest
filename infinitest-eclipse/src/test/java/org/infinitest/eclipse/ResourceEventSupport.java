@@ -26,72 +26,61 @@ import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
 import static org.mockito.Mockito.*;
 
-import java.net.URI;
+import java.net.*;
 
-import org.eclipse.core.internal.events.ResourceChangeEvent;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.Path;
-import org.infinitest.eclipse.workspace.JavaProjectBuilder;
+import org.eclipse.core.internal.events.*;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.workspace.*;
 
-public class ResourceEventSupport
-{
-    protected static final String PROJECT_A_NAME = "/projectA";
-    protected JavaProjectBuilder project = project(PROJECT_A_NAME);
+public class ResourceEventSupport {
+	protected static final String PROJECT_A_NAME = "/projectA";
+	protected JavaProjectBuilder project = project(PROJECT_A_NAME);
 
-    protected ResourceChangeEvent autoBuildEvent()
-    {
-        return buildEventWith(createDelta());
-    }
+	protected ResourceChangeEvent autoBuildEvent() {
+		return buildEventWith(createDelta());
+	}
 
-    protected ResourceChangeEvent buildEventWith(IResourceDelta createDelta)
-    {
-        return new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, createDelta);
-    }
+	protected ResourceChangeEvent buildEventWith(IResourceDelta createDelta) {
+		return new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, createDelta);
+	}
 
-    protected ResourceChangeEvent cleanBuildEvent()
-    {
-        return new ResourceChangeEvent(this, POST_BUILD, CLEAN_BUILD, createDelta());
-    }
+	protected ResourceChangeEvent cleanBuildEvent() {
+		return new ResourceChangeEvent(this, POST_BUILD, CLEAN_BUILD, createDelta());
+	}
 
-    protected ResourceChangeEvent emptyEvent()
-    {
-        return new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, createEmptyDelta());
-    }
+	protected ResourceChangeEvent emptyEvent() {
+		return new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, createEmptyDelta());
+	}
 
-    protected IResourceDelta createDelta()
-    {
-        return createDelta(project);
-    }
+	protected IResourceDelta createDelta() {
+		return createDelta(project);
+	}
 
-    protected URI projectAUri()
-    {
-        return project.getProject().getLocationURI();
-    }
+	protected URI projectAUri() {
+		return project.getProject().getLocationURI();
+	}
 
-    protected IResourceDelta createEmptyDelta()
-    {
-        return createResourceDelta(project, new IResourceDelta[] {});
-    }
+	protected IResourceDelta createEmptyDelta() {
+		return createResourceDelta(project, new IResourceDelta[] {});
+	}
 
-    protected IResourceDelta createDelta(JavaProjectBuilder project)
-    {
-        IResourceDelta classResource = mock(IResourceDelta.class);
-        when(classResource.getFullPath()).thenReturn(new Path("a.class"));
+	protected IResourceDelta createDelta(JavaProjectBuilder project) {
+		IResourceDelta classResource = mock(IResourceDelta.class);
+		when(classResource.getFullPath()).thenReturn(new Path("a.class"));
 
-        return createResourceDelta(project, new IResourceDelta[] { classResource });
-    }
+		return createResourceDelta(project, new IResourceDelta[] { classResource });
+	}
 
-    protected IResourceDelta createResourceDelta(JavaProjectBuilder project, IResourceDelta... resourceDeltas)
-    {
-        IResourceDelta projectDelta = mock(IResourceDelta.class);
-        IResource resource = project.getResource();
-        when(projectDelta.getResource()).thenReturn(resource);
-        when(projectDelta.getFullPath()).thenReturn(new Path("/workspace/projectA"));
-        when(projectDelta.getAffectedChildren()).thenReturn(resourceDeltas);
+	protected IResourceDelta createResourceDelta(JavaProjectBuilder project, IResourceDelta... resourceDeltas) {
+		IResourceDelta projectDelta = mock(IResourceDelta.class);
+		IResource resource = project.getResource();
+		when(projectDelta.getResource()).thenReturn(resource);
+		when(projectDelta.getFullPath()).thenReturn(new Path("/workspace/projectA"));
+		when(projectDelta.getAffectedChildren()).thenReturn(resourceDeltas);
 
-        IResourceDelta delta = mock(IResourceDelta.class);
-        when(delta.getAffectedChildren()).thenReturn(new IResourceDelta[] { projectDelta });
-        return delta;
-    }
+		IResourceDelta delta = mock(IResourceDelta.class);
+		when(delta.getAffectedChildren()).thenReturn(new IResourceDelta[] { projectDelta });
+		return delta;
+	}
 }

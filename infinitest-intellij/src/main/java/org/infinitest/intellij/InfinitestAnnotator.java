@@ -21,11 +21,10 @@
  */
 package org.infinitest.intellij;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-public interface InfinitestAnnotator
-{
-    void annotate(TestEvent event);
+public interface InfinitestAnnotator {
+	void annotate(TestEvent event);
 
-    void clearAnnotation(TestEvent event);
+	void clearAnnotation(TestEvent event);
 }

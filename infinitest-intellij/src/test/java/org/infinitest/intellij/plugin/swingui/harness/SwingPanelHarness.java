@@ -23,27 +23,24 @@ package org.infinitest.intellij.plugin.swingui.harness;
 
 import static javax.swing.JFrame.*;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-public class SwingPanelHarness
-{
-    public static void displayPanel(JPanel pane)
-    {
-        JFrame frame = new JFrame();
+public class SwingPanelHarness {
+	public static void displayPanel(JPanel pane) {
+		JFrame frame = new JFrame();
 
-        frame.setTitle("Panel Harness");
-        frame.setSize(500, 300);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.setTitle("Panel Harness");
+		frame.setSize(500, 300);
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BorderLayout());
-        frame.getContentPane().add(topPanel);
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		frame.getContentPane().add(topPanel);
 
-        topPanel.add(pane);
+		topPanel.add(pane);
 
-        frame.setVisible(true);
-    }
+		frame.setVisible(true);
+	}
 }

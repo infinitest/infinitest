@@ -22,28 +22,20 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
+import org.eclipse.jdt.launching.*;
 
-public class EclipseFacade
-{
-    public String[] computeDefaultRuntimeClassPath(IJavaProject project) throws CoreException
-    {
-        return JavaRuntime.computeDefaultRuntimeClassPath(project);
-    }
+public class EclipseFacade {
+	public String[] computeDefaultRuntimeClassPath(IJavaProject project) throws CoreException {
+		return JavaRuntime.computeDefaultRuntimeClassPath(project);
+	}
 
-    public IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(IJavaProject project) throws CoreException
-    {
-        return JavaRuntime.computeUnresolvedRuntimeClasspath(project);
-    }
+	public IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(IJavaProject project) throws CoreException {
+		return JavaRuntime.computeUnresolvedRuntimeClasspath(project);
+	}
 
-    public IClasspathContainer getClasspathContainer(IPath path, IJavaProject project) throws CoreException
-    {
-        return JavaCore.getClasspathContainer(path, project);
-    }
+	public IClasspathContainer getClasspathContainer(IPath path, IJavaProject project) throws CoreException {
+		return JavaCore.getClasspathContainer(path, project);
+	}
 }

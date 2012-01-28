@@ -21,15 +21,14 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-public interface PresenterListener  extends java.util.EventListener
-{
-    void testRunCompleted();
+public interface PresenterListener extends java.util.EventListener {
+	void testRunCompleted();
 
-    void testRunSucceed();
+	void testRunSucceed();
 
-    void testRunFailed();
+	void testRunFailed();
 
-    void testRunStarted();
+	void testRunStarted();
 
-    void testRunWaiting();
+	void testRunWaiting();
 }

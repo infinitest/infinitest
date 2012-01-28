@@ -21,7 +21,6 @@
  */
 package org.infinitest.testrunner;
 
-public interface Clock
-{
-    long currentTimeMillis();
+public interface Clock {
+	long currentTimeMillis();
 }

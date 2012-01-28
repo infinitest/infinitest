@@ -23,206 +23,155 @@ package org.infinitest.testrunner;
 
 import static org.junit.runner.Request.*;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
-import org.infinitest.MissingClassException;
-import org.infinitest.TestNGConfiguration;
-import org.infinitest.TestNGConfigurator;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Request;
-import org.junit.runner.Runner;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
-import org.testng.TestNG;
+import org.infinitest.*;
+import org.junit.runner.*;
+import org.testng.*;
 
-public class JUnit4Runner implements NativeRunner
-{
-    private TestNGConfiguration config = null;
+public class JUnit4Runner implements NativeRunner {
+	private TestNGConfiguration config = null;
 
-    public TestResults runTest(String testClass)
-    {
-        Class<?> clazz;
-        try
-        {
-            clazz = Class.forName(testClass);
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new MissingClassException(testClass);
-        }
+	public TestResults runTest(String testClass) {
+		Class<?> clazz;
+		try {
+			clazz = Class.forName(testClass);
+		} catch (ClassNotFoundException e) {
+			throw new MissingClassException(testClass);
+		}
 
-        if (isTestNGTest(clazz))
-        {
-            TestNG core = new TestNG();
-            TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
-            core.addListener(eventTranslator);
+		if (isTestNGTest(clazz)) {
+			TestNG core = new TestNG();
+			TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
+			core.addListener(eventTranslator);
 
-            core.setTestClasses(new Class[] { clazz });
-            addTestNGSettings(core);
-            core.run();
+			core.setTestClasses(new Class[] { clazz });
+			addTestNGSettings(core);
+			core.run();
 
-            return eventTranslator.getTestResults();
-        }
+			return eventTranslator.getTestResults();
+		}
 
-        JUnitCore core = new JUnitCore();
-        EventTranslator eventTranslator = new EventTranslator();
-        core.addListener(eventTranslator);
+		JUnitCore core = new JUnitCore();
+		EventTranslator eventTranslator = new EventTranslator();
+		core.addListener(eventTranslator);
 
-        if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz))
-        {
-            core.run(new UninstantiableJUnit3TestRequest(clazz));
-        }
-        else
-        {
-            core.run(classWithoutSuiteMethod(clazz));
-        }
-        return eventTranslator.getTestResults();
-    }
+		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
+			core.run(new UninstantiableJUnit3TestRequest(clazz));
+		} else {
+			core.run(classWithoutSuiteMethod(clazz));
+		}
+		return eventTranslator.getTestResults();
+	}
 
-    private void addTestNGSettings(TestNG core)
-    {
-        if (config == null)
-        {
-            config = new TestNGConfigurator().getConfig();
-        }
-        core.setExcludedGroups(config.getExcludedGroups());
-        core.setGroups(config.getGroups());
-        setListeners(core);
-    }
+	private void addTestNGSettings(TestNG core) {
+		if (config == null) {
+			config = new TestNGConfigurator().getConfig();
+		}
+		core.setExcludedGroups(config.getExcludedGroups());
+		core.setGroups(config.getGroups());
+		setListeners(core);
+	}
 
-    private void setListeners(TestNG core)
-    {
-        if (config.getListeners() != null)
-        {
-            for (Object listener : config.getListeners())
-            {
-                core.addListener(listener);
-            }
-        }
-    }
+	private void setListeners(TestNG core) {
+		if (config.getListeners() != null) {
+			for (Object listener : config.getListeners()) {
+				core.addListener(listener);
+			}
+		}
+	}
 
-    private boolean isJUnit3TestCase(Class<?> clazz)
-    {
-        return TestCase.class.isAssignableFrom(clazz);
-    }
+	private boolean isJUnit3TestCase(Class<?> clazz) {
+		return TestCase.class.isAssignableFrom(clazz);
+	}
 
-    private boolean cannotBeInstantiated(Class<?> clazz)
-    {
-        CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
-        return testSuite.hasWarnings();
-    }
+	private boolean cannotBeInstantiated(Class<?> clazz) {
+		CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
+		return testSuite.hasWarnings();
+	}
 
-    private static class CustomTestSuite extends TestSuite
-    {
-        public CustomTestSuite(Class<? extends TestCase> testClass)
-        {
-            super(testClass);
-        }
+	private static class CustomTestSuite extends TestSuite {
+		public CustomTestSuite(Class<? extends TestCase> testClass) {
+			super(testClass);
+		}
 
-        private boolean hasWarnings()
-        {
-            for (Enumeration<Test> tests = tests(); tests.hasMoreElements();)
-            {
-                Test test = tests.nextElement();
-                if (test instanceof TestCase)
-                {
-                    TestCase testCase = (TestCase) test;
-                    if (testCase.getName().equals("warning"))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
+		private boolean hasWarnings() {
+			for (Enumeration<Test> tests = tests(); tests.hasMoreElements();) {
+				Test test = tests.nextElement();
+				if (test instanceof TestCase) {
+					TestCase testCase = (TestCase) test;
+					if (testCase.getName().equals("warning")) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	}
 
-    private static class UninstantiableJUnit3TestRequest extends Request
-    {
-        private final Class<?> testClass;
+	private static class UninstantiableJUnit3TestRequest extends Request {
+		private final Class<?> testClass;
 
-        public UninstantiableJUnit3TestRequest(Class<?> clazz)
-        {
-            testClass = clazz;
-        }
+		public UninstantiableJUnit3TestRequest(Class<?> clazz) {
+			testClass = clazz;
+		}
 
-        @Override
-        public Runner getRunner()
-        {
-            return new UninstantiateableJUnit3TestRunner(testClass);
-        }
-    }
+		@Override
+		public Runner getRunner() {
+			return new UninstantiateableJUnit3TestRunner(testClass);
+		}
+	}
 
-    private boolean isTestNGTest(Class<?> clazz)
-    {
-        for (Method method : clazz.getMethods())
-        {
-            for (Annotation annotation : method.getAnnotations())
-            {
-                if (annotation.annotationType() == org.testng.annotations.Test.class)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	private boolean isTestNGTest(Class<?> clazz) {
+		for (Method method : clazz.getMethods()) {
+			for (Annotation annotation : method.getAnnotations()) {
+				if (annotation.annotationType() == org.testng.annotations.Test.class) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    static class TestNGEventTranslator implements ITestListener
-    {
-        private final List<TestEvent> eventsCollected = new ArrayList<TestEvent>();
+	static class TestNGEventTranslator implements ITestListener {
+		private final List<TestEvent> eventsCollected = new ArrayList<TestEvent>();
 
-        public void onTestStart(ITestResult result)
-        {
-        }
+		public void onTestStart(ITestResult result) {
+		}
 
-        public void onTestSuccess(ITestResult result)
-        {
-        }
+		public void onTestSuccess(ITestResult result) {
+		}
 
-        public void onTestFailure(ITestResult failure)
-        {
-            eventsCollected.add(createEventFrom(failure));
-        }
+		public void onTestFailure(ITestResult failure) {
+			eventsCollected.add(createEventFrom(failure));
+		}
 
-        private TestEvent createEventFrom(ITestResult failure)
-        {
-            return TestEvent.methodFailed(failure.getTestClass().getName(), failure.getName(), failure.getThrowable());
-        }
+		private TestEvent createEventFrom(ITestResult failure) {
+			return TestEvent.methodFailed(failure.getTestClass().getName(), failure.getName(), failure.getThrowable());
+		}
 
-        public TestResults getTestResults()
-        {
-            return new TestResults(eventsCollected);
-        }
+		public TestResults getTestResults() {
+			return new TestResults(eventsCollected);
+		}
 
-        public void onTestSkipped(ITestResult result)
-        {
-        }
+		public void onTestSkipped(ITestResult result) {
+		}
 
-        public void onTestFailedButWithinSuccessPercentage(ITestResult result)
-        {
-        }
+		public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+		}
 
-        public void onStart(ITestContext context)
-        {
-        }
+		public void onStart(ITestContext context) {
+		}
 
-        public void onFinish(ITestContext context)
-        {
-        }
-    }
+		public void onFinish(ITestContext context) {
+		}
+	}
 
-    public void setTestNGConfiguration(TestNGConfiguration configuration)
-    {
-        config = configuration;
-    }
+	public void setTestNGConfiguration(TestNGConfiguration configuration) {
+		config = configuration;
+	}
 }

@@ -21,16 +21,15 @@
  */
 package org.infinitest.eclipse.markers;
 
-import java.util.Map;
+import java.util.*;
 
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.*;
 
-public interface MarkerInfo
-{
-    IMarker createMarker(String markerId);
+public interface MarkerInfo {
+	IMarker createMarker(String markerId);
 
-    // DEBT this doesn't need to be here. Should be hidden behind createMarker
-    Map<String, Object> attributes();
+	// DEBT this doesn't need to be here. Should be hidden behind createMarker
+	Map<String, Object> attributes();
 
-    String getTestName();
+	String getTestName();
 }

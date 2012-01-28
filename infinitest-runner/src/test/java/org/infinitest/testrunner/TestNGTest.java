@@ -21,22 +21,19 @@
  */
 package org.infinitest.testrunner;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.*;
+import org.testng.annotations.*;
 
-public class TestNGTest
-{
-    public static boolean fail;
+public class TestNGTest {
+	public static boolean fail;
 
-    @Test
-    public void shouldPass()
-    {
-        Assert.assertTrue(true);
-    }
+	@Test
+	public void shouldPass() {
+		Assert.assertTrue(true);
+	}
 
-    @Test
-    public void shouldFail()
-    {
-        Assert.assertFalse(fail);
-    }
+	@Test
+	public void shouldFail() {
+		Assert.assertFalse(fail);
+	}
 }

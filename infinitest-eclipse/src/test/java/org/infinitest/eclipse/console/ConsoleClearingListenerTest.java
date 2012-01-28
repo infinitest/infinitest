@@ -24,43 +24,37 @@ package org.infinitest.eclipse.console;
 import static java.util.Arrays.*;
 import static org.mockito.Mockito.*;
 
-import org.infinitest.TestQueueEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.*;
+import org.junit.*;
 
-public class ConsoleClearingListenerTest
-{
-    private TextOutputWriter writer;
-    private ConsoleClearingListener listener;
+public class ConsoleClearingListenerTest {
+	private TextOutputWriter writer;
+	private ConsoleClearingListener listener;
 
-    @Before
-    public void inContext()
-    {
-        writer = mock(TextOutputWriter.class);
-        listener = new ConsoleClearingListener(writer);
-    }
+	@Before
+	public void inContext() {
+		writer = mock(TextOutputWriter.class);
+		listener = new ConsoleClearingListener(writer);
+	}
 
-    @Test
-    public void shouldClearConsoleWhenTestRunIsStarted()
-    {
-        listener.testQueueUpdated(new TestQueueEvent(asList("test"), 1));
+	@Test
+	public void shouldClearConsoleWhenTestRunIsStarted() {
+		listener.testQueueUpdated(new TestQueueEvent(asList("test"), 1));
 
-        verify(writer).clearConsole();
-    }
+		verify(writer).clearConsole();
+	}
 
-    @Test
-    public void shouldNotClearTheConsoleWhenTestsAreRunning()
-    {
-        listener.testQueueUpdated(new TestQueueEvent(asList("test"), 2));
+	@Test
+	public void shouldNotClearTheConsoleWhenTestsAreRunning() {
+		listener.testQueueUpdated(new TestQueueEvent(asList("test"), 2));
 
-        verify(writer, never()).clearConsole();
-    }
+		verify(writer, never()).clearConsole();
+	}
 
-    @Test
-    public void shouldClearTheConsoleWhenTheCoreIsReloaded()
-    {
-        listener.reloading();
+	@Test
+	public void shouldClearTheConsoleWhenTheCoreIsReloaded() {
+		listener.reloading();
 
-        verify(writer).clearConsole();
-    }
+		verify(writer).clearConsole();
+	}
 }

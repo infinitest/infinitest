@@ -29,41 +29,34 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
-import org.infinitest.parser.JavaClass;
-import org.infinitest.parser.TestDetector;
-import org.infinitest.testrunner.TestRunner;
-import org.junit.Test;
+import org.infinitest.parser.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-import com.fakeco.fakeproduct.simple.PassingTest;
+import com.fakeco.fakeproduct.simple.*;
 
-public class WhenTestsAreDisabled
-{
-    @SuppressWarnings("unchecked")
-    @Test
-    public void shouldFireAppropriateEvent()
-    {
-        TestRunner runner = mock(TestRunner.class);
-        TestDetector testDetector = mock(TestDetector.class);
-        when(testDetector.getCurrentTests()).thenReturn(setify("MyClass", "OtherClass"), setify("OtherClass"));
-        Set<JavaClass> emptyClassSet = Collections.<JavaClass> emptySet();
-        when(testDetector.findTestsToRun(any(Collection.class))).thenReturn(emptyClassSet);
+public class WhenTestsAreDisabled {
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldFireAppropriateEvent() {
+		TestRunner runner = mock(TestRunner.class);
+		TestDetector testDetector = mock(TestDetector.class);
+		when(testDetector.getCurrentTests()).thenReturn(setify("MyClass", "OtherClass"), setify("OtherClass"));
+		Set<JavaClass> emptyClassSet = Collections.<JavaClass> emptySet();
+		when(testDetector.findTestsToRun(any(Collection.class))).thenReturn(emptyClassSet);
 
-        DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
-        core.setChangeDetector(withChangedFiles(PassingTest.class));
-        core.setTestDetector(testDetector);
-        final Set<String> disabledTestList = newHashSet();
-        core.addDisabledTestListener(new DisabledTestListener()
-        {
-            public void testsDisabled(Collection<String> testName)
-            {
-                disabledTestList.addAll(testName);
-            }
-        });
-        core.update();
-        assertEquals("MyClass", getOnlyElement(disabledTestList));
-    }
+		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
+		core.setChangeDetector(withChangedFiles(PassingTest.class));
+		core.setTestDetector(testDetector);
+		final Set<String> disabledTestList = newHashSet();
+		core.addDisabledTestListener(new DisabledTestListener() {
+			public void testsDisabled(Collection<String> testName) {
+				disabledTestList.addAll(testName);
+			}
+		});
+		core.update();
+		assertEquals("MyClass", getOnlyElement(disabledTestList));
+	}
 }

@@ -21,23 +21,19 @@
  */
 package org.infinitest.intellij;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiElement;
+import com.intellij.lang.annotation.*;
+import com.intellij.psi.*;
 
 @SuppressWarnings("all")
-public class FakeInfinitestAnnotator implements InfinitestAnnotator
-{
-    public void annotate(TestEvent event)
-    {
-    }
+public class FakeInfinitestAnnotator implements InfinitestAnnotator {
+	public void annotate(TestEvent event) {
+	}
 
-    public void clearAnnotation(TestEvent event)
-    {
-    }
+	public void clearAnnotation(TestEvent event) {
+	}
 
-    public void annotate(PsiElement psiElement, AnnotationHolder holder)
-    {
-    }
+	public void annotate(PsiElement psiElement, AnnotationHolder holder) {
+	}
 }

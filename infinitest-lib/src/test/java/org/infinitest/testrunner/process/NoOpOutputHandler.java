@@ -21,15 +21,13 @@
  */
 package org.infinitest.testrunner.process;
 
-import java.io.InputStream;
+import java.io.*;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
-import org.infinitest.testrunner.OutputStreamHandler;
+import org.infinitest.testrunner.*;
 
 @SuppressWarnings("all")
-public class NoOpOutputHandler implements OutputStreamHandler
-{
-    public void processStream(InputStream stream, OutputType type)
-    {
-    }
+public class NoOpOutputHandler implements OutputStreamHandler {
+	public void processStream(InputStream stream, OutputType type) {
+	}
 }

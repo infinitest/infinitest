@@ -30,105 +30,93 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Collection;
+import java.util.*;
 
-import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 
-public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport
-{
-    private EventSupport statusListener;
+public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
+	private EventSupport statusListener;
 
-    @Before
-    public void inContext()
-    {
-        statusListener = new EventSupport();
-    }
+	@Before
+	public void inContext() {
+		statusListener = new EventSupport();
+	}
 
-    @Test
-    public void canAttachToCore()
-    {
-        InfinitestCore core = mock(InfinitestCore.class);
+	@Test
+	public void canAttachToCore() {
+		InfinitestCore core = mock(InfinitestCore.class);
 
-        new ResultCollector(core);
+		new ResultCollector(core);
 
-        verify(core).addTestQueueListener(any(TestQueueListener.class));
-        verify(core).addTestResultsListener(any(ResultCollector.class));
-        verify(core).addDisabledTestListener(any(DisabledTestListener.class));
-    }
+		verify(core).addTestQueueListener(any(TestQueueListener.class));
+		verify(core).addTestResultsListener(any(ResultCollector.class));
+		verify(core).addDisabledTestListener(any(DisabledTestListener.class));
+	}
 
-    @Test
-    public void shouldListenToCoreForResults()
-    {
-        assertEquals(SCANNING, collector.getStatus());
-    }
+	@Test
+	public void shouldListenToCoreForResults() {
+		assertEquals(SCANNING, collector.getStatus());
+	}
 
-    @Test
-    public void shouldChangeStatusToRunning()
-    {
-        collector.addStatusChangeListener(statusListener);
-        collector.testQueueUpdated(new TestQueueEvent(asList("aTest"), 1));
-        collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
-        statusListener.assertStatesChanged(RUNNING);
+	@Test
+	public void shouldChangeStatusToRunning() {
+		collector.addStatusChangeListener(statusListener);
+		collector.testQueueUpdated(new TestQueueEvent(asList("aTest"), 1));
+		collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
+		statusListener.assertStatesChanged(RUNNING);
 
-        collector.testRunComplete();
-        statusListener.assertStatesChanged(RUNNING, PASSING);
-        assertEquals(PASSING, collector.getStatus());
-    }
+		collector.testRunComplete();
+		statusListener.assertStatesChanged(RUNNING, PASSING);
+		assertEquals(PASSING, collector.getStatus());
+	}
 
-    @Test
-    public void shouldNotifyTestCollectorOfTestEvents()
-    {
-        FailureListenerSupport listener = new FailureListenerSupport();
-        collector.addChangeListener(listener);
-        TestEvent failureEvent = methodFailed("message", DEFAULT_TEST_NAME, "methodName", new AssertionError());
+	@Test
+	public void shouldNotifyTestCollectorOfTestEvents() {
+		FailureListenerSupport listener = new FailureListenerSupport();
+		collector.addChangeListener(listener);
+		TestEvent failureEvent = methodFailed("message", DEFAULT_TEST_NAME, "methodName", new AssertionError());
 
-        testRun(failureEvent);
-        assertEquals(failureEvent, getOnlyElement(collector.getFailures()));
-        assertEquals(failureEvent, getOnlyElement(listener.added));
-        assertTrue(listener.removed.isEmpty());
+		testRun(failureEvent);
+		assertEquals(failureEvent, getOnlyElement(collector.getFailures()));
+		assertEquals(failureEvent, getOnlyElement(listener.added));
+		assertTrue(listener.removed.isEmpty());
 
-        testRunWith("testName2");
-        assertTrue(listener.removed.isEmpty());
+		testRunWith("testName2");
+		assertTrue(listener.removed.isEmpty());
 
-        listener.added.clear();
-        testRun();
-        // collector.testCaseFinished(testCaseFinished("testName"));
-        assertEquals(failureEvent, getOnlyElement(listener.removed));
-        assertTrue(listener.added.isEmpty());
-    }
+		listener.added.clear();
+		testRun();
+		// collector.testCaseFinished(testCaseFinished("testName"));
+		assertEquals(failureEvent, getOnlyElement(listener.removed));
+		assertTrue(listener.added.isEmpty());
+	}
 
-    @Test
-    public void shouldIgnoreDisabledTestsThatArentFailing()
-    {
-        collector.testsDisabled(asList("NotAFailingTest"));
-    }
+	@Test
+	public void shouldIgnoreDisabledTestsThatArentFailing() {
+		collector.testsDisabled(asList("NotAFailingTest"));
+	}
 
-    @Test
-    public void shouldClearFailuresForDisabledTests()
-    {
-        String testName = "MyClass";
-        testRunWith(testName, methodFailed(testName, "someMethod", new NullPointerException()));
-        assertEquals(1, collector.getFailures().size());
+	@Test
+	public void shouldClearFailuresForDisabledTests() {
+		String testName = "MyClass";
+		testRunWith(testName, methodFailed(testName, "someMethod", new NullPointerException()));
+		assertEquals(1, collector.getFailures().size());
 
-        final Collection<TestEvent> removed = Lists.newArrayList();
-        collector.addChangeListener(new FailureListListener()
-        {
-            public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved)
-            {
-                removed.addAll(failuresRemoved);
-            }
+		final Collection<TestEvent> removed = Lists.newArrayList();
+		collector.addChangeListener(new FailureListListener() {
+			public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
+				removed.addAll(failuresRemoved);
+			}
 
-            public void failuresUpdated(Collection<TestEvent> updatedFailures)
-            {
-                throw new UnsupportedOperationException();
-            }
-        });
-        collector.testsDisabled(asList(testName));
-        assertEquals(0, collector.getFailures().size());
-        assertEquals("MyClass", getOnlyElement(removed).getTestName());
-    }
+			public void failuresUpdated(Collection<TestEvent> updatedFailures) {
+				throw new UnsupportedOperationException();
+			}
+		});
+		collector.testsDisabled(asList(testName));
+		assertEquals(0, collector.getFailures().size());
+		assertEquals("MyClass", getOnlyElement(removed).getTestName());
+	}
 }

@@ -21,9 +21,8 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.*;
 
-public interface WorkspaceFacade
-{
-    void updateProjects() throws CoreException;
+public interface WorkspaceFacade {
+	void updateProjects() throws CoreException;
 }

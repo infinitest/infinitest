@@ -21,9 +21,8 @@
  */
 package org.infinitest.intellij.plugin;
 
-public interface InfinitestPlugin
-{
-    void startInfinitest();
+public interface InfinitestPlugin {
+	void startInfinitest();
 
-    void stopInfinitest();
+	void stopInfinitest();
 }

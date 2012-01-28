@@ -25,25 +25,20 @@ import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenFormattingTooltipText
-{
-    @Test
-    public void shouldIncludeExceptionType()
-    {
-        InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(
-                        methodFailed(null, "", new RuntimeException("BUG"))));
+public class WhenFormattingTooltipText {
+	@Test
+	public void shouldIncludeExceptionType() {
+		InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(methodFailed(null, "", new RuntimeException("BUG"))));
 
-        assertThat(renderer.getTooltipText(), containsString("RuntimeException"));
-    }
+		assertThat(renderer.getTooltipText(), containsString("RuntimeException"));
+	}
 
-    @Test
-    public void shouldIncludeMessage()
-    {
-        InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(
-                        methodFailed(null, "", new RuntimeException("BUG"))));
+	@Test
+	public void shouldIncludeMessage() {
+		InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(methodFailed(null, "", new RuntimeException("BUG"))));
 
-        assertThat(renderer.getTooltipText(), containsString("BUG"));
-    }
+		assertThat(renderer.getTooltipText(), containsString("BUG"));
+	}
 }

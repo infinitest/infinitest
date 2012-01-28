@@ -25,24 +25,20 @@ import static org.infinitest.ConsoleOutputListener.OutputType.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
-import org.infinitest.ConsoleOutputListener;
-import org.junit.Test;
+import org.infinitest.*;
+import org.junit.*;
 
-public class ConsoleOutputProcessorTest
-{
-    @Test
-    public void shouldFireEventsToPublishConsoleOutput()
-    {
-        RunnerEventSupport eventSupport = new RunnerEventSupport(this);
-        final StringBuffer updatedText = new StringBuffer();
-        eventSupport.addConsoleOutputListener(new ConsoleOutputListener()
-        {
-            public void consoleOutputUpdate(String newText, OutputType outputType)
-            {
-                updatedText.append(newText);
-            }
-        });
-        new ConsoleOutputProcessor(toInputStream("hello"), STDERR, eventSupport).run();
-        assertEquals("hello", updatedText.toString());
-    }
+public class ConsoleOutputProcessorTest {
+	@Test
+	public void shouldFireEventsToPublishConsoleOutput() {
+		RunnerEventSupport eventSupport = new RunnerEventSupport(this);
+		final StringBuffer updatedText = new StringBuffer();
+		eventSupport.addConsoleOutputListener(new ConsoleOutputListener() {
+			public void consoleOutputUpdate(String newText, OutputType outputType) {
+				updatedText.append(newText);
+			}
+		});
+		new ConsoleOutputProcessor(toInputStream("hello"), STDERR, eventSupport).run();
+		assertEquals("hello", updatedText.toString());
+	}
 }

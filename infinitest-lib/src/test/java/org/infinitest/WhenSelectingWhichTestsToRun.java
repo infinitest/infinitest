@@ -26,28 +26,26 @@ import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.filter.FilterStub;
-import org.infinitest.parser.ClassFileTestDetector;
-import org.junit.Test;
+import org.infinitest.filter.*;
+import org.infinitest.parser.*;
+import org.junit.*;
 
-import com.fakeco.fakeproduct.TestFakeProduct;
+import com.fakeco.fakeproduct.*;
 
-public class WhenSelectingWhichTestsToRun
-{
-    @Test
-    public void shouldIgnoreTestsInDependentProjects()
-    {
-        List<File> outputDirs = asList(new File("target/classes"));
-        List<File> classDirsInClasspath = fakeBuildPaths();
-        String rawClasspath = fakeClasspath().getCompleteClasspath();
-        StandaloneClasspath classpath = new StandaloneClasspath(outputDirs, classDirsInClasspath, rawClasspath);
+public class WhenSelectingWhichTestsToRun {
+	@Test
+	public void shouldIgnoreTestsInDependentProjects() {
+		List<File> outputDirs = asList(new File("target/classes"));
+		List<File> classDirsInClasspath = fakeBuildPaths();
+		String rawClasspath = fakeClasspath().getCompleteClasspath();
+		StandaloneClasspath classpath = new StandaloneClasspath(outputDirs, classDirsInClasspath, rawClasspath);
 
-        ClassFileTestDetector testDetector = new ClassFileTestDetector(new FilterStub());
-        testDetector.setClasspathProvider(classpath);
-        File classFileNotInOutputDirectory = getFileForClass(TestFakeProduct.class);
-        assertTrue(testDetector.findTestsToRun(asList(classFileNotInOutputDirectory)).isEmpty());
-    }
+		ClassFileTestDetector testDetector = new ClassFileTestDetector(new FilterStub());
+		testDetector.setClasspathProvider(classpath);
+		File classFileNotInOutputDirectory = getFileForClass(TestFakeProduct.class);
+		assertTrue(testDetector.findTestsToRun(asList(classFileNotInOutputDirectory)).isEmpty());
+	}
 }

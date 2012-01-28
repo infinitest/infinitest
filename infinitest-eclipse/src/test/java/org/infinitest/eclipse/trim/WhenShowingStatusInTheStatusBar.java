@@ -29,130 +29,114 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Collections;
+import java.util.*;
 
-import org.infinitest.TestQueueEvent;
-import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.infinitest.testrunner.TestCaseEvent;
-import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.*;
+import org.infinitest.eclipse.status.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenShowingStatusInTheStatusBar
-{
-    private VisualStatusPresenter presenter;
-    private VisualStatus statusBar;
-    private TestQueueEvent firstEvent;
+public class WhenShowingStatusInTheStatusBar {
+	private VisualStatusPresenter presenter;
+	private VisualStatus statusBar;
+	private TestQueueEvent firstEvent;
 
-    @Before
-    public void inContext()
-    {
-        statusBar = mock(VisualStatus.class);
-        presenter = new VisualStatusPresenter();
-        presenter.updateVisualStatus(statusBar);
-        firstEvent = new TestQueueEvent(asList("ATest"), 2);
-    }
+	@Before
+	public void inContext() {
+		statusBar = mock(VisualStatus.class);
+		presenter = new VisualStatusPresenter();
+		presenter.updateVisualStatus(statusBar);
+		firstEvent = new TestQueueEvent(asList("ATest"), 2);
+	}
 
-    @Test
-    public void shouldDisplayTheNumberOfRunningTests()
-    {
-        WorkspaceStatus expectedStatus = runningTests(1, "ATest");
+	@Test
+	public void shouldDisplayTheNumberOfRunningTests() {
+		WorkspaceStatus expectedStatus = runningTests(1, "ATest");
 
-        presenter.testQueueUpdated(firstEvent);
+		presenter.testQueueUpdated(firstEvent);
 
-        verify(statusBar).setText(expectedStatus.getMessage());
-        verify(statusBar).setToolTip(expectedStatus.getToolTip());
-    }
+		verify(statusBar).setText(expectedStatus.getMessage());
+		verify(statusBar).setToolTip(expectedStatus.getToolTip());
+	}
 
-    @Test
-    public void shouldIgnoreUpdatesWhenStatusBarIsNotAttached()
-    {
-        presenter.statusChanged(workspaceErrors());
-    }
+	@Test
+	public void shouldIgnoreUpdatesWhenStatusBarIsNotAttached() {
+		presenter.statusChanged(workspaceErrors());
+	}
 
-    @Test
-    public void shouldImmediatelySetStatusToFailingWhenATestFails()
-    {
-        presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "",
-                        new AssertionError()))));
+	@Test
+	public void shouldImmediatelySetStatusToFailingWhenATestFails() {
+		presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "", new AssertionError()))));
 
-        verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
-        verify(statusBar).setTextColor(COLOR_WHITE);
-    }
+		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+		verify(statusBar).setTextColor(COLOR_WHITE);
+	}
 
-    @Test
-    public void shouldOnlyResetTestCounterWhenUpdateStarts()
-    {
-        presenter.testCaseComplete(testFinished("ATest"));
-        presenter.testQueueUpdated(emptyQueueEvent(2));
-        presenter.testCaseComplete(testFinished("BTest"));
-        presenter.testCaseComplete(testFinished("CTest"));
-        presenter.testQueueUpdated(emptyQueueEvent(2));
-        presenter.filesSaved();
-        presenter.testCaseComplete(testFinished("DTest"));
-        presenter.testQueueUpdated(emptyQueueEvent(2));
+	@Test
+	public void shouldOnlyResetTestCounterWhenUpdateStarts() {
+		presenter.testCaseComplete(testFinished("ATest"));
+		presenter.testQueueUpdated(emptyQueueEvent(2));
+		presenter.testCaseComplete(testFinished("BTest"));
+		presenter.testCaseComplete(testFinished("CTest"));
+		presenter.testQueueUpdated(emptyQueueEvent(2));
+		presenter.filesSaved();
+		presenter.testCaseComplete(testFinished("DTest"));
+		presenter.testQueueUpdated(emptyQueueEvent(2));
 
-        verify(statusBar, times(2)).setText(startsWith("1 test cases ran at "));
-        verify(statusBar).setText(startsWith("3 test cases ran at "));
-    }
+		verify(statusBar, times(2)).setText(startsWith("1 test cases ran at "));
+		verify(statusBar).setText(startsWith("3 test cases ran at "));
+	}
 
-    @Test
-    public void shouldListTestsRunAsATooltip()
-    {
-        presenter.testCaseComplete(testFinished("ATest"));
-        presenter.testQueueUpdated(emptyQueueEvent(1));
+	@Test
+	public void shouldListTestsRunAsATooltip() {
+		presenter.testCaseComplete(testFinished("ATest"));
+		presenter.testQueueUpdated(emptyQueueEvent(1));
 
-        verify(statusBar).setText(startsWith("1 test cases ran at "));
-        verify(statusBar).setToolTip("Tests Ran:\nATest");
-    }
+		verify(statusBar).setText(startsWith("1 test cases ran at "));
+		verify(statusBar).setToolTip("Tests Ran:\nATest");
+	}
 
-    @Test
-    public void shouldChangeToGreenWhenTestsPass()
-    {
-        presenter.coreStatusChanged(FAILING, PASSING);
+	@Test
+	public void shouldChangeToGreenWhenTestsPass() {
+		presenter.coreStatusChanged(FAILING, PASSING);
 
-        verify(statusBar).setBackgroundColor(COLOR_DARK_GREEN);
-        verify(statusBar).setTextColor(COLOR_WHITE);
-    }
+		verify(statusBar).setBackgroundColor(COLOR_DARK_GREEN);
+		verify(statusBar).setTextColor(COLOR_WHITE);
+	}
 
-    @Test
-    public void shouldChangeToRedWhenTestsFail()
-    {
-        presenter.coreStatusChanged(PASSING, FAILING);
+	@Test
+	public void shouldChangeToRedWhenTestsFail() {
+		presenter.coreStatusChanged(PASSING, FAILING);
 
-        verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
-        verify(statusBar).setTextColor(COLOR_WHITE);
-    }
+		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+		verify(statusBar).setTextColor(COLOR_WHITE);
+	}
 
-    @Test
-    public void shouldChangeToYellowWhenStatusIsAWarning()
-    {
-        WorkspaceStatus warning = workspaceErrors();
-        presenter.statusChanged(warning);
+	@Test
+	public void shouldChangeToYellowWhenStatusIsAWarning() {
+		WorkspaceStatus warning = workspaceErrors();
+		presenter.statusChanged(warning);
 
-        verify(statusBar).setBackgroundColor(COLOR_YELLOW);
-        verify(statusBar).setTextColor(COLOR_BLACK);
-        verify(statusBar).setText(warning.getMessage());
-        verify(statusBar).setToolTip(warning.getToolTip());
-    }
+		verify(statusBar).setBackgroundColor(COLOR_YELLOW);
+		verify(statusBar).setTextColor(COLOR_BLACK);
+		verify(statusBar).setText(warning.getMessage());
+		verify(statusBar).setToolTip(warning.getToolTip());
+	}
 
-    @Test
-    public void shouldReportWhenAllTestsAreComplete()
-    {
-        presenter.testCaseComplete(testFinished("Test1"));
-        presenter.testCaseComplete(testFinished("Test2"));
-        presenter.testQueueUpdated(emptyQueueEvent(2));
+	@Test
+	public void shouldReportWhenAllTestsAreComplete() {
+		presenter.testCaseComplete(testFinished("Test1"));
+		presenter.testCaseComplete(testFinished("Test2"));
+		presenter.testQueueUpdated(emptyQueueEvent(2));
 
-        verify(statusBar).setText(startsWith("2 test cases ran at "));
-    }
+		verify(statusBar).setText(startsWith("2 test cases ran at "));
+	}
 
-    private TestQueueEvent emptyQueueEvent(int initialSize)
-    {
-        return new TestQueueEvent(Collections.<String> emptyList(), initialSize);
-    }
+	private TestQueueEvent emptyQueueEvent(int initialSize) {
+		return new TestQueueEvent(Collections.<String> emptyList(), initialSize);
+	}
 
-    private TestCaseEvent testFinished(String testName)
-    {
-        return new TestCaseEvent(testName, this, new TestResults());
-    }
+	private TestCaseEvent testFinished(String testName) {
+		return new TestCaseEvent(testName, this, new TestResults());
+	}
 }

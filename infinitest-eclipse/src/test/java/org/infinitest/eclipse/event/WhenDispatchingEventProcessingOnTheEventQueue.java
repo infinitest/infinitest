@@ -24,18 +24,16 @@ package org.infinitest.eclipse.event;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.junit.Test;
+import org.eclipse.core.resources.*;
+import org.junit.*;
 
-public class WhenDispatchingEventProcessingOnTheEventQueue
-{
-    @Test
-    public void shouldInvokeTheProcessorFromARunnable()
-    {
-        MockProcessor processor = new MockProcessor();
-        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
-        EventProcessorRunnable runnable = new EventProcessorRunnable(processor, event);
-        runnable.run();
-        assertEquals(event, processor.getEvent());
-    }
+public class WhenDispatchingEventProcessingOnTheEventQueue {
+	@Test
+	public void shouldInvokeTheProcessorFromARunnable() {
+		MockProcessor processor = new MockProcessor();
+		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+		EventProcessorRunnable runnable = new EventProcessorRunnable(processor, event);
+		runnable.run();
+		assertEquals(event, processor.getEvent());
+	}
 }

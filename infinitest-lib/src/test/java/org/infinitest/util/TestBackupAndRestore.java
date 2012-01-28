@@ -24,23 +24,21 @@ package org.infinitest.util;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
+import java.io.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import com.fakeco.fakeproduct.FakeProduct;
+import com.fakeco.fakeproduct.*;
 
-public class TestBackupAndRestore
-{
-    @Test
-    public void shouldBackupAndRestoreClasses() throws Exception
-    {
-        String className = FakeProduct.class.getName();
-        File backup = createBackup(className);
-        File file = getFileForClass(className);
-        assertTrue(file.delete());
+public class TestBackupAndRestore {
+	@Test
+	public void shouldBackupAndRestoreClasses() throws Exception {
+		String className = FakeProduct.class.getName();
+		File backup = createBackup(className);
+		File file = getFileForClass(className);
+		assertTrue(file.delete());
 
-        InfinitestTestUtils.restoreFromBackup(backup);
-        assertTrue(file.exists());
-    }
+		InfinitestTestUtils.restoreFromBackup(backup);
+		assertTrue(file.exists());
+	}
 }

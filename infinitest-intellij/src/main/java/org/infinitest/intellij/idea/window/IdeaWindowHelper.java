@@ -21,30 +21,27 @@
  */
 package org.infinitest.intellij.idea.window;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.peer.PeerFactory;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.wm.*;
+import com.intellij.peer.*;
+import com.intellij.ui.content.*;
 
-public class IdeaWindowHelper
-{
-    public static final String WAITING_ICON_PATH = "/infinitest-waiting.png";
+public class IdeaWindowHelper {
+	public static final String WAITING_ICON_PATH = "/infinitest-waiting.png";
 
-    public static final String RUNNING_ICON_PATH = "/infinitest.png";
+	public static final String RUNNING_ICON_PATH = "/infinitest.png";
 
-    public static final String SUCCESS_ICON_PATH = "/infinitest-success.png";
+	public static final String SUCCESS_ICON_PATH = "/infinitest-success.png";
 
-    public static final String FAILURE_ICON_PATH = "/infinitest-failure.png";
+	public static final String FAILURE_ICON_PATH = "/infinitest-failure.png";
 
-    @SuppressWarnings({ "deprecation" })
-    public void addPanelToWindow(JPanel rootPanel, ToolWindow window)
-    {
-        ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
-        Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
-        window.getContentManager().addContent(content);
-        window.setIcon(IconLoader.getIcon(WAITING_ICON_PATH));
-    }
+	@SuppressWarnings({ "deprecation" })
+	public void addPanelToWindow(JPanel rootPanel, ToolWindow window) {
+		ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
+		Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
+		window.getContentManager().addContent(content);
+		window.setIcon(IconLoader.getIcon(WAITING_ICON_PATH));
+	}
 }

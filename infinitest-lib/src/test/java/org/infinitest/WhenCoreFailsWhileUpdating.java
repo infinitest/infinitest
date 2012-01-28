@@ -25,34 +25,30 @@ import static org.infinitest.CoreDependencySupport.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
+import java.io.*;
 
-import org.infinitest.changedetect.ChangeDetector;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.changedetect.*;
+import org.junit.*;
 
-public class WhenCoreFailsWhileUpdating
-{
-    private InfinitestCore core;
-    private StubTestDetector testDetector;
-    private ChangeDetector changeDetector;
+public class WhenCoreFailsWhileUpdating {
+	private InfinitestCore core;
+	private StubTestDetector testDetector;
+	private ChangeDetector changeDetector;
 
-    @Before
-    public void inContext() throws IOException
-    {
-        changeDetector = mock(ChangeDetector.class);
-        when(changeDetector.findChangedFiles()).thenThrow(new IOException());
+	@Before
+	public void inContext() throws IOException {
+		changeDetector = mock(ChangeDetector.class);
+		when(changeDetector.findChangedFiles()).thenThrow(new IOException());
 
-        changeDetector.clear();
+		changeDetector.clear();
 
-        testDetector = new StubTestDetector();
-        core = createCore(changeDetector, testDetector);
-    }
+		testDetector = new StubTestDetector();
+		core = createCore(changeDetector, testDetector);
+	}
 
-    @Test
-    public void shouldIgnoreFailureAndReloadIndex()
-    {
-        core.update();
-        assertTrue(testDetector.isCleared());
-    }
+	@Test
+	public void shouldIgnoreFailureAndReloadIndex() {
+		core.update();
+		assertTrue(testDetector.isCleared());
+	}
 }

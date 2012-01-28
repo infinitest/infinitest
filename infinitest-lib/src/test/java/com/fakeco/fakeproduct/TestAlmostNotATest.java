@@ -21,12 +21,10 @@
  */
 package com.fakeco.fakeproduct;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
 @SuppressWarnings("all")
-public class TestAlmostNotATest extends TestCase
-{
-    public void testANothing()
-    {
-    }
+public class TestAlmostNotATest extends TestCase {
+	public void testANothing() {
+	}
 }

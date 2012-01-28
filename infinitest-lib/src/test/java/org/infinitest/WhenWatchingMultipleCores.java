@@ -25,62 +25,55 @@ import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import junit.framework.AssertionFailedError;
+import junit.framework.*;
 
-import org.infinitest.testrunner.TestCaseEvent;
-import org.infinitest.testrunner.TestEvent;
-import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 import org.junit.Test;
 
-public class WhenWatchingMultipleCores
-{
-    private static final String TEST_NAME = "com.fakeco.TestFoo";
+public class WhenWatchingMultipleCores {
+	private static final String TEST_NAME = "com.fakeco.TestFoo";
 
-    private ResultCollector collector;
-    private InfinitestCore core;
+	private ResultCollector collector;
+	private InfinitestCore core;
 
-    @Before
-    public void inContext()
-    {
-        collector = new ResultCollector();
-        core = mock(InfinitestCore.class);
-    }
+	@Before
+	public void inContext() {
+		collector = new ResultCollector();
+		core = mock(InfinitestCore.class);
+	}
 
-    @Test
-    public void canAttachAndDetachFromCores()
-    {
-        collector.attachCore(core);
-        collector.detachCore(core);
+	@Test
+	public void canAttachAndDetachFromCores() {
+		collector.attachCore(core);
+		collector.detachCore(core);
 
-        verify(core).addTestQueueListener(any(TestQueueListener.class));
-        verify(core).addTestResultsListener(collector);
-        verify(core).addDisabledTestListener(collector);
-        verify(core).removeTestQueueListener(any(TestQueueListener.class));
-        verify(core).removeTestResultsListener(collector);
-        verify(core).removeDisabledTestListener(collector);
-    }
+		verify(core).addTestQueueListener(any(TestQueueListener.class));
+		verify(core).addTestResultsListener(collector);
+		verify(core).addDisabledTestListener(collector);
+		verify(core).removeTestQueueListener(any(TestQueueListener.class));
+		verify(core).removeTestResultsListener(collector);
+		verify(core).removeDisabledTestListener(collector);
+	}
 
-    @Test
-    public void shouldRemoveFailuresForACoreWhenItIsDetached()
-    {
-        TestEvent event = withFailingMethod("method1");
-        TestCaseEvent caseEvent = new TestCaseEvent(TEST_NAME, this, new TestResults(event));
-        when(core.isEventSourceFor(caseEvent)).thenReturn(true);
+	@Test
+	public void shouldRemoveFailuresForACoreWhenItIsDetached() {
+		TestEvent event = withFailingMethod("method1");
+		TestCaseEvent caseEvent = new TestCaseEvent(TEST_NAME, this, new TestResults(event));
+		when(core.isEventSourceFor(caseEvent)).thenReturn(true);
 
-        collector.testCaseComplete(caseEvent);
-        assertTrue(collector.hasFailures());
+		collector.testCaseComplete(caseEvent);
+		assertTrue(collector.hasFailures());
 
-        collector.detachCore(core);
-        assertFalse(collector.hasFailures());
+		collector.detachCore(core);
+		assertFalse(collector.hasFailures());
 
-        verify(core).removeTestQueueListener(null);
-        verify(core).removeTestResultsListener(collector);
-        verify(core).removeDisabledTestListener(collector);
-    }
+		verify(core).removeTestQueueListener(null);
+		verify(core).removeTestResultsListener(collector);
+		verify(core).removeDisabledTestListener(collector);
+	}
 
-    private static TestEvent withFailingMethod(String methodName)
-    {
-        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
-    }
+	private static TestEvent withFailingMethod(String methodName) {
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+	}
 }

@@ -21,45 +21,39 @@
  */
 package org.infinitest.intellij.idea.language;
 
-import javax.swing.Icon;
+import javax.swing.*;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.editor.markup.*;
+import com.intellij.openapi.util.*;
 
-class InfinitestGutterIconRenderer extends GutterIconRenderer
-{
-    private final InnerClassFriendlyTestEvent event;
+class InfinitestGutterIconRenderer extends GutterIconRenderer {
+	private final InnerClassFriendlyTestEvent event;
 
-    public InfinitestGutterIconRenderer(InnerClassFriendlyTestEvent event)
-    {
-        this.event = event;
-    }
+	public InfinitestGutterIconRenderer(InnerClassFriendlyTestEvent event) {
+		this.event = event;
+	}
 
-    @NotNull
-    @Override
-    public Icon getIcon()
-    {
-        return IconLoader.getIcon("/infinitest-gutter.png");
-    }
+	@NotNull
+	@Override
+	public Icon getIcon() {
+		return IconLoader.getIcon("/infinitest-gutter.png");
+	}
 
-    @Override
-    public String getTooltipText()
-    {
-        String message = event.getMessage();
+	@Override
+	public String getTooltipText() {
+		String message = event.getMessage();
 
-        message = formatMessage(message);
+		message = formatMessage(message);
 
-        return event.getErrorClassName() + "(" + message + ")";
-    }
+		return event.getErrorClassName() + "(" + message + ")";
+	}
 
-    private String formatMessage(String message)
-    {
-        if (message == null)
-        {
-            return "no message";
-        }
-        return message.replace("<", "&lt;").replace(">", "&gt;");
-    }
+	private String formatMessage(String message) {
+		if (message == null) {
+			return "no message";
+		}
+		return message.replace("<", "&lt;").replace(">", "&gt;");
+	}
 }

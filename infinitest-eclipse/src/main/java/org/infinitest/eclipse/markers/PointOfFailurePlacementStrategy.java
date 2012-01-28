@@ -21,28 +21,24 @@
  */
 package org.infinitest.eclipse.markers;
 
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.resources.IResource;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.TestEvent;
+import org.eclipse.core.resources.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
 
-public class PointOfFailurePlacementStrategy implements MarkerPlacementStrategy
-{
-    private final ResourceLookup lookup;
+public class PointOfFailurePlacementStrategy implements MarkerPlacementStrategy {
+	private final ResourceLookup lookup;
 
-    public PointOfFailurePlacementStrategy(ResourceLookup lookup)
-    {
-        this.lookup = lookup;
-    }
+	public PointOfFailurePlacementStrategy(ResourceLookup lookup) {
+		this.lookup = lookup;
+	}
 
-    public MarkerPlacement getPlacement(TestEvent event)
-    {
-        List<IResource> resources = lookup.findResourcesForClassName(event.getPointOfFailure().getClassName());
-        if (resources.isEmpty())
-        {
-            return null;
-        }
-        return new MarkerPlacement(resources.get(0), event.getPointOfFailure().getLineNumber());
-    }
+	public MarkerPlacement getPlacement(TestEvent event) {
+		List<IResource> resources = lookup.findResourcesForClassName(event.getPointOfFailure().getClassName());
+		if (resources.isEmpty()) {
+			return null;
+		}
+		return new MarkerPlacement(resources.get(0), event.getPointOfFailure().getLineNumber());
+	}
 }

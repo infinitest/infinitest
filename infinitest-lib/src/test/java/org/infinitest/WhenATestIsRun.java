@@ -25,35 +25,31 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Comparator;
+import java.util.*;
 
-import org.infinitest.testrunner.TestResultsListener;
-import org.infinitest.testrunner.TestRunner;
-import org.junit.Test;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenATestIsRun
-{
-    @Test
-    public void shouldEvent()
-    {
-        EventNormalizer normalizer = new EventNormalizer(new ControlledEventQueue());
-        assertNotNull(normalizer.consoleEventNormalizer(new ConsoleListenerAdapter()));
-    }
+public class WhenATestIsRun {
+	@Test
+	public void shouldEvent() {
+		EventNormalizer normalizer = new EventNormalizer(new ControlledEventQueue());
+		assertNotNull(normalizer.consoleEventNormalizer(new ConsoleListenerAdapter()));
+	}
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void shouldFireEventsForConsoleUpdates()
-    {
-        TestRunner runner = mock(TestRunner.class);
+	@Test
+	@SuppressWarnings("unchecked")
+	public void shouldFireEventsForConsoleUpdates() {
+		TestRunner runner = mock(TestRunner.class);
 
-        DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
-        ConsoleListenerAdapter listener = new ConsoleListenerAdapter();
-        core.addConsoleOutputListener(listener);
-        core.removeConsoleOutputListener(listener);
+		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
+		ConsoleListenerAdapter listener = new ConsoleListenerAdapter();
+		core.addConsoleOutputListener(listener);
+		core.removeConsoleOutputListener(listener);
 
-        verify(runner).addTestResultsListener(any(TestResultsListener.class));
-        verify(runner).setTestPriority(any(Comparator.class));
-        verify(runner).addConsoleOutputListener(any(ConsoleOutputListener.class));
-        verify(runner).removeConsoleOutputListener(any(ConsoleOutputListener.class));
-    }
+		verify(runner).addTestResultsListener(any(TestResultsListener.class));
+		verify(runner).setTestPriority(any(Comparator.class));
+		verify(runner).addConsoleOutputListener(any(ConsoleOutputListener.class));
+		verify(runner).removeConsoleOutputListener(any(ConsoleOutputListener.class));
+	}
 }

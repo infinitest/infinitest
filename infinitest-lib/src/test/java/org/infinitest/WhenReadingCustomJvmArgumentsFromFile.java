@@ -27,85 +27,73 @@ import static com.google.common.io.Files.*;
 import static org.infinitest.FileCustomJvmArgumentReader.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenReadingCustomJvmArgumentsFromFile
-{
-    private File tempDirectory;
-    private File file;
-    private FileCustomJvmArgumentReader reader;
+public class WhenReadingCustomJvmArgumentsFromFile {
+	private File tempDirectory;
+	private File file;
+	private FileCustomJvmArgumentReader reader;
 
-    @Before
-    public void setUp() throws IOException
-    {
-        tempDirectory = new File(System.getProperty("java.io.tmpdir"));
-        assertTrue(tempDirectory.exists());
-        assertTrue(tempDirectory.exists());
-        file = new File(tempDirectory, FILE_NAME);
-        file.createNewFile();
-        assertTrue("Failed to create arguments file.", file.exists());
+	@Before
+	public void setUp() throws IOException {
+		tempDirectory = new File(System.getProperty("java.io.tmpdir"));
+		assertTrue(tempDirectory.exists());
+		assertTrue(tempDirectory.exists());
+		file = new File(tempDirectory, FILE_NAME);
+		file.createNewFile();
+		assertTrue("Failed to create arguments file.", file.exists());
 
-        reader = new FileCustomJvmArgumentReader(tempDirectory);
-    }
+		reader = new FileCustomJvmArgumentReader(tempDirectory);
+	}
 
-    @After
-    public void tearDown()
-    {
-        // assertTrue("Failed to delete arguments file.", file.delete());
-        file.delete();
-    }
+	@After
+	public void tearDown() {
+		// assertTrue("Failed to delete arguments file.", file.delete());
+		file.delete();
+	}
 
-    @Test
-    public void shouldReturnEmptyListIfDirectoryDoesNotExists()
-    {
-        FileCustomJvmArgumentReader argReader = new FileCustomJvmArgumentReader(new File("fileThatDoesNotExist"));
+	@Test
+	public void shouldReturnEmptyListIfDirectoryDoesNotExists() {
+		FileCustomJvmArgumentReader argReader = new FileCustomJvmArgumentReader(new File("fileThatDoesNotExist"));
 
-        List<String> arguments = argReader.readCustomArguments();
+		List<String> arguments = argReader.readCustomArguments();
 
-        assertNotNull(arguments);
-        assertTrue(arguments.isEmpty());
-    }
+		assertNotNull(arguments);
+		assertTrue(arguments.isEmpty());
+	}
 
-    @Test
-    public void shouldReturnEmptyListIfFileIsEmpty()
-    {
-        List<String> arguments = reader.readCustomArguments();
+	@Test
+	public void shouldReturnEmptyListIfFileIsEmpty() {
+		List<String> arguments = reader.readCustomArguments();
 
-        assertNotNull(arguments);
-        assertTrue(arguments.isEmpty());
-    }
+		assertNotNull(arguments);
+		assertTrue(arguments.isEmpty());
+	}
 
-    @Test
-    public void shouldReturnArgumentsAsListIfFileHasContents() throws IOException
-    {
-        String singleArgument = writeArguments("-DsomeArg=foo");
+	@Test
+	public void shouldReturnArgumentsAsListIfFileHasContents() throws IOException {
+		String singleArgument = writeArguments("-DsomeArg=foo");
 
-        List<String> arguments = reader.readCustomArguments();
+		List<String> arguments = reader.readCustomArguments();
 
-        assertEquals(newArrayList(singleArgument), arguments);
-    }
+		assertEquals(newArrayList(singleArgument), arguments);
+	}
 
-    @Test
-    public void shouldReturnEachArgumentAsSeparateEntryInList() throws IOException
-    {
-        writeArguments("-DsomeArg=foo -DanotherArg=foo");
+	@Test
+	public void shouldReturnEachArgumentAsSeparateEntryInList() throws IOException {
+		writeArguments("-DsomeArg=foo -DanotherArg=foo");
 
-        List<String> arguments = reader.readCustomArguments();
+		List<String> arguments = reader.readCustomArguments();
 
-        assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
-    }
+		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+	}
 
-    private String writeArguments(String arguments) throws IOException, FileNotFoundException
-    {
-        String singleArgument = arguments;
-        write(singleArgument, file, UTF_8);
-        return singleArgument;
-    }
+	private String writeArguments(String arguments) throws IOException, FileNotFoundException {
+		String singleArgument = arguments;
+		write(singleArgument, file, UTF_8);
+		return singleArgument;
+	}
 }

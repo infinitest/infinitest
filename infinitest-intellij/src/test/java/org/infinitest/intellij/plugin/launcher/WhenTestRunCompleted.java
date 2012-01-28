@@ -21,157 +21,137 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.ResultCollector;
-import org.infinitest.TestControl;
-import org.infinitest.intellij.FakeInfinitestAnnotator;
-import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
-import org.infinitest.intellij.plugin.launcher.PresenterListener;
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.mockito.Mockito.*;
 
-public class WhenTestRunCompleted
-{
+import org.infinitest.*;
+import org.infinitest.intellij.*;
+import org.infinitest.intellij.plugin.swingui.*;
+import org.junit.*;
 
-    private InfinitestView mockView;
-    private InfinitestPresenter presenter;
-    private InfinitestCore mockCore;
-    private PresenterListener mockPresenterListener;
-    private PresenterListener mockPresenterListenerBis;
-    private ResultCollector mockResultCollector;
+public class WhenTestRunCompleted {
 
-    @Before
-    public void inContext()
-    {
-        mockView = mock(InfinitestView.class);
-        mockCore = mock(InfinitestCore.class);
-        mockPresenterListener = mock(PresenterListener.class);
-        mockPresenterListenerBis = mock(PresenterListener.class);
-        mockResultCollector = new ResultCollector(mockCore);
+	private InfinitestView mockView;
+	private InfinitestPresenter presenter;
+	private InfinitestCore mockCore;
+	private PresenterListener mockPresenterListener;
+	private PresenterListener mockPresenterListenerBis;
+	private ResultCollector mockResultCollector;
 
-        TestControl mockTestControl = mock(TestControl.class);
+	@Before
+	public void inContext() {
+		mockView = mock(InfinitestView.class);
+		mockCore = mock(InfinitestCore.class);
+		mockPresenterListener = mock(PresenterListener.class);
+		mockPresenterListenerBis = mock(PresenterListener.class);
+		mockResultCollector = new ResultCollector(mockCore);
 
-        presenter = new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl,
-                        new FakeInfinitestAnnotator());
-    }
+		TestControl mockTestControl = mock(TestControl.class);
 
-    @Test
-    public void shouldNotCallPresenterListener()
-    {
-        presenter.onComplete();
+		presenter = new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+	}
 
-        verify(mockPresenterListener, never()).testRunCompleted();
-        verify(mockPresenterListener, never()).testRunStarted();
-        verify(mockPresenterListener, never()).testRunWaiting();
-    }
+	@Test
+	public void shouldNotCallPresenterListener() {
+		presenter.onComplete();
 
-    @Test
-    public void shouldDoNothingWhenNull()
-    {
-        presenter.addPresenterListener(null);
+		verify(mockPresenterListener, never()).testRunCompleted();
+		verify(mockPresenterListener, never()).testRunStarted();
+		verify(mockPresenterListener, never()).testRunWaiting();
+	}
 
-        presenter.onComplete();
+	@Test
+	public void shouldDoNothingWhenNull() {
+		presenter.addPresenterListener(null);
 
-        verify(mockPresenterListener, never()).testRunCompleted();
-    }
+		presenter.onComplete();
 
-    @Test
-    public void shouldCallCompleted()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
+		verify(mockPresenterListener, never()).testRunCompleted();
+	}
 
-        presenter.onComplete();
+	@Test
+	public void shouldCallCompleted() {
+		presenter.addPresenterListener(mockPresenterListener);
 
-        verify(mockPresenterListener).testRunCompleted();
-        verify(mockPresenterListener, never()).testRunStarted();
-        verify(mockPresenterListener, never()).testRunWaiting();
-    }
+		presenter.onComplete();
 
-    @Test
-    public void shouldCallCompletedTwice()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        presenter.addPresenterListener(mockPresenterListenerBis);
+		verify(mockPresenterListener).testRunCompleted();
+		verify(mockPresenterListener, never()).testRunStarted();
+		verify(mockPresenterListener, never()).testRunWaiting();
+	}
 
-        presenter.onComplete();
+	@Test
+	public void shouldCallCompletedTwice() {
+		presenter.addPresenterListener(mockPresenterListener);
+		presenter.addPresenterListener(mockPresenterListenerBis);
 
-        verify(mockPresenterListener).testRunCompleted();
-        verify(mockPresenterListenerBis).testRunCompleted();
-    }
+		presenter.onComplete();
 
-    /*@Test
-    FIXME: mocking Succeed/Failed state don't work for me
-    public void shouldCallSucceed()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        when(presenter.isSuccess()).thenReturn(true);
+		verify(mockPresenterListener).testRunCompleted();
+		verify(mockPresenterListenerBis).testRunCompleted();
+	}
 
-        presenter.onComplete();
+	/*
+	 * @Test FIXME: mocking Succeed/Failed state don't work for me public void
+	 * shouldCallSucceed() {
+	 * presenter.addPresenterListener(mockPresenterListener);
+	 * when(presenter.isSuccess()).thenReturn(true);
+	 * 
+	 * presenter.onComplete();
+	 * 
+	 * verify(mockPresenterListener, never()).testRunFailed();
+	 * verify(mockPresenterListener).testRunSucceed(); }
+	 * 
+	 * @Test public void shouldCallFailed() {
+	 * presenter.addPresenterListener(mockPresenterListener);
+	 * when(presenter.isSuccess()).thenReturn(false);
+	 * 
+	 * presenter.onComplete();
+	 * 
+	 * verify(mockPresenterListener).testRunFailed();
+	 * verify(mockPresenterListener, never()).testRunSucceed(); }
+	 */
 
-        verify(mockPresenterListener, never()).testRunFailed();
-        verify(mockPresenterListener).testRunSucceed();
-    }
+	@Test
+	public void shouldCallWait() {
+		presenter.addPresenterListener(mockPresenterListener);
 
-    @Test
-    public void shouldCallFailed()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        when(presenter.isSuccess()).thenReturn(false);
+		presenter.onWait();
 
-        presenter.onComplete();
+		verify(mockPresenterListener, never()).testRunCompleted();
+		verify(mockPresenterListener, never()).testRunStarted();
+		verify(mockPresenterListener).testRunWaiting();
+	}
 
-        verify(mockPresenterListener).testRunFailed();
-        verify(mockPresenterListener, never()).testRunSucceed();
-    }*/
+	@Test
+	public void shouldCallWaitTwice() {
+		presenter.addPresenterListener(mockPresenterListener);
+		presenter.addPresenterListener(mockPresenterListenerBis);
 
-    @Test
-    public void shouldCallWait()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
+		presenter.onWait();
 
-        presenter.onWait();
+		verify(mockPresenterListener).testRunWaiting();
+		verify(mockPresenterListenerBis).testRunWaiting();
+	}
 
-        verify(mockPresenterListener, never()).testRunCompleted();
-        verify(mockPresenterListener, never()).testRunStarted();
-        verify(mockPresenterListener).testRunWaiting();
-    }
+	@Test
+	public void shouldCallRun() {
+		presenter.addPresenterListener(mockPresenterListener);
 
-    @Test
-    public void shouldCallWaitTwice()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        presenter.addPresenterListener(mockPresenterListenerBis);
+		presenter.onRun();
 
-        presenter.onWait();
+		verify(mockPresenterListener, never()).testRunCompleted();
+		verify(mockPresenterListener).testRunStarted();
+		verify(mockPresenterListener, never()).testRunWaiting();
+	}
 
-        verify(mockPresenterListener).testRunWaiting();
-        verify(mockPresenterListenerBis).testRunWaiting();
-    }
+	@Test
+	public void shouldCallRunTwice() {
+		presenter.addPresenterListener(mockPresenterListener);
+		presenter.addPresenterListener(mockPresenterListenerBis);
 
-     @Test
-    public void shouldCallRun()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
+		presenter.onRun();
 
-        presenter.onRun();
-
-        verify(mockPresenterListener, never()).testRunCompleted();
-        verify(mockPresenterListener).testRunStarted();
-        verify(mockPresenterListener, never()).testRunWaiting();
-    }
-
-    @Test
-    public void shouldCallRunTwice()
-    {
-        presenter.addPresenterListener(mockPresenterListener);
-        presenter.addPresenterListener(mockPresenterListenerBis);
-
-        presenter.onRun();
-
-        verify(mockPresenterListener).testRunStarted();
-        verify(mockPresenterListenerBis).testRunStarted();
-    }
+		verify(mockPresenterListener).testRunStarted();
+		verify(mockPresenterListenerBis).testRunStarted();
+	}
 }

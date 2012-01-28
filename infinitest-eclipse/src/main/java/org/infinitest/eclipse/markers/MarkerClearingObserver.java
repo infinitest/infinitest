@@ -21,23 +21,20 @@
  */
 package org.infinitest.eclipse.markers;
 
-import org.infinitest.eclipse.UpdateListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.infinitest.eclipse.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 @Component
-public class MarkerClearingObserver implements UpdateListener
-{
-    private final MarkerRegistry registry;
+public class MarkerClearingObserver implements UpdateListener {
+	private final MarkerRegistry registry;
 
-    @Autowired
-    public MarkerClearingObserver(SlowMarkerRegistry registry)
-    {
-        this.registry = registry;
-    }
+	@Autowired
+	public MarkerClearingObserver(SlowMarkerRegistry registry) {
+		this.registry = registry;
+	}
 
-    public void projectsUpdated()
-    {
-        registry.clear();
-    }
+	public void projectsUpdated() {
+		registry.clear();
+	}
 }

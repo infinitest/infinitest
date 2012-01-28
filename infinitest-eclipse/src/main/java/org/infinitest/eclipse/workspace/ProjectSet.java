@@ -21,20 +21,18 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.io.File;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
 
-public interface ProjectSet
-{
-    ProjectFacade findProject(IPath path);
+public interface ProjectSet {
+	ProjectFacade findProject(IPath path);
 
-    List<File> outputDirectories(EclipseProject project) throws JavaModelException;
+	List<File> outputDirectories(EclipseProject project) throws JavaModelException;
 
-    List<ProjectFacade> projects();
+	List<ProjectFacade> projects();
 
-    boolean hasErrors() throws CoreException;
+	boolean hasErrors() throws CoreException;
 }

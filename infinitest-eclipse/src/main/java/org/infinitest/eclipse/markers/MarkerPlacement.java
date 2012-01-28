@@ -21,26 +21,22 @@
  */
 package org.infinitest.eclipse.markers;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.*;
 
-public class MarkerPlacement
-{
-    private final IResource resource;
-    private final int lineNumber;
+public class MarkerPlacement {
+	private final IResource resource;
+	private final int lineNumber;
 
-    public MarkerPlacement(IResource resource, int lineNumber)
-    {
-        this.resource = resource;
-        this.lineNumber = lineNumber;
-    }
+	public MarkerPlacement(IResource resource, int lineNumber) {
+		this.resource = resource;
+		this.lineNumber = lineNumber;
+	}
 
-    public IResource getResource()
-    {
-        return resource;
-    }
+	public IResource getResource() {
+		return resource;
+	}
 
-    public int getLineNumber()
-    {
-        return lineNumber;
-    }
+	public int getLineNumber() {
+		return lineNumber;
+	}
 }

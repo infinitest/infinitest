@@ -21,14 +21,12 @@
  */
 package org.infinitest;
 
-import junit.framework.AssertionFailedError;
+import junit.framework.*;
 
-public abstract class Throwables
-{
+public abstract class Throwables {
 
-    public static boolean isTestFailure(Throwable exception)
-    {
-        return exception instanceof AssertionFailedError || exception instanceof AssertionError;
-    }
+	public static boolean isTestFailure(Throwable exception) {
+		return (exception instanceof AssertionFailedError) || (exception instanceof AssertionError);
+	}
 
 }

@@ -24,47 +24,40 @@ package org.infinitest.eclipse.markers;
 import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
 
-import java.util.List;
+import java.util.*;
 
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.TestEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 @Component
-public class MarkerPlacer
-{
-    private final List<MarkerPlacementStrategy> placementStrategyChain = newArrayList();
+public class MarkerPlacer {
+	private final List<MarkerPlacementStrategy> placementStrategyChain = newArrayList();
 
-    @Autowired
-    public MarkerPlacer(ResourceLookup lookup)
-    {
-        addLink(new PointOfFailurePlacementStrategy(lookup));
-        addLink(new StackTracePlacementStrategy(lookup));
-        addLink(new TestNamePlacementStrategy(lookup));
-        addLink(new WorkspaceFallbackPlacementStrategy(lookup.workspaceRoot()));
-    }
+	@Autowired
+	public MarkerPlacer(ResourceLookup lookup) {
+		addLink(new PointOfFailurePlacementStrategy(lookup));
+		addLink(new StackTracePlacementStrategy(lookup));
+		addLink(new TestNamePlacementStrategy(lookup));
+		addLink(new WorkspaceFallbackPlacementStrategy(lookup.workspaceRoot()));
+	}
 
-    void addLink(MarkerPlacementStrategy link)
-    {
-        placementStrategyChain.add(link);
-    }
+	void addLink(MarkerPlacementStrategy link) {
+		placementStrategyChain.add(link);
+	}
 
-    public MarkerPlacement findPlacement(TestEvent event)
-    {
-        for (MarkerPlacementStrategy each : placementStrategyChain)
-        {
-            MarkerPlacement placement = each.getPlacement(event);
-            if (placement != null)
-            {
-                return placement;
-            }
-        }
-        return null;
-    }
+	public MarkerPlacement findPlacement(TestEvent event) {
+		for (MarkerPlacementStrategy each : placementStrategyChain) {
+			MarkerPlacement placement = each.getPlacement(event);
+			if (placement != null) {
+				return placement;
+			}
+		}
+		return null;
+	}
 
-    public List<MarkerPlacementStrategy> getLinks()
-    {
-        return unmodifiableList(placementStrategyChain);
-    }
+	public List<MarkerPlacementStrategy> getLinks() {
+		return unmodifiableList(placementStrategyChain);
+	}
 }

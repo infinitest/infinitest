@@ -27,27 +27,23 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.infinitest.util.CollectionUtils.*;
 import static org.junit.Assert.*;
 
-import java.util.HashSet;
+import java.util.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenRetrievingFirstElementFromCollection
-{
-    @Test
-    public void shouldReturnFirstElementFromList()
-    {
-        assertThat(first(asList("foo", "bar", "baz")), is("foo"));
-    }
+public class WhenRetrievingFirstElementFromCollection {
+	@Test
+	public void shouldReturnFirstElementFromList() {
+		assertThat(first(asList("foo", "bar", "baz")), is("foo"));
+	}
 
-    @Test
-    public void shouldReturnAnyElementFromSet()
-    {
-        assertThat(first(singleton("foo")), is("foo"));
-    }
+	@Test
+	public void shouldReturnAnyElementFromSet() {
+		assertThat(first(singleton("foo")), is("foo"));
+	}
 
-    @Test
-    public void shouldReturnNullForEmptySet()
-    {
-        assertThat(first(new HashSet<Object>()), is(nullValue()));
-    }
+	@Test
+	public void shouldReturnNullForEmptySet() {
+		assertThat(first(new HashSet<Object>()), is(nullValue()));
+	}
 }

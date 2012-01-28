@@ -21,28 +21,23 @@
  */
 package org.infinitest.intellij.idea;
 
-import org.infinitest.intellij.CompilationNotifier;
+import org.infinitest.intellij.*;
 
-import com.intellij.openapi.compiler.CompilationStatusListener;
-import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.compiler.*;
+import com.intellij.openapi.project.*;
 
-public class IdeaCompilationNotifier implements CompilationNotifier
-{
-    private final Project project;
+public class IdeaCompilationNotifier implements CompilationNotifier {
+	private final Project project;
 
-    public IdeaCompilationNotifier(Project project)
-    {
-        this.project = project;
-    }
+	public IdeaCompilationNotifier(Project project) {
+		this.project = project;
+	}
 
-    public void addCompilationStatusListener(CompilationStatusListener compilationListener)
-    {
-        CompilerManager.getInstance(project).addCompilationStatusListener(compilationListener);
-    }
+	public void addCompilationStatusListener(CompilationStatusListener compilationListener) {
+		CompilerManager.getInstance(project).addCompilationStatusListener(compilationListener);
+	}
 
-    public void removeCompilationStatusListener(CompilationStatusListener compilationListener)
-    {
-        CompilerManager.getInstance(project).removeCompilationStatusListener(compilationListener);
-    }
+	public void removeCompilationStatusListener(CompilationStatusListener compilationListener) {
+		CompilerManager.getInstance(project).removeCompilationStatusListener(compilationListener);
+	}
 }

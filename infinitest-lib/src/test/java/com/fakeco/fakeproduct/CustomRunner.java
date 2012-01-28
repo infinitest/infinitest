@@ -21,12 +21,10 @@
  */
 package com.fakeco.fakeproduct;
 
-import org.junit.internal.builders.IgnoredClassRunner;
+import org.junit.internal.builders.*;
 
-public class CustomRunner extends IgnoredClassRunner
-{
-    public CustomRunner(Class<?> klass)
-    {
-        super(klass);
-    }
+public class CustomRunner extends IgnoredClassRunner {
+	public CustomRunner(Class<?> klass) {
+		super(klass);
+	}
 }

@@ -23,48 +23,38 @@ package org.infinitest.eclipse.workspace;
 
 import static org.mockito.Mockito.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
 
-public abstract class JavaProjectTestSupport
-{
-    public static final String PATH_TO_WORKSPACE = "/path/to/workspace";
+public abstract class JavaProjectTestSupport {
+	public static final String PATH_TO_WORKSPACE = "/path/to/workspace";
 
-    public static void expectProjectLocationFor(IJavaProject project, String projectName) throws JavaModelException
-    {
-        IResource projectResource = mock(IResource.class);
-        when(projectResource.getLocation()).thenReturn(new Path(PATH_TO_WORKSPACE + projectName));
-        when(project.getCorrespondingResource()).thenReturn(projectResource);
-    }
+	public static void expectProjectLocationFor(IJavaProject project, String projectName) throws JavaModelException {
+		IResource projectResource = mock(IResource.class);
+		when(projectResource.getLocation()).thenReturn(new Path(PATH_TO_WORKSPACE + projectName));
+		when(project.getCorrespondingResource()).thenReturn(projectResource);
+	}
 
-    public static void outputLocationExpectation(IJavaProject project, String baseDir) throws JavaModelException
-    {
-        when(project.getOutputLocation()).thenReturn(new Path(baseDir + "/target/classes/"));
-    }
+	public static void outputLocationExpectation(IJavaProject project, String baseDir) throws JavaModelException {
+		when(project.getOutputLocation()).thenReturn(new Path(baseDir + "/target/classes/"));
+	}
 
-    public static void expectClasspathFor(IJavaProject project, IClasspathEntry... entries) throws JavaModelException
-    {
-        when(project.getResolvedClasspath(true)).thenReturn(entries);
-    }
+	public static void expectClasspathFor(IJavaProject project, IClasspathEntry... entries) throws JavaModelException {
+		when(project.getResolvedClasspath(true)).thenReturn(entries);
+	}
 
-    public static IJavaProject createMockProject(String projectPath, IClasspathEntry... entries)
-                    throws JavaModelException, URISyntaxException
-    {
-        IJavaProject javaProject = mock(IJavaProject.class);
-        IProject project = mock(IProject.class);
-        when(project.getLocationURI()).thenReturn(new URI(projectPath));
-        when(javaProject.getProject()).thenReturn(project);
-        when(javaProject.getPath()).thenReturn(new Path(projectPath));
-        expectProjectLocationFor(javaProject, projectPath);
-        expectClasspathFor(javaProject, entries);
-        outputLocationExpectation(javaProject, projectPath);
-        return javaProject;
-    }
+	public static IJavaProject createMockProject(String projectPath, IClasspathEntry... entries) throws JavaModelException, URISyntaxException {
+		IJavaProject javaProject = mock(IJavaProject.class);
+		IProject project = mock(IProject.class);
+		when(project.getLocationURI()).thenReturn(new URI(projectPath));
+		when(javaProject.getProject()).thenReturn(project);
+		when(javaProject.getPath()).thenReturn(new Path(projectPath));
+		expectProjectLocationFor(javaProject, projectPath);
+		expectClasspathFor(javaProject, entries);
+		outputLocationExpectation(javaProject, projectPath);
+		return javaProject;
+	}
 }

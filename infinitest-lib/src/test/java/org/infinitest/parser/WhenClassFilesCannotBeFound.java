@@ -25,23 +25,20 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
-import javassist.NotFoundException;
+import javassist.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenClassFilesCannotBeFound
-{
-    @Test
-    public void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException
-    {
-        ClassParser mockParser = mock(ClassParser.class);
-        JavaClassBuilder builder = new JavaClassBuilder(mockParser);
-        NotFoundException cause = new NotFoundException("");
-        when(mockParser.parse(any(File.class))).thenThrow(new RuntimeException(cause));
+public class WhenClassFilesCannotBeFound {
+	@Test
+	public void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException {
+		ClassParser mockParser = mock(ClassParser.class);
+		JavaClassBuilder builder = new JavaClassBuilder(mockParser);
+		NotFoundException cause = new NotFoundException("");
+		when(mockParser.parse(any(File.class))).thenThrow(new RuntimeException(cause));
 
-        assertNull(builder.loadClass(new File("")));
-    }
+		assertNull(builder.loadClass(new File("")));
+	}
 }

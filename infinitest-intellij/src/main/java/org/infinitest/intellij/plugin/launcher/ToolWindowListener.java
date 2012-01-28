@@ -21,61 +21,49 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import org.infinitest.intellij.idea.window.IdeaWindowHelper;
+import javax.swing.*;
 
-import javax.swing.Icon;
+import org.infinitest.intellij.idea.window.*;
+
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.wm.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: aurelien
- * Date: 09/06/11
- * Time: 21:26
+ * Created by IntelliJ IDEA. User: aurelien Date: 09/06/11 Time: 21:26
  */
-public class ToolWindowListener implements PresenterListener
-{
-    ToolWindowManager toolWindowManager;
-    String toolWindowId;
+public class ToolWindowListener implements PresenterListener {
+	ToolWindowManager toolWindowManager;
+	String toolWindowId;
 
-    public ToolWindowListener(ToolWindowManager toolWindowManager, String toolWindowId)
-    {
-        this.toolWindowManager = toolWindowManager;
-        this.toolWindowId = toolWindowId;
-    }
+	public ToolWindowListener(ToolWindowManager toolWindowManager, String toolWindowId) {
+		this.toolWindowManager = toolWindowManager;
+		this.toolWindowId = toolWindowId;
+	}
 
-    public void testRunCompleted()
-    {
-        // nothing to do here
-    }
+	public void testRunCompleted() {
+		// nothing to do here
+	}
 
-    public void testRunSucceed()
-    {
-        editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.SUCCESS_ICON_PATH));
-    }
+	public void testRunSucceed() {
+		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.SUCCESS_ICON_PATH));
+	}
 
-    public void testRunFailed()
-    {
-        editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.FAILURE_ICON_PATH));
-    }
+	public void testRunFailed() {
+		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.FAILURE_ICON_PATH));
+	}
 
-    public void testRunStarted()
-    {
-        editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.RUNNING_ICON_PATH));
-    }
+	public void testRunStarted() {
+		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.RUNNING_ICON_PATH));
+	}
 
-    public void testRunWaiting()
-    {
-        editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.WAITING_ICON_PATH));
-    }
+	public void testRunWaiting() {
+		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.WAITING_ICON_PATH));
+	}
 
-    private void editToolWindowIcon(Icon icon)
-    {
-        ToolWindow toolWindow = toolWindowManager.getToolWindow(toolWindowId);
-        if(toolWindow != null)
-        {
-            toolWindow.setIcon(icon);
-        }
-    }
+	private void editToolWindowIcon(Icon icon) {
+		ToolWindow toolWindow = toolWindowManager.getToolWindow(toolWindowId);
+		if (toolWindow != null) {
+			toolWindow.setIcon(icon);
+		}
+	}
 }

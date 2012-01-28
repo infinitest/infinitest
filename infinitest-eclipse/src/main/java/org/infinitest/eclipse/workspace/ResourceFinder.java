@@ -21,25 +21,22 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.io.File;
-import java.net.URI;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
 
-public interface ResourceFinder
-{
-    IProject getProject(URI projectUri);
+public interface ResourceFinder {
+	IProject getProject(URI projectUri);
 
-    IResource findResourceForSourceFile(String sourceFile);
+	IResource findResourceForSourceFile(String sourceFile);
 
-    IWorkspaceRoot workspaceRoot();
+	IWorkspaceRoot workspaceRoot();
 
-    List<IJavaProject> getJavaProjects();
+	List<IJavaProject> getJavaProjects();
 
-    File findFileFor(IPath path);
+	File findFileFor(IPath path);
 }

@@ -21,22 +21,18 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.widgets.*;
 
-final class DialogDeactivationDisposer extends ShellAdapter
-{
-    private final Shell dialog;
+final class DialogDeactivationDisposer extends ShellAdapter {
+	private final Shell dialog;
 
-    DialogDeactivationDisposer(Shell dialog)
-    {
-        this.dialog = dialog;
-    }
+	DialogDeactivationDisposer(Shell dialog) {
+		this.dialog = dialog;
+	}
 
-    @Override
-    public void shellDeactivated(ShellEvent arg0)
-    {
-        dialog.dispose();
-    }
+	@Override
+	public void shellDeactivated(ShellEvent arg0) {
+		dialog.dispose();
+	}
 }

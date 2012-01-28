@@ -21,11 +21,10 @@
  */
 package org.infinitest;
 
-public interface ConcurrencyController
-{
-    void acquire() throws InterruptedException;
+public interface ConcurrencyController {
+	void acquire() throws InterruptedException;
 
-    void release();
+	void release();
 
-    void setCoreCount(int coreCount);
+	void setCoreCount(int coreCount);
 }

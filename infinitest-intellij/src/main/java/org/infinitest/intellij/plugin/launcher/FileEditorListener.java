@@ -21,47 +21,37 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import com.intellij.codeHighlighting.HighlightingPass;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.codeHighlighting.*;
+import com.intellij.openapi.fileEditor.*;
 
-public class FileEditorListener implements PresenterListener
-{
-    FileEditorManager fileEditorManager;
+public class FileEditorListener implements PresenterListener {
+	FileEditorManager fileEditorManager;
 
-    public FileEditorListener(FileEditorManager fileEditorManager)
-    {
-        this.fileEditorManager = fileEditorManager;
-    }
+	public FileEditorListener(FileEditorManager fileEditorManager) {
+		this.fileEditorManager = fileEditorManager;
+	}
 
-    public void testRunCompleted()
-    {
-        for (FileEditor fileEditor : fileEditorManager.getSelectedEditors())
-        {
-            for (HighlightingPass highlightingPass : fileEditor.getBackgroundHighlighter().createPassesForEditor())
-            {
-                highlightingPass.applyInformationToEditor();
-            }
-        }
-    }
+	public void testRunCompleted() {
+		for (FileEditor fileEditor : fileEditorManager.getSelectedEditors()) {
+			for (HighlightingPass highlightingPass : fileEditor.getBackgroundHighlighter().createPassesForEditor()) {
+				highlightingPass.applyInformationToEditor();
+			}
+		}
+	}
 
-    public void testRunSucceed()
-    {
-        // nothing to do here
-    }
+	public void testRunSucceed() {
+		// nothing to do here
+	}
 
-    public void testRunFailed()
-    {
-        // nothing to do here
-    }
+	public void testRunFailed() {
+		// nothing to do here
+	}
 
-    public void testRunStarted()
-    {
-        // nothing to do here
-    }
+	public void testRunStarted() {
+		// nothing to do here
+	}
 
-    public void testRunWaiting()
-    {
-        // nothing to do here
-    }
+	public void testRunWaiting() {
+		// nothing to do here
+	}
 }

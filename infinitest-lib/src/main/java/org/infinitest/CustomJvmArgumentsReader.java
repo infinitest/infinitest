@@ -21,9 +21,8 @@
  */
 package org.infinitest;
 
-import java.util.List;
+import java.util.*;
 
-public interface CustomJvmArgumentsReader
-{
-    List<String> readCustomArguments();
+public interface CustomJvmArgumentsReader {
+	List<String> readCustomArguments();
 }

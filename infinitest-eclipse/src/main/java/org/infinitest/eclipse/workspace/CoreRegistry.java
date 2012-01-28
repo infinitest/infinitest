@@ -21,19 +21,18 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.net.URI;
+import java.net.*;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.eclipse.CoreLifecycleListener;
+import org.infinitest.*;
+import org.infinitest.eclipse.*;
 
-public interface CoreRegistry
-{
-    void addCore(URI projectUri, InfinitestCore core);
+public interface CoreRegistry {
+	void addCore(URI projectUri, InfinitestCore core);
 
-    InfinitestCore getCore(URI projectUri);
+	InfinitestCore getCore(URI projectUri);
 
-    void removeCore(URI projectUri);
+	void removeCore(URI projectUri);
 
-    void addLifecycleListener(CoreLifecycleListener listener);
+	void addLifecycleListener(CoreLifecycleListener listener);
 
 }

@@ -26,71 +26,61 @@ import static org.eclipse.core.resources.IMarker.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
-import org.infinitest.eclipse.markers.SlowTestMarkerInfo;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.MethodStats;
-import org.infinitest.util.EqualityTestSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.markers.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
+import org.infinitest.util.*;
+import org.junit.*;
 
-public class WhenMarkingTestsAsSlow extends EqualityTestSupport
-{
-    private static final String TEST_NAME = "com.foo.TestName";
-    private SlowTestMarkerInfo marker;
-    private ResourceLookup resourceLookup;
+public class WhenMarkingTestsAsSlow extends EqualityTestSupport {
+	private static final String TEST_NAME = "com.foo.TestName";
+	private SlowTestMarkerInfo marker;
+	private ResourceLookup resourceLookup;
 
-    @Before
-    public void inContext()
-    {
-        resourceLookup = mock(ResourceLookup.class);
-        MethodStats stats = new MethodStats("shouldRunSlowly");
-        stats.stopTime = 5000;
-        marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup);
-    }
+	@Before
+	public void inContext() {
+		resourceLookup = mock(ResourceLookup.class);
+		MethodStats stats = new MethodStats("shouldRunSlowly");
+		stats.stopTime = 5000;
+		marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup);
+	}
 
-    @Test
-    public void shouldPlaceMarkerInSlowTest() throws CoreException
-    {
-        IResource resource = mock(IResource.class);
-        when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(asList(resource));
-        assertSame(resource, marker.associatedResource());
-    }
+	@Test
+	public void shouldPlaceMarkerInSlowTest() throws CoreException {
+		IResource resource = mock(IResource.class);
+		when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(asList(resource));
+		assertSame(resource, marker.associatedResource());
+	}
 
-    @Test
-    public void shouldFallbackToWorkspaceInSlowTest() throws CoreException
-    {
-        when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(new ArrayList<IResource>());
-        IWorkspaceRoot workspaceRootResource = mock(IWorkspaceRoot.class);
-        when(resourceLookup.workspaceRoot()).thenReturn(workspaceRootResource);
-        assertSame(workspaceRootResource, marker.associatedResource());
-    }
+	@Test
+	public void shouldFallbackToWorkspaceInSlowTest() throws CoreException {
+		when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(new ArrayList<IResource>());
+		IWorkspaceRoot workspaceRootResource = mock(IWorkspaceRoot.class);
+		when(resourceLookup.workspaceRoot()).thenReturn(workspaceRootResource);
+		assertSame(workspaceRootResource, marker.associatedResource());
+	}
 
-    @Test
-    public void shouldUseWarningSeverity()
-    {
-        assertEquals(SEVERITY_WARNING, marker.attributes().get(SEVERITY));
-    }
+	@Test
+	public void shouldUseWarningSeverity() {
+		assertEquals(SEVERITY_WARNING, marker.attributes().get(SEVERITY));
+	}
 
-    @Test
-    public void shouldIndicateTestAndMethodName()
-    {
-        assertEquals("TestName.shouldRunSlowly ran in 5000ms", marker.attributes().get(MESSAGE));
-    }
+	@Test
+	public void shouldIndicateTestAndMethodName() {
+		assertEquals("TestName.shouldRunSlowly ran in 5000ms", marker.attributes().get(MESSAGE));
+	}
 
-    @Override
-    protected Object createEqualInstance()
-    {
-        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup);
-    }
+	@Override
+	protected Object createEqualInstance() {
+		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup);
+	}
 
-    @Override
-    protected Object createUnequalInstance()
-    {
-        return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup);
-    }
+	@Override
+	protected Object createUnequalInstance() {
+		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup);
+	}
 }

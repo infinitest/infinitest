@@ -21,27 +21,26 @@
  */
 package org.infinitest.parser;
 
-import java.io.File;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
-public interface JavaClass
-{
-    String getName();
+public interface JavaClass {
+	String getName();
 
-    /**
-     * Gets the collection on classes that this class depends on. i.e. the list of this classes
-     * children.
-     */
-    Collection<String> getImports();
+	/**
+	 * Gets the collection on classes that this class depends on. i.e. the list
+	 * of this classes children.
+	 */
+	Collection<String> getImports();
 
-    /**
-     * Clean up any unnecessary references to save memory
-     */
-    void dispose();
+	/**
+	 * Clean up any unnecessary references to save memory
+	 */
+	void dispose();
 
-    boolean isATest();
+	boolean isATest();
 
-    boolean locatedInClassFile();
+	boolean locatedInClassFile();
 
-    File getClassFile();
+	File getClassFile();
 }

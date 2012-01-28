@@ -27,110 +27,95 @@ import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.infinitest.eclipse.workspace.CoreSettings;
-import org.infinitest.util.InfinitestGlobalSettings;
-import org.infinitest.util.InfinitestUtils;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.preference.*;
+import org.eclipse.ui.plugin.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.util.*;
+import org.osgi.framework.*;
+import org.springframework.context.support.*;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.annotations.*;
 
 /**
  * Controls the plug-in life cycle.
  */
-public class InfinitestPlugin extends AbstractUIPlugin
-{
-    public static final String PLUGIN_ID = "org.infinitest.eclipse";
-    private static InfinitestPlugin sharedInstance;
-    private static Bundle pluginBundle;
+public class InfinitestPlugin extends AbstractUIPlugin {
+	public static final String PLUGIN_ID = "org.infinitest.eclipse";
+	private static InfinitestPlugin sharedInstance;
+	private static Bundle pluginBundle;
 
-    private ClassPathXmlApplicationContext context;
+	private ClassPathXmlApplicationContext context;
 
-    static
-    {
-        addLoggingListener(new EclipseLoggingListener());
-    }
+	static {
+		addLoggingListener(new EclipseLoggingListener());
+	}
 
-    @Override
-    // CHECKSTYLE:OFF
-    // Idiomatic OSGI and checkstyle don't like each other
-    public void start(BundleContext context) throws Exception
-    // CHECKSTYLE:ON
-    {
-        super.start(context);
-        sharedInstance = this;
-    }
+	@Override
+	// CHECKSTYLE:OFF
+	// Idiomatic OSGI and checkstyle don't like each other
+	public void start(BundleContext context) throws Exception
+	// CHECKSTYLE:ON
+	{
+		super.start(context);
+		sharedInstance = this;
+	}
 
-    @Override
-    // CHECKSTYLE:OFF
-    // Idiomatic OSGI and checkstyle don't like each other
-    public void stop(BundleContext context) throws Exception
-    // CHECKSTYLE:ON
-    {
-        sharedInstance = null;
-        super.stop(context);
-    }
+	@Override
+	// CHECKSTYLE:OFF
+	// Idiomatic OSGI and checkstyle don't like each other
+	public void stop(BundleContext context) throws Exception
+	// CHECKSTYLE:ON
+	{
+		sharedInstance = null;
+		super.stop(context);
+	}
 
-    // Idiomatic OSGI
-    public static InfinitestPlugin getInstance()
-    {
-        return sharedInstance;
-    }
+	// Idiomatic OSGI
+	public static InfinitestPlugin getInstance() {
+		return sharedInstance;
+	}
 
-    public void startContinuouslyTesting()
-    {
-        getPluginController().enable();
-    }
+	public void startContinuouslyTesting() {
+		getPluginController().enable();
+	}
 
-    @Override
-    protected void initializeDefaultPreferences(IPreferenceStore store)
-    {
-        store.setDefault(PARALLEL_CORES, 1);
-        store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
-    }
+	@Override
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		store.setDefault(PARALLEL_CORES, 1);
+		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
+	}
 
-    // Only used for testing.
-    public void setPluginBundle(Bundle bundle)
-    {
-        pluginBundle = bundle;
-    }
+	// Only used for testing.
+	public void setPluginBundle(Bundle bundle) {
+		pluginBundle = bundle;
+	}
 
-    public Bundle getPluginBundle()
-    {
-        if (pluginBundle == null && InfinitestPlugin.getInstance() != null)
-        {
-            return InfinitestPlugin.getInstance().getBundle();
-        }
-        return pluginBundle;
-    }
+	public Bundle getPluginBundle() {
+		if ((pluginBundle == null) && (InfinitestPlugin.getInstance() != null)) {
+			return InfinitestPlugin.getInstance().getBundle();
+		}
+		return pluginBundle;
+	}
 
-    public PluginActivationController getPluginController()
-    {
-        return getBean(PluginActivationController.class);
-    }
+	public PluginActivationController getPluginController() {
+		return getBean(PluginActivationController.class);
+	}
 
-    @SuppressWarnings("unchecked")
-    public <T> T getBean(Class<T> beanClass)
-    {
-        if (context == null)
-        {
-            context = new ClassPathXmlApplicationContext(new String[] { "/META-INF/spring/plugin-context.xml",
-                            "/META-INF/spring/eclipse-context.xml" });
+	@SuppressWarnings("unchecked")
+	public <T> T getBean(Class<T> beanClass) {
+		if (context == null) {
+			context = new ClassPathXmlApplicationContext(new String[] { "/META-INF/spring/plugin-context.xml", "/META-INF/spring/eclipse-context.xml" });
 
-            restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
-            InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
-        }
-        return (T) getOnlyElement(context.getBeansOfType(beanClass).values());
-    }
+			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
+			InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
+		}
+		return (T) getOnlyElement(context.getBeansOfType(beanClass).values());
+	}
 
-    @VisibleForTesting
-    void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings)
-    {
-        coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
-        InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
-    }
+	@VisibleForTesting
+	void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings) {
+		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
+		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
+	}
 }

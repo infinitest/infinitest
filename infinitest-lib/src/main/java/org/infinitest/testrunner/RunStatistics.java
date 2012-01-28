@@ -24,39 +24,32 @@ package org.infinitest.testrunner;
 import static com.google.common.collect.Maps.*;
 import static java.lang.System.*;
 
-import java.util.Map;
+import java.util.*;
 
-import org.infinitest.TestResultsAdapter;
+import org.infinitest.*;
 
-public class RunStatistics extends TestResultsAdapter
-{
-    private final Map<String, Long> failureTimestamps;
+public class RunStatistics extends TestResultsAdapter {
+	private final Map<String, Long> failureTimestamps;
 
-    public RunStatistics()
-    {
-        failureTimestamps = newHashMap();
-    }
+	public RunStatistics() {
+		failureTimestamps = newHashMap();
+	}
 
-    private void update(TestEvent event)
-    {
-        failureTimestamps.put(event.getTestName(), currentTimeMillis());
-    }
+	private void update(TestEvent event) {
+		failureTimestamps.put(event.getTestName(), currentTimeMillis());
+	}
 
-    public long getLastFailureTime(String testName)
-    {
-        if (!failureTimestamps.containsKey(testName))
-        {
-            return 0;
-        }
-        return failureTimestamps.get(testName);
-    }
+	public long getLastFailureTime(String testName) {
+		if (!failureTimestamps.containsKey(testName)) {
+			return 0;
+		}
+		return failureTimestamps.get(testName);
+	}
 
-    @Override
-    public void testCaseComplete(TestCaseEvent event)
-    {
-        for (TestEvent each : event.getFailureEvents())
-        {
-            update(each);
-        }
-    }
+	@Override
+	public void testCaseComplete(TestCaseEvent event) {
+		for (TestEvent each : event.getFailureEvents()) {
+			update(each);
+		}
+	}
 }

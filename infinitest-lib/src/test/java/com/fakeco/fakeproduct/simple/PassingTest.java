@@ -21,13 +21,11 @@
  */
 package com.fakeco.fakeproduct.simple;
 
-import org.junit.Test;
+import org.junit.*;
 
 @SuppressWarnings("all")
-public class PassingTest
-{
-    @Test
-    public void shouldPass()
-    {
-    }
+public class PassingTest {
+	@Test
+	public void shouldPass() {
+	}
 }

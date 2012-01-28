@@ -21,23 +21,19 @@
  */
 package org.infinitest.testrunner;
 
-import org.junit.Test;
+import org.junit.*;
 
 @SuppressWarnings("all")
-public class TestThatThrowsExceptionInConstructor
-{
-    public static boolean fail;
+public class TestThatThrowsExceptionInConstructor {
+	public static boolean fail;
 
-    public TestThatThrowsExceptionInConstructor()
-    {
-        if (fail)
-        {
-            throw new IllegalStateException();
-        }
-    }
+	public TestThatThrowsExceptionInConstructor() {
+		if (fail) {
+			throw new IllegalStateException();
+		}
+	}
 
-    @Test
-    public void shouldPass()
-    {
-    }
+	@Test
+	public void shouldPass() {
+	}
 }

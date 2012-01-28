@@ -23,34 +23,29 @@ package org.infinitest.eclipse;
 
 import static java.util.Arrays.*;
 
-import java.util.List;
+import java.util.*;
 
-import org.infinitest.NamedRunnable;
-import org.infinitest.eclipse.markers.MarkerRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.infinitest.*;
+import org.infinitest.eclipse.markers.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 @Component
-public class MarkerClearingRunnable extends NamedRunnable
-{
-    private final List<MarkerRegistry> registries;
+public class MarkerClearingRunnable extends NamedRunnable {
+	private final List<MarkerRegistry> registries;
 
-    @Autowired
-    public MarkerClearingRunnable(MarkerRegistry... markerRegistries)
-    {
-        super("Clearing markers");
-        registries = asList(markerRegistries);
-        if (registries.isEmpty())
-        {
-            throw new IllegalArgumentException("No marker registries to clear! Expected at least two." + registries);
-        }
-    }
+	@Autowired
+	public MarkerClearingRunnable(MarkerRegistry... markerRegistries) {
+		super("Clearing markers");
+		registries = asList(markerRegistries);
+		if (registries.isEmpty()) {
+			throw new IllegalArgumentException("No marker registries to clear! Expected at least two." + registries);
+		}
+	}
 
-    public void run()
-    {
-        for (MarkerRegistry each : registries)
-        {
-            each.clear();
-        }
-    }
+	public void run() {
+		for (MarkerRegistry each : registries) {
+			each.clear();
+		}
+	}
 }

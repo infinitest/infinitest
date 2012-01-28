@@ -30,164 +30,142 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.net.URI;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.infinitest.InfinitestCore;
-import org.infinitest.RuntimeEnvironment;
-import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.UpdateListener;
-import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.infinitest.eclipse.status.WorkspaceStatusListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
+import org.infinitest.*;
+import org.infinitest.eclipse.*;
+import org.infinitest.eclipse.status.*;
+import org.junit.*;
 
-public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport
-{
-    private List<ProjectFacade> projects;
-    private CoreRegistry coreRegistry;
-    private ProjectSet projectSet;
-    private EclipseWorkspace workspace;
-    private WorkspaceStatus updatedStatus;
-    private int updates;
+public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
+	private List<ProjectFacade> projects;
+	private CoreRegistry coreRegistry;
+	private ProjectSet projectSet;
+	private EclipseWorkspace workspace;
+	private WorkspaceStatus updatedStatus;
+	private int updates;
 
-    @Before
-    public void inContext() throws CoreException
-    {
-        projects = newArrayList();
-        projectSet = mock(ProjectSet.class);
-        projects.add(newFacade(project));
-        coreRegistry = mock(CoreRegistry.class);
-        CoreFactory coreFactory = new CoreFactory(null);
+	@Before
+	public void inContext() throws CoreException {
+		projects = newArrayList();
+		projectSet = mock(ProjectSet.class);
+		projects.add(newFacade(project));
+		coreRegistry = mock(CoreRegistry.class);
+		CoreFactory coreFactory = new CoreFactory(null);
 
-        when(projectSet.projects()).thenReturn(projects);
-        when(projectSet.hasErrors()).thenReturn(false);
-        List<File> outputDirs = emptyList();
-        when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);
+		when(projectSet.projects()).thenReturn(projects);
+		when(projectSet.hasErrors()).thenReturn(false);
+		List<File> outputDirs = emptyList();
+		when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);
 
-        workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
-    }
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
+	}
 
-    private ProjectFacade newFacade(IJavaProject project)
-    {
-        return new ProjectFacade(project)
-        {
-            @Override
-            public String rawClasspath() throws CoreException
-            {
-                return "classpath";
-            }
-        };
-    }
+	private ProjectFacade newFacade(IJavaProject project) {
+		return new ProjectFacade(project) {
+			@Override
+			public String rawClasspath() throws CoreException {
+				return "classpath";
+			}
+		};
+	}
 
-    @Test
-    public void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException
-    {
-        URI projectAUri = projectAUri();
-        when(coreRegistry.getCore(projectAUri)).thenReturn(null);
+	@Test
+	public void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException {
+		URI projectAUri = projectAUri();
+		when(coreRegistry.getCore(projectAUri)).thenReturn(null);
 
-        workspace.updateProjects();
+		workspace.updateProjects();
 
-        assertStatusIs(noTestsRun());
-        verify(coreRegistry).addCore(eq(projectAUri), any(InfinitestCore.class));
-    }
+		assertStatusIs(noTestsRun());
+		verify(coreRegistry).addCore(eq(projectAUri), any(InfinitestCore.class));
+	}
 
-    @Test
-    public void shouldFireAnEvent() throws CoreException
-    {
-        InfinitestCore core = prepateCore(projectAUri(), 10);
+	@Test
+	public void shouldFireAnEvent() throws CoreException {
+		InfinitestCore core = prepateCore(projectAUri(), 10);
 
-        workspace.addUpdateListeners(new UpdateListener()
-        {
-            public void projectsUpdated()
-            {
-                updates++;
-            }
-        });
+		workspace.addUpdateListeners(new UpdateListener() {
+			public void projectsUpdated() {
+				updates++;
+			}
+		});
 
-        workspace.updateProjects();
-        assertEquals(1, updates);
-        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
-    }
+		workspace.updateProjects();
+		assertEquals(1, updates);
+		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+	}
 
-    @Test
-    public void shouldUpdateCoreOnAutoBuild() throws CoreException
-    {
-        InfinitestCore core = prepateCore(projectAUri(), 10);
+	@Test
+	public void shouldUpdateCoreOnAutoBuild() throws CoreException {
+		InfinitestCore core = prepateCore(projectAUri(), 10);
 
-        workspace.updateProjects();
+		workspace.updateProjects();
 
-        assertStatusIs(findingTests(0));
-        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+		assertStatusIs(findingTests(0));
+		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 
-    }
+	}
 
-    private InfinitestCore prepateCore(URI projectAUri, int numberOfTestsRun)
-    {
-        InfinitestCore core = mock(InfinitestCore.class);
-        when(core.update()).thenReturn(numberOfTestsRun);
-        when(coreRegistry.getCore(projectAUri)).thenReturn(core);
-        return core;
-    }
+	private InfinitestCore prepateCore(URI projectAUri, int numberOfTestsRun) {
+		InfinitestCore core = mock(InfinitestCore.class);
+		when(core.update()).thenReturn(numberOfTestsRun);
+		when(coreRegistry.getCore(projectAUri)).thenReturn(core);
+		return core;
+	}
 
-    @Test
-    public void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException
-    {
-        InfinitestCore core = prepateCore(projectAUri(), 0);
+	@Test
+	public void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException {
+		InfinitestCore core = prepateCore(projectAUri(), 0);
 
-        workspace.updateProjects();
+		workspace.updateProjects();
 
-        assertStatusIs(noTestsRun());
-        verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
-    }
+		assertStatusIs(noTestsRun());
+		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+	}
 
-    @Test
-    public void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException
-    {
-        projects.clear();
+	@Test
+	public void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException {
+		projects.clear();
 
-        workspace.updateProjects();
+		workspace.updateProjects();
 
-        assertStatusIs(noTestsRun());
-    }
+		assertStatusIs(noTestsRun());
+	}
 
-    @Test
-    public void shouldFireEventIfStatusChanges() throws CoreException
-    {
-        projects.clear();
-        workspace.addStatusListeners(new WorkspaceStatusListener()
-        {
-            public void statusChanged(WorkspaceStatus newStatus)
-            {
-                updatedStatus = newStatus;
-            }
-        });
+	@Test
+	public void shouldFireEventIfStatusChanges() throws CoreException {
+		projects.clear();
+		workspace.addStatusListeners(new WorkspaceStatusListener() {
+			public void statusChanged(WorkspaceStatus newStatus) {
+				updatedStatus = newStatus;
+			}
+		});
 
-        workspace.updateProjects();
-        assertThat(updatedStatus, equalsStatus(noTestsRun()));
-    }
+		workspace.updateProjects();
+		assertThat(updatedStatus, equalsStatus(noTestsRun()));
+	}
 
-    @Test
-    public void shouldUpdateAllCoresWhenOneChanges() throws CoreException
-    {
-        String projectBName = "/projectB";
-        JavaProjectBuilder projectB = project(projectBName);
-        URI projectBUri = projectB.getProject().getLocationURI();
-        projects.add(newFacade(projectB));
+	@Test
+	public void shouldUpdateAllCoresWhenOneChanges() throws CoreException {
+		String projectBName = "/projectB";
+		JavaProjectBuilder projectB = project(projectBName);
+		URI projectBUri = projectB.getProject().getLocationURI();
+		projects.add(newFacade(projectB));
 
-        InfinitestCore coreA = prepateCore(projectAUri(), 10);
-        InfinitestCore coreB = prepateCore(projectBUri, 10);
+		InfinitestCore coreA = prepateCore(projectAUri(), 10);
+		InfinitestCore coreB = prepateCore(projectBUri, 10);
 
-        workspace.updateProjects();
-        verify(coreA).setRuntimeEnvironment(any(RuntimeEnvironment.class));
-        verify(coreB).setRuntimeEnvironment(any(RuntimeEnvironment.class));
-    }
+		workspace.updateProjects();
+		verify(coreA).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+		verify(coreB).setRuntimeEnvironment(any(RuntimeEnvironment.class));
+	}
 
-    private void assertStatusIs(WorkspaceStatus expectedStatus)
-    {
-        assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
-    }
+	private void assertStatusIs(WorkspaceStatus expectedStatus) {
+		assertThat(workspace.getStatus(), equalsStatus(expectedStatus));
+	}
 }

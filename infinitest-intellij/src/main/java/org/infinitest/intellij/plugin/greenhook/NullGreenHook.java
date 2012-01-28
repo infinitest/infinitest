@@ -21,9 +21,7 @@
  */
 package org.infinitest.intellij.plugin.greenhook;
 
-public class NullGreenHook implements GreenHook
-{
-    public void execute()
-    {
-    }
+public class NullGreenHook implements GreenHook {
+	public void execute() {
+	}
 }

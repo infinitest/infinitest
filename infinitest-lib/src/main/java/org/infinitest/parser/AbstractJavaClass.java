@@ -21,21 +21,17 @@
  */
 package org.infinitest.parser;
 
-public abstract class AbstractJavaClass implements JavaClass
-{
-    @Override
-    public boolean equals(Object obj)
-    {
-        return obj instanceof JavaClass && ((JavaClass) obj).getName().equals(getName());
-    }
+public abstract class AbstractJavaClass implements JavaClass {
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof JavaClass) && ((JavaClass) obj).getName().equals(getName());
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return getName().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
 
-    public void dispose()
-    {
-    }
+	public void dispose() {
+	}
 }

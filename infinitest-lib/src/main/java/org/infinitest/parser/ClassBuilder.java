@@ -21,13 +21,12 @@
  */
 package org.infinitest.parser;
 
-import java.io.File;
+import java.io.*;
 
-interface ClassBuilder
-{
-    JavaClass createClass(String classname);
+interface ClassBuilder {
+	JavaClass createClass(String classname);
 
-    JavaClass loadClass(File file);
+	JavaClass loadClass(File file);
 
-    void clear();
+	void clear();
 }

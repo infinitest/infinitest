@@ -21,39 +21,33 @@
  */
 package org.infinitest.intellij.idea.window;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import org.infinitest.intellij.ToolWindowRegistry;
+import org.infinitest.intellij.*;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.wm.*;
+import com.intellij.util.ui.*;
 
-public class IdeaToolWindowRegistry implements ToolWindowRegistry
-{
-    private final Project project;
+public class IdeaToolWindowRegistry implements ToolWindowRegistry {
+	private final Project project;
 
-    public IdeaToolWindowRegistry(Project project)
-    {
-        this.project = project;
-    }
+	public IdeaToolWindowRegistry(Project project) {
+		this.project = project;
+	}
 
-    public void registerToolWindow(JPanel panel, String windowId)
-    {
-        panel.setBackground(UIUtil.getTreeTextBackground());
+	public void registerToolWindow(JPanel panel, String windowId) {
+		panel.setBackground(UIUtil.getTreeTextBackground());
 
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        ToolWindow window = toolWindowManager.registerToolWindow(windowId, false, ToolWindowAnchor.BOTTOM);
+		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+		ToolWindow window = toolWindowManager.registerToolWindow(windowId, false, ToolWindowAnchor.BOTTOM);
 
-        IdeaWindowHelper windowHelper = new IdeaWindowHelper();
-        windowHelper.addPanelToWindow(panel, window);
-    }
+		IdeaWindowHelper windowHelper = new IdeaWindowHelper();
+		windowHelper.addPanelToWindow(panel, window);
+	}
 
-    public void unregisterToolWindow(String windowId)
-    {
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        toolWindowManager.unregisterToolWindow(windowId);
-    }
+	public void unregisterToolWindow(String windowId) {
+		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+		toolWindowManager.unregisterToolWindow(windowId);
+	}
 }

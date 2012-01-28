@@ -23,13 +23,11 @@ package org.infinitest.testrunner;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class PassingTestCase
-{
-    @Test
-    public void passesOrFails()
-    {
-        assertTrue(true);
-    }
+public class PassingTestCase {
+	@Test
+	public void passesOrFails() {
+		assertTrue(true);
+	}
 }

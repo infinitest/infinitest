@@ -21,43 +21,34 @@
  */
 package org.infinitest;
 
-import java.util.Arrays;
+import java.util.*;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-import com.google.common.base.Objects;
+import com.google.common.base.*;
 
-public class TestEventEqualityAdapter
-{
-    private final TestEvent event;
+public class TestEventEqualityAdapter {
+	private final TestEvent event;
 
-    public TestEventEqualityAdapter(TestEvent event)
-    {
-        this.event = event;
-    }
+	public TestEventEqualityAdapter(TestEvent event) {
+		this.event = event;
+	}
 
-    public TestEvent getEvent()
-    {
-        return event;
-    }
+	public TestEvent getEvent() {
+		return event;
+	}
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof TestEventEqualityAdapter)
-        {
-            TestEventEqualityAdapter other = (TestEventEqualityAdapter) obj;
-            return Objects.equal(event, other.event) && Objects.equal(event.getMessage(), other.event.getMessage())
-                            && Objects.equal(event.getPointOfFailure(), other.event.getPointOfFailure())
-                            && Arrays.equals(event.getStackTrace(), other.event.getStackTrace());
-        }
-        return false;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TestEventEqualityAdapter) {
+			TestEventEqualityAdapter other = (TestEventEqualityAdapter) obj;
+			return Objects.equal(event, other.event) && Objects.equal(event.getMessage(), other.event.getMessage()) && Objects.equal(event.getPointOfFailure(), other.event.getPointOfFailure()) && Arrays.equals(event.getStackTrace(), other.event.getStackTrace());
+		}
+		return false;
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hashCode(event) ^ Objects.hashCode(event.getMessage())
-                        ^ Objects.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(event) ^ Objects.hashCode(event.getMessage()) ^ Objects.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
+	}
 }

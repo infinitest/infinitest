@@ -23,45 +23,37 @@ package org.infinitest.parser;
 
 import static java.util.Collections.*;
 
-import java.io.File;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
-public class UnparsableClass implements JavaClass
-{
-    private final String classname;
+public class UnparsableClass implements JavaClass {
+	private final String classname;
 
-    public UnparsableClass(String classname)
-    {
-        this.classname = classname;
-    }
+	public UnparsableClass(String classname) {
+		this.classname = classname;
+	}
 
-    public File getClassFile()
-    {
-        return null;
-    }
+	public File getClassFile() {
+		return null;
+	}
 
-    public Collection<String> getImports()
-    {
-        return emptyList();
-    }
+	public Collection<String> getImports() {
+		return emptyList();
+	}
 
-    public String getName()
-    {
-        return classname;
-    }
+	public String getName() {
+		return classname;
+	}
 
-    public boolean isATest()
-    {
-        return false;
-    }
+	public boolean isATest() {
+		return false;
+	}
 
-    public boolean locatedInClassFile()
-    {
-        return false;
-    }
+	public boolean locatedInClassFile() {
+		return false;
+	}
 
-    public void dispose()
-    {
-    }
+	public void dispose() {
+	}
 
 }

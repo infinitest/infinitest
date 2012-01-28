@@ -21,22 +21,17 @@
  */
 package org.infinitest.eclipse.trim;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 
-public class MouseToSelectionAdapter extends MouseAdapter
-{
-    private final SelectionListener listener;
+public class MouseToSelectionAdapter extends MouseAdapter {
+	private final SelectionListener listener;
 
-    public MouseToSelectionAdapter(SelectionListener listener)
-    {
-        this.listener = listener;
-    }
+	public MouseToSelectionAdapter(SelectionListener listener) {
+		this.listener = listener;
+	}
 
-    @Override
-    public void mouseUp(MouseEvent arg0)
-    {
-        listener.widgetSelected(null);
-    }
+	@Override
+	public void mouseUp(MouseEvent arg0) {
+		listener.widgetSelected(null);
+	}
 }

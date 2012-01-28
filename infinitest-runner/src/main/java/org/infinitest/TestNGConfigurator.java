@@ -22,154 +22,114 @@
  */
 package org.infinitest;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 
-public class TestNGConfigurator
-{
-    private static final String SUFFIX = "\\s?=\\s?(.+)";
-    private static final String PREFIX = "^\\s*#+\\s?";
-    private static final String EXCLUDED_GROUPS = "excluded-groups";
-    private static final String INCLUDED_GROUPS = "groups";
-    private static final String LISTENERS = "listeners";
-    private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
-    private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
-    private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
-    private static final File FILTERFILE = new File("infinitest.filters");
+public class TestNGConfigurator {
+	private static final String SUFFIX = "\\s?=\\s?(.+)";
+	private static final String PREFIX = "^\\s*#+\\s?";
+	private static final String EXCLUDED_GROUPS = "excluded-groups";
+	private static final String INCLUDED_GROUPS = "groups";
+	private static final String LISTENERS = "listeners";
+	private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
+	private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
+	private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
+	private static final File FILTERFILE = new File("infinitest.filters");
 
-    private final TestNGConfiguration testNGConfiguration;
-    private File file = null;
+	private final TestNGConfiguration testNGConfiguration;
+	private File file = null;
 
-    public TestNGConfigurator()
-    {
-        testNGConfiguration = new TestNGConfiguration();
-        if (file == null)
-        {
-            file = FILTERFILE;
-        }
-        updateFilterList();
-    }
+	public TestNGConfigurator() {
+		testNGConfiguration = new TestNGConfiguration();
+		if (file == null) {
+			file = FILTERFILE;
+		}
+		updateFilterList();
+	}
 
-    public TestNGConfigurator(File filterFile)
-    {
-        testNGConfiguration = new TestNGConfiguration();
-        file = filterFile;
+	public TestNGConfigurator(File filterFile) {
+		testNGConfiguration = new TestNGConfiguration();
+		file = filterFile;
 
-        updateFilterList();
-    }
+		updateFilterList();
+	}
 
-    public void updateFilterList()
-    {
-        if (file == null)
-        {
-            return;
-        }
+	public void updateFilterList() {
+		if (file == null) {
+			return;
+		}
 
-        if (file.exists())
-        {
-            tryToReadFilterFile();
-        }
-    }
+		if (file.exists()) {
+			tryToReadFilterFile();
+		}
+	}
 
-    public TestNGConfiguration getConfig()
-    {
-        return testNGConfiguration;
-    }
+	public TestNGConfiguration getConfig() {
+		return testNGConfiguration;
+	}
 
-    private void tryToReadFilterFile()
-    {
-        try
-        {
-            readFilterFile();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Something horrible happened to the filter file", e);
-        }
-    }
+	private void tryToReadFilterFile() {
+		try {
+			readFilterFile();
+		} catch (IOException e) {
+			throw new RuntimeException("Something horrible happened to the filter file", e);
+		}
+	}
 
-    private void readFilterFile() throws IOException
-    {
-        FileReader fileReader = new FileReader(file);
-        try
-        {
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line;
-            do
-            {
-                line = reader.readLine();
-                if (line != null)
-                {
-                    addFilter(line);
-                }
-            } while (line != null);
-        }
-        finally
-        {
-            fileReader.close();
-        }
-    }
+	private void readFilterFile() throws IOException {
+		FileReader fileReader = new FileReader(file);
+		try {
+			BufferedReader reader = new BufferedReader(fileReader);
+			String line;
+			do {
+				line = reader.readLine();
+				if (line != null) {
+					addFilter(line);
+				}
+			} while (line != null);
+		} finally {
+			fileReader.close();
+		}
+	}
 
-    private void addFilter(String line)
-    {
-        Matcher matcher = EXCLUDED.matcher(line.trim());
-        if (matcher.matches())
-        {
-            String excludedGroups = matcher.group(1);
-            testNGConfiguration.setExcludedGroups(excludedGroups);
-        }
-        else
-        {
-            matcher = INCLUDED.matcher(line);
-            if (matcher.matches())
-            {
-                String includedGroups = matcher.group(1).trim();
-                testNGConfiguration.setGroups(includedGroups);
-            }
-            else
-            {
-                matcher = LISTENER.matcher(line);
-                if (matcher.matches())
-                {
-                    final List<Object> listenerList = createListenerList(matcher.group(1).trim());
-                    testNGConfiguration.setListeners(listenerList);
-                }
-            }
-        }
-    }
+	private void addFilter(String line) {
+		Matcher matcher = EXCLUDED.matcher(line.trim());
+		if (matcher.matches()) {
+			String excludedGroups = matcher.group(1);
+			testNGConfiguration.setExcludedGroups(excludedGroups);
+		} else {
+			matcher = INCLUDED.matcher(line);
+			if (matcher.matches()) {
+				String includedGroups = matcher.group(1).trim();
+				testNGConfiguration.setGroups(includedGroups);
+			} else {
+				matcher = LISTENER.matcher(line);
+				if (matcher.matches()) {
+					final List<Object> listenerList = createListenerList(matcher.group(1).trim());
+					testNGConfiguration.setListeners(listenerList);
+				}
+			}
+		}
+	}
 
-    private List<Object> createListenerList(String listeners)
-    {
-        final String[] listenerTypes = listeners.split("\\s*,\\s*");
-        final List<Object> listenerList = new ArrayList<Object>();
-        for (final String listenername : listenerTypes)
-        {
-            try
-            {
-                listenerList.add(Class.forName(listenername).newInstance());
-            }
-            catch (InstantiationException e)
-            {
-                // unable to add this listener, just continue with the next.
-                e.printStackTrace();
-            }
-            catch (IllegalAccessException e)
-            {
-                // unable to add this listener, just continue with the next.
-                e.printStackTrace();
-            }
-            catch (ClassNotFoundException e)
-            {
-                // unable to add this listener, just continue with the next.
-                e.printStackTrace();
-            }
-        }
-        return listenerList;
-    }
+	private List<Object> createListenerList(String listeners) {
+		final String[] listenerTypes = listeners.split("\\s*,\\s*");
+		final List<Object> listenerList = new ArrayList<Object>();
+		for (final String listenername : listenerTypes) {
+			try {
+				listenerList.add(Class.forName(listenername).newInstance());
+			} catch (InstantiationException e) {
+				// unable to add this listener, just continue with the next.
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// unable to add this listener, just continue with the next.
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// unable to add this listener, just continue with the next.
+				e.printStackTrace();
+			}
+		}
+		return listenerList;
+	}
 }

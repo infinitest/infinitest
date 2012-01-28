@@ -21,14 +21,12 @@
  */
 package org.infinitest.parser;
 
-import java.io.IOException;
+import java.io.*;
 
-class MalformedClassFileException extends IOException
-{
-    private static final long serialVersionUID = -1L;
+class MalformedClassFileException extends IOException {
+	private static final long serialVersionUID = -1L;
 
-    public MalformedClassFileException(String fileName)
-    {
-        super(fileName);
-    }
+	public MalformedClassFileException(String fileName) {
+		super(fileName);
+	}
 }

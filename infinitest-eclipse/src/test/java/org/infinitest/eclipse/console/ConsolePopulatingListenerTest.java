@@ -24,35 +24,30 @@ package org.infinitest.eclipse.console;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-public class ConsolePopulatingListenerTest
-{
-    private TextOutputWriter writer;
-    private ConsolePopulatingListener listener;
+public class ConsolePopulatingListenerTest {
+	private TextOutputWriter writer;
+	private ConsolePopulatingListener listener;
 
-    @Before
-    public void inContext()
-    {
-        writer = mock(TextOutputWriter.class);
-        listener = new ConsolePopulatingListener(writer);
-    }
+	@Before
+	public void inContext() {
+		writer = mock(TextOutputWriter.class);
+		listener = new ConsolePopulatingListener(writer);
+	}
 
-    @Test
-    public void shouldWriteTestConsoleOutputToTheEclipseConsole()
-    {
-        listener.consoleOutputUpdate("some new text", STDOUT);
+	@Test
+	public void shouldWriteTestConsoleOutputToTheEclipseConsole() {
+		listener.consoleOutputUpdate("some new text", STDOUT);
 
-        verify(writer).appendText("some new text");
-    }
+		verify(writer).appendText("some new text");
+	}
 
-    @Test
-    public void shouldActivateTheConsoleWhenStdErrorOutputIsWritten()
-    {
-        listener.consoleOutputUpdate("some new text", STDERR);
+	@Test
+	public void shouldActivateTheConsoleWhenStdErrorOutputIsWritten() {
+		listener.consoleOutputUpdate("some new text", STDERR);
 
-        verify(writer).appendText("some new text");
-        verify(writer, never()).activate();
-    }
+		verify(writer).appendText("some new text");
+		verify(writer, never()).activate();
+	}
 }

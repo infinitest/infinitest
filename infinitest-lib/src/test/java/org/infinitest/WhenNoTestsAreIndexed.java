@@ -24,14 +24,12 @@ package org.infinitest;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class WhenNoTestsAreIndexed
-{
-    @Test
-    public void shouldAlwaysBeInScanningState()
-    {
-        ResultCollector collector = new ResultCollector(mock(InfinitestCore.class));
-        assertEquals(CoreStatus.SCANNING, collector.getStatus());
-    }
+public class WhenNoTestsAreIndexed {
+	@Test
+	public void shouldAlwaysBeInScanningState() {
+		ResultCollector collector = new ResultCollector(mock(InfinitestCore.class));
+		assertEquals(CoreStatus.SCANNING, collector.getStatus());
+	}
 }

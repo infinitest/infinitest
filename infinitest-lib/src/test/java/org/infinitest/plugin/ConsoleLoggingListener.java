@@ -21,20 +21,17 @@
  */
 package org.infinitest.plugin;
 
-import java.util.logging.Level;
+import java.util.logging.*;
 
-import org.infinitest.util.LoggingListener;
+import org.infinitest.util.*;
 
-public class ConsoleLoggingListener implements LoggingListener
-{
-    public void logError(String message, Throwable throwable)
-    {
-        System.out.println(message);
-        throwable.printStackTrace();
-    }
+public class ConsoleLoggingListener implements LoggingListener {
+	public void logError(String message, Throwable throwable) {
+		System.out.println(message);
+		throwable.printStackTrace();
+	}
 
-    public void logMessage(Level level, String message)
-    {
-        System.out.println(message);
-    }
+	public void logMessage(Level level, String message) {
+		System.out.println(message);
+	}
 }

@@ -21,13 +21,12 @@
  */
 package org.infinitest.eclipse;
 
-import org.infinitest.eclipse.trim.VisualStatus;
+import org.infinitest.eclipse.trim.*;
 
-public interface PluginActivationController
-{
-    void enable();
+public interface PluginActivationController {
+	void enable();
 
-    void disable();
+	void disable();
 
-    void attachVisualStatus(VisualStatus status);
+	void attachVisualStatus(VisualStatus status);
 }

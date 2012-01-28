@@ -21,11 +21,10 @@
  */
 package org.infinitest.intellij.plugin;
 
-import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.infinitest.intellij.plugin.launcher.*;
 
-public interface InfinitestConfiguration
-{
-    InfinitestLauncher createLauncher();
+public interface InfinitestConfiguration {
+	InfinitestLauncher createLauncher();
 
-    void registerListener(InfinitestConfigurationListener listener);
+	void registerListener(InfinitestConfigurationListener listener);
 }

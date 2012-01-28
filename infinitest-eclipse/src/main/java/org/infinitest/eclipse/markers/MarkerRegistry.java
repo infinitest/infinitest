@@ -21,15 +21,14 @@
  */
 package org.infinitest.eclipse.markers;
 
-public interface MarkerRegistry
-{
-    void addMarker(MarkerInfo marker);
+public interface MarkerRegistry {
+	void addMarker(MarkerInfo marker);
 
-    void removeMarker(MarkerInfo marker);
+	void removeMarker(MarkerInfo marker);
 
-    void clear();
+	void clear();
 
-    void updateMarker(MarkerInfo marker);
+	void updateMarker(MarkerInfo marker);
 
-    void removeMarkers(String testName);
+	void removeMarkers(String testName);
 }

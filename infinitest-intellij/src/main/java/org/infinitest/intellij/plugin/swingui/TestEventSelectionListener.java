@@ -21,14 +21,13 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-public interface TestEventSelectionListener
-{
-    void showInfoPane(TestEvent event);
+public interface TestEventSelectionListener {
+	void showInfoPane(TestEvent event);
 
-    void expandPath(JTree tree, TreePath path);
+	void expandPath(JTree tree, TreePath path);
 }

@@ -21,19 +21,17 @@
  */
 package org.infinitest.parser;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.ClasspathProvider;
+import org.infinitest.*;
 
-public interface TestDetector
-{
-    void clear();
+public interface TestDetector {
+	void clear();
 
-    Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
+	Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
 
-    void setClasspathProvider(ClasspathProvider classpath);
+	void setClasspathProvider(ClasspathProvider classpath);
 
-    Set<String> getCurrentTests();
+	Set<String> getCurrentTests();
 }

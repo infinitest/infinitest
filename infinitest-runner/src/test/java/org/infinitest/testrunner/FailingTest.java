@@ -23,15 +23,13 @@ package org.infinitest.testrunner;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class FailingTest
-{
-    public static boolean fail;
+public class FailingTest {
+	public static boolean fail;
 
-    @Test
-    public void shouldFail()
-    {
-        assertFalse(fail);
-    }
+	@Test
+	public void shouldFail() {
+		assertFalse(fail);
+	}
 }

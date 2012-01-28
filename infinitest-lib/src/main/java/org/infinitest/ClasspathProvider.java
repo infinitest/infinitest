@@ -21,21 +21,21 @@
  */
 package org.infinitest;
 
-import java.io.File;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-public interface ClasspathProvider
-{
-    /**
-     * List of class directories that Infinitest should monitor for changes.
-     */
-    List<File> getClassOutputDirs();
+public interface ClasspathProvider {
+	/**
+	 * List of class directories that Infinitest should monitor for changes.
+	 */
+	List<File> getClassOutputDirs();
 
-    /**
-     * The classpath used to launch the test runner process. This will include the class output
-     * directories. It will also include any supporting infinitest jars or classes.
-     */
-    String getCompleteClasspath();
+	/**
+	 * The classpath used to launch the test runner process. This will include
+	 * the class output directories. It will also include any supporting
+	 * infinitest jars or classes.
+	 */
+	String getCompleteClasspath();
 
-    List<File> classDirectoriesInClasspath();
+	List<File> classDirectoriesInClasspath();
 }

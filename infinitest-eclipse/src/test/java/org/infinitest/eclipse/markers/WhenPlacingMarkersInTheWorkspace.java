@@ -24,41 +24,37 @@ package org.infinitest.eclipse.markers;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import junit.framework.AssertionFailedError;
+import junit.framework.*;
 
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.infinitest.eclipse.workspace.ResourceLookup;
-import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
+import org.eclipse.core.resources.*;
+import org.infinitest.eclipse.workspace.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 import org.junit.Test;
 
-public class WhenPlacingMarkersInTheWorkspace
-{
-    private TestEvent event;
-    private ResourceLookup lookup;
-    private IWorkspaceRoot workspaceRoot;
+public class WhenPlacingMarkersInTheWorkspace {
+	private TestEvent event;
+	private ResourceLookup lookup;
+	private IWorkspaceRoot workspaceRoot;
 
-    @Before
-    public void inContext()
-    {
-        event = createEvent();
-        lookup = mock(ResourceLookup.class);
-        workspaceRoot = mock(IWorkspaceRoot.class);
-    }
+	@Before
+	public void inContext() {
+		event = createEvent();
+		lookup = mock(ResourceLookup.class);
+		workspaceRoot = mock(IWorkspaceRoot.class);
+	}
 
-    @Test
-    public void shouldAlwaysReturnTheWorkspaceResource()
-    {
-        when(lookup.workspaceRoot()).thenReturn(workspaceRoot);
-        MarkerPlacer placer = new MarkerPlacer(lookup);
+	@Test
+	public void shouldAlwaysReturnTheWorkspaceResource() {
+		when(lookup.workspaceRoot()).thenReturn(workspaceRoot);
+		MarkerPlacer placer = new MarkerPlacer(lookup);
 
-        MarkerPlacement placement = placer.findPlacement(event);
+		MarkerPlacement placement = placer.findPlacement(event);
 
-        assertSame(workspaceRoot, placement.getResource());
-    }
+		assertSame(workspaceRoot, placement.getResource());
+	}
 
-    private static TestEvent createEvent()
-    {
-        return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
-    }
+	private static TestEvent createEvent() {
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+	}
 }

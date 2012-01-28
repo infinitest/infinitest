@@ -21,146 +21,119 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.net.URL;
+import java.awt.*;
+import java.net.*;
 
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.tree.TreeModel;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import org.infinitest.ResultCollector;
+import org.infinitest.*;
 
-public class InfinitestMainFrame extends JFrame implements InfinitestView
-{
-    private static final long serialVersionUID = -1L;
-    private static final String APP_TITLE = "Infinitest";
+public class InfinitestMainFrame extends JFrame implements InfinitestView {
+	private static final long serialVersionUID = -1L;
+	private static final String APP_TITLE = "Infinitest";
 
-    private final InfinitestResultsPane resultsPane;
-    private final InfinitestLogPane logPane;
+	private final InfinitestResultsPane resultsPane;
+	private final InfinitestLogPane logPane;
 
-    public InfinitestMainFrame()
-    {
-        this(new InfinitestResultsPane(), new InfinitestLogPane());
-    }
+	public InfinitestMainFrame() {
+		this(new InfinitestResultsPane(), new InfinitestLogPane());
+	}
 
-    InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane)
-    {
-        this.resultsPane = resultsPane;
-        this.logPane = logPane;
-        initializeFrame();
+	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane) {
+		this.resultsPane = resultsPane;
+		this.logPane = logPane;
+		initializeFrame();
 
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add("Results", resultsPane);
-        tabbedPane.add("Logging", logPane);
-        add(tabbedPane);
-    }
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.add("Results", resultsPane);
+		tabbedPane.add("Logging", logPane);
+		add(tabbedPane);
+	}
 
-    public static InfinitestView createFrame(ResultCollector results)
-    {
-        InfinitestMainFrame mainFrame = new InfinitestMainFrame();
-        mainFrame.setResultsModel(new TreeModelAdapter(results));
-        return mainFrame;
-    }
+	public static InfinitestView createFrame(ResultCollector results) {
+		InfinitestMainFrame mainFrame = new InfinitestMainFrame();
+		mainFrame.setResultsModel(new TreeModelAdapter(results));
+		return mainFrame;
+	}
 
-    private void initializeFrame()
-    {
-        URL iconURL = InfinitestMainFrame.class.getResource("infinitest-icon.png");
-        setIconImage(new ImageIcon(iconURL).getImage());
-        setAlwaysOnTop(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        addWindowFocusListener(new TreeFocusListener());
-    }
+	private void initializeFrame() {
+		URL iconURL = InfinitestMainFrame.class.getResource("infinitest-icon.png");
+		setIconImage(new ImageIcon(iconURL).getImage());
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowFocusListener(new TreeFocusListener());
+	}
 
-    public void setAngerBasedOnTime(long timeSinceGreen)
-    {
-        resultsPane.setAngerBasedOnTime(timeSinceGreen);
-    }
+	public void setAngerBasedOnTime(long timeSinceGreen) {
+		resultsPane.setAngerBasedOnTime(timeSinceGreen);
+	}
 
-    public void setProgress(int progress)
-    {
-        resultsPane.setProgress(progress);
-    }
+	public void setProgress(int progress) {
+		resultsPane.setProgress(progress);
+	}
 
-    public int getProgress()
-    {
-        return resultsPane.getProgress();
-    }
+	public int getProgress() {
+		return resultsPane.getProgress();
+	}
 
-    public void setProgressBarColor(Color color)
-    {
-        resultsPane.setProgressBarColor(color);
-    }
+	public void setProgressBarColor(Color color) {
+		resultsPane.setProgressBarColor(color);
+	}
 
-    public Color getProgressBarColor()
-    {
-        return resultsPane.getProgressBarColor();
-    }
+	public Color getProgressBarColor() {
+		return resultsPane.getProgressBarColor();
+	}
 
-    public void setMaximumProgress(int maxProgress)
-    {
-        resultsPane.setMaximumProgress(maxProgress);
-    }
+	public void setMaximumProgress(int maxProgress) {
+		resultsPane.setMaximumProgress(maxProgress);
+	}
 
-    public int getMaximumProgress()
-    {
-        return resultsPane.getMaximumProgress();
-    }
+	public int getMaximumProgress() {
+		return resultsPane.getMaximumProgress();
+	}
 
-    public void setCycleTime(String timeStamp)
-    {
-        setTitle(APP_TITLE + " - Cycle Time: " + timeStamp);
-    }
+	public void setCycleTime(String timeStamp) {
+		setTitle(APP_TITLE + " - Cycle Time: " + timeStamp);
+	}
 
-    public void setCurrentTest(String testName)
-    {
-        resultsPane.setCurrentTest(testName);
-    }
+	public void setCurrentTest(String testName) {
+		resultsPane.setCurrentTest(testName);
+	}
 
-    public void addAction(Action action)
-    {
-        resultsPane.addAction(action);
-    }
+	public void addAction(Action action) {
+		resultsPane.addAction(action);
+	}
 
-    public void setResultsModel(TreeModel results)
-    {
-        resultsPane.setResultsModel(results);
-    }
+	public void setResultsModel(TreeModel results) {
+		resultsPane.setResultsModel(results);
+	}
 
-    public void setStatusMessage(String message)
-    {
-        resultsPane.setStatusMessage(message);
-    }
+	public void setStatusMessage(String message) {
+		resultsPane.setStatusMessage(message);
+	}
 
-    public void writeLogMessage(String message)
-    {
-        logPane.writeMessage(message);
-    }
+	public void writeLogMessage(String message) {
+		logPane.writeMessage(message);
+	}
 
-    public void writeError(String message)
-    {
-        // nothing to do here
-    }
+	public void writeError(String message) {
+		// nothing to do here
+	}
 
-    public void addResultClickListener(ResultClickListener listener)
-    {
-        resultsPane.addResultClickListener(listener);
-    }
+	public void addResultClickListener(ResultClickListener listener) {
+		resultsPane.addResultClickListener(listener);
+	}
 
-    public int getAngerLevel()
-    {
-        return resultsPane.getAngerLevel();
-    }
+	public int getAngerLevel() {
+		return resultsPane.getAngerLevel();
+	}
 
-    public void setAngerLevel(int anger)
-    {
-        resultsPane.setAngerLevel(anger);
-    }
+	public void setAngerLevel(int anger) {
+		resultsPane.setAngerLevel(anger);
+	}
 
-    public Component getTree()
-    {
-        return resultsPane.getTree();
-    }
+	public Component getTree() {
+		return resultsPane.getTree();
+	}
 }

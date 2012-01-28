@@ -21,32 +21,26 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.JTree;
+import javax.swing.*;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-class EnterPressListener extends KeyAdapter
-{
-    @Override
-    public void keyPressed(KeyEvent e)
-    {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER)
-        {
-            JTree tree = (JTree) e.getSource();
-            Object lastPathComponent = tree.getSelectionPath().getLastPathComponent();
-            if (lastPathComponent instanceof TestEvent)
-            {
-                TestEvent event = (TestEvent) lastPathComponent;
-                showInfoPane(event);
-            }
-        }
-    }
+class EnterPressListener extends KeyAdapter {
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			JTree tree = (JTree) e.getSource();
+			Object lastPathComponent = tree.getSelectionPath().getLastPathComponent();
+			if (lastPathComponent instanceof TestEvent) {
+				TestEvent event = (TestEvent) lastPathComponent;
+				showInfoPane(event);
+			}
+		}
+	}
 
-    protected void showInfoPane(TestEvent event)
-    {
-        new EventInfoFrame(event).setVisible(true);
-    }
+	protected void showInfoPane(TestEvent event) {
+		new EventInfoFrame(event).setVisible(true);
+	}
 }

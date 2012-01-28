@@ -21,17 +21,14 @@
  */
 package org.infinitest.testrunner;
 
-import org.junit.Test;
+import org.junit.*;
 
-public class MultiTest
-{
-    @Test
-    public void shouldPass()
-    {
-    }
+public class MultiTest {
+	@Test
+	public void shouldPass() {
+	}
 
-    @Test
-    public void shouldAlsoPass()
-    {
-    }
+	@Test
+	public void shouldAlsoPass() {
+	}
 }

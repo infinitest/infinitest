@@ -25,126 +25,107 @@ package org.infinitest.testrunner;
 import static com.google.common.collect.Iterables.*;
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import org.infinitest.TestNGConfiguration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.testng.ITestResult;
-import org.testng.reporters.JUnitXMLReporter;
+import org.infinitest.*;
+import org.junit.*;
+import org.testng.*;
+import org.testng.reporters.*;
 
-public class WhenRunningTestNGTests
-{
-    private JUnit4Runner runner;
-    private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
-    private TestNGConfiguration config;
-    private boolean wasCalled = false;
+public class WhenRunningTestNGTests {
+	private JUnit4Runner runner;
+	private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
+	private TestNGConfiguration config;
+	private boolean wasCalled = false;
 
-    @Before
-    public void inContext()
-    {
-        runner = new JUnit4Runner();
-        config = new TestNGConfiguration();
-        runner.setTestNGConfiguration(config);
-        TestWithTestNGGroups.fail = true;
-        TestWithTestNGGroups.dependencyFail = true;
-        wasCalled = false;
-    }
+	@Before
+	public void inContext() {
+		runner = new JUnit4Runner();
+		config = new TestNGConfiguration();
+		runner.setTestNGConfiguration(config);
+		TestWithTestNGGroups.fail = true;
+		TestWithTestNGGroups.dependencyFail = true;
+		wasCalled = false;
+	}
 
-    @After
-    public void cleanup()
-    {
-        TestWithTestNGGroups.fail = false;
-        TestWithTestNGGroups.dependencyFail = false;
-        runner.setTestNGConfiguration(null);
-    }
+	@After
+	public void cleanup() {
+		TestWithTestNGGroups.fail = false;
+		TestWithTestNGGroups.dependencyFail = false;
+		runner.setTestNGConfiguration(null);
+	}
 
-    /**
-     * no test filters set: bad tests fail. But: the dependent test
-     * "shouldNoBeTestedDueToDependencyOnFilteredGroup" is not executed
-     */
-    @Test
-    public void shouldFailIfBadTestsAreNotFiltered()
-    {
-        final Set<String> failingMethods = new HashSet<String>(Arrays.asList("shouldNotBeTestedGroup",
-                        "shouldNotBeTestedGroup3", "shouldNotBeTestedGroup2"));
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        int counter = 0;
-        for (TestEvent testEvent : results)
-        {
-            counter++;
-            assertTrue(failingMethods.contains(testEvent.getTestMethod()));
-            assertEquals(AssertionError.class.getName(), testEvent.getFullErrorClassName());
-            assertEquals(CLASS_UNDER_TEST, testEvent.getTestName());
-        }
-        assertEquals(failingMethods.size(), counter);
-    }
+	/**
+	 * no test filters set: bad tests fail. But: the dependent test
+	 * "shouldNoBeTestedDueToDependencyOnFilteredGroup" is not executed
+	 */
+	@Test
+	public void shouldFailIfBadTestsAreNotFiltered() {
+		final Set<String> failingMethods = new HashSet<String>(Arrays.asList("shouldNotBeTestedGroup", "shouldNotBeTestedGroup3", "shouldNotBeTestedGroup2"));
+		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+		int counter = 0;
+		for (TestEvent testEvent : results) {
+			counter++;
+			assertTrue(failingMethods.contains(testEvent.getTestMethod()));
+			assertEquals(AssertionError.class.getName(), testEvent.getFullErrorClassName());
+			assertEquals(CLASS_UNDER_TEST, testEvent.getTestName());
+		}
+		assertEquals(failingMethods.size(), counter);
+	}
 
-    @Test
-    public void shouldExecuteDependentTestIfMasterGroupWorked()
-    {
-        TestWithTestNGGroups.fail = false;
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        TestEvent testEvent = getOnlyElement(results);
-        assertEquals("shouldNoBeTestedDueToDependencyOnFilteredGroup", testEvent.getTestMethod());
-        assertEquals(AssertionError.class.getName(), testEvent.getFullErrorClassName());
-    }
+	@Test
+	public void shouldExecuteDependentTestIfMasterGroupWorked() {
+		TestWithTestNGGroups.fail = false;
+		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+		TestEvent testEvent = getOnlyElement(results);
+		assertEquals("shouldNoBeTestedDueToDependencyOnFilteredGroup", testEvent.getTestMethod());
+		assertEquals(AssertionError.class.getName(), testEvent.getFullErrorClassName());
+	}
 
-    @Test
-    public void shouldNotFailWithFilteredGroupsSet()
-    {
-        config.setExcludedGroups("slow, manual");
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        assertEquals(0, size(results));
-    }
+	@Test
+	public void shouldNotFailWithFilteredGroupsSet() {
+		config.setExcludedGroups("slow, manual");
+		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+		assertEquals(0, size(results));
+	}
 
-    @Test
-    public void shouldExecuteOnlyTheSpecifiedGroup()
-    {
-        config.setGroups("slow");
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        assertEquals(2, size(results));
+	@Test
+	public void shouldExecuteOnlyTheSpecifiedGroup() {
+		config.setGroups("slow");
+		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+		assertEquals(2, size(results));
 
-        config.setGroups("shouldbetested");
-        results = runner.runTest(CLASS_UNDER_TEST);
-        assertEquals(0, size(results));
-    }
+		config.setGroups("shouldbetested");
+		results = runner.runTest(CLASS_UNDER_TEST);
+		assertEquals(0, size(results));
+	}
 
-    /**
-     * if the group "slow" is included, but "mixed" excluded, a test with groups = "mixed", "slow"
-     * will not be executed
-     */
-    @Test
-    public void combineIncludedAndExcludedGroups()
-    {
-        config.setGroups("slow");
-        config.setExcludedGroups("mixed");
-        TestResults results = runner.runTest(CLASS_UNDER_TEST);
-        assertEquals(1, size(results));
-    }
+	/**
+	 * if the group "slow" is included, but "mixed" excluded, a test with groups
+	 * = "mixed", "slow" will not be executed
+	 */
+	@Test
+	public void combineIncludedAndExcludedGroups() {
+		config.setGroups("slow");
+		config.setExcludedGroups("mixed");
+		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+		assertEquals(1, size(results));
+	}
 
-    @Test
-    public void shouldReactToListener()
-    {
-        MyJUnitXMLReporter testListener = new MyJUnitXMLReporter();
-        List<Object> reporters = new ArrayList<Object>();
-        reporters.add(testListener);
-        config.setListeners(reporters);
-        runner.runTest(CLASS_UNDER_TEST);
-        assertTrue(wasCalled);
-    }
+	@Test
+	public void shouldReactToListener() {
+		MyJUnitXMLReporter testListener = new MyJUnitXMLReporter();
+		List<Object> reporters = new ArrayList<Object>();
+		reporters.add(testListener);
+		config.setListeners(reporters);
+		runner.runTest(CLASS_UNDER_TEST);
+		assertTrue(wasCalled);
+	}
 
-    private class MyJUnitXMLReporter extends JUnitXMLReporter
-    {
-        @Override
-        public void onTestStart(ITestResult result)
-        {
-            wasCalled = true;
-        }
-    }
+	private class MyJUnitXMLReporter extends JUnitXMLReporter {
+		@Override
+		public void onTestStart(ITestResult result) {
+			wasCalled = true;
+		}
+	}
 }

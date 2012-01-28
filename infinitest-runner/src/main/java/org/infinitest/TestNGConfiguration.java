@@ -22,42 +22,35 @@
  */
 package org.infinitest;
 
-import java.util.List;
+import java.util.*;
 
 /** Provides testNG-settings. Just a data-provider, no logic here. */
-public class TestNGConfiguration
-{
-    private String excludedGroups;
-    private String groups;
-    private List<Object> listeners;
+public class TestNGConfiguration {
+	private String excludedGroups;
+	private String groups;
+	private List<Object> listeners;
 
-    public void setExcludedGroups(String excludedGroups)
-    {
-        this.excludedGroups = excludedGroups;
-    }
+	public void setExcludedGroups(String excludedGroups) {
+		this.excludedGroups = excludedGroups;
+	}
 
-    public String getExcludedGroups()
-    {
-        return excludedGroups;
-    }
+	public String getExcludedGroups() {
+		return excludedGroups;
+	}
 
-    public void setGroups(String groupList)
-    {
-        groups = groupList;
-    }
+	public void setGroups(String groupList) {
+		groups = groupList;
+	}
 
-    public String getGroups()
-    {
-        return groups;
-    }
+	public String getGroups() {
+		return groups;
+	}
 
-    public List<Object> getListeners()
-    {
-        return listeners;
-    }
+	public List<Object> getListeners() {
+		return listeners;
+	}
 
-    public void setListeners(List<Object> listenerList)
-    {
-        listeners = listenerList;
-    }
+	public void setListeners(List<Object> listenerList) {
+		listeners = listenerList;
+	}
 }

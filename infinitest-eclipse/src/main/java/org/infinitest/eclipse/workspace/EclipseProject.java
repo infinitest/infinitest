@@ -21,16 +21,15 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.net.URI;
+import java.net.*;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jdt.core.*;
 
-public interface EclipseProject
-{
-    URI getLocationURI();
+public interface EclipseProject {
+	URI getLocationURI();
 
-    IPath getDefaultOutputLocation();
+	IPath getDefaultOutputLocation();
 
-    IClasspathEntry[] getClasspathEntries();
+	IClasspathEntry[] getClasspathEntries();
 }

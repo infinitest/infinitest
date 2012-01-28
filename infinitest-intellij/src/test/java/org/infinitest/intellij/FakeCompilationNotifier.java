@@ -21,16 +21,13 @@
  */
 package org.infinitest.intellij;
 
-import com.intellij.openapi.compiler.CompilationStatusListener;
+import com.intellij.openapi.compiler.*;
 
 @SuppressWarnings("all")
-public class FakeCompilationNotifier implements CompilationNotifier
-{
-    public void addCompilationStatusListener(CompilationStatusListener compilationListener)
-    {
-    }
+public class FakeCompilationNotifier implements CompilationNotifier {
+	public void addCompilationStatusListener(CompilationStatusListener compilationListener) {
+	}
 
-    public void removeCompilationStatusListener(CompilationStatusListener compilationListener)
-    {
-    }
+	public void removeCompilationStatusListener(CompilationStatusListener compilationListener) {
+	}
 }

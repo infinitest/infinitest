@@ -27,60 +27,55 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Comparator;
+import java.util.*;
 
-import org.infinitest.changedetect.ChangeDetector;
-import org.infinitest.parser.TestDetector;
-import org.infinitest.testrunner.TestResultsListener;
-import org.infinitest.testrunner.TestRunner;
-import org.junit.Test;
+import org.infinitest.changedetect.*;
+import org.infinitest.parser.*;
+import org.infinitest.testrunner.*;
+import org.junit.*;
 
-public class WhenTheRuntimeEnvironmentChanges
-{
-    @Test
-    public void shouldTriggerACompleteReloadInTheCore() throws Exception
-    {
-        InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
-        EventSupport eventSupport = new EventSupport();
-        core.addTestQueueListener(eventSupport);
-        core.setRuntimeEnvironment(fakeEnvironment());
-        eventSupport.assertReloadOccured();
-    }
+public class WhenTheRuntimeEnvironmentChanges {
+	@Test
+	public void shouldTriggerACompleteReloadInTheCore() throws Exception {
+		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
+		EventSupport eventSupport = new EventSupport();
+		core.addTestQueueListener(eventSupport);
+		core.setRuntimeEnvironment(fakeEnvironment());
+		eventSupport.assertReloadOccured();
+	}
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void shouldUpdateSupportingClassesInTheCore()
-    {
-        RuntimeEnvironment environment = fakeEnvironment();
-        TestRunner testRunner = mock(TestRunner.class);
-        TestDetector testDetector = mock(TestDetector.class);
-        ChangeDetector changeDetector = mock(ChangeDetector.class);
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldUpdateSupportingClassesInTheCore() {
+		RuntimeEnvironment environment = fakeEnvironment();
+		TestRunner testRunner = mock(TestRunner.class);
+		TestDetector testDetector = mock(TestDetector.class);
+		ChangeDetector changeDetector = mock(ChangeDetector.class);
 
-        DefaultInfinitestCore core = new DefaultInfinitestCore(testRunner, new FakeEventQueue());
-        core.setTestDetector(testDetector);
-        core.setChangeDetector(changeDetector);
-        core.setRuntimeEnvironment(environment);
+		DefaultInfinitestCore core = new DefaultInfinitestCore(testRunner, new FakeEventQueue());
+		core.setTestDetector(testDetector);
+		core.setChangeDetector(changeDetector);
+		core.setRuntimeEnvironment(environment);
 
-        verify(testRunner).setRuntimeEnvironment(environment);
-        verify(testRunner).addTestResultsListener(any(TestResultsListener.class));
-        verify(testRunner).setTestPriority(any(Comparator.class));
-        verify(testDetector).clear();
-        verify(testDetector).setClasspathProvider(environment);
-        verify(changeDetector).setClasspathProvider(environment);
-        verify(changeDetector).clear();
-    }
+		verify(testRunner).setRuntimeEnvironment(environment);
+		verify(testRunner).addTestResultsListener(any(TestResultsListener.class));
+		verify(testRunner).setTestPriority(any(Comparator.class));
+		verify(testDetector).clear();
+		verify(testDetector).setClasspathProvider(environment);
+		verify(changeDetector).setClasspathProvider(environment);
+		verify(changeDetector).clear();
+	}
 
-    @Test
-    public void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception
-    {
-        InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
-        EventSupport eventSupport = new EventSupport();
-        core.addTestQueueListener(eventSupport);
-        core.setRuntimeEnvironment(emptyRuntimeEnvironment());
-        eventSupport.assertReloadOccured();
-        assertEquals(1, eventSupport.getReloadCount());
+	@Test
+	public void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception {
+		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
+		EventSupport eventSupport = new EventSupport();
+		core.addTestQueueListener(eventSupport);
+		core.setRuntimeEnvironment(emptyRuntimeEnvironment());
+		eventSupport.assertReloadOccured();
+		assertEquals(1, eventSupport.getReloadCount());
 
-        core.setRuntimeEnvironment(emptyRuntimeEnvironment());
-        assertEquals(1, eventSupport.getReloadCount());
-    }
+		core.setRuntimeEnvironment(emptyRuntimeEnvironment());
+		assertEquals(1, eventSupport.getReloadCount());
+	}
 }

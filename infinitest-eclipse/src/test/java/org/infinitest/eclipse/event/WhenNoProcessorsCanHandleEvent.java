@@ -23,18 +23,16 @@ package org.infinitest.eclipse.event;
 
 import static org.mockito.Mockito.*;
 
-import org.infinitest.EventQueue;
-import org.junit.Test;
+import org.infinitest.*;
+import org.junit.*;
 
-public class WhenNoProcessorsCanHandleEvent
-{
-    @Test
-    public void shouldDoNothing()
-    {
-        EventQueue eventQueue = mock(EventQueue.class);
+public class WhenNoProcessorsCanHandleEvent {
+	@Test
+	public void shouldDoNothing() {
+		EventQueue eventQueue = mock(EventQueue.class);
 
-        CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
-        factory.processEvent(null);
-        verifyZeroInteractions(eventQueue);
-    }
+		CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
+		factory.processEvent(null);
+		verifyZeroInteractions(eventQueue);
+	}
 }

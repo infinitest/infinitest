@@ -21,17 +21,14 @@
  */
 package org.infinitest;
 
-import java.util.List;
+import java.util.*;
 
-import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.*;
 
-public class CollectorTransaction
-{
-    public void open(List<TestEvent> startingEvents)
-    {
-    }
+public class CollectorTransaction {
+	public void open(List<TestEvent> startingEvents) {
+	}
 
-    public void close()
-    {
-    }
+	public void close() {
+	}
 }

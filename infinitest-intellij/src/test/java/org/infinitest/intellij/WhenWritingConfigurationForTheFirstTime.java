@@ -25,40 +25,35 @@ import static java.lang.Boolean.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.infinitest.intellij.idea.facet.InfinitestFacetConfiguration;
-import org.jdom.Element;
-import org.junit.Before;
-import org.junit.Test;
+import org.infinitest.intellij.idea.facet.*;
+import org.jdom.*;
+import org.junit.*;
 
-import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.util.*;
 
-public class WhenWritingConfigurationForTheFirstTime
-{
-    private InfinitestFacetConfiguration configuration;
-    private Element element;
+public class WhenWritingConfigurationForTheFirstTime {
+	private InfinitestFacetConfiguration configuration;
+	private Element element;
 
-    @Before
-    public void setUp()
-    {
-        configuration = new InfinitestFacetConfiguration();
-        element = new Element("config");
-    }
+	@Before
+	public void setUp() {
+		configuration = new InfinitestFacetConfiguration();
+		element = new Element("config");
+	}
 
-    @Test
-    public void shouldStoreScmUpdateEnabled() throws WriteExternalException
-    {
-        configuration.setScmUpdateEnabled(true);
-        configuration.writeExternal(element);
+	@Test
+	public void shouldStoreScmUpdateEnabled() throws WriteExternalException {
+		configuration.setScmUpdateEnabled(true);
+		configuration.writeExternal(element);
 
-        assertThat(element.getAttribute("scmUpdateGreenHook").getValue(), is(TRUE.toString()));
-    }
+		assertThat(element.getAttribute("scmUpdateGreenHook").getValue(), is(TRUE.toString()));
+	}
 
-    @Test
-    public void shouldStoreScmUpdateDisabled() throws WriteExternalException
-    {
-        configuration.setScmUpdateEnabled(false);
-        configuration.writeExternal(element);
+	@Test
+	public void shouldStoreScmUpdateDisabled() throws WriteExternalException {
+		configuration.setScmUpdateEnabled(false);
+		configuration.writeExternal(element);
 
-        assertThat(element.getAttribute("scmUpdateGreenHook").getValue(), is(FALSE.toString()));
-    }
+		assertThat(element.getAttribute("scmUpdateGreenHook").getValue(), is(FALSE.toString()));
+	}
 }

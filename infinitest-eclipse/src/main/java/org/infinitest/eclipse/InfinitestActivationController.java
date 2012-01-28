@@ -21,79 +21,65 @@
  */
 package org.infinitest.eclipse;
 
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspace;
-import org.infinitest.EventQueue;
-import org.infinitest.NamedRunnable;
-import org.infinitest.eclipse.trim.VisualStatus;
-import org.infinitest.eclipse.trim.VisualStatusRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.eclipse.core.resources.*;
+import org.infinitest.*;
+import org.infinitest.eclipse.trim.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 @Component
-public class InfinitestActivationController implements PluginActivationController
-{
-    private boolean pluginEnabled;
-    private VisualStatusRegistry visualStatusRegistry;
-    private EventQueue eventQueue;
-    private NamedRunnable markerClearingRunnable;
-    private IResourceChangeListener updateNotifier;
-    private IWorkspace workspace;
+public class InfinitestActivationController implements PluginActivationController {
+	private boolean pluginEnabled;
+	private VisualStatusRegistry visualStatusRegistry;
+	private EventQueue eventQueue;
+	private NamedRunnable markerClearingRunnable;
+	private IResourceChangeListener updateNotifier;
+	private IWorkspace workspace;
 
-    @Autowired
-    public void setMarkerClearingRunnable(NamedRunnable markerClearingRunnable)
-    {
-        this.markerClearingRunnable = markerClearingRunnable;
-    }
+	@Autowired
+	public void setMarkerClearingRunnable(NamedRunnable markerClearingRunnable) {
+		this.markerClearingRunnable = markerClearingRunnable;
+	}
 
-    @Autowired
-    public void setVisualStatusRegistry(VisualStatusRegistry visualStatusRegistry)
-    {
-        this.visualStatusRegistry = visualStatusRegistry;
-    }
+	@Autowired
+	public void setVisualStatusRegistry(VisualStatusRegistry visualStatusRegistry) {
+		this.visualStatusRegistry = visualStatusRegistry;
+	}
 
-    @Autowired
-    public void setEventQueue(EventQueue eventQueue)
-    {
-        this.eventQueue = eventQueue;
-    }
+	@Autowired
+	public void setEventQueue(EventQueue eventQueue) {
+		this.eventQueue = eventQueue;
+	}
 
-    @Autowired
-    public void setWorkspace(IWorkspace workspace)
-    {
-        this.workspace = workspace;
-    }
+	@Autowired
+	public void setWorkspace(IWorkspace workspace) {
+		this.workspace = workspace;
+	}
 
-    @Autowired
-    public void setUpdateNotifier(IResourceChangeListener updateNotifier)
-    {
-        this.updateNotifier = updateNotifier;
-    }
+	@Autowired
+	public void setUpdateNotifier(IResourceChangeListener updateNotifier) {
+		this.updateNotifier = updateNotifier;
+	}
 
-    public void enable()
-    {
-        if (!pluginEnabled)
-        {
-            attachListener();
-        }
-    }
+	public void enable() {
+		if (!pluginEnabled) {
+			attachListener();
+		}
+	}
 
-    public void disable()
-    {
-        workspace.removeResourceChangeListener(updateNotifier);
-        pluginEnabled = false;
+	public void disable() {
+		workspace.removeResourceChangeListener(updateNotifier);
+		pluginEnabled = false;
 
-        eventQueue.pushNamed(markerClearingRunnable);
-    }
+		eventQueue.pushNamed(markerClearingRunnable);
+	}
 
-    private void attachListener()
-    {
-        pluginEnabled = true;
-        workspace.addResourceChangeListener(updateNotifier);
-    }
+	private void attachListener() {
+		pluginEnabled = true;
+		workspace.addResourceChangeListener(updateNotifier);
+	}
 
-    public void attachVisualStatus(VisualStatus status)
-    {
-        visualStatusRegistry.updateVisualStatus(status);
-    }
+	public void attachVisualStatus(VisualStatus status) {
+		visualStatusRegistry.updateVisualStatus(status);
+	}
 }

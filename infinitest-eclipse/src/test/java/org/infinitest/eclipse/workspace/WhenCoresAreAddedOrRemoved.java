@@ -24,42 +24,37 @@ package org.infinitest.eclipse.workspace;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.ResultCollector;
-import org.infinitest.TestQueueListener;
-import org.infinitest.eclipse.CoreLifecycleObserver;
-import org.infinitest.eclipse.SlowTestObserver;
-import org.infinitest.eclipse.console.ConsolePopulatingListener;
-import org.junit.Test;
+import org.infinitest.*;
+import org.infinitest.eclipse.*;
+import org.infinitest.eclipse.console.*;
+import org.junit.*;
 
-public class WhenCoresAreAddedOrRemoved
-{
-    private InfinitestCore core;
-    private CoreLifecycleObserver observer;
+public class WhenCoresAreAddedOrRemoved {
+	private InfinitestCore core;
+	private CoreLifecycleObserver observer;
 
-    @Test
-    public void shouldAttachAndDetachListenersFromCore()
-    {
-        ResultCollector resultCollector = new ResultCollector();
-        SlowTestObserver slowTestObserver = mock(SlowTestObserver.class);
-        core = mock(InfinitestCore.class);
+	@Test
+	public void shouldAttachAndDetachListenersFromCore() {
+		ResultCollector resultCollector = new ResultCollector();
+		SlowTestObserver slowTestObserver = mock(SlowTestObserver.class);
+		core = mock(InfinitestCore.class);
 
-        observer = new CoreLifecycleObserver(resultCollector, slowTestObserver);
-        observer.coreCreated(core);
-        observer.coreRemoved(core);
+		observer = new CoreLifecycleObserver(resultCollector, slowTestObserver);
+		observer.coreCreated(core);
+		observer.coreRemoved(core);
 
-        verify(core).addTestResultsListener(slowTestObserver);
-        verify(core).addTestResultsListener(resultCollector);
-        verify(core).addDisabledTestListener(slowTestObserver);
-        verify(core).addDisabledTestListener(resultCollector);
-        verify(core, times(2)).addTestQueueListener(any(TestQueueListener.class));
-        verify(core).addConsoleOutputListener(any(ConsolePopulatingListener.class));
+		verify(core).addTestResultsListener(slowTestObserver);
+		verify(core).addTestResultsListener(resultCollector);
+		verify(core).addDisabledTestListener(slowTestObserver);
+		verify(core).addDisabledTestListener(resultCollector);
+		verify(core, times(2)).addTestQueueListener(any(TestQueueListener.class));
+		verify(core).addConsoleOutputListener(any(ConsolePopulatingListener.class));
 
-        verify(core).removeTestResultsListener(slowTestObserver);
-        verify(core).removeTestResultsListener(resultCollector);
-        verify(core).removeDisabledTestListener(slowTestObserver);
-        verify(core).removeDisabledTestListener(resultCollector);
-        verify(core, times(2)).removeTestQueueListener(any(TestQueueListener.class));
-        verify(core).removeConsoleOutputListener(any(ConsolePopulatingListener.class));
-    }
+		verify(core).removeTestResultsListener(slowTestObserver);
+		verify(core).removeTestResultsListener(resultCollector);
+		verify(core).removeDisabledTestListener(slowTestObserver);
+		verify(core).removeDisabledTestListener(resultCollector);
+		verify(core, times(2)).removeTestQueueListener(any(TestQueueListener.class));
+		verify(core).removeConsoleOutputListener(any(ConsolePopulatingListener.class));
+	}
 }

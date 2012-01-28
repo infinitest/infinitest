@@ -24,175 +24,140 @@ package org.infinitest.parser;
 import static com.google.common.collect.Sets.*;
 import static org.jgrapht.Graphs.*;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import org.infinitest.ClasspathProvider;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
+import org.infinitest.*;
+import org.jgrapht.*;
+import org.jgrapht.graph.*;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
+import com.google.common.annotations.*;
+import com.google.common.collect.*;
 
-public class ClassFileIndex
-{
-    private final ClassBuilder builder;
-    private DirectedGraph<JavaClass, DefaultEdge> graph;
+public class ClassFileIndex {
+	private final ClassBuilder builder;
+	private DirectedGraph<JavaClass, DefaultEdge> graph;
 
-    public ClassFileIndex(ClasspathProvider classpath)
-    {
-        this(new JavaClassBuilder(classpath));
-    }
+	public ClassFileIndex(ClasspathProvider classpath) {
+		this(new JavaClassBuilder(classpath));
+	}
 
-    @VisibleForTesting
-    ClassFileIndex(ClassBuilder classBuilder)
-    {
-        builder = classBuilder;
-        graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
-    }
+	@VisibleForTesting
+	ClassFileIndex(ClassBuilder classBuilder) {
+		builder = classBuilder;
+		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
+	}
 
-    public Set<JavaClass> findClasses(Collection<File> changedFiles)
-    {
-        Set<JavaClass> changedClasses = newHashSet();
-        for (File file : changedFiles)
-        {
-            JavaClass javaClass = loadClassFromFile(file);
-            if (javaClass != null)
-            {
-                changedClasses.add(javaClass);
-            }
-        }
-        builder.clear();
-        return changedClasses;
-    }
+	public Set<JavaClass> findClasses(Collection<File> changedFiles) {
+		Set<JavaClass> changedClasses = newHashSet();
+		for (File file : changedFiles) {
+			JavaClass javaClass = loadClassFromFile(file);
+			if (javaClass != null) {
+				changedClasses.add(javaClass);
+			}
+		}
+		builder.clear();
+		return changedClasses;
+	}
 
-    public JavaClass findJavaClass(String classname)
-    {
-        JavaClass clazz = findClass(classname);
-        if (clazz == null)
-        {
-            clazz = builder.createClass(classname);
-            if (clazz.locatedInClassFile())
-            {
-                addToIndex(clazz);
-            }
-        }
-        return clazz;
-    }
+	public JavaClass findJavaClass(String classname) {
+		JavaClass clazz = findClass(classname);
+		if (clazz == null) {
+			clazz = builder.createClass(classname);
+			if (clazz.locatedInClassFile()) {
+				addToIndex(clazz);
+			}
+		}
+		return clazz;
+	}
 
-    private JavaClass findClass(String classname)
-    {
-        for (JavaClass jClass : graph.vertexSet())
-        {
-            if (jClass.getName().equals(classname))
-            {
-                return jClass;
-            }
-        }
-        return null;
-    }
+	private JavaClass findClass(String classname) {
+		for (JavaClass jClass : graph.vertexSet()) {
+			if (jClass.getName().equals(classname)) {
+				return jClass;
+			}
+		}
+		return null;
+	}
 
-    private void addToIndex(JavaClass newClass)
-    {
-        addToGraph(newClass);
-        updateParentReferences(newClass);
-        newClass.dispose();
-    }
+	private void addToIndex(JavaClass newClass) {
+		addToGraph(newClass);
+		updateParentReferences(newClass);
+		newClass.dispose();
+	}
 
-    private void addToGraph(JavaClass newClass)
-    {
-        if (!graph.addVertex(newClass))
-        {
-            replaceVertex(newClass);
-        }
-    }
+	private void addToGraph(JavaClass newClass) {
+		if (!graph.addVertex(newClass)) {
+			replaceVertex(newClass);
+		}
+	}
 
-    private List<JavaClass> getParents(JavaClass childClass)
-    {
-        return predecessorListOf(graph, childClass);
-    }
+	private List<JavaClass> getParents(JavaClass childClass) {
+		return predecessorListOf(graph, childClass);
+	}
 
-    private void replaceVertex(JavaClass newClass)
-    {
-        List<JavaClass> incomingEdges = getParents(newClass);
+	private void replaceVertex(JavaClass newClass) {
+		List<JavaClass> incomingEdges = getParents(newClass);
 
-        graph.removeVertex(newClass);
-        graph.addVertex(newClass);
-        for (JavaClass each : incomingEdges)
-        {
-            graph.addEdge(each, newClass);
-        }
-    }
+		graph.removeVertex(newClass);
+		graph.addVertex(newClass);
+		for (JavaClass each : incomingEdges) {
+			graph.addEdge(each, newClass);
+		}
+	}
 
-    private void updateParentReferences(JavaClass parentClass)
-    {
-        for (String child : parentClass.getImports())
-        {
-            JavaClass childClass = findJavaClass(child);
-            if (childClass != null && !childClass.equals(parentClass))
-            {
-                if (graph.containsVertex(childClass))
-                {
-                    graph.addEdge(parentClass, childClass);
-                }
-            }
-        }
-    }
+	private void updateParentReferences(JavaClass parentClass) {
+		for (String child : parentClass.getImports()) {
+			JavaClass childClass = findJavaClass(child);
+			if ((childClass != null) && !childClass.equals(parentClass)) {
+				if (graph.containsVertex(childClass)) {
+					graph.addEdge(parentClass, childClass);
+				}
+			}
+		}
+	}
 
-    JavaClass loadClassFromFile(File file)
-    {
-        JavaClass javaClass = builder.loadClass(file);
-        if (javaClass != null)
-        {
-            addToIndex(javaClass);
-        }
-        return javaClass;
-    }
+	JavaClass loadClassFromFile(File file) {
+		JavaClass javaClass = builder.loadClass(file);
+		if (javaClass != null) {
+			addToIndex(javaClass);
+		}
+		return javaClass;
+	}
 
-    // Loop through all changed classes, adding their parents (and their parents)
-    // to another set of changed classes
-    public Set<JavaClass> findChangedParents(Set<JavaClass> classes)
-    {
-        Set<JavaClass> changedParents = Sets.newHashSet(classes);
-        for (JavaClass jclass : classes)
-        {
-            findParents(jclass, changedParents);
-        }
-        return changedParents;
-    }
+	// Loop through all changed classes, adding their parents (and their
+	// parents)
+	// to another set of changed classes
+	public Set<JavaClass> findChangedParents(Set<JavaClass> classes) {
+		Set<JavaClass> changedParents = Sets.newHashSet(classes);
+		for (JavaClass jclass : classes) {
+			findParents(jclass, changedParents);
+		}
+		return changedParents;
+	}
 
-    private void findParents(JavaClass jclass, Set<JavaClass> changedParents)
-    {
-        for (JavaClass parent : getParents(jclass))
-        {
-            if (changedParents.add(parent))
-            {
-                findParents(parent, changedParents);
-            }
-        }
-    }
+	private void findParents(JavaClass jclass, Set<JavaClass> changedParents) {
+		for (JavaClass parent : getParents(jclass)) {
+			if (changedParents.add(parent)) {
+				findParents(parent, changedParents);
+			}
+		}
+	}
 
-    public void clear()
-    {
-        graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
-    }
+	public void clear() {
+		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
+	}
 
-    public boolean isIndexed(Class<Object> clazz)
-    {
-        return getIndexedClasses().contains(clazz.getName());
-    }
+	public boolean isIndexed(Class<Object> clazz) {
+		return getIndexedClasses().contains(clazz.getName());
+	}
 
-    public Set<String> getIndexedClasses()
-    {
-        Set<String> classes = newHashSet();
-        Set<JavaClass> vertexSet = graph.vertexSet();
-        for (JavaClass each : vertexSet)
-        {
-            classes.add(each.getName());
-        }
-        return classes;
-    }
+	public Set<String> getIndexedClasses() {
+		Set<String> classes = newHashSet();
+		Set<JavaClass> vertexSet = graph.vertexSet();
+		for (JavaClass each : vertexSet) {
+			classes.add(each.getName());
+		}
+		return classes;
+	}
 }
