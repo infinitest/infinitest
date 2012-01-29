@@ -10,15 +10,15 @@ if [ ! -e ${main_site} ]; then
 	exit 1
 fi
 
+# Ask for version summary
+echo "Please enter the newsfeed summary for this release:"
+read release_message
+
 # Clean working directory
 rm -Rf .privatebuild > /dev/null
 cd ${project_root}
 git stash save --quiet "Before publish"
 git clean -xdf
-
-# Ask for version summary
-echo "Please enter the newsfeed summary for this release:"
-read release_message
 
 # Increment Version
 CURRENT=`grep "<version>" -i pom.xml --max-count 1 | sed -e "s/.*<version>\(.*\)<\/version>/\1/" | sed -e "s/-SNAPSHOT//"`
