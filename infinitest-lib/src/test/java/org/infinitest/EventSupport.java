@@ -37,7 +37,7 @@ import org.infinitest.testrunner.*;
 import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.util.*;
 
-public class EventSupport extends TestResultsAdapter implements StatusChangeListener, TestQueueListener {
+public class EventSupport implements StatusChangeListener, TestQueueListener, TestResultsListener {
 	private final List<TestEvent> testEvents;
 	private final Map<String, TestCaseEvent> testCaseEvents;
 	private final List<PropertyChangeEvent> propertyEvents;
@@ -61,7 +61,6 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
 		this(5000);
 	}
 
-	@Override
 	public void testCaseStarting(TestEvent event) {
 		testEvents.add(event);
 	}
@@ -180,7 +179,6 @@ public class EventSupport extends TestResultsAdapter implements StatusChangeList
 		runComplete = new ThreadSafeFlag(timeout);
 	}
 
-	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestEvent each : event.getFailureEvents()) {
 			testEvents.add(each);

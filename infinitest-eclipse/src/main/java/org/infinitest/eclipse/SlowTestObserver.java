@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 @Component
-public class SlowTestObserver implements TestResultsListener, DisabledTestListener {
+public class SlowTestObserver implements DisabledTestListener, TestResultsListener {
 	private final MarkerRegistry slowMarkerRegistry;
 	private final ResourceLookup lookup;
 
@@ -56,13 +56,13 @@ public class SlowTestObserver implements TestResultsListener, DisabledTestListen
 		}
 	}
 
+	public void testCaseStarting(TestEvent event) {
+	}
+
 	public void testCaseComplete(TestCaseEvent event) {
 		for (MethodStats methodStat : event.getRunStats()) {
 			runStatsUpdated(event.getTestName(), methodStat);
 		}
-	}
-
-	public void testCaseStarting(TestEvent event) {
 	}
 
 	public void testsDisabled(Collection<String> testName) {

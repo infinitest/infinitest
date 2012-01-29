@@ -26,9 +26,7 @@ import static java.lang.System.*;
 
 import java.util.*;
 
-import org.infinitest.*;
-
-public class RunStatistics extends TestResultsAdapter {
+public class RunStatistics implements TestResultsListener {
 	private final Map<String, Long> failureTimestamps;
 
 	public RunStatistics() {
@@ -46,10 +44,12 @@ public class RunStatistics extends TestResultsAdapter {
 		return failureTimestamps.get(testName);
 	}
 
-	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestEvent each : event.getFailureEvents()) {
 			update(each);
 		}
+	}
+
+	public void testCaseStarting(TestEvent event) {
 	}
 }

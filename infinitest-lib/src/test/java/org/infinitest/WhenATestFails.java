@@ -52,8 +52,10 @@ public class WhenATestFails extends ResultCollectorTestSupport {
 
 	@Test
 	public void shouldBeAbleToLocateTheSourceOfAnEvent() {
-		core.addTestResultsListener(new TestResultsAdapter() {
-			@Override
+		core.addTestResultsListener(new TestResultsListener() {
+			public void testCaseStarting(TestEvent event) {
+			}
+
 			public void testCaseComplete(TestCaseEvent event) {
 				testCaseEvent = event;
 			}

@@ -146,8 +146,7 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 
 		// By listening for the start of the test, we can interrupt the test run
 		// in a predictable manner
-		runner.addTestResultsListener(new TestResultsAdapter() {
-			@Override
+		runner.addTestResultsListener(new TestResultsListener() {
 			public void testCaseStarting(TestEvent event) {
 				if (!testsToRun.isEmpty()) {
 					// Push a new test into the queue just as the current one is
@@ -174,6 +173,9 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 						throw new QueueDispatchException(e);
 					}
 				}
+			}
+
+			public void testCaseComplete(TestCaseEvent event) {
 			}
 		});
 		runTests(PASSING_TEST);

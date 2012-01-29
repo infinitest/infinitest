@@ -39,7 +39,7 @@ import com.google.common.collect.*;
  * 
  * @author bjrady
  */
-public class ResultCollector extends TestResultsAdapter implements DisabledTestListener, TestQueueListener {
+public class ResultCollector implements DisabledTestListener, TestQueueListener, TestResultsListener {
 	private CoreStatus status;
 	private final Map<String, TestCaseEvent> resultMap;
 	private final List<FailureListListener> changeListeners;
@@ -96,7 +96,9 @@ public class ResultCollector extends TestResultsAdapter implements DisabledTestL
 		statusChangeListeners.remove(listener);
 	}
 
-	@Override
+	public void testCaseStarting(TestEvent event) {
+	}
+
 	public void testCaseComplete(TestCaseEvent event) {
 		TestCaseFailures failureSet = getCurrentFailuresForTestCase(event);
 		for (TestEvent each : event.getFailureEvents()) {
