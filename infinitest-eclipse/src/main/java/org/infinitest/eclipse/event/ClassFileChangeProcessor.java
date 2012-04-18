@@ -55,9 +55,9 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 	private boolean containsClassFileChanges(IResourceDelta... deltas) {
 		// DEBT SHould use IResourceDeltaVisitor instead
 		for (IResourceDelta delta : deltas) {
-			if ((delta.getFullPath().getFileExtension() != null) || containsClassFileChanges(delta.getAffectedChildren())) {
+			InfinitestUtils.log("Delta vu : " + delta.toString());
+			if ((isNotJavaFile(delta) && (delta.getAffectedChildren().length == 0)) || containsClassFileChanges(delta.getAffectedChildren())) {
 				InfinitestUtils.log("Extension : " + delta.getFullPath().getFileExtension());
-				InfinitestUtils.log("Delta vu : " + delta.toString());
 				InfinitestUtils.log("Class : " + delta.getClass());
 				InfinitestUtils.log(delta.getFullPath().toFile().toString());
 				return true;
@@ -66,7 +66,9 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 		return false;
 	}
 
-	private boolean isClassFile(IResourceDelta delta) {
-		return delta.getFullPath().toPortableString().endsWith(".class");
+	private boolean isNotJavaFile(IResourceDelta delta) {
+		// Les deltas sur les fichiers Java ne sont pas des vrais delta (y les
+		// .class pour ça).
+		return !delta.getFullPath().toPortableString().endsWith(".java");
 	}
 }
