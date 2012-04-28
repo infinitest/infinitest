@@ -79,7 +79,11 @@ class EventTranslator extends RunListener {
 	}
 
 	private static String getTestCaseName(Description description) {
-		return description.getDisplayName().split("\\(|\\)")[1];
+		try {
+			return description.getDisplayName().split("\\(|\\)")[1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return description.getDisplayName();
+		}
 	}
 
 	private String getMethodName(Description description) {

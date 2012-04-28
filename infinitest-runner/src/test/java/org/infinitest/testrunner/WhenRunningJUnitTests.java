@@ -66,6 +66,18 @@ public class WhenRunningJUnitTests {
 	}
 
 	@Test
+	public void shouldDetectFailureInBeforeMethod() {
+		TestResults results = runner.runTest(FailingJUnit4TestWithBefore.class.getName());
+		assertFalse(isEmpty(results));
+	}
+
+	@Test
+	public void shouldDetectFailureInBeforeClassMethod() {
+		TestResults results = runner.runTest(FailingJUnit4TestWithBeforeClass.class.getName());
+		assertFalse(isEmpty(results));
+	}
+
+	@Test
 	public void shouldTreatUninstantiableTestsAsFailures() {
 		Iterable<TestEvent> events = runner.runTest(TEST_CLASS.getName());
 		TestEvent expectedEvent = methodFailed(null, TEST_CLASS.getName(), "shouldPass", new IllegalStateException());
