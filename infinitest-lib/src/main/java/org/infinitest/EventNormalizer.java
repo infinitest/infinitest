@@ -111,7 +111,6 @@ class EventNormalizer {
 		return createProxy(listener, ConsoleOutputListener.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> T createProxy(T listener, Class<T> proxyInterface) {
 		Pair key = new Pair(proxyInterface, listener);
 		if (!proxyCache.containsKey(key)) {

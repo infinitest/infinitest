@@ -38,7 +38,6 @@ public class WhenATestIsRun {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void shouldFireEventsForConsoleUpdates() {
 		TestRunner runner = mock(TestRunner.class);
 

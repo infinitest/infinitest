@@ -44,7 +44,6 @@ public class WhenTheRuntimeEnvironmentChanges {
 		eventSupport.assertReloadOccured();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldUpdateSupportingClassesInTheCore() {
 		RuntimeEnvironment environment = fakeEnvironment();
