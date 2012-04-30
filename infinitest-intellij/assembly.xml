@@ -13,7 +13,7 @@
                 <include>org.infinitest:infinitest-runner</include>
                 <include>org.infinitest:infinitest-intellij</include>
                 <include>com.google.guava:guava</include>
-                <include>javassist:javassist</include>
+                <include>org.javassist:javassist</include>
                 <include>org.jgrapht:jgrapht-jdk1.5</include>
             </includes>
         </dependencySet>
