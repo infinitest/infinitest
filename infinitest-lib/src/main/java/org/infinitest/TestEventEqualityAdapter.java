@@ -25,8 +25,6 @@ import java.util.*;
 
 import org.infinitest.testrunner.*;
 
-import com.google.common.base.*;
-
 public class TestEventEqualityAdapter {
 	private final TestEvent event;
 
@@ -42,13 +40,13 @@ public class TestEventEqualityAdapter {
 	public boolean equals(Object obj) {
 		if (obj instanceof TestEventEqualityAdapter) {
 			TestEventEqualityAdapter other = (TestEventEqualityAdapter) obj;
-			return Objects.equal(event, other.event) && Objects.equal(event.getMessage(), other.event.getMessage()) && Objects.equal(event.getPointOfFailure(), other.event.getPointOfFailure()) && Arrays.equals(event.getStackTrace(), other.event.getStackTrace());
+			return com.google.common.base.Objects.equal(event, other.event) && com.google.common.base.Objects.equal(event.getMessage(), other.event.getMessage()) && com.google.common.base.Objects.equal(event.getPointOfFailure(), other.event.getPointOfFailure()) && Arrays.equals(event.getStackTrace(), other.event.getStackTrace());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(event) ^ Objects.hashCode(event.getMessage()) ^ Objects.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
+		return com.google.common.base.Objects.hashCode(event) ^ com.google.common.base.Objects.hashCode(event.getMessage()) ^ com.google.common.base.Objects.hashCode(event.getPointOfFailure()) ^ Arrays.hashCode(event.getStackTrace());
 	}
 }
