@@ -34,8 +34,6 @@ import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
 
-import com.google.common.base.*;
-
 public class ProblemMarkerInfo extends AbstractMarkerInfo {
 	public static final String PICKLED_STACK_TRACE_ATTRIBUTE = "Pickled Stack Trace";
 	public static final String TEST_NAME_ATTRIBUTE = "Test Name";
@@ -129,7 +127,7 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(event.getTestMethod()) ^ Objects.hashCode(event.getTestName());
+		return com.google.common.base.Objects.hashCode(event.getTestMethod()) ^ com.google.common.base.Objects.hashCode(event.getTestName());
 	}
 
 	@Override
