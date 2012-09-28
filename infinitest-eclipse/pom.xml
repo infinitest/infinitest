@@ -94,7 +94,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
 				<executions>
 					<execution>
 						<id>libraries</id>
@@ -105,14 +104,16 @@
 						<configuration>
 							<outputDirectory>${basedir}/lib</outputDirectory>
 							<overWriteIfNewer>true</overWriteIfNewer>
+							<includeScope>compile</includeScope>
+							<includeScope>runtime</includeScope>
 							<excludeScope>system</excludeScope>
+							<excludeScope>test</excludeScope>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.3</version>
 				<configuration>
 					<filesets>
 						<fileset>
