@@ -226,24 +226,24 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>true</downloadJavadocs>
-                    <additionalConfig>
-                        <file>
-                            <name>.settings/org.eclipse.jdt.core.prefs</name>
-                            <location>${user.dir}/artifacts/eclipse_settings/org.eclipse.jdt.core.prefs</location>
-                        </file>
-                        <file>
-                            <name>.settings/org.eclipse.jdt.ui.prefs</name>
-                            <location>${user.dir}/artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
-                        </file>
-                        <file>
-                            <name>infinitest.args</name>
-                            <content>-Djava.awt.headless=true ${surefire.params}</content>
-                        </file>
-                    </additionalConfig>
-                </configuration>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+					<additionalConfig>
+						<file>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+							<location>${user.dir}/artifacts/eclipse_settings/org.eclipse.jdt.core.prefs</location>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.ui.prefs</name>
+							<location>${user.dir}/artifacts/eclipse_settings/org.eclipse.jdt.ui.prefs</location>
+						</file>
+						<file>
+							<name>infinitest.args</name>
+							<content>-Djava.awt.headless=true ${surefire.params}</content>
+						</file>
+					</additionalConfig>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
