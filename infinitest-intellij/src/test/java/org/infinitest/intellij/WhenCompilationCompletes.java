@@ -49,7 +49,7 @@ public class WhenCompilationCompletes {
 	}
 
 	@Test
-	public void shouldNotUpdatIfCompilationAborted() {
+	public void shouldNotUpdateIfCompilationAborted() {
 		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
 		listener.compilationFinished(true, 0, 0, null);
 
@@ -58,7 +58,7 @@ public class WhenCompilationCompletes {
 	}
 
 	@Test
-	public void shouldNotUpdatIfCompileErrorsOccurred() {
+	public void shouldNotUpdateIfCompileErrorsOccurred() {
 		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
 		listener.compilationFinished(false, 1, 0, null);
 

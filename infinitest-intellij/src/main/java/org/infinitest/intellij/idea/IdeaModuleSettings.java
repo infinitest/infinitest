@@ -119,17 +119,21 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * @return Collection unique classpath elements across all of the project's
 	 *         modeuls
 	 */
-	private List<File> listClasspathElements() {
+	List<File> listClasspathElements() {
 		// Classpath order is significant
 		List<File> classpathElements = new ArrayList<File>();
 
-		for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
-			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.CLASSES_AND_OUTPUT)) {
+		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
+			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.COMPILATION_CLASSES)) {
 				classpathElements.add(new File(virtualFile.getPath()));
 			}
 		}
 
 		return classpathElements;
+	}
+
+    ModuleRootManager moduleRootManagerInstance() {
+        return ModuleRootManager.getInstance(module);
 	}
 
 	private String appendInfinitestJarTo(String classpath) {
