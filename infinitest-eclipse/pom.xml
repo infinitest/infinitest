@@ -220,7 +220,7 @@
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<manifestFile>${baseDir}/META-INF/MANIFEST.MF</manifestFile>
+					<manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
 				</configuration>
 			</plugin>
 			<plugin>
