@@ -22,7 +22,6 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import java.awt.*;
-import java.awt.geom.*;
 
 import junit.framework.*;
 
@@ -48,23 +47,6 @@ public class TestDebugImage extends TestCase {
 	public void testInitalColor() {
 		assertNull(image.getDrawingBounds());
 		assertEquals(BACKGROUND_COLOR, image.getPixel(0, 0));
-	}
-
-	public void testDrawingBounds() {
-		Graphics2D g = image.createGraphics();
-		g.setColor(Color.RED);
-		Rectangle rectangle = new Rectangle(10, 0, 50, 50);
-		g.draw(rectangle);
-		assertEquals(rectangle, image.getDrawingBounds());
-		assertNull(image.getDrawingBounds(Color.BLUE));
-
-		g.setColor(Color.BLUE);
-		Ellipse2D.Double ellipse = new Ellipse2D.Double(20, 30, 80, 80);
-		g.draw(ellipse);
-		assertEquals(ellipse.getBounds(), image.getDrawingBounds(Color.BLUE));
-
-		image.clear();
-		assertNull(image.getDrawingBounds());
 	}
 
 	public void testXor() {
