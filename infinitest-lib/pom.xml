@@ -9,7 +9,7 @@
 
 	<name>Infinitest Lib</name>
 	<artifactId>infinitest-lib</artifactId>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
