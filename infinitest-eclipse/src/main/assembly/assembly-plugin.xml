@@ -7,7 +7,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<filtered>true</filtered>
+			<filtered>false</filtered>
 			<directory>target/classes</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
