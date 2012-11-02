@@ -1,70 +1,56 @@
 package org.infinitest.intellij.idea;
 
-
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
-
-import java.io.*;
-import java.util.*;
-
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+import java.io.*;
+import java.util.*;
+
+import org.junit.*;
+
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.vfs.*;
+
 public class WhenBuildingIdeaModuleClassPath {
+	private static final String PATH_A = "a";
+	private static final String PATH_B = "b";
+	private static final String PATH_C = "c";
+	private static final String PATH_D = "d";
 
-    public static final String PATH_A = "a";
-    public static final String PATH_B = "b";
-    public static final String PATH_C = "c";
-    public static final String PATH_D = "d";
-    public static final String PATH_E = "e";
+	private final CompilerModuleExtension compilerModuleExtension = mock(CompilerModuleExtension.class);
+	private final ModuleRootManager moduleRootManagerMock = mock(ModuleRootManager.class);
+	private final Module module = mock(Module.class);
+	private final IdeaModuleSettings ideaModuleSettingsSpy = spy(new IdeaModuleSettings(module));
 
-    @Mock
-    private ModuleRootManager moduleRootManagerMock;
+	@Test
+	public void shouldIncludeAllCompilationClassesToClasspathElementsList() {
+		OrderEntry orderEntry1 = orderEntry();
+		OrderEntry orderEntry2 = orderEntry();
+		doReturn(new OrderEntry[] { orderEntry1, orderEntry2 }).when(moduleRootManagerMock).getOrderEntries();
+		doReturn(new VirtualFile[] { fileWith(PATH_D) }).when(compilerModuleExtension).getOutputRoots(true);
+		doReturn(new VirtualFile[] { fileWith(PATH_A), fileWith(PATH_B) }).when(orderEntry1).getFiles(OrderRootType.CLASSES);
+		doReturn(new VirtualFile[] { fileWith(PATH_C) }).when(orderEntry2).getFiles(OrderRootType.CLASSES);
+		doReturn(moduleRootManagerMock).when(ideaModuleSettingsSpy).moduleRootManagerInstance();
+		doReturn(compilerModuleExtension).when(ideaModuleSettingsSpy).compilerModuleExtension();
 
-    @Mock
-    private Module module;
+		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
 
-    @Spy
-    private IdeaModuleSettings ideaModuleSettingsSpy = new IdeaModuleSettings(module);
+		assertThat(classPathElementsList.get(0).getPath(), equalTo(PATH_A));
+		assertThat(classPathElementsList.get(1).getPath(), equalTo(PATH_B));
+		assertThat(classPathElementsList.get(2).getPath(), equalTo(PATH_C));
+		assertThat(classPathElementsList.get(3).getPath(), equalTo(PATH_D));
+		assertThat(classPathElementsList.size(), equalTo(4));
+	}
 
-    @Test
-    public void shouldIncludeAllCompilationClassesToClasspathElementsList() {
-        final OrderEntry orderEntryMock1 = orderEntryMock();
-        final OrderEntry orderEntryMock2 = orderEntryMock();
-        doReturn(new VirtualFile[]{mockedVirtualFileWith(PATH_A), mockedVirtualFileWith(PATH_B)}).when(orderEntryMock1).getFiles(OrderRootType.COMPILATION_CLASSES);
-        doReturn(new VirtualFile[]{mockedVirtualFileWith(PATH_C)}).when(orderEntryMock1).getFiles(OrderRootType.CLASSES_AND_OUTPUT);
-        doReturn(new VirtualFile[]{mockedVirtualFileWith(PATH_D)}).when(orderEntryMock2).getFiles(OrderRootType.COMPILATION_CLASSES);
-        doReturn(new VirtualFile[]{mockedVirtualFileWith(PATH_E)}).when(orderEntryMock2).getFiles(OrderRootType.CLASSES_AND_OUTPUT);
-        doReturn(new OrderEntry[] {orderEntryMock1, orderEntryMock2}).when(moduleRootManagerMock).getOrderEntries();
-        doReturn(moduleRootManagerMock).when(ideaModuleSettingsSpy).moduleRootManagerInstance();
+	private static OrderEntry orderEntry() {
+		return mock(OrderEntry.class);
+	}
 
-        final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
-
-        verify(ideaModuleSettingsSpy, times(1)).moduleRootManagerInstance();
-        verify(moduleRootManagerMock, times(1)).getOrderEntries();
-        verify(orderEntryMock1, times(1)).getFiles(OrderRootType.COMPILATION_CLASSES);
-        verify(orderEntryMock2, times(1)).getFiles(OrderRootType.COMPILATION_CLASSES);
-        assertThat(classPathElementsList.get(0).getPath(), equalTo(PATH_A));
-        assertThat(classPathElementsList.get(1).getPath(), equalTo(PATH_B));
-        assertThat(classPathElementsList.get(2).getPath(), equalTo(PATH_D));
-        assertThat(classPathElementsList.size(), equalTo(3));
-    }
-
-    private OrderEntry orderEntryMock() {
-        return mock(OrderEntry.class);
-    }
-
-    private VirtualFile mockedVirtualFileWith(final String path) {
-        final VirtualFile virtualFile = mock(VirtualFile.class);
-        doReturn(path).when(virtualFile).getPath();
-
-        return virtualFile;
-    }
+	private static VirtualFile fileWith(final String path) {
+		VirtualFile virtualFile = mock(VirtualFile.class);
+		doReturn(path).when(virtualFile).getPath();
+		return virtualFile;
+	}
 }

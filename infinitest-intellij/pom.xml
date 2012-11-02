@@ -10,6 +10,10 @@
 	<name>Infinitest for IntelliJ</name>
 	<artifactId>infinitest-intellij</artifactId>
 
+	<properties>
+		<intellij.version>11</intellij.version>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>project</id>
@@ -70,37 +74,37 @@
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>annotations</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>bootstrap</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>extensions</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>idea</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>openapi</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>util</artifactId>
-			<version>8.1.1</version>
+			<version>${intellij.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

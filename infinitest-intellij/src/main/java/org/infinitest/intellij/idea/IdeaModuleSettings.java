@@ -124,7 +124,14 @@ public class IdeaModuleSettings implements ModuleSettings {
 		List<File> classpathElements = new ArrayList<File>();
 
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.COMPILATION_CLASSES)) {
+			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.CLASSES)) {
+				classpathElements.add(new File(virtualFile.getPath()));
+			}
+		}
+
+		CompilerModuleExtension compilerExtension = compilerModuleExtension();
+		if (compilerExtension != null) {
+			for (VirtualFile virtualFile : compilerExtension.getOutputRoots(true)) {
 				classpathElements.add(new File(virtualFile.getPath()));
 			}
 		}
@@ -132,8 +139,12 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return classpathElements;
 	}
 
-    ModuleRootManager moduleRootManagerInstance() {
-        return ModuleRootManager.getInstance(module);
+	ModuleRootManager moduleRootManagerInstance() {
+		return ModuleRootManager.getInstance(module);
+	}
+
+	CompilerModuleExtension compilerModuleExtension() {
+		return CompilerModuleExtension.getInstance(module);
 	}
 
 	private String appendInfinitestJarTo(String classpath) {
