@@ -56,4 +56,17 @@ class InfinitestGutterIconRenderer extends GutterIconRenderer {
 		}
 		return message.replace("<", "&lt;").replace(">", "&gt;");
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof InfinitestGutterIconRenderer) {
+			return event.equals(((InfinitestGutterIconRenderer) other).event);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return event.hashCode();
+	}
 }

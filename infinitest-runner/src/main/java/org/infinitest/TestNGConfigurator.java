@@ -26,8 +26,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-import com.google.common.io.*;
-
 public class TestNGConfigurator {
 	private static final String SUFFIX = "\\s?=\\s?(.+)";
 	private static final String PREFIX = "^\\s*#+\\s?";
@@ -91,7 +89,9 @@ public class TestNGConfigurator {
 				}
 			} while (line != null);
 		} finally {
-			Closeables.closeQuietly(reader);
+			if (reader != null) {
+				reader.close();
+			}
 		}
 	}
 

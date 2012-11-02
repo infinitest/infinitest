@@ -30,7 +30,7 @@ import com.fakeco.fakeproduct.id.*;
 
 @ClassAnnotation
 public class FakeProduct {
-	@SuppressWarnings("unused") @FieldAnnotation private FakeId id;
+	@FieldAnnotation private FakeId id;
 
 	public FakeProduct() {
 		id = new FakeId();

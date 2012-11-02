@@ -34,8 +34,6 @@ import java.util.*;
 import java.util.jar.*;
 import java.util.logging.*;
 
-import com.google.common.io.*;
-
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
@@ -141,7 +139,13 @@ public class InfinitestUtils {
 				} catch (IOException e) {
 					log(WARNING, "Error reading jar file " + each + ": " + e.getMessage());
 				} finally {
-					Closeables.closeQuietly(jarFile);
+					if (jarFile != null) {
+						try {
+							jarFile.close();
+						} catch (IOException e) {
+							// Ignore
+						}
+					}
 				}
 			}
 		}
