@@ -26,6 +26,8 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
+import com.google.common.io.*;
+
 public class TestNGConfigurator {
 	private static final String SUFFIX = "\\s?=\\s?(.+)";
 	private static final String PREFIX = "^\\s*#+\\s?";
@@ -78,9 +80,9 @@ public class TestNGConfigurator {
 	}
 
 	private void readFilterFile() throws IOException {
-		FileReader fileReader = new FileReader(file);
+		BufferedReader reader = null;
 		try {
-			BufferedReader reader = new BufferedReader(fileReader);
+			reader = new BufferedReader(new FileReader(file));
 			String line;
 			do {
 				line = reader.readLine();
@@ -89,7 +91,7 @@ public class TestNGConfigurator {
 				}
 			} while (line != null);
 		} finally {
-			fileReader.close();
+			Closeables.closeQuietly(reader);
 		}
 	}
 

@@ -26,6 +26,8 @@ import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
 
+import com.google.common.io.*;
+
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
@@ -65,16 +67,16 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter {
 	}
 
 	private void readFilterFile() throws IOException {
-		FileReader fileReader = new FileReader(file);
+		BufferedReader reader = null;
 		try {
-			BufferedReader reader = new BufferedReader(fileReader);
+			reader = new BufferedReader(new FileReader(file));
 			String line;
 			do {
 				line = reader.readLine();
 				addFilter(line);
 			} while (line != null);
 		} finally {
-			fileReader.close();
+			Closeables.closeQuietly(reader);
 		}
 	}
 }

@@ -34,6 +34,8 @@ import java.util.*;
 import java.util.jar.*;
 import java.util.logging.*;
 
+import com.google.common.io.*;
+
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
@@ -130,13 +132,16 @@ public class InfinitestUtils {
 					return convertFromWindowsClassPath(each);
 				}
 			} else {
+				JarFile jarFile = null;
 				try {
-					JarFile jarFile = new JarFile(each);
+					jarFile = new JarFile(each);
 					if (jarFile.getJarEntry(classToLookFor) != null) {
 						return convertFromWindowsClassPath(each);
 					}
 				} catch (IOException e) {
 					log(WARNING, "Error reading jar file " + each + ": " + e.getMessage());
+				} finally {
+					Closeables.closeQuietly(jarFile);
 				}
 			}
 		}
