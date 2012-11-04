@@ -100,7 +100,7 @@ public class WhenRunningJUnitTests {
 	@Test
 	public void shouldSupportTestNG() {
 		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
-		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected:<false> but was:<true>"));
+		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 

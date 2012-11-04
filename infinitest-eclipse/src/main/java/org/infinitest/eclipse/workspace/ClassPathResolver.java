@@ -32,7 +32,6 @@ import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.launching.*;
 
 import com.google.common.collect.ImmutableList;
-import com.google.inject.internal.Lists;
 
 public class ClassPathResolver {
 	private static final String JRE_CONTAINER = "org.eclipse.jdt.launching.JRE_CONTAINER";
@@ -56,7 +55,7 @@ public class ClassPathResolver {
 	}
 
 	Iterable<String> unresolvedRuntimeClasspath(IJavaProject project) throws CoreException {
-		List<String> jars = Lists.newArrayList();
+		List<String> jars = new ArrayList<String>();
 
 		for (IRuntimeClasspathEntry runtimeEntry : eclipseFacade.computeUnresolvedRuntimeClasspath(project)) {
 			String variable = runtimeEntry.getVariableName();
