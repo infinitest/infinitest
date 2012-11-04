@@ -84,6 +84,7 @@ public class WhenRunningTestNGTests {
 
 	@Test
 	public void shouldNotFailWithFilteredGroupsSet() {
+		config.setGroups("slow");
 		config.setExcludedGroups("slow, manual");
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 		assertEquals(0, size(results));
