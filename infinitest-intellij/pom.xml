@@ -11,13 +11,6 @@
     <name>Infinitest for IntelliJ</name>
     <artifactId>infinitest-intellij</artifactId>
 
-	<repositories>
-		<repository>
-			<id>project</id>
-			<url>file:${basedir}/src/repository</url>
-		</repository>
-	</repositories>
-
     <build>
         <resources>
             <resource>
