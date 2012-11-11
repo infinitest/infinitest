@@ -34,7 +34,7 @@
         <testng.version>5.14.6</testng.version>
         <festassert.version>1.4</festassert.version>
 
-        <intellij.version>8.1.1</intellij.version>
+        <intellij.version>12.0-SNAPSHOT</intellij.version>
     </properties>
 
     <profiles>
