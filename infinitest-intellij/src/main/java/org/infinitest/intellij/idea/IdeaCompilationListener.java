@@ -21,12 +21,16 @@
  */
 package org.infinitest.intellij.idea;
 
-import org.infinitest.*;
-import org.infinitest.intellij.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.RuntimeEnvironment;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.ModuleSettings;
 
-import com.intellij.openapi.compiler.*;
+import com.intellij.openapi.compiler.CompilationStatusListener;
+import com.intellij.openapi.compiler.CompileContext;
 
 public class IdeaCompilationListener implements CompilationStatusListener, TestControl {
+
 	private final InfinitestCore core;
 	private final ModuleSettings moduleSettings;
 	private boolean shouldRunTests = true;
@@ -48,6 +52,10 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 				core.update();
 			}
 		}
+	}
+
+	public void fileGenerated(String outputRoot, String relativePath) {
+		core.update();
 	}
 
 	public void setRunTests(boolean shouldRunTests) {
