@@ -23,12 +23,13 @@ package org.infinitest.intellij.idea.language;
 
 import javax.swing.*;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
-import com.intellij.openapi.editor.markup.*;
-import com.intellij.openapi.util.*;
+import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.IconLoader;
 
 class InfinitestGutterIconRenderer extends GutterIconRenderer {
+
 	private final InnerClassFriendlyTestEvent event;
 
 	public InfinitestGutterIconRenderer(InnerClassFriendlyTestEvent event) {
@@ -55,5 +56,28 @@ class InfinitestGutterIconRenderer extends GutterIconRenderer {
 			return "no message";
 		}
 		return message.replace("<", "&lt;").replace(">", "&gt;");
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		final InfinitestGutterIconRenderer that = (InfinitestGutterIconRenderer) o;
+
+		if (event != null ? !event.equals(that.event) : that.event != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return event != null ? event.hashCode() : 0;
 	}
 }
