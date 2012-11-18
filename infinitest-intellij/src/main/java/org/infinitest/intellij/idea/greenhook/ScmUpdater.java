@@ -21,21 +21,29 @@
  */
 package org.infinitest.intellij.idea.greenhook;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.infinitest.intellij.idea.*;
-import org.infinitest.intellij.plugin.greenhook.*;
-import org.jetbrains.annotations.*;
+import org.infinitest.intellij.idea.DefaultProjectComponent;
+import org.infinitest.intellij.plugin.greenhook.GreenHook;
+import org.jetbrains.annotations.NotNull;
 
-import com.intellij.openapi.application.*;
-import com.intellij.openapi.progress.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
-import com.intellij.openapi.vcs.*;
-import com.intellij.openapi.vcs.update.*;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.EmptyProgressIndicator;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.vcs.AbstractVcs;
+import com.intellij.openapi.vcs.FilePath;
+import com.intellij.openapi.vcs.FilePathImpl;
+import com.intellij.openapi.vcs.ProjectLevelVcsManager;
+import com.intellij.openapi.vcs.update.SequentialUpdatesContext;
+import com.intellij.openapi.vcs.update.UpdateEnvironment;
+import com.intellij.openapi.vcs.update.UpdatedFiles;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 
 public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
+
 	private final ProjectLevelVcsManager vcsManager;
 
 	public ScmUpdater(Project project) {
@@ -44,6 +52,7 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
 
 	public void execute() {
 		ApplicationManager.getApplication().invokeLater(new Runnable() {
+
 			public void run() {
 				AbstractVcs[] vssProviders = vcsManager.getAllActiveVcss();
 				for (AbstractVcs each : vssProviders) {
@@ -53,7 +62,8 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
 					}
 
 					FilePath[] paths = collectVcsRoots(each);
-					updateEnvironment.updateDirectories(paths, UpdatedFiles.create(), new EmptyProgressIndicator(), Ref.create((SequentialUpdatesContext) new InfinitestSequentialUpdatesContext()));
+					updateEnvironment.updateDirectories(paths, UpdatedFiles.create(), new EmptyProgressIndicator(),
+							Ref.create((SequentialUpdatesContext) new InfinitestSequentialUpdatesContext()));
 				}
 				VirtualFileManager.getInstance().refresh(true);
 			}
@@ -70,9 +80,14 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
 	}
 
 	static class InfinitestSequentialUpdatesContext implements SequentialUpdatesContext {
+
 		@NotNull
 		public String getMessageWhenInterruptedBeforeStart() {
 			return "Infinitest generated message";
+		}
+
+		public boolean shouldFail() {
+			return false;
 		}
 	}
 }
