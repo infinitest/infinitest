@@ -21,25 +21,31 @@
  */
 package org.infinitest.intellij.idea;
 
-import static java.io.File.*;
+import static java.io.File.pathSeparator;
+import static java.util.logging.Level.INFO;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.jetbrains.annotations.*;
+import org.apache.log4j.Logger;
+import org.infinitest.RuntimeEnvironment;
+import org.infinitest.intellij.InfinitestJarLocator;
+import org.infinitest.intellij.ModuleSettings;
+import org.jetbrains.annotations.Nullable;
 
-import com.intellij.ide.plugins.*;
-import com.intellij.openapi.compiler.*;
-import com.intellij.openapi.extensions.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.projectRoots.*;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.compiler.CompilerPaths;
+import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
+
 	private final Module module;
 	private final InfinitestJarLocator locator = new InfinitestJarLocator();
 
@@ -69,13 +75,14 @@ public class IdeaModuleSettings implements ModuleSettings {
 		if (sdkPath == null) {
 			return null;
 		}
-		return new RuntimeEnvironment(listOutputDirectories(), getWorkingDirectory(), buildClasspathString(), new File(sdkPath.getAbsolutePath()));
+		return new RuntimeEnvironment(listOutputDirectories(), getWorkingDirectory(), buildClasspathString(),
+				new File(sdkPath.getAbsolutePath()));
 	}
 
 	/**
 	 * List all output directories for the project including both production and
 	 * test
-	 * 
+	 *
 	 * @return A list of all of the output directories for the project
 	 */
 	private List<File> listOutputDirectories() {
@@ -90,7 +97,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 	/**
 	 * Creates a classpath string consisting of all libraries and output
 	 * directories
-	 * 
+	 *
 	 * @return A string representation of the classpath entries deliniated by
 	 *         colons
 	 */
@@ -105,7 +112,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 			first = false;
 			builder.append(each.getAbsolutePath().replace("!", ""));
 		}
-
+		log(INFO, "Classpath " + builder.toString());
 		return appendInfinitestJarTo(builder.toString());
 	}
 
@@ -115,25 +122,42 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 	/**
 	 * Lists all classpath elements including output directories and libraries
-	 * 
+	 *
 	 * @return Collection unique classpath elements across all of the project's
-	 *         modeuls
+	 *         modules
 	 */
 	List<File> listClasspathElements() {
 		// Classpath order is significant
 		List<File> classpathElements = new ArrayList<File>();
 
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.COMPILATION_CLASSES)) {
+			//for libraries and jdk use CLASSES
+			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.CLASSES)) {
 				classpathElements.add(new File(virtualFile.getPath()));
 			}
+		}
+
+		//to recursively process module outputs without test-outputs
+		for (Module dependedModule : moduleRootManagerInstance().getModuleDependencies(false)) {
+			for (VirtualFile virtualFile : compilerModuleExtensionInstance(dependedModule).getOutputRoots(false)) {
+				classpathElements.add(new File(virtualFile.getPath()));
+			}
+		}
+
+		//to get module output roots with test-outputs use CompilerModuleExtension.getOutputRoots(true)
+		for (VirtualFile virtualFile : compilerModuleExtensionInstance(module).getOutputRoots(true)) {
+			classpathElements.add(new File(virtualFile.getPath()));
 		}
 
 		return classpathElements;
 	}
 
-    ModuleRootManager moduleRootManagerInstance() {
-        return ModuleRootManager.getInstance(module);
+	ModuleRootManager moduleRootManagerInstance() {
+		return ModuleRootManager.getInstance(module);
+	}
+
+	CompilerModuleExtension compilerModuleExtensionInstance(Module lookupModule) {
+		return CompilerModuleExtension.getInstance(lookupModule);
 	}
 
 	private String appendInfinitestJarTo(String classpath) {
