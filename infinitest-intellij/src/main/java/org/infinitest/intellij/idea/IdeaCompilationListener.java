@@ -60,4 +60,8 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 	public boolean shouldRunTests() {
 		return shouldRunTests;
 	}
+
+    public void fileGenerated(String s, String s1) {
+        //no-op
+    }
 }
