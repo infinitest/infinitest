@@ -70,37 +70,37 @@
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>annotations</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>bootstrap</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>extensions</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>idea</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>openapi</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.intellij.idea</groupId>
 			<artifactId>util</artifactId>
-			<version>8.1.1</version>
+			<version>11.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

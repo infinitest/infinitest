@@ -26,6 +26,9 @@ import org.infinitest.intellij.*;
 
 import com.intellij.openapi.compiler.*;
 
+import java.io.File;
+import java.util.Collections;
+
 public class IdeaCompilationListener implements CompilationStatusListener, TestControl {
 	private final InfinitestCore core;
 	private final ModuleSettings moduleSettings;
@@ -59,5 +62,9 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 
 	public boolean shouldRunTests() {
 		return shouldRunTests;
+	}
+
+    public void fileGenerated(String outputRoot, String relativePath) {
+		core.update(Collections.singleton(new File(outputRoot, relativePath)));
 	}
 }

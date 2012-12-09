@@ -121,18 +121,96 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 */
 	List<File> listClasspathElements() {
 		// Classpath order is significant
-		List<File> classpathElements = new ArrayList<File>();
+		Set<File> classpathElements = new LinkedHashSet<File>();
 
-		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.COMPILATION_CLASSES)) {
-				classpathElements.add(new File(virtualFile.getPath()));
+
+		if(isLegacyApiAvailable()) {
+			classpathElements.addAll(findClasspathElementsLegacyMode());
+		} else {
+			classpathElements.addAll(findClassPathElements());
+		}
+		return new ArrayList<File>(classpathElements);
+	}
+
+	/**
+	 * In order to maximize backwards compatilibity, we check if the environment supports the "old way" of
+	 * finding the modules classpath.
+	 */
+	private boolean isLegacyApiAvailable() {
+		try {
+			OrderRootType.class.getField("COMPILATION_CLASSES");
+			return true;
+		} catch (NoSuchFieldException e) {
+			return false;
+		}
+	}
+	/**
+	 * This is the new way of doing it. Starting with IDEA-12 the previously deprecated
+	 * {@code OrderRootType.COMPILATION_CLASSES} has been removed entirely and can no longer be used.
+	 * Instead we use the more verbose but more concise way of reading the classpath of all modules involved.
+	 */
+	private Collection<? extends File> findClassPathElements() {
+		final List<File> found = new ArrayList<File>();
+
+		/* our module output */
+		CompilerModuleExtension compilerModuleExtension = CompilerModuleExtension.getInstance(module);
+		if(compilerModuleExtension != null) {
+			VirtualFile[] outputRoots = compilerModuleExtension.getOutputRoots(true);
+			for (VirtualFile outputRoot : outputRoots) {
+				found.add(new File(outputRoot.getPath()));
 			}
 		}
 
-		return classpathElements;
+		/* all our dependencies (recursively where needed) */
+		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
+			List<VirtualFile> files = new ArrayList<VirtualFile>();
+
+			if(entry instanceof ModuleOrderEntry) {
+				/* other modules we depend on -> they could depend on modules themselves, so we need to add them recursively */
+				ModuleOrderEntry moduleOrderEntry = (ModuleOrderEntry) entry;
+				Module currentModule = moduleOrderEntry.getModule();
+				if(currentModule != null) {
+					files.addAll(Arrays.asList(OrderEnumerator.orderEntries(currentModule).compileOnly().recursively().classes().getRoots()));
+				}
+			} else if (entry instanceof LibraryOrderEntry) {
+				/* libraries cannot be recursive and we only need the classes of them */
+				LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry) entry;
+				files.addAll(Arrays.asList(libraryOrderEntry.getRootFiles(OrderRootType.CLASSES)));
+			} else {
+				/* all other cases (whichever they are) we want to have their classes outputs */
+				files.addAll(Arrays.asList(entry.getFiles(OrderRootType.CLASSES)));
+			}
+			for (VirtualFile virtualFile : files) {
+				found.add(new File(virtualFile.getPath()));
+			}
+		}
+
+		return found;
 	}
 
-    ModuleRootManager moduleRootManagerInstance() {
+	/**
+	 * This is the "old" way of doing it. (Pre-IDEA-12)
+	 * The {@code OrderRootType.COMPILATION_CLASSES} has been deprecated.
+	 * {@link OrderRootType.COMPILATION_CLASSES}
+	 * Javadoc states to use the following approaches instead:
+	 * for libraries and jdk use CLASSES
+	 * to get module output roots use CompilerModuleExtension.getOutputRoots(boolean)(true)
+	 * to recursively process module dependencies use OrderEnumerator.orderEntries(module).recursively().exportedOnly()
+	 * -> we do this in {@code findClassPathElements()}
+	 */
+	private Collection<? extends File> findClasspathElementsLegacyMode() {
+		List<File> found = new ArrayList<File>();
+
+		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
+			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.COMPILATION_CLASSES)) {
+				found.add(new File(virtualFile.getPath()));
+			}
+		}
+
+		return found;
+	}
+
+	ModuleRootManager moduleRootManagerInstance() {
         return ModuleRootManager.getInstance(module);
 	}
 

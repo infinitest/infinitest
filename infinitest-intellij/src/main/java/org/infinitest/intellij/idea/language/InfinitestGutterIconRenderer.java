@@ -50,10 +50,27 @@ class InfinitestGutterIconRenderer extends GutterIconRenderer {
 		return event.getErrorClassName() + "(" + message + ")";
 	}
 
-	private String formatMessage(String message) {
+    private String formatMessage(String message) {
 		if (message == null) {
 			return "no message";
 		}
 		return message.replace("<", "&lt;").replace(">", "&gt;");
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        InfinitestGutterIconRenderer that = (InfinitestGutterIconRenderer) o;
+
+        if (event != null ? !event.equals(that.event) : that.event != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return event != null ? event.hashCode() : 0;
+    }
 }
