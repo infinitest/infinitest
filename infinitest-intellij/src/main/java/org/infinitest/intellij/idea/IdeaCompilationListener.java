@@ -37,17 +37,13 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 	}
 
 	public void compilationFinished(boolean aborted, int errors, int warnings, CompileContext compileContext) {
-		RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
-		if (runtimeEnvironment == null) {
-			return;
-		}
-
 		if (!aborted && (errors == 0)) {
-			core.setRuntimeEnvironment(runtimeEnvironment);
-			if (shouldRunTests) {
-				core.update();
-			}
+			doRunTests();
 		}
+	}
+
+	public void fileGenerated(String outputRoot, String relativePath) {
+		doRunTests();
 	}
 
 	public void setRunTests(boolean shouldRunTests) {
@@ -61,6 +57,15 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 		return shouldRunTests;
 	}
 
-	public void fileGenerated(String arg0, String arg1) {
+	private void doRunTests() {
+		RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
+		if (runtimeEnvironment == null) {
+			return;
+		}
+
+		core.setRuntimeEnvironment(runtimeEnvironment);
+		if (shouldRunTests) {
+			core.update();
+		}
 	}
 }
