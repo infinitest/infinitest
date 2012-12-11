@@ -25,7 +25,7 @@
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
 
-		<mockito.version>1.9.5-rc1</mockito.version>
+		<mockito.version>1.9.5</mockito.version>
 		<easymock.version>2.4</easymock.version>
 		<junit.version>4.10</junit.version>
 		<guava.version>r09</guava.version>
