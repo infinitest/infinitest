@@ -31,8 +31,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.launching.*;
 
-import com.google.common.collect.ImmutableList;
-import com.google.inject.internal.Lists;
+import com.google.common.collect.*;
 
 public class ClassPathResolver {
 	private static final String JRE_CONTAINER = "org.eclipse.jdt.launching.JRE_CONTAINER";
