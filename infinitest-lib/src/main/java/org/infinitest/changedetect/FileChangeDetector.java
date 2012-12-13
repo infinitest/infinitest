@@ -79,7 +79,7 @@ public class FileChangeDetector implements ChangeDetector {
 	}
 
 	private boolean hasValidName(File classfileOrDirectory, boolean isPackage) {
-		return !isPackage || isLetter(classfileOrDirectory.getName().charAt(0));
+		return !isPackage || isJavaIdentifierStart(classfileOrDirectory.getName().charAt(0));
 	}
 
 	protected long getModificationTimestamp(File classFile) {
