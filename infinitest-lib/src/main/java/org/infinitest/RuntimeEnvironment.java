@@ -32,6 +32,8 @@ import java.util.*;
 
 import org.infinitest.testrunner.*;
 
+import com.google.common.annotations.*;
+
 /**
  * Defines the runtime environment for test execution.
  * 
@@ -102,15 +104,20 @@ public class RuntimeEnvironment implements ClasspathProvider {
 
 	public String getCompleteClasspath() {
 		String completeClasspath = getRawClasspath();
-		String infinitestJarPath = findClasspathEntryFor(infinitestRuntimeClasspath, TestRunnerProcess.class);
+		String infinitestJarPath = findInfinitestJar();
 		log(CONFIG, "Found infinitest jar classpath entry at " + infinitestJarPath);
 		if (infinitestJarPath != null) {
-			completeClasspath = infinitestJarPath + File.pathSeparator + completeClasspath;
+			completeClasspath = completeClasspath + File.pathSeparator + infinitestJarPath;
 		} else {
 			log(SEVERE, "Could not find a classpath entry for Infinitest Core in " + infinitestRuntimeClasspath);
 		}
 		validateClasspath(completeClasspath);
 		return completeClasspath;
+	}
+
+	@VisibleForTesting
+	public String findInfinitestJar() {
+		return findClasspathEntryFor(infinitestRuntimeClasspath, TestRunnerProcess.class);
 	}
 
 	private void validateClasspath(String completeClasspath) {

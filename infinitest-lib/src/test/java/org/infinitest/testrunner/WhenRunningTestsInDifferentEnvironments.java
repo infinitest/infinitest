@@ -96,6 +96,7 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
 		RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), systemClasspath(), currentJavaHome());
 		String classpath = environment.getCompleteClasspath();
 		assertTrue(classpath, classpath.contains("infinitest"));
+		assertTrue(classpath, classpath.endsWith(environment.findInfinitestJar()));
 	}
 
 	@Test
