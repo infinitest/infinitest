@@ -122,6 +122,29 @@ public class WhenRunningTestNGTests {
 		assertTrue(wasCalled);
 	}
 
+	@Test
+	public void should_call_setup_if_one_of_its_group_is_activated() {
+		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
+
+		config.setGroups("automated");
+		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
+
+		assertTrue(TestWithTestNGGroupsAndSetup.setupWasCalled);
+		assertEquals(1, size(results));
+	}
+
+	@Test
+	public void should_NOT_call_setup_if_one_of_its_group_is_excluded() {
+		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
+
+		config.setGroups("automated");
+		config.setExcludedGroups("integration");
+		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
+
+		assertFalse(TestWithTestNGGroupsAndSetup.setupWasCalled);
+		assertEquals(1, size(results));
+	}
+
 	private class MyJUnitXMLReporter extends JUnitXMLReporter {
 		@Override
 		public void onTestStart(ITestResult result) {
