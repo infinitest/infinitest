@@ -30,6 +30,7 @@ import org.apache.log4j.*;
 import org.infinitest.*;
 import org.infinitest.intellij.*;
 import org.jetbrains.annotations.*;
+import org.testng.collections.*;
 
 import com.intellij.ide.plugins.*;
 import com.intellij.openapi.compiler.*;
@@ -117,14 +118,40 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * Lists all classpath elements including output directories and libraries
 	 * 
 	 * @return Collection unique classpath elements across all of the project's
-	 *         modeuls
+	 *         modules
 	 */
 	List<File> listClasspathElements() {
 		// Classpath order is significant
-		List<File> classpathElements = new ArrayList<File>();
+		List<File> classpathElements = Lists.newArrayList();
 
+		// all our dependencies (recursively where needed)
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			for (VirtualFile virtualFile : entry.getFiles(OrderRootType.CLASSES)) {
+			List<VirtualFile> files = new ArrayList<VirtualFile>();
+
+			if (entry instanceof ModuleOrderEntry) {
+				/*
+				 * other modules we depend on -> they could depend on modules
+				 * themselves, so we need to add them recursively.
+				 */
+				Module currentModule = ((ModuleOrderEntry) entry).getModule();
+				if (currentModule != null) {
+					files.addAll(Arrays.asList(OrderEnumerator.orderEntries(currentModule).compileOnly().recursively().classes().getRoots()));
+				}
+			} else if (entry instanceof LibraryOrderEntry) {
+				/*
+				 * libraries cannot be recursive and we only need the classes of
+				 * them.
+				 */
+				LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry) entry;
+				files.addAll(Arrays.asList(libraryOrderEntry.getRootFiles(OrderRootType.CLASSES)));
+			} else {
+				/*
+				 * all other cases (whichever they are) we want to have their
+				 * classes outputs.
+				 */
+				files.addAll(Arrays.asList(entry.getFiles(OrderRootType.CLASSES)));
+			}
+			for (VirtualFile virtualFile : files) {
 				classpathElements.add(new File(virtualFile.getPath()));
 			}
 		}
