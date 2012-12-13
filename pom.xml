@@ -30,7 +30,7 @@
 		<junit.version>4.10</junit.version>
 		<guava.version>r09</guava.version>
 		<hamcrest.version>1.1</hamcrest.version>
-		<testng.version>5.14.6</testng.version>
+		<testng.version>6.8</testng.version>
 		<festassert.version>1.4</festassert.version>
 	</properties>
 
