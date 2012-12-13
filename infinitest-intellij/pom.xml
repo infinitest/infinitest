@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.1.106</version>
+		<version>5.1.107-SNAPSHOT</version>
 	</parent>
 	
 	<name>Infinitest for IntelliJ</name>

@@ -5,7 +5,7 @@
 	<artifactId>infinitest-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Infinitest Parent POM</name>
-	<version>5.1.106</version>
+	<version>5.1.107-SNAPSHOT</version>
 	<url>http://infinitest.github.com/</url>
 
 	<modules>
