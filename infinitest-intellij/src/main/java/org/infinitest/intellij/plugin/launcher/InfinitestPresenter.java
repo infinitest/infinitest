@@ -41,26 +41,21 @@ import org.infinitest.intellij.plugin.swingui.*;
 import org.infinitest.testrunner.*;
 import org.infinitest.util.*;
 
-/**
- * An automated test runner for JUnit Tests.
- * 
- * @author <a href="mailto:benrady@gmail.com">Ben Rady</a>
- */
-public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener {
-	private final List<PresenterListener> presenterListeners = newArrayList();
+import com.intellij.openapi.ui.*;
+import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.wm.*;
+import com.intellij.ui.awt.*;
 
+public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener {
+	public static final Color PASSING_COLOR = new Color(0x359b35);
+	public static final Color FAILING_COLOR = RED;
+	public static final Color UNKNOWN_COLOR = YELLOW;
+
+	private final List<PresenterListener> presenterListeners = newArrayList();
 	private final InfinitestView view;
 	private final StateMonitor monitor;
 	private final ResultCollector resultCollector;
 	private final InfinitestAnnotator annotator;
-
-	public static final Color PASSING_COLOR = new Color(0x359b35);
-
-	public static final Color FAILING_COLOR = RED;
-
-	public static final Color UNKNOWN_COLOR = YELLOW;
-
-	public static final Color WAITING_COLOR = BLACK;
 
 	public InfinitestPresenter(ResultCollector resultCollector, InfinitestCore core, InfinitestView infinitestView, TestControl control, InfinitestAnnotator annotator) {
 		this.resultCollector = resultCollector;
@@ -112,11 +107,13 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 				view.setProgressBarColor(FAILING_COLOR);
 				view.setProgress(view.getMaximumProgress());
 				view.setCurrentTest("");
+				showBalloon("Failure", MessageType.ERROR, 5000);
 				break;
 			case PASSING:
 				view.setProgressBarColor(PASSING_COLOR);
 				view.setProgress(view.getMaximumProgress());
 				view.setCurrentTest("");
+				showBalloon("Success", MessageType.INFO, 2000L);
 				break;
 			case INDEXING:
 				view.setProgressBarColor(UNKNOWN_COLOR);
@@ -127,6 +124,20 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown status " + status);
+		}
+	}
+
+	private void showBalloon(String message, MessageType type, long fadeoutTime) {
+		try {
+			String html = "<html><body><strong>Infinitest:</strong> " + message + "</body></html>";
+
+			JBPopupFactory.getInstance()
+				.createHtmlTextBalloonBuilder(html, type, null)
+				.setFadeoutTime(fadeoutTime)
+				.createBalloon()
+				.show(RelativePoint.getNorthEastOf(WindowManager.getInstance().getAllFrames()[0].getComponent()), Balloon.Position.above);
+		} catch (Exception e) {
+			// Ignore error. It's just a balloon
 		}
 	}
 
