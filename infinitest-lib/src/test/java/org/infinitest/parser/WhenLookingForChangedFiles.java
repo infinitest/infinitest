@@ -21,7 +21,6 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.io.Files.*;
 import static java.util.Collections.*;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.util.FakeEnvironments.*;
@@ -36,6 +35,7 @@ import org.infinitest.*;
 import org.infinitest.changedetect.*;
 import org.infinitest.util.*;
 import org.junit.*;
+import org.junit.rules.*;
 
 import com.fakeco.fakeproduct.*;
 
@@ -45,22 +45,17 @@ public class WhenLookingForChangedFiles {
 	protected long timestamp;
 	private ClasspathProvider classpath;
 
-	@Before
-	public void inContext() {
-		altClassDir = new File("altClasses");
+	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-		altClassDir.mkdirs();
+	@Before
+	public void inContext() throws IOException {
+		altClassDir = temporaryFolder.newFolder("altClasses");
 		List<File> buildPaths = new ArrayList<File>();
 		buildPaths.addAll(fakeBuildPaths());
 		buildPaths.add(altClassDir);
 		classpath = new StandaloneClasspath(buildPaths);
 		detector = new FileChangeDetector();
 		detector.setClasspathProvider(classpath);
-	}
-
-	@After
-	public void cleanup() throws Exception {
-		deleteRecursively(altClassDir);
 	}
 
 	@Test

@@ -38,6 +38,7 @@ import java.util.*;
 import org.infinitest.*;
 import org.infinitest.util.*;
 import org.junit.*;
+import org.junit.rules.*;
 
 public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest {
 	private EventSupport eventAssert;
@@ -46,6 +47,8 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
 	protected boolean runComplete;
 	private File fakeJavaHome;
 
+	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
 	@Before
 	public void inContext() {
 		eventAssert = new EventSupport();
@@ -53,13 +56,8 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
 		runner.addTestResultsListener(eventAssert);
 		runner.addTestQueueListener(eventAssert);
 		outputPrinted = false;
-		fakeJavaHome = new File("fakeJavaHome");
+		fakeJavaHome = temporaryFolder.getRoot();
 		new File(fakeJavaHome, "bin").mkdirs();
-	}
-
-	@After
-	public void cleanup() throws IOException {
-		deleteRecursively(fakeJavaHome);
 	}
 
 	@Override
