@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse</groupId>
+  <artifactId>core-job</artifactId>
+  <versioning>
+    <release>3.4.0.v20080512</release>
+    <versions>
+      <version>3.4.0.v20080512</version>
+    </versions>
+    <lastUpdated>20130417081019</lastUpdated>
+  </versioning>
+</metadata>

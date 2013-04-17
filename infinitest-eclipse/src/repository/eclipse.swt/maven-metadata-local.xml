@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse</groupId>
+  <artifactId>eclipse.swt</artifactId>
+  <versioning>
+    <release>3.4.1.v3449c</release>
+    <versions>
+      <version>3.5.2</version>
+      <version>3.6.2</version>
+      <version>3.5.2.v3557f</version>
+      <version>3.6.2.v3659b</version>
+      <version>3.4.1.v3449c</version>
+    </versions>
+    <lastUpdated>20130417081358</lastUpdated>
+  </versioning>
+</metadata>

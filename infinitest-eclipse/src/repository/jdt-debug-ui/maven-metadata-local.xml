@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse</groupId>
+  <artifactId>jdt-debug-ui</artifactId>
+  <versioning>
+    <release>3.3.1.v20080730_r341</release>
+    <versions>
+      <version>3.3.1.v20080730_r341</version>
+    </versions>
+    <lastUpdated>20130417081140</lastUpdated>
+  </versioning>
+</metadata>

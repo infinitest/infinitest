@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse</groupId>
+  <artifactId>core-contenttype</artifactId>
+  <versioning>
+    <release>3.3.0.v20080604-1400</release>
+    <versions>
+      <version>3.3.0.v20080604-1400</version>
+    </versions>
+    <lastUpdated>20130417081016</lastUpdated>
+  </versioning>
+</metadata>

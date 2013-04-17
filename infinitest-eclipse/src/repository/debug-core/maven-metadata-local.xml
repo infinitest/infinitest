@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse</groupId>
+  <artifactId>debug-core</artifactId>
+  <versioning>
+    <release>3.4.0.v20080612</release>
+    <versions>
+      <version>3.4.0.v20080612</version>
+    </versions>
+    <lastUpdated>20130417081047</lastUpdated>
+  </versioning>
+</metadata>
