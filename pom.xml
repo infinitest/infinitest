@@ -29,7 +29,7 @@
 		<mockito.version>1.9.5</mockito.version>
 		<easymock.version>2.4</easymock.version>
 		<junit.version>4.10</junit.version>
-		<guava.version>12.0.1</guava.version>
+		<guava.version>14.0.1</guava.version>
 		<hamcrest.version>1.1</hamcrest.version>
 		<testng.version>6.8</testng.version>
 		<festassert.version>1.4</festassert.version>

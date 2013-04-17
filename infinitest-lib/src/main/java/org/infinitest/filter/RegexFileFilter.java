@@ -67,16 +67,18 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter {
 	}
 
 	private void readFilterFile() throws IOException {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			String line;
-			do {
-				line = reader.readLine();
-				addFilter(line);
-			} while (line != null);
-		} finally {
-			Closeables.closeQuietly(reader);
-		}
+    Closer closer = Closer.create();
+    try {
+      BufferedReader reader = closer.register(new BufferedReader(new FileReader(file)));
+      String line;
+      do {
+        line = reader.readLine();
+        addFilter(line);
+      } while (line != null);
+    } catch (Throwable e) {
+      throw closer.rethrow(e);
+    } finally {
+      closer.close();
+    }
 	}
 }
