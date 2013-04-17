@@ -197,7 +197,15 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 		List<String> paths = new ArrayList<String>();
 		for (String each : locator.findInfinitestJarNames()) {
-			paths.add(new File(pluginPath, "lib/" + each).getAbsolutePath());
+			File jar = new File(pluginPath, "lib/" + each);
+			if (jar.exists()) {
+				paths.add(jar.getAbsolutePath());
+			}
+		}
+
+		File classes = new File(pluginPath, "classes");
+		if (classes.exists()) {
+			paths.add(classes.getAbsolutePath());
 		}
 
 		return paths;
