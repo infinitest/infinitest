@@ -77,6 +77,14 @@
 		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
 	</issueManagement>
 
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>http://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -127,6 +135,11 @@
 				<plugin>
 					<artifactId>maven-enforcer-plugin</artifactId>
 					<version>1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila.maven-license-plugin</groupId>
+					<artifactId>maven-license-plugin</artifactId>
+					<version>1.9.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -186,6 +199,36 @@
 								<requireUpperBoundDep/>
 							</rules>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<inherited>false</inherited>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<header>${project.basedir}/COPYING</header>
+					<failIfMissing>true</failIfMissing>
+					<strictCheck>true</strictCheck>
+					<aggregate>true</aggregate>
+					<includes>
+						<include>**/infinitest-*/src/main/java/**</include>
+						<include>**/infinitest-*/src/test/java/**</include>
+					</includes>
+					<excludes>
+						<exclude>tests/**</exclude>
+					</excludes>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+					</mapping>
+				</configuration>
+				<executions>
+					<execution>
+						<id>enforce-license-headers</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

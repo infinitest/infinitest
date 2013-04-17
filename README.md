@@ -64,7 +64,7 @@ Keep in mind that while you can use Infinitest to test Infinitest, some weird th
 License
 -------
 
-Infinitest is distributed under [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html).
+Infinitest is distributed under [MIT License](http://opensource.org/licenses/MIT).
 
 Want to participate?
 --------------------
