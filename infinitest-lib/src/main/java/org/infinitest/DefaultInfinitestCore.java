@@ -119,8 +119,6 @@ class DefaultInfinitestCore implements InfinitestCore {
 		if (!testsToRun.isEmpty()) {
 			log(name + " Running tests: " + testsToRun);
 			runTests(testsToRun);
-		} else {
-			log("No tests to run in " + getName() + " for change " + changedFiles);
 		}
 		return testsToRun.size();
 	}
