@@ -45,7 +45,7 @@
 								<artifactItem>
 									<groupId>com.beust</groupId>
 									<artifactId>jcommander</artifactId>
-									<version>1.12</version>
+									<version>1.30</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>target/classes</outputDirectory>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>com.beust</groupId>
 			<artifactId>jcommander</artifactId>
-			<version>1.12</version>
+			<version>1.30</version>
 		</dependency>
 	</dependencies>
 </project>
