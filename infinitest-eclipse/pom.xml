@@ -34,7 +34,7 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params></surefire.params>
+				<surefire.params/>
 				<swt.version>3.5.2</swt.version>
 				<swt.jar>swt-3.5.2-win32-win32-x86.jar</swt.jar>
 			</properties>
@@ -48,7 +48,7 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params></surefire.params>
+				<surefire.params/>
 				<swt.version>3.6.2</swt.version>
 				<swt.jar>org.eclipse.swt.win32.win32.x86_64_3.6.2.v3659c.jar</swt.jar>
 			</properties>
@@ -76,7 +76,7 @@
 				</os>
 			</activation>
 			<properties>
-				<surefire.params></surefire.params>
+				<surefire.params/>
 				<swt.version>3.6.2.v3659b</swt.version>
 				<swt.jar>org.eclipse.swt.gtk.linux.x86_64_3.6.2.v3659b.jar</swt.jar>
 			</properties>
