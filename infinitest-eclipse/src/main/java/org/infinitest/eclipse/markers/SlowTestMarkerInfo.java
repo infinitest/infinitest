@@ -58,6 +58,7 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo {
 		return resources.get(0);
 	}
 
+	@Override
 	public Map<String, Object> attributes() {
 		Map<String, Object> markerAttributes = newLinkedHashMap();
 		markerAttributes.put(SEVERITY, SEVERITY_WARNING);
@@ -84,6 +85,7 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo {
 		return testName.hashCode() ^ methodStats.methodName.hashCode();
 	}
 
+	@Override
 	public String getTestName() {
 		return testName;
 	}

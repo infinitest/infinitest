@@ -44,6 +44,7 @@ public class ConsoleOutputProcessor implements Runnable {
 		this.eventSupport = eventSupport;
 	}
 
+	@Override
 	public void run() {
 		try {
 			int bytesRead;

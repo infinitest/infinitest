@@ -68,6 +68,7 @@ public class TestFakeProduct extends TestCase {
 	public void testNumber1() throws Exception {
 		runTestMethod("testNumber1");
 		@SuppressWarnings("unused") Object o = new Runnable() {
+			@Override
 			public void run() {
 				throw new IllegalStateException("This is an inner class and should not be run");
 			}

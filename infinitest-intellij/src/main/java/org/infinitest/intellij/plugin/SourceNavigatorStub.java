@@ -29,10 +29,12 @@ package org.infinitest.intellij.plugin;
 
 public class SourceNavigatorStub implements SourceNavigator {
 
+	@Override
 	public SourceNavigator open(String className) {
 		return this;
 	}
 
+	@Override
 	public void line(int line) {
 	}
 }

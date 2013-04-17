@@ -51,10 +51,12 @@ public class FakeResourceFinder implements ResourceFinder, ResourceLookup {
 		this(newArrayList(projects));
 	}
 
+	@Override
 	public IResource findResourceForSourceFile(String sourceFile) {
 		return mock(IResource.class);
 	}
 
+	@Override
 	public IProject getProject(URI projectUri) {
 		return project(projectUri.getPath()).getProject();
 	}
@@ -67,18 +69,22 @@ public class FakeResourceFinder implements ResourceFinder, ResourceLookup {
 		return null;
 	}
 
+	@Override
 	public IWorkspaceRoot workspaceRoot() {
 		return mock(IWorkspaceRoot.class);
 	}
 
+	@Override
 	public File findFileFor(IPath path) {
 		return null;
 	}
 
+	@Override
 	public List<IJavaProject> getJavaProjects() {
 		return projects;
 	}
 
+	@Override
 	public List<IResource> findResourcesForClassName(String className) {
 		return emptyList();
 	}

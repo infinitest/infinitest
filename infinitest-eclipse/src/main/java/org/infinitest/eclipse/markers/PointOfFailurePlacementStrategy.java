@@ -40,6 +40,7 @@ public class PointOfFailurePlacementStrategy implements MarkerPlacementStrategy 
 		this.lookup = lookup;
 	}
 
+	@Override
 	public MarkerPlacement getPlacement(TestEvent event) {
 		List<IResource> resources = lookup.findResourcesForClassName(event.getPointOfFailure().getClassName());
 		if (resources.isEmpty()) {

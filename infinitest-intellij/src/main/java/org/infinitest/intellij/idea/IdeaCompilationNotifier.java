@@ -39,10 +39,12 @@ public class IdeaCompilationNotifier implements CompilationNotifier {
 		this.project = project;
 	}
 
+	@Override
 	public void addCompilationStatusListener(CompilationStatusListener compilationListener) {
 		CompilerManager.getInstance(project).addCompilationStatusListener(compilationListener);
 	}
 
+	@Override
 	public void removeCompilationStatusListener(CompilationStatusListener compilationListener) {
 		CompilerManager.getInstance(project).removeCompilationStatusListener(compilationListener);
 	}

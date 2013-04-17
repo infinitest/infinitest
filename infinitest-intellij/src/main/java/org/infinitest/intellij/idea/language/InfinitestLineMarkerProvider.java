@@ -33,10 +33,12 @@ import com.intellij.codeInsight.daemon.*;
 import com.intellij.psi.*;
 
 public class InfinitestLineMarkerProvider implements LineMarkerProvider {
+	@Override
 	public LineMarkerInfo<?> getLineMarkerInfo(PsiElement psiElement) {
 		return null;
 	}
 
+	@Override
 	public void collectSlowLineMarkers(List<PsiElement> psiElements, Collection<LineMarkerInfo> lineMarkerInfos) {
 	}
 }

@@ -36,6 +36,7 @@ import org.eclipse.ui.*;
  * configured to do so.
  */
 public class ContinuousTestingStarter implements IStartup {
+	@Override
 	public void earlyStartup() {
 		initializeAutoTesting();
 	}

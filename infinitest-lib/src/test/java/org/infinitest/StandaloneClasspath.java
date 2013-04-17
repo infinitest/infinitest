@@ -51,10 +51,12 @@ public class StandaloneClasspath implements ClasspathProvider {
 		this(classOutputDirs, systemClasspath());
 	}
 
+	@Override
 	public List<File> getClassOutputDirs() {
 		return classDirs;
 	}
 
+	@Override
 	public String getCompleteClasspath() {
 		return classpath;
 	}
@@ -64,6 +66,7 @@ public class StandaloneClasspath implements ClasspathProvider {
 		return "Classpath :[" + classpath + "]  Class Directories: [" + classDirs + "]";
 	}
 
+	@Override
 	public List<File> classDirectoriesInClasspath() {
 		return classDirsInClasspath;
 	}

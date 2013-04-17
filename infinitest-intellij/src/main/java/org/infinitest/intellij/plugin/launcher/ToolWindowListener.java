@@ -46,22 +46,27 @@ public class ToolWindowListener implements PresenterListener {
 		this.toolWindowId = toolWindowId;
 	}
 
+	@Override
 	public void testRunCompleted() {
 		// nothing to do here
 	}
 
+	@Override
 	public void testRunSucceed() {
 		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.SUCCESS_ICON_PATH));
 	}
 
+	@Override
 	public void testRunFailed() {
 		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.FAILURE_ICON_PATH));
 	}
 
+	@Override
 	public void testRunStarted() {
 		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.RUNNING_ICON_PATH));
 	}
 
+	@Override
 	public void testRunWaiting() {
 		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.WAITING_ICON_PATH));
 	}

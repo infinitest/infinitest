@@ -88,9 +88,11 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 		return rowData;
 	}
 
+	@Override
 	public void setBackgroundColor(final int systemColor) {
 		backgroundColor = systemColor;
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				statusLabel.setBackground(getColor(systemColor));
 				composite.redraw();
@@ -98,9 +100,11 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 		});
 	}
 
+	@Override
 	public void setText(final String statusString) {
 		this.statusString = statusString;
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (!statusLabel.getText().equals(statusString)) {
 					statusLabel.setText(statusString);
@@ -110,8 +114,10 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 		});
 	}
 
+	@Override
 	public void setToolTip(final String tooltip) {
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				statusLabel.setToolTipText(tooltip);
 			}
@@ -122,8 +128,10 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 		return InfinitestPlugin.getInstance().getPluginController();
 	}
 
+	@Override
 	public void setTextColor(final int color) {
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				statusLabel.setForeground(getColor(color));
 			}

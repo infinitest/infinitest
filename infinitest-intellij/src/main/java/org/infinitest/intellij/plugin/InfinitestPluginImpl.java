@@ -37,14 +37,17 @@ public class InfinitestPluginImpl implements InfinitestPlugin, InfinitestConfigu
 		launcher = configuration.createLauncher();
 	}
 
+	@Override
 	public void startInfinitest() {
 		launcher.launchInfinitest();
 	}
 
+	@Override
 	public void stopInfinitest() {
 		launcher.stop();
 	}
 
+	@Override
 	public void configurationUpdated(InfinitestConfiguration configuration) {
 		stopInfinitest();
 		launcher = configuration.createLauncher();

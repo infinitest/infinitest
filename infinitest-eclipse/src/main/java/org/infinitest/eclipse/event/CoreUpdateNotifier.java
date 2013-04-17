@@ -57,6 +57,7 @@ class CoreUpdateNotifier implements IResourceChangeListener {
 	 * http://www.eclipse.org/articles/Article-Resource-deltas/resource-deltas.
 	 * html
 	 */
+	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getDelta() != null) {
 			processEvent(event);

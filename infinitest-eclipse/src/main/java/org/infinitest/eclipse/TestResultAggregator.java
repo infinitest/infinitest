@@ -46,20 +46,24 @@ public class TestResultAggregator implements CoreLifecycleListener, TestResultsL
 		listeners.addAll(asList(resultsListeners));
 	}
 
+	@Override
 	public void coreCreated(InfinitestCore core) {
 		core.addTestResultsListener(this);
 	}
 
+	@Override
 	public void coreRemoved(InfinitestCore core) {
 		core.removeTestResultsListener(this);
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestResultsListener each : listeners) {
 			each.testCaseComplete(event);
 		}
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 		for (TestResultsListener each : listeners) {
 			each.testCaseStarting(event);

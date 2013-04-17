@@ -36,16 +36,19 @@ public class ConsoleClearingListener implements TestQueueListener {
 		this.writer = writer;
 	}
 
+	@Override
 	public void reloading() {
 		writer.clearConsole();
 	}
 
+	@Override
 	public void testQueueUpdated(TestQueueEvent event) {
 		if (event.getInitialSize() == event.getTestQueue().size()) {
 			writer.clearConsole();
 		}
 	}
 
+	@Override
 	public void testRunComplete() {
 		// nothing to do here
 	}

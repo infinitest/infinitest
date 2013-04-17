@@ -52,6 +52,7 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 		}
 	}
 
+	@Override
 	public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
 		switch (newStatus) {
 			case PASSING:
@@ -71,14 +72,17 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 		status.setTextColor(COLOR_WHITE);
 	}
 
+	@Override
 	public void updateVisualStatus(VisualStatus status) {
 		this.status = status;
 	}
 
+	@Override
 	public void filesSaved() {
 		testsRan.clear();
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		testsRan.add(event.getTestName());
 		if (event.failed()) {
@@ -90,10 +94,12 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 		// so testCaseStarting will be called again before this is called
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 		// Add this test to the set of tests currently being run
 	}
 
+	@Override
 	public void statusChanged(WorkspaceStatus newStatus) {
 		status.setText(newStatus.getMessage());
 		status.setToolTip(newStatus.getToolTip());

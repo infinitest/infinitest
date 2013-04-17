@@ -42,6 +42,7 @@ import org.testng.*;
 public class JUnit4Runner implements NativeRunner {
 	private TestNGConfiguration config = null;
 
+	@Override
 	public TestResults runTest(String testClass) {
 		Class<?> clazz;
 		try {
@@ -146,12 +147,15 @@ public class JUnit4Runner implements NativeRunner {
 	static class TestNGEventTranslator implements ITestListener {
 		private final List<TestEvent> eventsCollected = new ArrayList<TestEvent>();
 
+		@Override
 		public void onTestStart(ITestResult result) {
 		}
 
+		@Override
 		public void onTestSuccess(ITestResult result) {
 		}
 
+		@Override
 		public void onTestFailure(ITestResult failure) {
 			eventsCollected.add(createEventFrom(failure));
 		}
@@ -164,15 +168,19 @@ public class JUnit4Runner implements NativeRunner {
 			return new TestResults(eventsCollected);
 		}
 
+		@Override
 		public void onTestSkipped(ITestResult result) {
 		}
 
+		@Override
 		public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 		}
 
+		@Override
 		public void onStart(ITestContext context) {
 		}
 
+		@Override
 		public void onFinish(ITestContext context) {
 		}
 	}

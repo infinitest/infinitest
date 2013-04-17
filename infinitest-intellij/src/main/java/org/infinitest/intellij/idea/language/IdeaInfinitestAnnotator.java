@@ -50,10 +50,12 @@ public class IdeaInfinitestAnnotator implements InfinitestAnnotator {
 		return instance;
 	}
 
+	@Override
 	public void annotate(final TestEvent event) {
 		events.add(new InnerClassFriendlyTestEvent(event));
 	}
 
+	@Override
 	public void clearAnnotation(TestEvent event) {
 		events.remove(new InnerClassFriendlyTestEvent(event));
 	}

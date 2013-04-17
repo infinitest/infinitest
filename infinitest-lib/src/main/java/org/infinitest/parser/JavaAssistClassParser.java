@@ -83,6 +83,7 @@ public class JavaAssistClassParser implements ClassParser {
 		return !new File(iter.next()).exists();
 	}
 
+	@Override
 	public JavaClass getClass(String className) {
 		CtClass cachedClass = getCachedClass(className);
 		if (unparsableClass(cachedClass)) {
@@ -108,6 +109,7 @@ public class JavaAssistClassParser implements ClassParser {
 		}
 	}
 
+	@Override
 	public JavaClass parse(File file) throws IOException {
 		FileInputStream inputStream = new FileInputStream(file);
 		try {
@@ -120,6 +122,7 @@ public class JavaAssistClassParser implements ClassParser {
 		}
 	}
 
+	@Override
 	public void clear() {
 		classPool = null;
 	}

@@ -46,6 +46,7 @@ class FailureListenerSupport implements FailureListListener {
 		changed = newArrayList();
 	}
 
+	@Override
 	public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
 		added.addAll(failuresAdded);
 		removed.addAll(failuresRemoved);
@@ -53,6 +54,7 @@ class FailureListenerSupport implements FailureListListener {
 		failures.removeAll(failuresRemoved);
 	}
 
+	@Override
 	public void failuresUpdated(Collection<TestEvent> updatedFailures) {
 		changed.addAll(updatedFailures);
 	}

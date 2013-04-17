@@ -33,11 +33,13 @@ public class FakeSourceNavigator implements SourceNavigator {
 	private String className;
 	private int line;
 
+	@Override
 	public SourceNavigator open(String className) {
 		this.className = className;
 		return this;
 	}
 
+	@Override
 	public void line(int line) {
 		this.line = line;
 	}

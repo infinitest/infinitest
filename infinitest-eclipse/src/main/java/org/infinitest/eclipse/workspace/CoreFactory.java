@@ -53,6 +53,7 @@ class CoreFactory implements CoreSettings {
 		return core;
 	}
 
+	@Override
 	public void setConcurrentCoreCount(int coreCount) {
 		concurrencyController.setCoreCount(coreCount);
 	}

@@ -36,6 +36,7 @@ public class ConsolePopulatingListener implements ConsoleOutputListener {
 		this.writer = writer;
 	}
 
+	@Override
 	public void consoleOutputUpdate(String newText, OutputType outputType) {
 		writer.appendText(newText);
 	}

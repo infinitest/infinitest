@@ -65,14 +65,17 @@ public class WorkspaceStatusFactory {
 			this.message = message;
 		}
 
+		@Override
 		public String getMessage() {
 			return message;
 		}
 
+		@Override
 		public String getToolTip() {
 			return getMessage();
 		}
 
+		@Override
 		public boolean warningMessage() {
 			return false;
 		}

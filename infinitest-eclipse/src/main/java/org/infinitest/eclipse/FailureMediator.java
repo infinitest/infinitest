@@ -47,6 +47,7 @@ public class FailureMediator implements FailureListListener {
 		this.resourceLookup = resourceLookup;
 	}
 
+	@Override
 	public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
 		// Note that logging this may kill performance when you have a lot of
 		// errors
@@ -59,6 +60,7 @@ public class FailureMediator implements FailureListListener {
 		}
 	}
 
+	@Override
 	public void failuresUpdated(Collection<TestEvent> updatedFailures) {
 		for (TestEvent testEvent : updatedFailures) {
 			registry.updateMarker(new ProblemMarkerInfo(testEvent, resourceLookup));

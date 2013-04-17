@@ -30,6 +30,7 @@ package org.infinitest.testrunner;
 import static org.infinitest.testrunner.TestEvent.*;
 
 public class FakeRunner implements NativeRunner {
+	@Override
 	public TestResults runTest(String testClass) {
 		return new TestResults(methodFailed(testClass, "methodName", new Throwable()));
 	}

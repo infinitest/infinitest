@@ -49,14 +49,17 @@ public class InfinitestToolWindow implements ModuleComponent, FacetListener {
 		this.module = module;
 	}
 
+	@Override
 	public void initComponent() {
 		// nothing to do here
 	}
 
+	@Override
 	public void disposeComponent() {
 		// nothing to do here
 	}
 
+	@Override
 	@NotNull
 	public String getComponentName() {
 		return "org.infinitest.intellij.idea.window.InfinitestToolWindow";
@@ -64,12 +67,14 @@ public class InfinitestToolWindow implements ModuleComponent, FacetListener {
 
 	public void startInfinitestAfterStartup() {
 		StartupManager.getInstance(project).registerPostStartupActivity(new Runnable() {
+			@Override
 			public void run() {
 				plugin.startInfinitest();
 			}
 		});
 	}
 
+	@Override
 	public void facetInitialized() {
 		if (plugin != null) {
 			plugin.stopInfinitest();
@@ -85,22 +90,26 @@ public class InfinitestToolWindow implements ModuleComponent, FacetListener {
 		}
 	}
 
+	@Override
 	public void facetDisposed() {
 		if (plugin != null) {
 			plugin.stopInfinitest();
 		}
 	}
 
+	@Override
 	public void projectOpened() {
 		projectOpened = true;
 	}
 
+	@Override
 	public void projectClosed() {
 		if (plugin != null) {
 			plugin.stopInfinitest();
 		}
 	}
 
+	@Override
 	public void moduleAdded() {
 		// nothing to do here
 	}

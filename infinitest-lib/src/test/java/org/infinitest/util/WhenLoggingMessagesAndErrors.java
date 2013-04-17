@@ -85,10 +85,12 @@ public class WhenLoggingMessagesAndErrors implements LoggingListener {
 		assertNull(messages.get(message));
 	}
 
+	@Override
 	public void logError(String message, Throwable throwable) {
 		errors.put(message, throwable);
 	}
 
+	@Override
 	public void logMessage(Level level, String logMsg) {
 		messages.put(logMsg, level);
 	}

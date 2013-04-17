@@ -47,6 +47,7 @@ class JavaClassBuilder implements ClassBuilder {
 		this.parser = parser;
 	}
 
+	@Override
 	public JavaClass createClass(String classname) {
 		try {
 			return parser.getClass(classname);
@@ -63,6 +64,7 @@ class JavaClassBuilder implements ClassBuilder {
 		}
 	}
 
+	@Override
 	public JavaClass loadClass(File file) {
 		try {
 			return parser.parse(file);
@@ -87,6 +89,7 @@ class JavaClassBuilder implements ClassBuilder {
 		}
 	}
 
+	@Override
 	public void clear() {
 		parser.clear();
 	}

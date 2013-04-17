@@ -49,6 +49,7 @@ public class ClassFileTestDetector implements TestDetector {
 		filters = testFilterList;
 	}
 
+	@Override
 	public void clear() {
 		index.clear();
 	}
@@ -57,6 +58,7 @@ public class ClassFileTestDetector implements TestDetector {
 	 * Runs through the classpath looking for changed files and returns the set
 	 * of tests that need to be run.
 	 */
+	@Override
 	public synchronized Set<JavaClass> findTestsToRun(Collection<File> changedFiles) {
 		filters.updateFilterList();
 
@@ -115,11 +117,13 @@ public class ClassFileTestDetector implements TestDetector {
 		return index.findJavaClass(name);
 	}
 
+	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		this.classpath = classpath;
 		index = new ClassFileIndex(classpath);
 	}
 
+	@Override
 	public Set<String> getCurrentTests() {
 		Set<String> tests = newHashSet();
 		for (String each : getIndexedClasses()) {

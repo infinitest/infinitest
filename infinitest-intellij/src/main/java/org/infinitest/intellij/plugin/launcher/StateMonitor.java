@@ -44,6 +44,7 @@ class StateMonitor implements StatusChangeListener {
 		return getCurrentTime() - cycleStart;
 	}
 
+	@Override
 	public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
 		if (newStatus.equals(RUNNING)) {
 			statusInFlux = true;

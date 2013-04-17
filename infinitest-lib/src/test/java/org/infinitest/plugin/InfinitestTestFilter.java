@@ -30,10 +30,12 @@ package org.infinitest.plugin;
 import org.infinitest.filter.*;
 
 class InfinitestTestFilter implements TestFilter {
+	@Override
 	public boolean match(String className) {
 		return !className.startsWith("com.fakeco.fakeproduct.simple");
 	}
 
+	@Override
 	public void updateFilterList() {
 		// nothing to do here
 	}

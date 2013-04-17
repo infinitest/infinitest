@@ -37,6 +37,7 @@ public class WorkspaceFallbackPlacementStrategy implements MarkerPlacementStrate
 		this.root = root;
 	}
 
+	@Override
 	public MarkerPlacement getPlacement(TestEvent event) {
 		return new MarkerPlacement(root, 0);
 	}

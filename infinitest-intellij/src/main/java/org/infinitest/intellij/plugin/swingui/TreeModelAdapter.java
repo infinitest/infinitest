@@ -47,10 +47,12 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 		listeners = newArrayList();
 	}
 
+	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		listeners.add(l);
 	}
 
+	@Override
 	public Object getChild(Object parent, int index) {
 		if (parent == getRoot()) {
 			return collector.getPointOfFailure(index);
@@ -61,6 +63,7 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 		return null;
 	}
 
+	@Override
 	public int getChildCount(Object parent) {
 		if (parent.equals(getRoot())) {
 			return collector.getPointOfFailureCount();
@@ -71,6 +74,7 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 		return 0;
 	}
 
+	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		if (getRoot().equals(parent)) {
 			return collector.getPointOfFailureIndex((PointOfFailure) child);
@@ -78,18 +82,22 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 		return 0;
 	}
 
+	@Override
 	public Object getRoot() {
 		return "";
 	}
 
+	@Override
 	public boolean isLeaf(Object node) {
 		return getChildCount(node) == 0;
 	}
 
+	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		listeners.remove(l);
 	}
 
+	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
 		// User changes are ignored
 	}
@@ -102,10 +110,12 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 		}
 	}
 
+	@Override
 	public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
 		fireTreeStructureChanged();
 	}
 
+	@Override
 	public void failuresUpdated(Collection<TestEvent> updatedFailures) {
 		fireTreeStructureChanged();
 	}

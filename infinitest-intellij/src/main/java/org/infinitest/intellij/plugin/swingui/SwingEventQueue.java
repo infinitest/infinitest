@@ -34,6 +34,7 @@ import java.lang.reflect.*;
 import org.infinitest.*;
 
 public class SwingEventQueue implements EventQueue {
+	@Override
 	public void push(Runnable runnable) {
 		invokeLater(runnable);
 	}
@@ -52,6 +53,7 @@ public class SwingEventQueue implements EventQueue {
 		}
 	}
 
+	@Override
 	public void pushNamed(NamedRunnable runnable) {
 		push(runnable);
 	}

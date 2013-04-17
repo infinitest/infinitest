@@ -54,10 +54,12 @@ public class InfinitestPerformanceHarness {
 		RuntimeEnvironment environment = new RuntimeEnvironment(outputDirs, workingDir, classpath, javaHome);
 		InfinitestCoreBuilder builder = new InfinitestCoreBuilder(environment, new ControlledEventQueue());
 		builder.setFilter(new TestFilter() {
+			@Override
 			public boolean match(String className) {
 				return true;
 			}
 
+			@Override
 			public void updateFilterList() {
 				// nothing to do here
 			}

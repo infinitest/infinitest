@@ -58,6 +58,7 @@ public class WhenTestsAreDisabled {
 		core.setTestDetector(testDetector);
 		final Set<String> disabledTestList = newHashSet();
 		core.addDisabledTestListener(new DisabledTestListener() {
+			@Override
 			public void testsDisabled(Collection<String> testName) {
 				disabledTestList.addAll(testName);
 			}

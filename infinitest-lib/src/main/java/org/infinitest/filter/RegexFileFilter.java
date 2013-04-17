@@ -53,6 +53,7 @@ public class RegexFileFilter extends ClassNameFilter implements TestFilter {
 		super();
 	}
 
+	@Override
 	public void updateFilterList() {
 		if (file == null) {
 			return;

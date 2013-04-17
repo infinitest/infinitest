@@ -40,6 +40,7 @@ public class ConsoleOutputProcessorTest {
 		RunnerEventSupport eventSupport = new RunnerEventSupport(this);
 		final StringBuffer updatedText = new StringBuffer();
 		eventSupport.addConsoleOutputListener(new ConsoleOutputListener() {
+			@Override
 			public void consoleOutputUpdate(String newText, OutputType outputType) {
 				updatedText.append(newText);
 			}

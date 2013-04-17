@@ -85,6 +85,7 @@ public class InfinitestBuilder {
 
 	private void createStatusTimer() {
 		javax.swing.Timer statusTimer = new javax.swing.Timer(999, new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				createPresenter().updateStatus();
 			}

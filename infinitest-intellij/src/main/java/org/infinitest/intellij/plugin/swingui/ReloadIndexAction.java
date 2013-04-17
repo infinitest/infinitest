@@ -46,6 +46,7 @@ public class ReloadIndexAction extends AbstractAction {
 		this.core = core;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		core.reload();
 	}

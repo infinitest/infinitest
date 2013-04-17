@@ -55,6 +55,7 @@ class WorkspaceResourceFinder implements ResourceFinder {
 		this.workspace = workspace;
 	}
 
+	@Override
 	public IProject getProject(URI projectUri) {
 		try {
 			for (IResource each : workspaceRoot().members()) {
@@ -68,6 +69,7 @@ class WorkspaceResourceFinder implements ResourceFinder {
 		}
 	}
 
+	@Override
 	public IResource findResourceForSourceFile(String sourceFile) {
 		try {
 			return findMostSpecific(sourceFile);
@@ -98,10 +100,12 @@ class WorkspaceResourceFinder implements ResourceFinder {
 		return resolved;
 	}
 
+	@Override
 	public IWorkspaceRoot workspaceRoot() {
 		return workspace.getRoot();
 	}
 
+	@Override
 	public List<IJavaProject> getJavaProjects() {
 		IWorkspaceRoot root = workspaceRoot();
 		IJavaModel javaModel = JavaCore.create(root);
@@ -112,6 +116,7 @@ class WorkspaceResourceFinder implements ResourceFinder {
 		}
 	}
 
+	@Override
 	public File findFileFor(IPath path) {
 		IWorkspaceRoot root = workspaceRoot();
 		IResource member = root.findMember(path);

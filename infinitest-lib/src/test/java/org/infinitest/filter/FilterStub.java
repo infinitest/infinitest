@@ -32,10 +32,12 @@ import java.util.*;
 public class FilterStub implements TestFilter {
 	private final List<String> classesToFilter = new ArrayList<String>();
 
+	@Override
 	public boolean match(String className) {
 		return classesToFilter.contains(className);
 	}
 
+	@Override
 	public void updateFilterList() {
 		// nothing to do here
 	}

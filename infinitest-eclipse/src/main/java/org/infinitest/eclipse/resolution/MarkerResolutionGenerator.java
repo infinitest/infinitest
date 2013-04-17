@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.ui.*;
 
 public class MarkerResolutionGenerator implements IMarkerResolutionGenerator2 {
+	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		if (hasResolutions(marker)) {
 			return new IMarkerResolution[] { new ErrorViewerResolution(getTestAndMethodName(marker)) };
@@ -59,6 +60,7 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator2 {
 		}
 	}
 
+	@Override
 	public boolean hasResolutions(IMarker marker) {
 		return getTestAndMethodName(marker) != null;
 	}

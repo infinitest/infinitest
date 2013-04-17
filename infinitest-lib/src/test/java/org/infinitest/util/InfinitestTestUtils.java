@@ -97,6 +97,7 @@ public abstract class InfinitestTestUtils {
 
 	public static Predicate<String> containsSubstring(final String substring) {
 		return new Predicate<String>() {
+			@Override
 			public boolean apply(String input) {
 				return input.contains(substring);
 			}

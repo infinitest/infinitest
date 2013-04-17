@@ -140,10 +140,12 @@ public class JavaProjectBuilder implements IJavaProject {
 
 	// Implemented IJavaProject methods
 
+	@Override
 	public IClasspathEntry[] getResolvedClasspath(boolean b) {
 		return entries.toArray(new IClasspathEntry[entries.size()]);
 	}
 
+	@Override
 	public IResource getCorrespondingResource() {
 		IResource resource = mock(IResource.class);
 		when(resource.getLocation()).thenReturn(new Path(projectName));
@@ -162,18 +164,22 @@ public class JavaProjectBuilder implements IJavaProject {
 		}
 	}
 
+	@Override
 	public IPath getOutputLocation() {
 		return new Path("/" + projectName + defaultOutputLocation);
 	}
 
+	@Override
 	public IPath getPath() {
 		return new Path("/" + projectName);
 	}
 
+	@Override
 	public IResource getResource() {
 		return getCorrespondingResource();
 	}
 
+	@Override
 	public IProject getProject() {
 		try {
 			IProject project = mock(IProject.class);
@@ -190,11 +196,13 @@ public class JavaProjectBuilder implements IJavaProject {
 		}
 	}
 
+	@Override
 	public String getElementName() {
 		// No idea if this is right
 		return projectName;
 	}
 
+	@Override
 	public IClasspathEntry[] getRawClasspath() {
 		return getResolvedClasspath(false);
 	}
@@ -202,295 +210,365 @@ public class JavaProjectBuilder implements IJavaProject {
 	// Below are the non-supported IProject interface classes. Nothing to see
 	// here.
 
+	@Override
 	public IClasspathEntry decodeClasspathEntry(String s) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String encodeClasspathEntry(IClasspathEntry iClasspathEntry) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement findElement(IPath iPath) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement findElement(IPath iPath, WorkingCopyOwner workingCopyOwner) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement findElement(String s, WorkingCopyOwner workingCopyOwner) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragment findPackageFragment(IPath iPath) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot findPackageFragmentRoot(IPath iPath) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot[] findPackageFragmentRoots(IClasspathEntry iClasspathEntry) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, WorkingCopyOwner workingCopyOwner) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, WorkingCopyOwner workingCopyOwner, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, String s1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, String s1, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, String s1, WorkingCopyOwner workingCopyOwner) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IType findType(String s, String s1, WorkingCopyOwner workingCopyOwner, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot[] getAllPackageFragmentRoots() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object[] getNonJavaResources() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String getOption(String s, boolean b) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Map<?, ?> getOptions(boolean b) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot getPackageFragmentRoot(String s) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot getPackageFragmentRoot(IResource iResource) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragmentRoot[] getPackageFragmentRoots() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	@Deprecated
 	public IPackageFragmentRoot[] getPackageFragmentRoots(IClasspathEntry iClasspathEntry) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPackageFragment[] getPackageFragments() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String[] getRequiredProjectNames() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean hasBuildState() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean hasClasspathCycle(IClasspathEntry[] iClasspathEntries) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isOnClasspath(IJavaElement iJavaElement) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isOnClasspath(IResource iResource) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IEvaluationContext newEvaluationContext() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ITypeHierarchy newTypeHierarchy(IRegion iRegion, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ITypeHierarchy newTypeHierarchy(IRegion iRegion, WorkingCopyOwner workingCopyOwner, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ITypeHierarchy newTypeHierarchy(IType iType, IRegion iRegion, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ITypeHierarchy newTypeHierarchy(IType iType, IRegion iRegion, WorkingCopyOwner workingCopyOwner, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPath readOutputLocation() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IClasspathEntry[] readRawClasspath() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setOption(String s, String s1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setOptions(Map map) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setOutputLocation(IPath iPath, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setRawClasspath(IClasspathEntry[] iClasspathEntries, IPath iPath, boolean b, IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setRawClasspath(IClasspathEntry[] iClasspathEntries, boolean b, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setRawClasspath(IClasspathEntry[] iClasspathEntries, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setRawClasspath(IClasspathEntry[] iClasspathEntries, IPath iPath, IProgressMonitor iProgressMonitor)
 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement[] getChildren() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean hasChildren() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean exists() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement getAncestor(int i) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String getAttachedJavadoc(IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int getElementType() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String getHandleIdentifier() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaModel getJavaModel() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaProject getJavaProject() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IOpenable getOpenable() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement getParent() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IJavaElement getPrimaryElement() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ISchedulingRule getSchedulingRule() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IResource getUnderlyingResource() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isReadOnly() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isStructureKnown() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object getAdapter(Class aClass) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void close() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String findRecommendedLineSeparator() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IBuffer getBuffer() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean hasUnsavedChanges() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isConsistent() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isOpen() {
 		return true;
 	}
 
+	@Override
 	public void makeConsistent(IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void open(IProgressMonitor iProgressMonitor) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void save(IProgressMonitor iProgressMonitor, boolean b) {
 		throw new UnsupportedOperationException();
 	}

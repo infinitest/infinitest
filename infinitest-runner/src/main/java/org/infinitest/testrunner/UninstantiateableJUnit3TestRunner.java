@@ -47,14 +47,17 @@ public class UninstantiateableJUnit3TestRunner extends Runner {
 			this.testClass = testClass;
 		}
 
+		@Override
 		public void endTest(Test test) {
 			fNotifier.fireTestFinished(asDescription(test));
 		}
 
+		@Override
 		public void startTest(Test test) {
 			fNotifier.fireTestStarted(asDescription(test));
 		}
 
+		@Override
 		public void addError(Test test, Throwable t) {
 			Failure failure = new Failure(asDescription(test), t);
 			fNotifier.fireTestFailure(failure);
@@ -68,6 +71,7 @@ public class UninstantiateableJUnit3TestRunner extends Runner {
 			return Description.createTestDescription(testClass, "<init>");
 		}
 
+		@Override
 		public void addFailure(Test test, AssertionFailedError t) {
 			addError(test, t);
 		}

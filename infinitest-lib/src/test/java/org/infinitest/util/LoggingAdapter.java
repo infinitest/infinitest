@@ -39,6 +39,7 @@ public class LoggingAdapter implements LoggingListener {
 	public void logError(String message, Throwable throwable) {
 	}
 
+	@Override
 	public void logMessage(Level level, String message) {
 		messages.put(message, level);
 	}

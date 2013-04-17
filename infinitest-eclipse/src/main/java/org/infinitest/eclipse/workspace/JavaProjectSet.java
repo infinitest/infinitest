@@ -50,6 +50,7 @@ class JavaProjectSet implements ProjectSet {
 		this.finder = finder;
 	}
 
+	@Override
 	public ProjectFacade findProject(IPath path) {
 		for (IJavaProject project : openProjects()) {
 			if (project.getPath().equals(path)) {
@@ -68,6 +69,7 @@ class JavaProjectSet implements ProjectSet {
 		return project.getCorrespondingResource().getLocation().toFile();
 	}
 
+	@Override
 	public List<ProjectFacade> projects() {
 		List<ProjectFacade> projects = newArrayList();
 		for (IJavaProject project : openProjects()) {
@@ -76,6 +78,7 @@ class JavaProjectSet implements ProjectSet {
 		return projects;
 	}
 
+	@Override
 	public boolean hasErrors() throws CoreException {
 		for (ProjectFacade project : projects()) {
 			if (project.hasErrors()) {
@@ -87,6 +90,7 @@ class JavaProjectSet implements ProjectSet {
 
 	private Iterable<IJavaProject> openProjects() {
 		return filter(finder.getJavaProjects(), new Predicate<IJavaProject>() {
+			@Override
 			public boolean apply(IJavaProject input) {
 				return input.isOpen();
 			}
@@ -100,6 +104,7 @@ class JavaProjectSet implements ProjectSet {
 	 * 
 	 * @throws JavaModelException
 	 */
+	@Override
 	public List<File> outputDirectories(EclipseProject project) throws JavaModelException {
 		// I suspect there's something, somewhere in the Eclipse SDK that will
 		// find this for us.

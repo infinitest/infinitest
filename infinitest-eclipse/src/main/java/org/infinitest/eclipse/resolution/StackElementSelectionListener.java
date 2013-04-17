@@ -101,13 +101,16 @@ class StackElementSelectionListener extends KeyAdapter implements MouseListener 
 		IDE.openEditor(page, marker);
 	}
 
+	@Override
 	public void mouseDoubleClick(MouseEvent event) {
 		jumpToSelectedLine((org.eclipse.swt.widgets.List) event.widget);
 	}
 
+	@Override
 	public void mouseDown(MouseEvent arg0) {
 	}
 
+	@Override
 	public void mouseUp(MouseEvent arg0) {
 	}
 }

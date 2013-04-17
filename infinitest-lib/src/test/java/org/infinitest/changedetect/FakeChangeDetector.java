@@ -47,10 +47,12 @@ public class FakeChangeDetector implements ChangeDetector {
 		changedFiles = emptySet();
 	}
 
+	@Override
 	public void clear() {
 		// nothing to do here
 	}
 
+	@Override
 	public boolean filesWereRemoved() {
 		return filesRemoved;
 	}
@@ -58,11 +60,13 @@ public class FakeChangeDetector implements ChangeDetector {
 	/**
 	 * @throws IOException
 	 */
+	@Override
 	public Set<File> findChangedFiles() throws IOException {
 		changedFiles = Collections.emptySet();
 		return changedFiles;
 	}
 
+	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		// nothing to do here
 	}

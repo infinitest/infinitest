@@ -38,14 +38,17 @@ public class FakeJavaClass extends AbstractJavaClass {
 		this.name = name;
 	}
 
+	@Override
 	public Collection<String> getImports() {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public boolean isATest() {
 		throw new UnsupportedOperationException();
 	}
@@ -54,10 +57,12 @@ public class FakeJavaClass extends AbstractJavaClass {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean locatedInClassFile() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public File getClassFile() {
 		throw new UnsupportedOperationException();
 	}

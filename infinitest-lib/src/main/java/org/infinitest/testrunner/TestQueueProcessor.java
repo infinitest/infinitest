@@ -49,12 +49,14 @@ class TestQueueProcessor implements QueueProcessor {
 		currentConnection = establishConnection(environment);
 	}
 
+	@Override
 	public void process(String testName) {
 		getEventSupport().fireStartingEvent(testName);
 		TestResults results = currentConnection.runTest(testName);
 		getEventSupport().fireTestCaseComplete(testName, results);
 	}
 
+	@Override
 	public void close() {
 		getEventSupport().fireTestRunComplete();
 		currentConnection.close();
@@ -62,6 +64,7 @@ class TestQueueProcessor implements QueueProcessor {
 
 	private ProcessConnection establishConnection(RuntimeEnvironment environment) throws IOException {
 		return factory.getConnection(environment, new OutputStreamHandler() {
+			@Override
 			public void processStream(InputStream stream, OutputType type) {
 				new Thread(new ConsoleOutputProcessor(stream, type, getEventSupport())).start();
 			}
@@ -72,6 +75,7 @@ class TestQueueProcessor implements QueueProcessor {
 		return eventSupport;
 	}
 
+	@Override
 	public void cleanup() {
 		if (!currentConnection.abort()) {
 			log(WARNING, "Failed to clean up after terminated test run");

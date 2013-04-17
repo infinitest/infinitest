@@ -53,6 +53,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		markers = Maps.newHashMap();
 	}
 
+	@Override
 	public void addMarker(MarkerInfo newMarkerInfo) {
 		if (!markers.containsKey(newMarkerInfo)) {
 			IMarker newMarker = addMarkerToSource(newMarkerInfo);
@@ -62,11 +63,13 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		}
 	}
 
+	@Override
 	public void updateMarker(MarkerInfo markerInfo) {
 		removeMarker(markerInfo);
 		addMarker(markerInfo);
 	}
 
+	@Override
 	public void removeMarker(MarkerInfo markerInfo) {
 		IMarker marker = markers.remove(markerInfo);
 		try {
@@ -86,6 +89,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		return markers.keySet();
 	}
 
+	@Override
 	public void clear() {
 		for (MarkerInfo each : copyOf(markers.keySet())) {
 			deleteMarker(each);
@@ -98,6 +102,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		return newHashSet(keySet);
 	}
 
+	@Override
 	public void removeMarkers(String testName) {
 		for (MarkerInfo each : findMarkersFor(testName)) {
 			deleteMarker(each);

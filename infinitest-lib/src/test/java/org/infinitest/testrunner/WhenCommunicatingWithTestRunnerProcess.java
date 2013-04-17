@@ -65,6 +65,7 @@ public class WhenCommunicatingWithTestRunnerProcess {
 	public void shouldReadResults() {
 		final int portNum = communicator.createSocket();
 		new Thread(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Socket clientSocket = new Socket("127.0.0.1", portNum);

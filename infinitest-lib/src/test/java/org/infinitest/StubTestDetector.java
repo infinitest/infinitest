@@ -37,6 +37,7 @@ import org.infinitest.parser.*;
 class StubTestDetector implements TestDetector {
 	private boolean cleared;
 
+	@Override
 	public void clear() {
 		cleared = true;
 	}
@@ -45,6 +46,7 @@ class StubTestDetector implements TestDetector {
 		return cleared;
 	}
 
+	@Override
 	public Set<JavaClass> findTestsToRun(Collection<File> changedFiles) {
 		return emptySet();
 	}
@@ -57,10 +59,12 @@ class StubTestDetector implements TestDetector {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Set<String> getCurrentTests() {
 		return emptySet();
 	}

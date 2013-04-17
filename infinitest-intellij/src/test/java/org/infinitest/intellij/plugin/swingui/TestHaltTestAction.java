@@ -40,10 +40,12 @@ public class TestHaltTestAction {
 	@Test
 	public void shouldDisableAndEnableTests() {
 		TestControl control = new TestControl() {
+			@Override
 			public void setRunTests(boolean shouldRunTests) {
 				runTests = shouldRunTests;
 			}
 
+			@Override
 			public boolean shouldRunTests() {
 				return runTests;
 			}

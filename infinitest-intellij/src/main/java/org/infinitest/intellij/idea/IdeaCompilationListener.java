@@ -42,16 +42,19 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 		this.moduleSettings = moduleSettings;
 	}
 
+	@Override
 	public void compilationFinished(boolean aborted, int errors, int warnings, CompileContext compileContext) {
 		if (!aborted && (errors == 0)) {
 			doRunTests();
 		}
 	}
 
+	@Override
 	public void fileGenerated(String outputRoot, String relativePath) {
 		doRunTests();
 	}
 
+	@Override
 	public void setRunTests(boolean shouldRunTests) {
 		if (shouldRunTests && !this.shouldRunTests) {
 			core.reload();
@@ -59,6 +62,7 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 		this.shouldRunTests = shouldRunTests;
 	}
 
+	@Override
 	public boolean shouldRunTests() {
 		return shouldRunTests;
 	}

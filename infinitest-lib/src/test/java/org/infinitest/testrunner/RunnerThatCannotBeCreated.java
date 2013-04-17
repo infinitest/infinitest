@@ -32,6 +32,7 @@ public class RunnerThatCannotBeCreated implements NativeRunner {
 		throw new RuntimeException("This runner cannot be created");
 	}
 
+	@Override
 	public TestResults runTest(String testClass) {
 		throw new UnsupportedOperationException();
 	}

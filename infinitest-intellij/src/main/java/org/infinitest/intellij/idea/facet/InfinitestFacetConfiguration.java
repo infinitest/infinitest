@@ -57,10 +57,12 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 		this.module = module;
 	}
 
+	@Override
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[] { new InfinitestFacetEditorTab(this) };
 	}
 
+	@Override
 	public void readExternal(Element element) throws InvalidDataException {
 		try {
 			Attribute scmUpdateAttribute = element.getAttribute(SCM_UPDATE_GREEN_HOOK);
@@ -77,6 +79,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 		}
 	}
 
+	@Override
 	public void writeExternal(Element configElement) throws WriteExternalException {
 		configElement.setAttribute(SCM_UPDATE_GREEN_HOOK, Boolean.toString(scmUpdateGreenHook));
 
@@ -96,6 +99,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 		this.scmUpdateGreenHook = scmUpdateGreenHook;
 	}
 
+	@Override
 	public InfinitestLauncher createLauncher() {
 		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(new IdeaModuleSettings(module), new IdeaToolWindowRegistry(module.getProject()), new IdeaCompilationNotifier(module.getProject()), new IdeaSourceNavigator(module.getProject()), FileEditorManager.getInstance(module.getProject()), ToolWindowManager.getInstance(module.getProject()));
 
@@ -106,6 +110,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 		return launcher;
 	}
 
+	@Override
 	public void registerListener(InfinitestConfigurationListener listener) {
 		this.listener = listener;
 	}

@@ -67,12 +67,14 @@ public class InfinitestActivationController implements PluginActivationControlle
 		this.updateNotifier = updateNotifier;
 	}
 
+	@Override
 	public void enable() {
 		if (!pluginEnabled) {
 			attachListener();
 		}
 	}
 
+	@Override
 	public void disable() {
 		workspace.removeResourceChangeListener(updateNotifier);
 		pluginEnabled = false;
@@ -85,6 +87,7 @@ public class InfinitestActivationController implements PluginActivationControlle
 		workspace.addResourceChangeListener(updateNotifier);
 	}
 
+	@Override
 	public void attachVisualStatus(VisualStatus status) {
 		visualStatusRegistry.updateVisualStatus(status);
 	}

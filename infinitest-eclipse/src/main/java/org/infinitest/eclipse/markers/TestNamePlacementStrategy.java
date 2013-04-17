@@ -40,6 +40,7 @@ public class TestNamePlacementStrategy implements MarkerPlacementStrategy {
 		this.lookup = lookup;
 	}
 
+	@Override
 	public MarkerPlacement getPlacement(TestEvent event) {
 		List<IResource> resources = lookup.findResourcesForClassName(event.getTestName());
 		if (resources.isEmpty()) {

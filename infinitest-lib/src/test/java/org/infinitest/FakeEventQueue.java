@@ -33,10 +33,12 @@ import static javax.swing.SwingUtilities.*;
  * use {@link ControlledEventQueue} for async updates
  */
 public class FakeEventQueue implements EventQueue {
+	@Override
 	public void push(Runnable runnable) {
 		invokeLater(runnable);
 	}
 
+	@Override
 	public void pushNamed(NamedRunnable runnable) {
 		invokeLater(runnable);
 	}

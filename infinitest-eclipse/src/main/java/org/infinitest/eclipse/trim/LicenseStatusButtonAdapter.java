@@ -39,10 +39,12 @@ public class LicenseStatusButtonAdapter implements SelectableImage {
 		this.label = label;
 	}
 
+	@Override
 	public void setImage(Image image) {
 		label.setImage(image);
 	}
 
+	@Override
 	public void addSelectionListener(SelectionListener listener) {
 		label.addMouseListener(new MouseToSelectionAdapter(listener));
 		label.getParent().pack();

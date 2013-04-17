@@ -55,6 +55,7 @@ class EventInfoFrame extends JDialog {
 		Action disposeAction = new AbstractAction("Close") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
@@ -89,6 +90,7 @@ class EventInfoFrame extends JDialog {
 		Action actionListener = new AbstractAction() {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				setVisible(false);
 			}

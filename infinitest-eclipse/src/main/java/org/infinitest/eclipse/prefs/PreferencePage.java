@@ -48,6 +48,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		handler.setSlowMarkerRegistry(InfinitestPlugin.getInstance().getBean(SlowMarkerRegistry.class));
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 		initializePreferenceStoreToDefaultLocation();
 	}

@@ -113,10 +113,12 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 
 		final Collection<TestEvent> removed = Lists.newArrayList();
 		collector.addChangeListener(new FailureListListener() {
+			@Override
 			public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
 				removed.addAll(failuresRemoved);
 			}
 
+			@Override
 			public void failuresUpdated(Collection<TestEvent> updatedFailures) {
 				throw new UnsupportedOperationException();
 			}

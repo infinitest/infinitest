@@ -45,6 +45,7 @@ public class ResourceLookupAdapter implements ResourceLookup {
 		this.finder = finder;
 	}
 
+	@Override
 	public List<IResource> findResourcesForClassName(String className) {
 		IResource resource = finder.findResourceForSourceFile(sourceFilename(className));
 		if (resource == null) {
@@ -58,6 +59,7 @@ public class ResourceLookupAdapter implements ResourceLookup {
 		return className.replace(".", "/") + ".java";
 	}
 
+	@Override
 	public IWorkspaceRoot workspaceRoot() {
 		return finder.workspaceRoot();
 	}

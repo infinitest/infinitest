@@ -69,10 +69,12 @@ public class WhenAggregatingTestEventsFromMultipleCores {
 	@Test
 	public void shouldNotifyListenersOfAggregatedEvents() {
 		aggregator.addListeners(new AggregateResultsListener() {
+			@Override
 			public void testCaseStarting(TestEvent event) {
 				events.add(event);
 			}
 
+			@Override
 			public void testCaseComplete(TestCaseEvent event) {
 				events.add(event);
 			}

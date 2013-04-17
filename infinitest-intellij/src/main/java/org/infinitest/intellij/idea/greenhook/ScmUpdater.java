@@ -48,8 +48,10 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
 		vcsManager = ProjectLevelVcsManager.getInstance(project);
 	}
 
+	@Override
 	public void execute() {
 		ApplicationManager.getApplication().invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				AbstractVcs[] vssProviders = vcsManager.getAllActiveVcss();
 				for (AbstractVcs each : vssProviders) {
@@ -76,11 +78,13 @@ public class ScmUpdater extends DefaultProjectComponent implements GreenHook {
 	}
 
 	static class InfinitestSequentialUpdatesContext implements SequentialUpdatesContext {
+		@Override
 		@NotNull
 		public String getMessageWhenInterruptedBeforeStart() {
 			return "Infinitest generated message";
 		}
 
+		@Override
 		public boolean shouldFail() {
 			return false;
 		}

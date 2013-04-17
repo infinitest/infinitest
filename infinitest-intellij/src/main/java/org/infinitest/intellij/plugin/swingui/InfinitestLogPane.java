@@ -49,6 +49,7 @@ public class InfinitestLogPane extends JPanel {
 
 	public void writeMessage(final String message) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				textArea.append(message);
 				textArea.append(CRLF);

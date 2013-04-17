@@ -47,14 +47,17 @@ public class MultiCoreConcurrencyController implements ConcurrencyController {
 		coreCount = intitalCoreCount;
 	}
 
+	@Override
 	public void acquire() throws InterruptedException {
 		semaphore.acquire();
 	}
 
+	@Override
 	public void release() {
 		semaphore.release();
 	}
 
+	@Override
 	public synchronized void setCoreCount(int newCoreCount) {
 		if (newCoreCount > maxNumberOfPermits) {
 			throw new IllegalArgumentException("Settings core count to " + newCoreCount + " max is " + maxNumberOfPermits);

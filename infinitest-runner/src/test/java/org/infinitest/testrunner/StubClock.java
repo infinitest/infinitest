@@ -30,6 +30,7 @@ package org.infinitest.testrunner;
 public class StubClock implements Clock {
 	public long time;
 
+	@Override
 	public long currentTimeMillis() {
 		return time;
 	}

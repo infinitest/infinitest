@@ -38,6 +38,7 @@ public abstract class AbstractJavaClass implements JavaClass {
 		return getName().hashCode();
 	}
 
+	@Override
 	public void dispose() {
 	}
 }

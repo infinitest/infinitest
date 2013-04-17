@@ -40,6 +40,7 @@ class TreeModelExpansionListener {
 		tree.expandPath(tree.getPathForRow(0));
 		Class<?>[] interfaces = new Class<?>[] { TreeModelListener.class };
 		InvocationHandler handler = new InvocationHandler() {
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) {
 				if ("equals".equals(method.getName())) {
 					return TreeModelExpansionListener.class.equals(args[0]);

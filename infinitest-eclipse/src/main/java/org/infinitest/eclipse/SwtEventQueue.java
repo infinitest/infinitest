@@ -46,6 +46,7 @@ public class SwtEventQueue implements EventQueue {
 		job = createJob();
 	}
 
+	@Override
 	public void pushNamed(NamedRunnable runnable) {
 		try {
 			runnableQueue.put(runnable);
@@ -103,8 +104,10 @@ public class SwtEventQueue implements EventQueue {
 		return job;
 	}
 
+	@Override
 	public void push(final Runnable runnable) {
 		pushNamed(new NamedRunnable("") {
+			@Override
 			public void run() {
 				runnable.run();
 			}

@@ -57,6 +57,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		className = classReference.getName();
 	}
 
+	@Override
 	public Collection<String> getImports() {
 		if (imports == null) {
 			throw new DisposedClassException(getName());
@@ -156,6 +157,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return classPath.replace('/', '.');
 	}
 
+	@Override
 	public String getName() {
 		return className;
 	}
@@ -164,6 +166,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return classReference.isInterface() || Modifier.isAbstract(classReference.getModifiers());
 	}
 
+	@Override
 	public boolean isATest() {
 		return isATest;
 	}
@@ -238,6 +241,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private Predicate<CtClass> hasACustomRunner() {
 		return new Predicate<CtClass>() {
+			@Override
 			public boolean apply(CtClass input) {
 				return isAnnotatedWithCustomRunner(input);
 			}
@@ -279,6 +283,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private Predicate<CtClass> isTestCase() {
 		return new Predicate<CtClass>() {
+			@Override
 			public boolean apply(CtClass input) {
 				return input.getName().equals(TestCase.class.getName());
 			}
@@ -338,10 +343,12 @@ public class JavaAssistClass extends AbstractJavaClass {
 		this.classFile = classFile;
 	}
 
+	@Override
 	public boolean locatedInClassFile() {
 		return classFile != null;
 	}
 
+	@Override
 	public File getClassFile() {
 		return classFile;
 	}

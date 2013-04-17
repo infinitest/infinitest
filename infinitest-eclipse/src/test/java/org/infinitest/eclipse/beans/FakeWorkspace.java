@@ -38,182 +38,227 @@ import org.mockito.*;
 
 @SuppressWarnings("deprecation")
 public class FakeWorkspace implements IWorkspace {
+	@Override
 	public void addResourceChangeListener(IResourceChangeListener arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void addResourceChangeListener(IResourceChangeListener arg0, int arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ISavedState addSaveParticipant(Plugin arg0, ISaveParticipant arg1) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void build(int arg0, IProgressMonitor arg1) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void checkpoint(boolean arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProject[][] computePrerequisiteOrder(IProject[] arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ProjectOrder computeProjectOrder(IProject[] arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus copy(IResource[] arg0, IPath arg1, boolean arg2, IProgressMonitor arg3) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus copy(IResource[] arg0, IPath arg1, int arg2, IProgressMonitor arg3) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus delete(IResource[] arg0, boolean arg1, IProgressMonitor arg2) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus delete(IResource[] arg0, int arg1, IProgressMonitor arg2) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void deleteMarkers(IMarker[] arg0) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void forgetSavedTree(String arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Map<?, ?> getDanglingReferences() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IWorkspaceDescription getDescription() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProjectNatureDescriptor getNatureDescriptor(String arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProjectNatureDescriptor[] getNatureDescriptors() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IPathVariableManager getPathVariableManager() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IWorkspaceRoot getRoot() {
 		return Mockito.mock(IWorkspaceRoot.class);
 	}
 
+	@Override
 	public IResourceRuleFactory getRuleFactory() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ISynchronizer getSynchronizer() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isAutoBuilding() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isTreeLocked() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProjectDescription loadProjectDescription(IPath arg0) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProjectDescription loadProjectDescription(InputStream arg0) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus move(IResource[] arg0, IPath arg1, boolean arg2, IProgressMonitor arg3) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus move(IResource[] arg0, IPath arg1, int arg2, IProgressMonitor arg3) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IProjectDescription newProjectDescription(String arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void removeResourceChangeListener(IResourceChangeListener arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void removeSaveParticipant(Plugin arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void run(IWorkspaceRunnable arg0, IProgressMonitor arg1) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void run(IWorkspaceRunnable arg0, ISchedulingRule arg1, int arg2, IProgressMonitor arg3) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus save(boolean arg0, IProgressMonitor arg1) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setDescription(IWorkspaceDescription arg0) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setWorkspaceLock(WorkspaceLock arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String[] sortNatureSet(String[] arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateEdit(IFile[] arg0, Object arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateLinkLocation(IResource arg0, IPath arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateLinkLocationURI(IResource arg0, URI arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateName(String arg0, int arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateNatureSet(String[] arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validatePath(String arg0, int arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateProjectLocation(IProject arg0, IPath arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IStatus validateProjectLocationURI(IProject arg0, URI arg1) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object getAdapter(Class arg0) {
 		throw new UnsupportedOperationException();
 	}

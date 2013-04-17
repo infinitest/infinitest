@@ -64,6 +64,7 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 		psiFile.acceptChildren(new PsiClassVisitor(this));
 	}
 
+	@Override
 	public void execute(PsiClass psiClass) {
 		clearInfinitestMarkersFrom(model);
 

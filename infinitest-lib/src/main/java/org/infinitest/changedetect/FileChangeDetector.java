@@ -45,12 +45,14 @@ public class FileChangeDetector implements ChangeDetector {
 		clear();
 	}
 
+	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		clear();
 		List<File> classDirs = classpath.classDirectoriesInClasspath();
 		classDirectories = classDirs.toArray(new File[classDirs.size()]);
 	}
 
+	@Override
 	public synchronized Set<File> findChangedFiles() throws IOException {
 		return findFiles(classDirectories, false);
 	}
@@ -92,6 +94,7 @@ public class FileChangeDetector implements ChangeDetector {
 		return classFile.lastModified();
 	}
 
+	@Override
 	public synchronized void clear() {
 		timestampIndex = new HashMap<File, Long>();
 	}
@@ -106,6 +109,7 @@ public class FileChangeDetector implements ChangeDetector {
 		return removedFiles;
 	}
 
+	@Override
 	public synchronized boolean filesWereRemoved() {
 		return !findRemovedFiles().isEmpty();
 	}

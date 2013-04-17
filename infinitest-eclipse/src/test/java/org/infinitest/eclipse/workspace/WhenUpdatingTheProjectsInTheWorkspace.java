@@ -96,6 +96,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 		InfinitestCore core = prepateCore(projectAUri(), 10);
 
 		workspace.addUpdateListeners(new UpdateListener() {
+			@Override
 			public void projectsUpdated() {
 				updates++;
 			}
@@ -147,6 +148,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	public void shouldFireEventIfStatusChanges() throws CoreException {
 		projects.clear();
 		workspace.addStatusListeners(new WorkspaceStatusListener() {
+			@Override
 			public void statusChanged(WorkspaceStatus newStatus) {
 				updatedStatus = newStatus;
 			}

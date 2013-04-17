@@ -43,6 +43,7 @@ public class SimpleEventSupportTest {
 	public void inContext() {
 		integerEvent = eventFor(SimpleListener.class);
 		listener = new SimpleListener() {
+			@Override
 			public void eventFired() {
 				eventRecieved = true;
 			}

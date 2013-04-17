@@ -37,10 +37,12 @@ import org.eclipse.ui.console.*;
 public class ConsoleOutputWriter implements TextOutputWriter {
 	private MessageConsole console;
 
+	@Override
 	public void activate() {
 		getConsole().activate();
 	}
 
+	@Override
 	public void appendText(String newText) {
 		try {
 			MessageConsoleStream stream = getConsole().newMessageStream();
@@ -63,6 +65,7 @@ public class ConsoleOutputWriter implements TextOutputWriter {
 		return console;
 	}
 
+	@Override
 	public void clearConsole() {
 		getConsole().clearConsole();
 	}

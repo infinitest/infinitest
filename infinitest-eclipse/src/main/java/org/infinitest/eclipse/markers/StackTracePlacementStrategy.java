@@ -40,6 +40,7 @@ public class StackTracePlacementStrategy implements MarkerPlacementStrategy {
 		this.lookup = lookup;
 	}
 
+	@Override
 	public MarkerPlacement getPlacement(TestEvent event) {
 		for (StackTraceElement element : event.getStackTrace()) {
 			List<IResource> resources = lookup.findResourcesForClassName(element.getClassName());

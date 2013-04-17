@@ -129,6 +129,7 @@ class EventNormalizer {
 
 	private <T> InvocationHandler createHandler(final T listener) {
 		return new InvocationHandler() {
+			@Override
 			public Object invoke(Object proxy, final Method method, final Object[] args) {
 				if (method.equals(hashCodeMethod)) {
 					return proxyHashCode(proxy);
@@ -137,6 +138,7 @@ class EventNormalizer {
 				}
 
 				eventQueue.pushNamed(new NamedRunnable("Processing Results") {
+					@Override
 					public void run() {
 						try {
 							method.invoke(listener, args);

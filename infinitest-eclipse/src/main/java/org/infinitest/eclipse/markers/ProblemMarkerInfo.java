@@ -87,6 +87,7 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo {
 		return placement;
 	}
 
+	@Override
 	public Map<String, Object> attributes() {
 		Map<String, Object> markerAttributes = newLinkedHashMap();
 		markerAttributes.put(SEVERITY, SEVERITY_ERROR);
@@ -141,6 +142,7 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo {
 		return event.toString();
 	}
 
+	@Override
 	public String getTestName() {
 		return event.getTestName();
 	}

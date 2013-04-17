@@ -40,6 +40,7 @@ public class FakeProjectSet implements ProjectSet {
 		this.project = project;
 	}
 
+	@Override
 	public ProjectFacade findProject(IPath path) {
 		if (project.getPath().equals(path)) {
 			return new ProjectFacade(project);
@@ -47,14 +48,17 @@ public class FakeProjectSet implements ProjectSet {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean hasErrors() throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public List<ProjectFacade> projects() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public List<File> outputDirectories(EclipseProject project) throws JavaModelException {
 		throw new UnsupportedOperationException();
 	}

@@ -37,6 +37,7 @@ public class FileEditorListener implements PresenterListener {
 		this.fileEditorManager = fileEditorManager;
 	}
 
+	@Override
 	public void testRunCompleted() {
 		for (FileEditor fileEditor : fileEditorManager.getSelectedEditors()) {
 			for (HighlightingPass highlightingPass : fileEditor.getBackgroundHighlighter().createPassesForEditor()) {
@@ -45,18 +46,22 @@ public class FileEditorListener implements PresenterListener {
 		}
 	}
 
+	@Override
 	public void testRunSucceed() {
 		// nothing to do here
 	}
 
+	@Override
 	public void testRunFailed() {
 		// nothing to do here
 	}
 
+	@Override
 	public void testRunStarted() {
 		// nothing to do here
 	}
 
+	@Override
 	public void testRunWaiting() {
 		// nothing to do here
 	}

@@ -80,6 +80,7 @@ public class TestInfinitestMainFrame {
 		controlPanel.add(new JButton(new AbstractAction("Color") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (frame.getProgressBarColor().equals(PASSING_COLOR)) {
 					frame.setProgressBarColor(FAILING_COLOR);
@@ -92,6 +93,7 @@ public class TestInfinitestMainFrame {
 		controlPanel.add(new JButton(new AbstractAction("%++") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setProgress(test.frame.getProgress() + 5);
 			}
@@ -100,6 +102,7 @@ public class TestInfinitestMainFrame {
 		controlPanel.add(new JButton(new AbstractAction("Anger++") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setAngerLevel(frame.getAngerLevel() + 1);
 			}
@@ -108,6 +111,7 @@ public class TestInfinitestMainFrame {
 		controlPanel.add(new JButton(new AbstractAction("%--") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setProgress(test.frame.getProgress() - 5);
 			}
@@ -116,6 +120,7 @@ public class TestInfinitestMainFrame {
 		controlPanel.add(new JButton(new AbstractAction("Anger--") {
 			private static final long serialVersionUID = -1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setAngerLevel(frame.getAngerLevel() - 1);
 			}

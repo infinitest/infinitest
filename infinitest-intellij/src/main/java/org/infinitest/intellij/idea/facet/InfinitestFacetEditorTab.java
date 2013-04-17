@@ -43,28 +43,34 @@ public class InfinitestFacetEditorTab extends FacetEditorTab {
 		configurationPane.setScmUpdateEnabled(configuration.isScmUpdateEnabled());
 	}
 
+	@Override
 	@Nls
 	public String getDisplayName() {
 		return "Infinitest";
 	}
 
+	@Override
 	public JComponent createComponent() {
 		return configurationPane;
 	}
 
+	@Override
 	public boolean isModified() {
 		return configuration.isScmUpdateEnabled() != configurationPane.isScmUpdateEnabled();
 	}
 
+	@Override
 	public void apply() {
 		configuration.setScmUpdateEnabled(configurationPane.isScmUpdateEnabled());
 		configuration.updated();
 	}
 
+	@Override
 	public void reset() {
 		configurationPane.setScmUpdateEnabled(configuration.isScmUpdateEnabled());
 	}
 
+	@Override
 	public void disposeUIResources() {
 		// nothing to do here
 	}

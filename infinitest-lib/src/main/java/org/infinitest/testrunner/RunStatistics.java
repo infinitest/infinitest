@@ -50,12 +50,14 @@ public class RunStatistics implements TestResultsListener {
 		return failureTimestamps.get(testName);
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestEvent each : event.getFailureEvents()) {
 			update(each);
 		}
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 	}
 }

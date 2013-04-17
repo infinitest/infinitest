@@ -44,6 +44,7 @@ abstract class AbstractTestRunner implements TestRunner {
 		testPriority = new NoOpComparator();
 	}
 
+	@Override
 	public void setConcurrencyController(ConcurrencyController concurrencyController) {
 		this.concurrencyController = concurrencyController;
 	}
@@ -59,30 +60,37 @@ abstract class AbstractTestRunner implements TestRunner {
 		return testPriority;
 	}
 
+	@Override
 	public void setTestPriority(Comparator<String> testPriority) {
 		this.testPriority = testPriority;
 	}
 
+	@Override
 	public void addTestResultsListener(TestResultsListener statusListener) {
 		eventSupport.addTestStatusListener(statusListener);
 	}
 
+	@Override
 	public void removeTestStatusListener(TestResultsListener statusListener) {
 		eventSupport.removeTestStatusListener(statusListener);
 	}
 
+	@Override
 	public void addConsoleOutputListener(ConsoleOutputListener listener) {
 		eventSupport.addConsoleOutputListener(listener);
 	}
 
+	@Override
 	public void removeConsoleOutputListener(ConsoleOutputListener listener) {
 		eventSupport.removeConsoleOutputListener(listener);
 	}
 
+	@Override
 	public void addTestQueueListener(TestQueueListener listener) {
 		eventSupport.addTestQueueListener(listener);
 	}
 
+	@Override
 	public void removeTestQueueListener(ReloadListener listener) {
 		eventSupport.removeTestQueueListener(listener);
 	}
@@ -95,12 +103,14 @@ abstract class AbstractTestRunner implements TestRunner {
 		runTests(newArrayList(testClass));
 	}
 
+	@Override
 	public void runTests(List<String> testNames) {
 		for (String test : testNames) {
 			runTest(test);
 		}
 	}
 
+	@Override
 	public void setRuntimeEnvironment(RuntimeEnvironment environment) {
 		this.environment = environment;
 	}
@@ -110,6 +120,7 @@ abstract class AbstractTestRunner implements TestRunner {
 	}
 
 	private static class NoOpComparator implements Comparator<String> {
+		@Override
 		public int compare(String o1, String o2) {
 			return 0;
 		}

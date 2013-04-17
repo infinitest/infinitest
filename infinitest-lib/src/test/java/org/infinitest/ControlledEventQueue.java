@@ -34,6 +34,7 @@ import java.util.*;
 public class ControlledEventQueue implements EventQueue {
 	private final List<Runnable> events = newArrayList();
 
+	@Override
 	public synchronized void push(Runnable runnable) {
 		events.add(runnable);
 	}
@@ -50,6 +51,7 @@ public class ControlledEventQueue implements EventQueue {
 		}
 	}
 
+	@Override
 	public void pushNamed(NamedRunnable runnable) {
 		push(runnable);
 	}

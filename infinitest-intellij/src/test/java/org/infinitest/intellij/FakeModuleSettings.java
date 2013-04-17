@@ -43,10 +43,12 @@ public class FakeModuleSettings implements ModuleSettings {
 		this.name = name;
 	}
 
+	@Override
 	public void writeToLogger(Logger log) {
 		// nothing to do here
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -63,6 +65,7 @@ public class FakeModuleSettings implements ModuleSettings {
 		return new File(".");
 	}
 
+	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
 		return new RuntimeEnvironment(Collections.<File> emptyList(), new File("."), "", new File(getProperty("java.home")));
 	}

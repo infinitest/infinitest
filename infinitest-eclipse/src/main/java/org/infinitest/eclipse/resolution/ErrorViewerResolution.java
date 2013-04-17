@@ -52,18 +52,22 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 		stackTraceFilter = new StackTraceFilter();
 	}
 
+	@Override
 	public String getDescription() {
 		return "Shows the details for this test failure";
 	}
 
+	@Override
 	public Image getImage() {
 		return null;
 	}
 
+	@Override
 	public String getLabel() {
 		return name + " failing (see details)";
 	}
 
+	@Override
 	public void run(IMarker marker) {
 		try {
 			Serializable unpickledStack = unpickle(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE).toString());

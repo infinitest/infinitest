@@ -108,6 +108,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		infinitestRuntimeClasspath = infinitestRuntimeClassPath;
 	}
 
+	@Override
 	public String getCompleteClasspath() {
 		String completeClasspath = getRawClasspath();
 		String infinitestJarPath = findInfinitestJar();
@@ -173,6 +174,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		return workingDirectory;
 	}
 
+	@Override
 	public List<File> getClassOutputDirs() {
 		return classOutputDirs;
 	}
@@ -201,6 +203,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		// CHECKSTYLE:ON
 	}
 
+	@Override
 	public List<File> classDirectoriesInClasspath() {
 		// RISK Caching this prevents tons of disk access, but we risk caching a
 		// bad set of

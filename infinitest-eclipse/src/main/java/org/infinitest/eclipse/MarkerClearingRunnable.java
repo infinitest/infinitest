@@ -49,6 +49,7 @@ public class MarkerClearingRunnable extends NamedRunnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		for (MarkerRegistry each : registries) {
 			each.clear();

@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.*;
 import org.infinitest.util.*;
 
 public class EclipseLoggingListener implements LoggingListener {
+	@Override
 	public void logError(String message, Throwable throwable) {
 		Status status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
 		InfinitestPlugin plugin = InfinitestPlugin.getInstance();
@@ -44,6 +45,7 @@ public class EclipseLoggingListener implements LoggingListener {
 		}
 	}
 
+	@Override
 	public void logMessage(Level level, String message) {
 		Status status = new Status(levelToStatus(level), PLUGIN_ID, message);
 		InfinitestPlugin plugin = InfinitestPlugin.getInstance();

@@ -75,6 +75,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		this.changeDetector = changeDetector;
 	}
 
+	@Override
 	public synchronized int update(Collection<File> changedFiles) {
 		log(CONFIG, "Core Update " + name);
 		int testsRun = runOptimizedTestSet(changedFiles);
@@ -84,6 +85,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 
 	// If this returned the number of tests that were scheduled to be run, we
 	// could warn the user when they make changes that don't trigger tests
+	@Override
 	public synchronized int update() {
 		try {
 			return update(findChangedClassFiles());
@@ -93,6 +95,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		return 0;
 	}
 
+	@Override
 	public void reload() {
 		log("Reloading core " + name);
 		testDetector.clear();
@@ -101,6 +104,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		fireReload();
 	}
 
+	@Override
 	public void setRuntimeEnvironment(RuntimeEnvironment environment) {
 		if ((currentEnvironment == null) || !environment.equals(currentEnvironment)) {
 			currentEnvironment = environment;
@@ -142,28 +146,34 @@ class DefaultInfinitestCore implements InfinitestCore {
 		return stats;
 	}
 
+	@Override
 	public void addTestResultsListener(TestResultsListener l) {
 		getRunner().addTestResultsListener(normalizer.testEventNormalizer(l));
 	}
 
+	@Override
 	public void removeTestResultsListener(TestResultsListener l) {
 		getRunner().removeTestStatusListener(normalizer.testEventNormalizer(l));
 	}
 
+	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
 		return currentEnvironment;
 	}
 
+	@Override
 	public void addTestQueueListener(TestQueueListener listener) {
 		getRunner().addTestQueueListener(normalizer.testQueueNormalizer(listener));
 		reloadListeners.add(listener);
 	}
 
+	@Override
 	public void removeTestQueueListener(TestQueueListener listener) {
 		getRunner().removeTestQueueListener(normalizer.testQueueNormalizer(listener));
 		reloadListeners.remove(listener);
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -172,22 +182,27 @@ class DefaultInfinitestCore implements InfinitestCore {
 		this.name = name;
 	}
 
+	@Override
 	public void addConsoleOutputListener(ConsoleOutputListener listener) {
 		getRunner().addConsoleOutputListener(normalizer.consoleEventNormalizer(listener));
 	}
 
+	@Override
 	public void removeConsoleOutputListener(ConsoleOutputListener listener) {
 		getRunner().removeConsoleOutputListener(normalizer.consoleEventNormalizer(listener));
 	}
 
+	@Override
 	public void addDisabledTestListener(DisabledTestListener listener) {
 		disabledTestListeners.add(listener);
 	}
 
+	@Override
 	public void removeDisabledTestListener(DisabledTestListener listener) {
 		disabledTestListeners.remove(listener);
 	}
 
+	@Override
 	public boolean isEventSourceFor(TestCaseEvent testCaseEvent) {
 		return testCaseEvent.getSource().equals(getRunner());
 	}

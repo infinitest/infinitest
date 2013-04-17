@@ -33,6 +33,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 
 public abstract class AbstractMarkerInfo implements MarkerInfo {
+	@Override
 	public IMarker createMarker(String markerId) {
 		IMarker marker;
 		try {

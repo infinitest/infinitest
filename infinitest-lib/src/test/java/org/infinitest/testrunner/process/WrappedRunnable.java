@@ -28,6 +28,7 @@
 package org.infinitest.testrunner.process;
 
 public abstract class WrappedRunnable implements Runnable {
+	@Override
 	public void run() {
 		try {
 			runWrapped();

@@ -31,34 +31,42 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.sourcelookup.*;
 
 public class FakeSourceContainer implements ISourceContainer {
+	@Override
 	public void dispose() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object[] findSourceElements(String arg0) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String getName() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ISourceContainer[] getSourceContainers() throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public ISourceContainerType getType() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void init(ISourceLookupDirector arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isComposite() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public Object getAdapter(Class arg0) {
 
 		throw new UnsupportedOperationException();

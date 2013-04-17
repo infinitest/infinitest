@@ -37,6 +37,7 @@ class DeltaVisitor implements IResourceDeltaVisitor {
 	private static final boolean STOP_SEARCHING = false;
 	private boolean savedResourceFound;
 
+	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
 		if (!resource.isDerived()) {

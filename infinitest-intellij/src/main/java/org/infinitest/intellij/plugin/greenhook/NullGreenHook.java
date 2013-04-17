@@ -28,6 +28,7 @@
 package org.infinitest.intellij.plugin.greenhook;
 
 public class NullGreenHook implements GreenHook {
+	@Override
 	public void execute() {
 	}
 }

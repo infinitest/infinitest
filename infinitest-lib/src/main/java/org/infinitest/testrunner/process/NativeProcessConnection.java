@@ -38,6 +38,7 @@ public class NativeProcessConnection implements ProcessConnection {
 		this.process = process;
 	}
 
+	@Override
 	public boolean abort() {
 		process.destroy();
 		try {
@@ -48,10 +49,12 @@ public class NativeProcessConnection implements ProcessConnection {
 		return true;
 	}
 
+	@Override
 	public void close() {
 		communicator.closeSocket();
 	}
 
+	@Override
 	public TestResults runTest(String testName) {
 		return communicator.sendMessage(testName);
 	}

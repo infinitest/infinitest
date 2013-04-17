@@ -62,15 +62,18 @@ public class SlowTestObserver implements DisabledTestListener, TestResultsListen
 		}
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (MethodStats methodStat : event.getRunStats()) {
 			runStatsUpdated(event.getTestName(), methodStat);
 		}
 	}
 
+	@Override
 	public void testsDisabled(Collection<String> testName) {
 		for (String eachTest : testName) {
 			slowMarkerRegistry.removeMarkers(eachTest);

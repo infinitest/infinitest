@@ -54,6 +54,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		this.module = module;
 	}
 
+	@Override
 	public void writeToLogger(Logger log) {
 		java.util.List<File> outputDirectories = listOutputDirectories();
 		log.info("Output Directories:");
@@ -66,10 +67,12 @@ public class IdeaModuleSettings implements ModuleSettings {
 		log.info(classpathString);
 	}
 
+	@Override
 	public String getName() {
 		return module.getName();
 	}
 
+	@Override
 	@Nullable
 	public RuntimeEnvironment getRuntimeEnvironment() {
 		File sdkPath = getSdkHomePath();

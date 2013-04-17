@@ -46,14 +46,17 @@ public class WhenTheWorkspaceStatusChanges {
 	}
 
 	private final class FakeStatus implements WorkspaceStatus {
+		@Override
 		public String getMessage() {
 			return "New Status!";
 		}
 
+		@Override
 		public String getToolTip() {
 			return "Tooltip";
 		}
 
+		@Override
 		public boolean warningMessage() {
 			return false;
 		}

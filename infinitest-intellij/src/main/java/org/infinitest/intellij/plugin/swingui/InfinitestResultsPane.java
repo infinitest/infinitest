@@ -86,6 +86,7 @@ public class InfinitestResultsPane extends JPanel {
 		progress.setName("PROGRESSBAR");
 		color = UNKNOWN_COLOR;
 		Timer timer = new Timer(animator.getAnimationRate(), new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				progress.setForeground(animator.shiftColorOnAnimationTick(color));
 				progress.repaint();

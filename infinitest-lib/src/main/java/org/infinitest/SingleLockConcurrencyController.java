@@ -32,14 +32,17 @@ import java.util.concurrent.*;
 public class SingleLockConcurrencyController implements ConcurrencyController {
 	private final Semaphore semaphore = new Semaphore(1);
 
+	@Override
 	public void acquire() throws InterruptedException {
 		semaphore.acquire();
 	}
 
+	@Override
 	public void release() {
 		semaphore.release();
 	}
 
+	@Override
 	public void setCoreCount(int coreCount) {
 		// Ignored...only 1 core supported
 	}

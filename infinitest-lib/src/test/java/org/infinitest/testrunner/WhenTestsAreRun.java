@@ -208,6 +208,7 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 		assertEquals("testNumber1", e.getTestMethod());
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 		startedEvents.add(event);
 	}
@@ -222,6 +223,7 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 		// This runner is synchronous
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestEvent each : event.getFailureEvents()) {
 			methodEvents.add(each);

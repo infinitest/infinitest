@@ -67,6 +67,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
 	}
 
+	@Override
 	public void launchInfinitest() {
 		moduleSettings.writeToLogger(Logger.getLogger(getClass()));
 
@@ -108,6 +109,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		toolWindowRegistry.registerToolWindow(rootPanel, toolWindowId());
 	}
 
+	@Override
 	public void stop() {
 		toolWindowRegistry.unregisterToolWindow(toolWindowId());
 		infinitestBuilder.removeStatusListener(greenHookListener);

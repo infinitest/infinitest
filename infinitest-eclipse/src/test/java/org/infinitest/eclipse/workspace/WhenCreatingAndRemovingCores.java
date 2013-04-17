@@ -62,10 +62,12 @@ public class WhenCreatingAndRemovingCores implements CoreLifecycleListener {
 		assertSame(coreRemoved, mockCore);
 	}
 
+	@Override
 	public void coreCreated(InfinitestCore core) {
 		coreAdded = core;
 	}
 
+	@Override
 	public void coreRemoved(InfinitestCore core) {
 		coreRemoved = core;
 	}

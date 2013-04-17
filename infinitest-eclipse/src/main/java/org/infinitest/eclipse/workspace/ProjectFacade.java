@@ -119,10 +119,12 @@ class ProjectFacade implements EclipseProject {
 	/**
 	 * Returns a URI that can be used to uniquely identify a particular project.
 	 */
+	@Override
 	public URI getLocationURI() {
 		return project.getProject().getLocationURI();
 	}
 
+	@Override
 	public IClasspathEntry[] getClasspathEntries() {
 		try {
 			return project.getResolvedClasspath(true);
@@ -144,6 +146,7 @@ class ProjectFacade implements EclipseProject {
 		return new ClassPathResolver(new EclipseFacade()).rawClasspath(project);
 	}
 
+	@Override
 	public IPath getDefaultOutputLocation() {
 		try {
 			return project.getOutputLocation();

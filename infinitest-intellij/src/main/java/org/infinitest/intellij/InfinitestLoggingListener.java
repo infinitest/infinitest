@@ -41,10 +41,12 @@ public class InfinitestLoggingListener implements LoggingListener {
 		this.view = view;
 	}
 
+	@Override
 	public void logError(String message, Throwable throwable) {
 		view.writeError(message);
 	}
 
+	@Override
 	public void logMessage(Level level, String message) {
 		view.writeLogMessage(leftAlign(level) + " " + message);
 	}

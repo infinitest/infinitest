@@ -71,10 +71,12 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 		addWindowFocusListener(new TreeFocusListener());
 	}
 
+	@Override
 	public void setAngerBasedOnTime(long timeSinceGreen) {
 		resultsPane.setAngerBasedOnTime(timeSinceGreen);
 	}
 
+	@Override
 	public void setProgress(int progress) {
 		resultsPane.setProgress(progress);
 	}
@@ -83,6 +85,7 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 		return resultsPane.getProgress();
 	}
 
+	@Override
 	public void setProgressBarColor(Color color) {
 		resultsPane.setProgressBarColor(color);
 	}
@@ -91,42 +94,52 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 		return resultsPane.getProgressBarColor();
 	}
 
+	@Override
 	public void setMaximumProgress(int maxProgress) {
 		resultsPane.setMaximumProgress(maxProgress);
 	}
 
+	@Override
 	public int getMaximumProgress() {
 		return resultsPane.getMaximumProgress();
 	}
 
+	@Override
 	public void setCycleTime(String timeStamp) {
 		setTitle(APP_TITLE + " - Cycle Time: " + timeStamp);
 	}
 
+	@Override
 	public void setCurrentTest(String testName) {
 		resultsPane.setCurrentTest(testName);
 	}
 
+	@Override
 	public void addAction(Action action) {
 		resultsPane.addAction(action);
 	}
 
+	@Override
 	public void setResultsModel(TreeModel results) {
 		resultsPane.setResultsModel(results);
 	}
 
+	@Override
 	public void setStatusMessage(String message) {
 		resultsPane.setStatusMessage(message);
 	}
 
+	@Override
 	public void writeLogMessage(String message) {
 		logPane.writeMessage(message);
 	}
 
+	@Override
 	public void writeError(String message) {
 		// nothing to do here
 	}
 
+	@Override
 	public void addResultClickListener(ResultClickListener listener) {
 		resultsPane.addResultClickListener(listener);
 	}

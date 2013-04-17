@@ -51,15 +51,18 @@ class InfinitestCoreRegistry implements CoreRegistry {
 		}
 	}
 
+	@Override
 	public void addCore(URI projectUri, InfinitestCore core) {
 		fireAddedEvent(core);
 		coreMap.put(projectUri, core);
 	}
 
+	@Override
 	public InfinitestCore getCore(URI projectUri) {
 		return coreMap.get(projectUri);
 	}
 
+	@Override
 	public void removeCore(URI projectUri) {
 		InfinitestCore core = coreMap.remove(projectUri);
 		if (core != null) {
@@ -84,6 +87,7 @@ class InfinitestCoreRegistry implements CoreRegistry {
 		return coreMap.size();
 	}
 
+	@Override
 	public void addLifecycleListener(CoreLifecycleListener listener) {
 		listeners.add(listener);
 	}

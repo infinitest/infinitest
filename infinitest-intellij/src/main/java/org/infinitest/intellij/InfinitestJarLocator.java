@@ -63,14 +63,17 @@ public class InfinitestJarLocator {
  * insensitive to whether or not a maven schema was used for the pom.
  */
 class PomNamespaceContext implements NamespaceContext {
+	@Override
 	public String getNamespaceURI(String prefix) {
 		return "http://maven.apache.org/POM/4.0.0";
 	}
 
+	@Override
 	public String getPrefix(String namespace) {
 		return "pom";
 	}
 
+	@Override
 	public Iterator<?> getPrefixes(String namespace) {
 		return null;
 	}

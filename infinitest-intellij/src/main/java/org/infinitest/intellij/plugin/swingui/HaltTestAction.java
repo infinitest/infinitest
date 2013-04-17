@@ -57,6 +57,7 @@ public class HaltTestAction extends AbstractAction {
 		}
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		control.setRunTests(!control.shouldRunTests());
 		setIcon();

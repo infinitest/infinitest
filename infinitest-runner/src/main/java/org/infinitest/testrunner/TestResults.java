@@ -46,6 +46,7 @@ public class TestResults implements Iterable<TestEvent>, Serializable {
 		this(asList(failures));
 	}
 
+	@Override
 	public Iterator<TestEvent> iterator() {
 		return eventsCollected.iterator();
 	}

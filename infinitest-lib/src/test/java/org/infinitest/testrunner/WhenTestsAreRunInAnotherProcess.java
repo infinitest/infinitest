@@ -153,6 +153,7 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 		// By listening for the start of the test, we can interrupt the test run
 		// in a predictable manner
 		runner.addTestResultsListener(new TestResultsListener() {
+			@Override
 			public void testCaseStarting(TestEvent event) {
 				if (!testsToRun.isEmpty()) {
 					// Push a new test into the queue just as the current one is
@@ -181,6 +182,7 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 				}
 			}
 
+			@Override
 			public void testCaseComplete(TestCaseEvent event) {
 			}
 		});

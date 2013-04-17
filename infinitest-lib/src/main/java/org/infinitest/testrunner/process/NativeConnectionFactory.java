@@ -45,6 +45,7 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 		runnerClass = testRunnerClass;
 	}
 
+	@Override
 	public ProcessConnection getConnection(RuntimeEnvironment environment, OutputStreamHandler outputListener) throws IOException {
 		TcpSocketProcessCommunicator communicator = createCommunicator();
 		Process process = startProcess(communicator.createSocket(), environment);

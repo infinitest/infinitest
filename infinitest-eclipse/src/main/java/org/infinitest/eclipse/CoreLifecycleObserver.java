@@ -48,6 +48,7 @@ public class CoreLifecycleObserver implements CoreLifecycleListener {
 		clearingListener = new ConsoleClearingListener(writer);
 	}
 
+	@Override
 	public void coreCreated(InfinitestCore core) {
 		collector.attachCore(core);
 		core.addTestResultsListener(slowTestObserver);
@@ -56,6 +57,7 @@ public class CoreLifecycleObserver implements CoreLifecycleListener {
 		core.addTestQueueListener(clearingListener);
 	}
 
+	@Override
 	public void coreRemoved(InfinitestCore core) {
 		collector.detachCore(core);
 		core.removeConsoleOutputListener(populatingListener);

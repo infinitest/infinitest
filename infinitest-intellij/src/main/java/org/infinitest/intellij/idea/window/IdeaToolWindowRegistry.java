@@ -42,6 +42,7 @@ public class IdeaToolWindowRegistry implements ToolWindowRegistry {
 		this.project = project;
 	}
 
+	@Override
 	public void registerToolWindow(JPanel panel, String windowId) {
 		panel.setBackground(UIUtil.getTreeTextBackground());
 
@@ -52,6 +53,7 @@ public class IdeaToolWindowRegistry implements ToolWindowRegistry {
 		windowHelper.addPanelToWindow(panel, window);
 	}
 
+	@Override
 	public void unregisterToolWindow(String windowId) {
 		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
 		toolWindowManager.unregisterToolWindow(windowId);

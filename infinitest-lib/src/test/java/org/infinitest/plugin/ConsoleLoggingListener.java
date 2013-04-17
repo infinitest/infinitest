@@ -32,11 +32,13 @@ import java.util.logging.*;
 import org.infinitest.util.*;
 
 public class ConsoleLoggingListener implements LoggingListener {
+	@Override
 	public void logError(String message, Throwable throwable) {
 		System.out.println(message);
 		throwable.printStackTrace();
 	}
 
+	@Override
 	public void logMessage(Level level, String message) {
 		System.out.println(message);
 	}

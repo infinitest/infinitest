@@ -35,6 +35,7 @@ import com.google.common.base.*;
 public abstract class StatusMatchers {
 	public static Matcher<WorkspaceStatus> equalsStatus(final WorkspaceStatus expectedStatus) {
 		return new BaseMatcher<WorkspaceStatus>() {
+			@Override
 			public boolean matches(Object item) {
 				if (Objects.equal(expectedStatus, item)) {
 					return true;
@@ -46,6 +47,7 @@ public abstract class StatusMatchers {
 				return false;
 			}
 
+			@Override
 			public void describeTo(Description description) {
 				if (expectedStatus == null) {
 					description.appendText("null status");

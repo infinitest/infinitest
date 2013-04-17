@@ -40,6 +40,7 @@ public class MarkerClearingObserver implements UpdateListener {
 		this.registry = registry;
 	}
 
+	@Override
 	public void projectsUpdated() {
 		registry.clear();
 	}

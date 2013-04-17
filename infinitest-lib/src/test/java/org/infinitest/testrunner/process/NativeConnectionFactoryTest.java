@@ -83,6 +83,7 @@ public class NativeConnectionFactoryTest {
 			}
 		};
 		OutputStreamHandler outputListener = new OutputStreamHandler() {
+			@Override
 			public void processStream(InputStream stream, OutputType type) {
 				try {
 					errorMsg = InfinitestTestUtils.toString(stream);

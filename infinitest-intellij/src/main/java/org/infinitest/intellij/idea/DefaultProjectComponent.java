@@ -32,20 +32,25 @@ import org.jetbrains.annotations.*;
 import com.intellij.openapi.components.*;
 
 public abstract class DefaultProjectComponent implements ProjectComponent {
+	@Override
 	@NotNull
 	public String getComponentName() {
 		return getClass().getName();
 	}
 
+	@Override
 	public void projectOpened() {
 	}
 
+	@Override
 	public void projectClosed() {
 	}
 
+	@Override
 	public void initComponent() {
 	}
 
+	@Override
 	public void disposeComponent() {
 	}
 }

@@ -63,6 +63,7 @@ public class SwtEventQueueTest {
 	public void shouldExecuteEvents() throws Exception {
 		final ThreadSafeFlag ran = new ThreadSafeFlag();
 		queue.push(new Runnable() {
+			@Override
 			public void run() {
 				ran.trip();
 			}
@@ -74,6 +75,7 @@ public class SwtEventQueueTest {
 	public void shouldThrowExceptionWhenPushIsInterrupted() {
 		currentThread().interrupt();
 		queue.push(new Runnable() {
+			@Override
 			public void run() {
 			}
 		});
@@ -84,6 +86,7 @@ public class SwtEventQueueTest {
 		final Semaphore semaphore = new Semaphore(3);
 		semaphore.acquire(3);
 		Runnable semaphoreReleasingTask = new Runnable() {
+			@Override
 			public void run() {
 				semaphore.release();
 			}
@@ -98,12 +101,14 @@ public class SwtEventQueueTest {
 	public void shouldLogFailingEvents() throws Exception {
 		final ThreadSafeFlag flag = new ThreadSafeFlag();
 		queue.push(new Runnable() {
+			@Override
 			public void run() {
 				failingRunnableExecuted = true;
 				throw new RuntimeException();
 			}
 		});
 		queue.push(new Runnable() {
+			@Override
 			public void run() {
 				flag.trip();
 			}

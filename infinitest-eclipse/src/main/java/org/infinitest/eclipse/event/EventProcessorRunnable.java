@@ -41,6 +41,7 @@ class EventProcessorRunnable extends NamedRunnable {
 		this.event = event;
 	}
 
+	@Override
 	public void run() {
 		try {
 			eclipseEventProcessor.processEvent(event);

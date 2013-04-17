@@ -58,6 +58,7 @@ class ProcessorRunnable implements Runnable {
 		eventSupport.fireQueueEvent(new TestQueueEvent(newArrayList(testQueue), initialSize));
 	}
 
+	@Override
 	public void run() {
 		try {
 			String currentTest = null;

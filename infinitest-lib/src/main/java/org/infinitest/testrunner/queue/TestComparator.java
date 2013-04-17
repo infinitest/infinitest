@@ -38,6 +38,7 @@ public class TestComparator implements Comparator<String> {
 		this.stats = stats;
 	}
 
+	@Override
 	public int compare(String test1, String test2) {
 		return new Long(stats.getLastFailureTime(test2)).compareTo(stats.getLastFailureTime(test1));
 	}

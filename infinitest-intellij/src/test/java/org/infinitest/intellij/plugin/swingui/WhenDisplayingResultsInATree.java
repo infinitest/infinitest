@@ -125,18 +125,22 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 		assertEquals(nodeIndex, model.getIndexOfChild(parent, model.getChild(parent, nodeIndex)));
 	}
 
+	@Override
 	public void treeNodesChanged(TreeModelEvent e) {
 		throw new UnsupportedOperationException("should never be called");
 	}
 
+	@Override
 	public void treeNodesInserted(TreeModelEvent e) {
 		throw new UnsupportedOperationException("should never be called");
 	}
 
+	@Override
 	public void treeNodesRemoved(TreeModelEvent e) {
 		throw new UnsupportedOperationException("should never be called");
 	}
 
+	@Override
 	public void treeStructureChanged(TreeModelEvent e) {
 		treeEvents.add(e);
 	}

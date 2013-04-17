@@ -102,9 +102,11 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		statusChangeListeners.remove(listener);
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		TestCaseFailures failureSet = getCurrentFailuresForTestCase(event);
 		for (TestEvent each : event.getFailureEvents()) {
@@ -194,6 +196,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		return status;
 	}
 
+	@Override
 	public void testsDisabled(Collection<String> testNames) {
 		for (String eachTest : testNames) {
 			TestCaseEvent event = resultMap.remove(eachTest);
@@ -211,6 +214,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		queueAggregator.removeTestQueueListener(listener);
 	}
 
+	@Override
 	public void testRunComplete() {
 		if (hasFailures()) {
 			setStatus(FAILING);
@@ -220,12 +224,14 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		log("Update complete. Status " + getStatus());
 	}
 
+	@Override
 	public void testQueueUpdated(TestQueueEvent event) {
 		if (!event.getTestQueue().isEmpty()) {
 			setStatus(RUNNING);
 		}
 	}
 
+	@Override
 	public void reloading() {
 		List<TestEvent> failuresRemoved = newArrayList(getFailures());
 		clear();

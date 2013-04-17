@@ -58,6 +58,7 @@ public class WhenReloadingConfiguration {
 			this.secondLauncher = secondLauncher;
 		}
 
+		@Override
 		public InfinitestLauncher createLauncher() {
 			if (!launched) {
 				launched = true;
@@ -66,6 +67,7 @@ public class WhenReloadingConfiguration {
 			return secondLauncher;
 		}
 
+		@Override
 		public void registerListener(InfinitestConfigurationListener listener) {
 			this.listener = listener;
 		}

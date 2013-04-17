@@ -30,6 +30,7 @@ package org.infinitest.changedetect;
 import java.io.*;
 
 class ClassFileFilter implements FileFilter {
+	@Override
 	public boolean accept(File pathname) {
 		return isClassFile(pathname) || pathname.isDirectory();
 	}

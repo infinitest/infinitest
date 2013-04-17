@@ -67,18 +67,22 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 		this(5000);
 	}
 
+	@Override
 	public void testCaseStarting(TestEvent event) {
 		testEvents.add(event);
 	}
 
+	@Override
 	public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
 		propertyEvents.add(new PropertyChangeEvent(this, "doesn't matter", oldStatus, newStatus));
 	}
 
+	@Override
 	public void testRunComplete() {
 		runComplete.trip();
 	}
 
+	@Override
 	public void testQueueUpdated(TestQueueEvent event) {
 		synchronized (queueEvents) {
 			queueEvents.add(event);
@@ -86,6 +90,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 		}
 	}
 
+	@Override
 	public void reloading() {
 		reload.trip();
 		reloadCount++;
@@ -185,6 +190,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 		runComplete = new ThreadSafeFlag(timeout);
 	}
 
+	@Override
 	public void testCaseComplete(TestCaseEvent event) {
 		for (TestEvent each : event.getFailureEvents()) {
 			testEvents.add(each);

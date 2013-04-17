@@ -79,8 +79,10 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		onWait();
 	}
 
+	@Override
 	public void coreStatusChanged(CoreStatus oldStatus, final CoreStatus newStatus) {
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				updateView(newStatus);
 			}
@@ -88,6 +90,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		new SwingEventQueue().pushAndWait(runnable);
 	}
 
+	@Override
 	public void testQueueUpdated(TestQueueEvent event) {
 		view.setMaximumProgress(event.getInitialSize());
 		view.setProgress(1 + event.getTestsRun());
@@ -149,14 +152,17 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		view.setStatusMessage(getMessage(resultCollector.getStatus()));
 	}
 
+	@Override
 	public void reloading() {
 		// nothing to do here
 	}
 
+	@Override
 	public void testRunComplete() {
 		onComplete();
 	}
 
+	@Override
 	public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {
 		for (TestEvent added : failuresAdded) {
 			annotator.annotate(added);
@@ -166,6 +172,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		}
 	}
 
+	@Override
 	public void failuresUpdated(Collection<TestEvent> updatedFailures) {
 		for (TestEvent updated : updatedFailures) {
 			annotator.clearAnnotation(updated);

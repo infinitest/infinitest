@@ -45,11 +45,13 @@ public class IdeaSourceNavigator implements SourceNavigator {
 		this.project = project;
 	}
 
+	@Override
 	public SourceNavigator open(String className) {
 		this.className = className;
 		return this;
 	}
 
+	@Override
 	public void line(int line) {
 		VirtualFile source = fileForClass();
 		if (source != null) {

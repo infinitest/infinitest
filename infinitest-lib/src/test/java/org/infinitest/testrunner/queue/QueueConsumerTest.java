@@ -160,6 +160,7 @@ public class QueueConsumerTest {
 	private class ProcessorThatHangsUntilCleaned implements QueueProcessor {
 		private boolean cleaned;
 
+		@Override
 		public synchronized void cleanup() {
 			cleaned = true;
 			try {
@@ -173,6 +174,7 @@ public class QueueConsumerTest {
 			}
 		}
 
+		@Override
 		public void close() {
 			try {
 				if (Thread.interrupted()) {
@@ -183,6 +185,7 @@ public class QueueConsumerTest {
 			}
 		}
 
+		@Override
 		public void process(String test) throws InterruptedException {
 			if (Thread.interrupted()) {
 				events.put("Interrupted");
@@ -198,6 +201,7 @@ public class QueueConsumerTest {
 	}
 
 	private class FakeQueueProcessor implements QueueProcessor {
+		@Override
 		public void process(String test) throws InterruptedException {
 			events.put("Starting " + test);
 			if (processSemaphore != null) {
@@ -209,6 +213,7 @@ public class QueueConsumerTest {
 			}
 		}
 
+		@Override
 		public void close() {
 			try {
 				events.put("Closed");
@@ -217,6 +222,7 @@ public class QueueConsumerTest {
 			}
 		}
 
+		@Override
 		public void cleanup() {
 			try {
 				events.put("Cleaned");

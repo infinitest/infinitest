@@ -34,6 +34,7 @@ import org.infinitest.*;
 public class GreenHookListener implements StatusChangeListener {
 	private GreenHook hook = new NullGreenHook();
 
+	@Override
 	public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
 		if (PASSING.equals(newStatus)) {
 			hook.execute();

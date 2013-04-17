@@ -79,6 +79,7 @@ public abstract class QueueConsumer {
 			this.runnable = runnable;
 		}
 
+		@Override
 		public void run() {
 			try {
 				if (testsAreRunning()) {

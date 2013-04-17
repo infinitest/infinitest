@@ -39,26 +39,32 @@ public class UnparsableClass implements JavaClass {
 		this.classname = classname;
 	}
 
+	@Override
 	public File getClassFile() {
 		return null;
 	}
 
+	@Override
 	public Collection<String> getImports() {
 		return emptyList();
 	}
 
+	@Override
 	public String getName() {
 		return classname;
 	}
 
+	@Override
 	public boolean isATest() {
 		return false;
 	}
 
+	@Override
 	public boolean locatedInClassFile() {
 		return false;
 	}
 
+	@Override
 	public void dispose() {
 	}
 

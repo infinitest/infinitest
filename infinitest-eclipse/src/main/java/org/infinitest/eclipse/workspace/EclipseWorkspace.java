@@ -67,6 +67,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 		}
 	}
 
+	@Override
 	public void updateProjects() throws CoreException {
 		if (projectSet.hasErrors()) {
 			setStatus(workspaceErrors());
