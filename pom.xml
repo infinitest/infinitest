@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.infinitest</groupId>
 	<artifactId>infinitest-parent</artifactId>
@@ -65,12 +66,12 @@
 			<name>David Gageot</name>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git://github.com/infinitest/infinitest.git</connection>
 		<developerConnection>scm:git@github.com:infinitest/infinitest.git</developerConnection>
 	</scm>
-	
+
 	<issueManagement>
 		<system>Lighthouse</system>
 		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
@@ -123,6 +124,10 @@
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.1</version>
 				</plugin>
+				<plugin>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -166,6 +171,23 @@
 					</excludes>
 					<argLine>${stop.stealing.focus}</argLine>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-versions-compatibility</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireUpperBoundDep/>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
