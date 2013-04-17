@@ -27,8 +27,8 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
+import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
 import java.io.*;
@@ -36,14 +36,19 @@ import java.util.*;
 
 import jdave.test.*;
 
+import org.fest.assertions.*;
 import org.infinitest.util.*;
 import org.junit.*;
+import org.junit.rules.*;
 
 import com.google.common.base.*;
 
 public class TestEventTest extends EqualityTestSupport {
 	private TestEvent event;
 	private Throwable error;
+
+	@Rule
+	public TestName testName = new TestName();
 
 	@Before
 	public void inContext() {
@@ -81,11 +86,6 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldPointOfFailure() {
-		verifyPointOfFailureMessage(getLineNumber());
-	}
-
-	@Test
 	public void shouldFilterJunitElementsFromPointOfFailure() {
 		try {
 			fail();
@@ -93,6 +93,17 @@ public class TestEventTest extends EqualityTestSupport {
 			error = e;
 			event = eventWithError(e);
 			verifyPointOfFailureMessage(e.getStackTrace()[2].getLineNumber());
+		}
+	}
+
+	@Test
+	public void shouldSupportFestAssertAssertions() {
+		try {
+			Assertions.assertThat(true).isFalse();
+		} catch (ComparisonFailure e) {
+			error = e;
+			event = eventWithError(e);
+			verifyPointOfFailureMessage(e.getStackTrace()[12].getLineNumber());
 		}
 	}
 
@@ -146,8 +157,8 @@ public class TestEventTest extends EqualityTestSupport {
 		return unequals;
 	}
 
-	private static TestEvent eventWithError(Throwable error) {
-		return new TestEvent(METHOD_FAILURE, error.getMessage(), "", "", error);
+	private TestEvent eventWithError(Throwable error) {
+		return new TestEvent(METHOD_FAILURE, error.getMessage(), TestEventTest.class.getName(), testName.getMethodName(), error);
 	}
 
 	@SuppressWarnings("serial")

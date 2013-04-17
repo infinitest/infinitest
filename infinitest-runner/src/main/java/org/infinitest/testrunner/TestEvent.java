@@ -60,7 +60,7 @@ public class TestEvent implements Serializable {
 		state = eventType;
 
 		if (error != null) {
-			populateAttributesToEnsureSerializability(message, error);
+			populateAttributesToEnsureSerializability(error);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class TestEvent implements Serializable {
 		return new TestEvent(TEST_CASE_STARTING, "Test Starting", testClass, "", null);
 	}
 
-	private void populateAttributesToEnsureSerializability(String errorMessage, Throwable error) {
+	private void populateAttributesToEnsureSerializability(Throwable error) {
 		isAssertionFailure = isTestFailure(error);
 		stackTrace = error.getStackTrace();
 		simpleErrorClassName = error.getClass().getSimpleName();
@@ -125,15 +125,12 @@ public class TestEvent implements Serializable {
 	}
 
 	private StackTraceElement getPointOfFailureElement() {
-		int i = 0;
-		while (isTestClass(stackTrace[i].getClassName())) {
-			i++;
+		for (StackTraceElement element : stackTrace) {
+			if (element.getMethodName().equals(method) && element.getClassName().equals(name)) {
+				return element;
+			}
 		}
-		return stackTrace[i];
-	}
-
-	private boolean isTestClass(String className) {
-		return className.startsWith("org.junit") || className.startsWith("junit.framework") || className.startsWith("jdave");
+		return stackTrace[0];
 	}
 
 	public PointOfFailure getPointOfFailure() {
