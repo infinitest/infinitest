@@ -22,7 +22,6 @@
 package org.infinitest.testrunner;
 
 import static com.fakeco.fakeproduct.TestFakeProduct.*;
-import static junit.framework.Assert.*;
 import static org.junit.Assume.*;
 
 import java.io.*;
