@@ -39,8 +39,8 @@ public class FakeJavaClass extends AbstractJavaClass {
 	}
 
 	@Override
-	public Collection<String> getImports() {
-		return Collections.emptyList();
+	public Set<String> getImports() {
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -50,10 +50,6 @@ public class FakeJavaClass extends AbstractJavaClass {
 
 	@Override
 	public boolean isATest() {
-		throw new UnsupportedOperationException();
-	}
-
-	public URL getURL() {
 		throw new UnsupportedOperationException();
 	}
 

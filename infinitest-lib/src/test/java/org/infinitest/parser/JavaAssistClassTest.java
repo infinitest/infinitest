@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import javassist.*;
-
 import javax.swing.*;
 
 import org.junit.*;
@@ -69,13 +68,6 @@ public class JavaAssistClassTest {
 	@Test
 	public void shouldReturnClassNameInToString() {
 		assertEquals(FakeProduct.class.getName(), getClass(FakeProduct.class).toString());
-	}
-
-	@Test(expected = DisposedClassException.class)
-	public void shouldRemoveAllImportsWhenDisposed() {
-		JavaAssistClass clazz = getClass(FakeProduct.class);
-		clazz.dispose();
-		clazz.getImports();
 	}
 
 	@Test
@@ -117,7 +109,7 @@ public class JavaAssistClassTest {
 	@Test
 	public void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
 		CtClass fakeClass = classPool.makeClass("FakeClass");
-		CtClass[] params = { classPool.get(Integer.class.getName()) };
+		CtClass[] params = {classPool.get(Integer.class.getName())};
 		fakeClass.addConstructor(new CtConstructor(params, fakeClass));
 		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
 	}

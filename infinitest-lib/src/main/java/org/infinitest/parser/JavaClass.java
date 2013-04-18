@@ -37,12 +37,7 @@ public interface JavaClass {
 	 * Gets the collection on classes that this class depends on. i.e. the list
 	 * of this classes children.
 	 */
-	Collection<String> getImports();
-
-	/**
-	 * Clean up any unnecessary references to save memory
-	 */
-	void dispose();
+	Set<String> getImports();
 
 	boolean isATest();
 

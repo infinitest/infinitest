@@ -27,7 +27,6 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.*;
 import static javassist.Modifier.*;
 import static javassist.bytecode.AnnotationsAttribute.*;
 import static org.infinitest.parser.DescriptorParser.*;
@@ -44,12 +43,14 @@ import org.junit.Test;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
+import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet.*;
 
 public class JavaAssistClass extends AbstractJavaClass {
+	private final Set<String> imports;
+	private final boolean isATest;
 	private final String className;
 	private File classFile;
-	private final Boolean isATest;
-	private Collection<String> imports;
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
@@ -58,42 +59,39 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	@Override
-	public Collection<String> getImports() {
-		if (imports == null) {
-			throw new DisposedClassException(getName());
-		}
+	public Set<String> getImports() {
 		return imports;
 	}
 
-	@Override
-	public void dispose() {
-		imports = null;
-	}
-
-	private Collection<String> findImports(CtClass ctClass) {
-		Set<String> imports = newHashSet();
+	private Set<String> findImports(CtClass ctClass) {
+		Set<String> imports = Sets.newHashSet();
 		addDependenciesFromConstantPool(ctClass, imports);
 		addFieldDependencies(ctClass, imports);
 		addClassAnnotationDependencies(ctClass, imports);
 		addFieldAnnotationDependencies(ctClass, imports);
 		addMethodAnnotationDependencies(ctClass, imports);
-		return imports;
+
+		Builder<String> builder = ImmutableSet.builder();
+		for (String anImport : imports) {
+			builder.add(anImport.intern()); // Use less memory
+		}
+		return builder.build();
 	}
 
-	private void addFieldAnnotationDependencies(CtClass ctClass, Set<String> imports) {
+	private void addFieldAnnotationDependencies(CtClass ctClass, Collection<String> imports) {
 		for (CtField field : ctClass.getDeclaredFields()) {
 			List<?> attributes = field.getFieldInfo2().getAttributes();
 			addAnnotationsForAttributes(imports, attributes);
 		}
 	}
 
-	private void addFieldDependencies(CtClass ctClass, Set<String> imports) {
+	private void addFieldDependencies(CtClass ctClass, Collection<String> imports) {
 		for (CtField field : ctClass.getDeclaredFields()) {
 			imports.add(parseClassNameFromConstantPoolDescriptor(field.getFieldInfo2().getDescriptor()));
 		}
 	}
 
-	private void addMethodAnnotationDependencies(CtClass ctClass, Set<String> imports) {
+	private void addMethodAnnotationDependencies(CtClass ctClass, Collection<String> imports) {
 		for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
 			MethodInfo methodInfo = ctMethod.getMethodInfo2();
 			List<?> attributes = methodInfo.getAttributes();
@@ -103,7 +101,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		}
 	}
 
-	private void addAnnotationsForAttributes(Set<String> imports, List<?> attributes) {
+	private void addAnnotationsForAttributes(Collection<String> imports, List<?> attributes) {
 		for (Object each : attributes) {
 			if (each instanceof AnnotationsAttribute) {
 				addAnnotations(imports, (AnnotationsAttribute) each);
@@ -111,7 +109,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		}
 	}
 
-	private void addParameterAnnotationsFor(Set<String> imports, MethodInfo methodInfo, String tag) {
+	private void addParameterAnnotationsFor(Collection<String> imports, MethodInfo methodInfo, String tag) {
 		AttributeInfo attribute = methodInfo.getAttribute(tag);
 		ParameterAnnotationsAttribute annotationAttribute = (ParameterAnnotationsAttribute) attribute;
 		if (annotationAttribute != null) {
@@ -124,12 +122,12 @@ public class JavaAssistClass extends AbstractJavaClass {
 		}
 	}
 
-	private void addClassAnnotationDependencies(CtClass classReference, Set<String> imports) {
+	private void addClassAnnotationDependencies(CtClass classReference, Collection<String> imports) {
 		addClassAnnotationsOfTagType(classReference, imports, visibleTag);
 		addClassAnnotationsOfTagType(classReference, imports, invisibleTag);
 	}
 
-	private void addClassAnnotationsOfTagType(CtClass classRef, Set<String> imports, String tag) {
+	private void addClassAnnotationsOfTagType(CtClass classRef, Collection<String> imports, String tag) {
 		addAnnotations(imports, getAnnotationsOfType(tag, classRef));
 	}
 
@@ -137,7 +135,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return (AnnotationsAttribute) classRef.getClassFile2().getAttribute(tag);
 	}
 
-	private void addAnnotations(Set<String> imports, AnnotationsAttribute annotations) {
+	private void addAnnotations(Collection<String> imports, AnnotationsAttribute annotations) {
 		if (annotations != null) {
 			for (Annotation each : annotations.getAnnotations()) {
 				imports.add(each.getTypeName());
@@ -145,7 +143,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		}
 	}
 
-	private void addDependenciesFromConstantPool(CtClass ctClass, Set<String> imports) {
+	private void addDependenciesFromConstantPool(CtClass ctClass, Collection<String> imports) {
 		ConstPool constPool = ctClass.getClassFile2().getConstPool();
 		Set<?> classNames = constPool.getClassNames();
 		for (Object each : classNames) {
@@ -181,10 +179,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private boolean isValidConstructor(CtClass classReference, CtConstructor ctConstructor) {
-		if (usesCustomRunner(classReference)) {
-			return true;
-		}
-		return hasJUnitCompatibleConstructor(ctConstructor);
+		return usesCustomRunner(classReference) || hasJUnitCompatibleConstructor(ctConstructor);
 	}
 
 	private boolean hasJUnitCompatibleConstructor(CtConstructor ctConstructor) {
@@ -219,8 +214,8 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean isAJUnitTest(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
-				|| hasTestNGTestMethods(classReference) //
-				|| usesCustomRunner(classReference);
+			|| hasTestNGTestMethods(classReference) //
+			|| usesCustomRunner(classReference);
 	}
 
 	private boolean usesCustomRunner(CtClass classReference) {

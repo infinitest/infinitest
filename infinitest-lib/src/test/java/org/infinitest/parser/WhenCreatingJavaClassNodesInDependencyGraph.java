@@ -79,7 +79,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 		JavaClass javaClass = builder.createClass("foo.bar.com");
 		assertThat(javaClass, instanceOf(UnparsableClass.class));
 		assertEquals("foo.bar.com", javaClass.getName());
-		assertEquals(emptyList(), javaClass.getImports());
+		assertEquals(emptySet(), javaClass.getImports());
 	}
 
 	@Test
@@ -132,14 +132,5 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	public void shouldFindDependenciesInSamePackage() {
 		JavaClass javaClass = builder.createClass(FakeTree.class.getName());
 		assertThat(javaClass.getImports(), hasItem(FakeDependency.class.getName()));
-	}
-
-	public static void main(String[] args) throws Exception {
-		ClassPool pool = ClassPool.getDefault();
-		String classname = "org.fakeco.FoobarParent";
-		CtClass parentClass = pool.makeClass(classname);
-		parentClass.addConstructor(CtNewConstructor.defaultConstructor(parentClass));
-		parentClass.writeFile();
-		Runtime.getRuntime().exec("jar c org > binLib/foobarParent.jar").waitFor();
 	}
 }

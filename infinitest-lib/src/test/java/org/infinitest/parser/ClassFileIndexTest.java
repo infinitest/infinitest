@@ -28,14 +28,15 @@
 package org.infinitest.parser;
 
 import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.*;
 
 import org.infinitest.changedetect.*;
@@ -73,17 +74,6 @@ public class ClassFileIndexTest {
 
 		assertSame(secondClass, index.findJavaClass("FakeProduct"));
 		verify(builder, times(2)).clear();
-	}
-
-	@Test
-	public void shouldDisposeOfJavaClassesAfterAddingToIndex() {
-		JavaClass mockClass = mock(JavaClass.class);
-		when(mockClass.locatedInClassFile()).thenReturn(true);
-		when(builder.createClass("FakeClass")).thenReturn(mockClass);
-
-		index.findJavaClass("FakeClass");
-
-		verify(mockClass).dispose();
 	}
 
 	@Test

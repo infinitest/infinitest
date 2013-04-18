@@ -89,7 +89,6 @@ public class ClassFileIndex {
 	private void addToIndex(JavaClass newClass) {
 		addToGraph(newClass);
 		updateParentReferences(newClass);
-		newClass.dispose();
 	}
 
 	private void addToGraph(JavaClass newClass) {

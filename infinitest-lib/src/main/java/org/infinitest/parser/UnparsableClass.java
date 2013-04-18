@@ -27,8 +27,6 @@
  */
 package org.infinitest.parser;
 
-import static java.util.Collections.*;
-
 import java.io.*;
 import java.util.*;
 
@@ -45,8 +43,8 @@ public class UnparsableClass implements JavaClass {
 	}
 
 	@Override
-	public Collection<String> getImports() {
-		return emptyList();
+	public Set<String> getImports() {
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -63,9 +61,4 @@ public class UnparsableClass implements JavaClass {
 	public boolean locatedInClassFile() {
 		return false;
 	}
-
-	@Override
-	public void dispose() {
-	}
-
 }

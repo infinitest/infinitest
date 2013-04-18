@@ -39,9 +39,14 @@ import javassist.*;
 
 import org.infinitest.*;
 
+import com.beust.jcommander.internal.*;
+import com.google.common.hash.*;
+
 public class JavaAssistClassParser implements ClassParser {
-	private ClassPool classPool;
+	private final static Map<String, JavaAssistClass> classesByHash = Maps.newHashMap();
+
 	private final String classpath;
+	private ClassPool classPool;
 
 	public JavaAssistClassParser(String classpath) {
 		this.classpath = classpath;
@@ -85,16 +90,24 @@ public class JavaAssistClassParser implements ClassParser {
 
 	@Override
 	public JavaClass getClass(String className) {
-		CtClass cachedClass = getCachedClass(className);
-		if (unparsableClass(cachedClass)) {
+		CtClass ctClass = getCachedClass(className);
+		if (unparsableClass(ctClass)) {
 			return new UnparsableClass(className);
 		}
-		JavaAssistClass javaClass = new JavaAssistClass(cachedClass);
-		URL url = getClassPool().find(className);
-		if ((url != null) && url.getProtocol().equals("file")) {
-			javaClass.setClassFile(new File(url.getFile()));
+
+		String hash = hash(ctClass);
+		JavaAssistClass clazz = classesByHash.get(hash);
+		if (clazz == null) {
+			clazz = new JavaAssistClass(ctClass);
+			URL url = getClassPool().find(className);
+			if ((url != null) && url.getProtocol().equals("file")) {
+				clazz.setClassFile(new File(url.getFile()));
+			}
+
+			classesByHash.put(hash, clazz);
 		}
-		return javaClass;
+
+		return clazz;
 	}
 
 	private boolean unparsableClass(CtClass cachedClass) {
@@ -109,16 +122,39 @@ public class JavaAssistClassParser implements ClassParser {
 		}
 	}
 
+	private String hash(CtClass ctClass) {
+		try {
+			String hash = Hashing.sha256().hashBytes(ctClass.toBytecode()).toString();
+			ctClass.defrost();
+			return hash;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (CannotCompileException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	@Override
 	public JavaClass parse(File file) throws IOException {
-		FileInputStream inputStream = new FileInputStream(file);
+		FileInputStream inputStream = null;
 		try {
+			inputStream = new FileInputStream(file);
 			CtClass ctClass = getClassPool().makeClass(inputStream);
-			JavaAssistClass clazz = new JavaAssistClass(ctClass);
-			clazz.setClassFile(file);
+
+			String hash = hash(ctClass);
+			JavaAssistClass clazz = classesByHash.get(hash);
+			if (clazz == null) {
+				clazz = new JavaAssistClass(ctClass);
+				clazz.setClassFile(file);
+
+				classesByHash.put(hash, clazz);
+			}
+
 			return clazz;
 		} finally {
-			inputStream.close();
+			if (inputStream != null) {
+				inputStream.close();
+			}
 		}
 	}
 
