@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.infinitest</groupId>
@@ -12,6 +13,25 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
@@ -22,12 +42,6 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.infinitest</groupId>
-			<artifactId>infinitest-test-helpers</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-jdk1.5</artifactId>
 			<version>0.7.3</version>
@@ -36,12 +50,6 @@
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.17.1-GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>${hamcrest.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>

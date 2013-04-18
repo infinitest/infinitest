@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
 import java.util.concurrent.*;
 
 import org.infinitest.*;
-import org.infinitest.util.*;
+import org.infinitest.eclipse.util.*;
 import org.junit.*;
 
 public class SwtEventQueueTest {
