@@ -36,14 +36,11 @@ import com.intellij.ui.content.*;
 
 public class IdeaWindowHelper {
 	public static final String WAITING_ICON_PATH = "/infinitest-waiting.png";
-
 	public static final String RUNNING_ICON_PATH = "/infinitest.png";
-
 	public static final String SUCCESS_ICON_PATH = "/infinitest-success.png";
-
 	public static final String FAILURE_ICON_PATH = "/infinitest-failure.png";
 
-	@SuppressWarnings({ "deprecation" })
+	@SuppressWarnings("deprecation")
 	public void addPanelToWindow(JPanel rootPanel, ToolWindow window) {
 		ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
 		Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
