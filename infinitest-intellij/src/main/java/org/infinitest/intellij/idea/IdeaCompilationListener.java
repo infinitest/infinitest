@@ -68,14 +68,16 @@ public class IdeaCompilationListener implements CompilationStatusListener, TestC
 	}
 
 	private void doRunTests() {
+		if (!shouldRunTests) {
+			return;
+		}
+
 		RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
 		if (runtimeEnvironment == null) {
 			return;
 		}
 
 		core.setRuntimeEnvironment(runtimeEnvironment);
-		if (shouldRunTests) {
-			core.update();
-		}
+		core.update();
 	}
 }
