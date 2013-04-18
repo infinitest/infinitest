@@ -76,16 +76,8 @@ public class InfinitestBuilder {
 		return presenter;
 	}
 
-	public void addStatusListener(StatusChangeListener listener) {
-		resultCollector.addStatusChangeListener(listener);
-	}
-
 	public void addResultClickListener(ResultClickListener listener) {
 		view.addResultClickListener(listener);
-	}
-
-	public void removeStatusListener(StatusChangeListener listener) {
-		resultCollector.removeStatusChangeListener(listener);
 	}
 
 	public void addPresenterListener(PresenterListener listener) {

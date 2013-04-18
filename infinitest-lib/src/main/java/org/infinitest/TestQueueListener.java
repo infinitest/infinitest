@@ -42,5 +42,4 @@ public interface TestQueueListener extends ReloadListener {
 	 * queued and run.
 	 */
 	void testRunComplete();
-
 }

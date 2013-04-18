@@ -56,23 +56,6 @@ public class TestCustomProgressBar {
 	}
 
 	@Test
-	public void shouldDisplayCurrentlyRunningTest() {
-		Dimension size = new Dimension(250, 30);
-		progressBar.setSize(size);
-		DebugImage img = new DebugImage(progressBar.getSize(), Color.WHITE);
-		progressBar.paint(img.getGraphics());
-		Rectangle textBoundsForPercentComplete = new Rectangle(19, 8, 5, 3);
-		assertNotNull(img.getDrawingBounds(Color.BLACK));
-
-		progressBar.setCurrentTest("com.foo.TestMyClass");
-		img.clear();
-		progressBar.paint(img.getGraphics());
-		Rectangle textBoundsForNewText = new Rectangle(textBoundsForPercentComplete);
-		textBoundsForNewText.setSize(126, 8);
-		assertNotNull(img.getDrawingBounds(Color.BLACK));
-	}
-
-	@Test
 	public void shouldUseACustomPainter() {
 		progressBar.setValue(40);
 		Dimension size = new Dimension(1000, 30);
@@ -111,7 +94,7 @@ public class TestCustomProgressBar {
 
 	@Test
 	public void shouldReplaceAllVariablesInCurrentStatusMessages() {
-		CoreStatus[] statuses = new CoreStatus[] { SCANNING, INDEXING, RUNNING, PASSING, FAILING };
+		CoreStatus[] statuses = new CoreStatus[]{SCANNING, INDEXING, RUNNING, PASSING, FAILING};
 		for (CoreStatus status : statuses) {
 			progressBar.setStatusMessage(getMessage(status));
 			assertThat(progressBar.getStatusMessage(), not(containsString("$")));

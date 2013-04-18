@@ -98,10 +98,6 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		statusChangeListeners.add(listener);
 	}
 
-	public void removeStatusChangeListener(StatusChangeListener listener) {
-		statusChangeListeners.remove(listener);
-	}
-
 	@Override
 	public void testCaseStarting(TestEvent event) {
 	}

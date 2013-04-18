@@ -69,12 +69,4 @@ public class InnerClassFriendlyTestEvent {
 	public String getErrorClassName() {
 		return event.getErrorClassName();
 	}
-
-	public String getTestName() {
-		return event.getTestName();
-	}
-
-	public String getTestMethod() {
-		return event.getTestMethod();
-	}
 }

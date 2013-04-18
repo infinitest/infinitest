@@ -40,5 +40,4 @@ public class TestRunAborted extends RuntimeException {
 	public String getTestName() {
 		return testName;
 	}
-
 }
