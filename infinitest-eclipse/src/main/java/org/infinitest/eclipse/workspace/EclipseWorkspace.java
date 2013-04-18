@@ -62,9 +62,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 
 	@Autowired
 	public void addStatusListeners(WorkspaceStatusListener... listeners) {
-		for (WorkspaceStatusListener each : listeners) {
-			statusListeners.add(each);
-		}
+		Collections.addAll(statusListeners, listeners);
 	}
 
 	@Override
@@ -95,12 +93,12 @@ class EclipseWorkspace implements WorkspaceFacade {
 		int totalTests = 0;
 		for (ProjectFacade project : projectSet.projects()) {
 			setStatus(findingTests(totalTests));
-			totalTests += updateProject(projectSet, project);
+			totalTests += updateProject(project);
 		}
 		return totalTests;
 	}
 
-	private int updateProject(ProjectSet projectSet, ProjectFacade project) throws CoreException {
+	private int updateProject(ProjectFacade project) throws CoreException {
 		RuntimeEnvironment environment = buildRuntimeEnvironment(project);
 		InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
 		if (core == null) {
@@ -122,7 +120,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 	}
 
 	private InfinitestCore createCore(ProjectFacade project, RuntimeEnvironment environment) {
-		InfinitestCore core = coreFactory.createCore(project.getLocationURI(), project.getName(), environment);
+		InfinitestCore core = coreFactory.createCore(project.getName(), environment);
 		coreRegistry.addCore(project.getLocationURI(), core);
 		log("Added core " + core.getName() + " with classpath " + environment.getCompleteClasspath());
 		return core;

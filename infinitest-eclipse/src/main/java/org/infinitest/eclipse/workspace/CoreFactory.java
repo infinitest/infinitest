@@ -41,16 +41,15 @@ class CoreFactory implements CoreSettings {
 	@Autowired
 	public CoreFactory(EventQueue eventQueue) {
 		this.eventQueue = eventQueue;
-		concurrencyController = new MultiCoreConcurrencyController();
+		this.concurrencyController = new MultiCoreConcurrencyController();
 	}
 
-	public InfinitestCore createCore(URI projectUri, String projectName, RuntimeEnvironment environment) {
-		InfinitestCore core;
+	public InfinitestCore createCore(String projectName, RuntimeEnvironment environment) {
 		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(environment, eventQueue);
 		coreBuilder.setUpdateSemaphore(concurrencyController);
 		coreBuilder.setName(projectName);
-		core = coreBuilder.createCore();
-		return core;
+
+		return coreBuilder.createCore();
 	}
 
 	@Override

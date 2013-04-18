@@ -158,7 +158,7 @@ class EventNormalizer {
 	}
 
 	private Integer proxyHashCode(Object proxy) {
-		return new Integer(identityHashCode(proxy));
+		return identityHashCode(proxy);
 	}
 
 	private Boolean proxyEquals(Object proxy, Object other) {
