@@ -31,6 +31,7 @@ import static com.google.common.collect.Lists.*;
 
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
@@ -103,11 +104,16 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 	}
 
 	protected void fireTreeStructureChanged() {
-		int[] childIndices = new int[0];
-		Object[] children = new Object[0];
-		for (TreeModelListener listener : listeners) {
-			listener.treeStructureChanged(new TreeModelEvent(this, new TreePath(getRoot()), childIndices, children));
-		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				int[] childIndices = new int[0];
+				Object[] children = new Object[0];
+				for (TreeModelListener listener : listeners) {
+					listener.treeStructureChanged(new TreeModelEvent(this, new TreePath(getRoot()), childIndices, children));
+				}
+			}
+		});
 	}
 
 	@Override
