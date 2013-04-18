@@ -51,8 +51,6 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 	private EventSupport eventSupport;
 	private AbstractTestRunner runner;
 	public boolean outputPrinted;
-	protected boolean runComplete;
-	protected int timesAcquired;
 
 	@Before
 	public void inContext() {
@@ -141,57 +139,6 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
 
 		verify(controller).acquire();
 		verify(controller).release();
-	}
-
-	// FIXME This is a horrible, horrible test...and guess what? It fails
-	// inconsistently!
-	@Test
-	@Ignore
-	public void shouldRestartRunnerProcessWhenNewTestsAreAddedToTheQueue() throws Exception {
-		final List<String> testsToRun = newArrayList(FAILING_TEST.getName());
-
-		// By listening for the start of the test, we can interrupt the test run
-		// in a predictable manner
-		runner.addTestResultsListener(new TestResultsListener() {
-			@Override
-			public void testCaseStarting(TestEvent event) {
-				if (!testsToRun.isEmpty()) {
-					// Push a new test into the queue just as the current one is
-					// starting. This
-					// should interrupt the current test runner thread (which
-					// just so happens to be
-					// the thread we're on).
-					runner.runTests(testsToRun);
-
-					// Avoids an infinite loop. Also verifies we made it this
-					// far
-					testsToRun.clear();
-					try {
-						// Wait for this thread to be interrupted by the test
-						// runner. If we've
-						// already been interrupted before we get here,
-						// this will throw an exception immediately.
-						Thread.sleep(0);
-					} catch (InterruptedException e) {
-						// The ProcessorRunnable treats this like
-						// InterruptedException,
-						// except that it's unchecked, so it will clean up
-						// properly
-						throw new QueueDispatchException(e);
-					}
-				}
-			}
-
-			@Override
-			public void testCaseComplete(TestCaseEvent event) {
-			}
-		});
-		runTests(PASSING_TEST);
-
-		eventSupport.assertTestsStarted(PASSING_TEST, FAILING_TEST);
-		eventSupport.assertTestRun(PASSING_TEST);
-		eventSupport.assertTestRun(FAILING_TEST);
-		assertTrue(testsToRun.isEmpty());
 	}
 
 	@Test
