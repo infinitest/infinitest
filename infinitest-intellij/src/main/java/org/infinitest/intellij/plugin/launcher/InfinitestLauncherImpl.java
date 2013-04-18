@@ -27,8 +27,6 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import static org.infinitest.intellij.idea.window.InfinitestToolWindow.*;
-
 import java.awt.*;
 
 import javax.swing.*;
@@ -117,7 +115,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	}
 
 	private String toolWindowId() {
-		return TOOL_WINDOW_ID + "_" + moduleSettings.getName();
+		return moduleSettings.getName();
 	}
 
 	private InfinitestBuilder createInfinitestBuilder() {

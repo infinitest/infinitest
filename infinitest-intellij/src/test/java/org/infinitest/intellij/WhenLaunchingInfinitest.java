@@ -27,7 +27,7 @@
  */
 package org.infinitest.intellij;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import javax.swing.*;
@@ -56,6 +56,6 @@ public class WhenLaunchingInfinitest {
 		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
 		launcher.launchInfinitest();
 
-		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("Infinitest_foo"));
+		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("foo"));
 	}
 }
