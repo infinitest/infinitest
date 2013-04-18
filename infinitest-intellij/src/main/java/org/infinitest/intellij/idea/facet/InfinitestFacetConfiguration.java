@@ -45,8 +45,6 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 	private static final String SCM_UPDATE_GREEN_HOOK = "scmUpdateGreenHook";
 
 	private boolean scmUpdateGreenHook;
-	private String licenseKey;
-
 	private Module module;
 	private InfinitestConfigurationListener listener;
 
@@ -59,7 +57,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 
 	@Override
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
-		return new FacetEditorTab[] { new InfinitestFacetEditorTab(this) };
+		return new FacetEditorTab[]{new InfinitestFacetEditorTab(this)};
 	}
 
 	@Override
@@ -69,26 +67,14 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 			if (scmUpdateAttribute != null) {
 				scmUpdateGreenHook = scmUpdateAttribute.getBooleanValue();
 			}
-
-			Element licenseElement = element.getChild("license");
-			if (licenseElement != null) {
-				licenseKey = licenseElement.getValue();
-			}
 		} catch (DataConversionException e) {
 			throw new InvalidDataException(e);
 		}
 	}
 
 	@Override
-	public void writeExternal(Element configElement) throws WriteExternalException {
+	public void writeExternal(Element configElement) {
 		configElement.setAttribute(SCM_UPDATE_GREEN_HOOK, Boolean.toString(scmUpdateGreenHook));
-
-		Element licenseElement = configElement.getChild("license");
-		if (licenseElement == null) {
-			licenseElement = new Element("license");
-			configElement.addContent(licenseElement);
-		}
-		licenseElement.setText(licenseKey);
 	}
 
 	public boolean isScmUpdateEnabled() {
