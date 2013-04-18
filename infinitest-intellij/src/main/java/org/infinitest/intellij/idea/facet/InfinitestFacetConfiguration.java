@@ -28,7 +28,6 @@
 package org.infinitest.intellij.idea.facet;
 
 import org.infinitest.intellij.idea.*;
-import org.infinitest.intellij.idea.greenhook.*;
 import org.infinitest.intellij.idea.window.*;
 import org.infinitest.intellij.plugin.*;
 import org.infinitest.intellij.plugin.launcher.*;
@@ -38,13 +37,10 @@ import com.intellij.facet.*;
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.module.*;
-import com.intellij.openapi.util.*;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.wm.*;
 
 public class InfinitestFacetConfiguration implements FacetConfiguration, InfinitestConfiguration {
-	private static final String SCM_UPDATE_GREEN_HOOK = "scmUpdateGreenHook";
-
-	private boolean scmUpdateGreenHook;
 	private Module module;
 	private InfinitestConfigurationListener listener;
 
@@ -61,39 +57,25 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 	}
 
 	@Override
-	public void readExternal(Element element) throws InvalidDataException {
-		try {
-			Attribute scmUpdateAttribute = element.getAttribute(SCM_UPDATE_GREEN_HOOK);
-			if (scmUpdateAttribute != null) {
-				scmUpdateGreenHook = scmUpdateAttribute.getBooleanValue();
-			}
-		} catch (DataConversionException e) {
-			throw new InvalidDataException(e);
-		}
+	public void readExternal(Element config) {
 	}
 
 	@Override
-	public void writeExternal(Element configElement) {
-		configElement.setAttribute(SCM_UPDATE_GREEN_HOOK, Boolean.toString(scmUpdateGreenHook));
-	}
-
-	public boolean isScmUpdateEnabled() {
-		return scmUpdateGreenHook;
-	}
-
-	public void setScmUpdateEnabled(boolean scmUpdateGreenHook) {
-		this.scmUpdateGreenHook = scmUpdateGreenHook;
+	public void writeExternal(Element config) {
 	}
 
 	@Override
 	public InfinitestLauncher createLauncher() {
-		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(new IdeaModuleSettings(module), new IdeaToolWindowRegistry(module.getProject()), new IdeaCompilationNotifier(module.getProject()), new IdeaSourceNavigator(module.getProject()), FileEditorManager.getInstance(module.getProject()), ToolWindowManager.getInstance(module.getProject()));
+		Project project = module.getProject();
 
-		if (isScmUpdateEnabled()) {
-			launcher.addGreenHook(new ScmUpdater(module.getProject()));
-		}
+		IdeaModuleSettings moduleSettings = new IdeaModuleSettings(module);
+		IdeaToolWindowRegistry toolWindowRegistry = new IdeaToolWindowRegistry(project);
+		IdeaCompilationNotifier compilationNotifier = new IdeaCompilationNotifier(project);
+		IdeaSourceNavigator navigator = new IdeaSourceNavigator(project);
+		FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
 
-		return launcher;
+		return new InfinitestLauncherImpl(moduleSettings, toolWindowRegistry, compilationNotifier, navigator, fileEditorManager, toolWindowManager);
 	}
 
 	@Override

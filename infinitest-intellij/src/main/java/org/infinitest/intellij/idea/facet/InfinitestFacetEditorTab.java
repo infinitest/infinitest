@@ -40,7 +40,6 @@ public class InfinitestFacetEditorTab extends FacetEditorTab {
 
 	public InfinitestFacetEditorTab(InfinitestFacetConfiguration configuration) {
 		this.configuration = configuration;
-		configurationPane.setScmUpdateEnabled(configuration.isScmUpdateEnabled());
 	}
 
 	@Override
@@ -56,26 +55,20 @@ public class InfinitestFacetEditorTab extends FacetEditorTab {
 
 	@Override
 	public boolean isModified() {
-		return configuration.isScmUpdateEnabled() != configurationPane.isScmUpdateEnabled();
+		return false;
 	}
 
 	@Override
 	public void apply() {
-		configuration.setScmUpdateEnabled(configurationPane.isScmUpdateEnabled());
 		configuration.updated();
 	}
 
 	@Override
 	public void reset() {
-		configurationPane.setScmUpdateEnabled(configuration.isScmUpdateEnabled());
 	}
 
 	@Override
 	public void disposeUIResources() {
 		// nothing to do here
-	}
-
-	public void setScmUpdateEnabled(boolean scmUpdateEnabled) {
-		configurationPane.setScmUpdateEnabled(scmUpdateEnabled);
 	}
 }

@@ -16,9 +16,6 @@
             <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory
             </implementation-class>
         </component>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.greenhook.ScmUpdater</implementation-class>
-        </component>
     </project-components>
     <module-components>
         <component>

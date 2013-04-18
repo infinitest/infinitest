@@ -36,7 +36,6 @@ import org.infinitest.*;
 import org.infinitest.intellij.*;
 import org.infinitest.intellij.idea.*;
 import org.infinitest.intellij.plugin.*;
-import org.infinitest.intellij.plugin.greenhook.*;
 import org.infinitest.intellij.plugin.swingui.*;
 import org.infinitest.util.*;
 
@@ -50,7 +49,6 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	private final SourceNavigator navigator;
 	private final InfinitestBuilder infinitestBuilder;
 	private IdeaCompilationListener testControl;
-	private final GreenHookListener greenHookListener;
 	private final FileEditorListener fileEditorListener;
 	private final ToolWindowListener toolWindowListener;
 
@@ -59,7 +57,6 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		this.toolWindowRegistry = toolWindowRegistry;
 		this.compilationNotifier = compilationNotifier;
 		this.navigator = navigator;
-		greenHookListener = new GreenHookListener();
 		infinitestBuilder = createInfinitestBuilder();
 		fileEditorListener = new FileEditorListener(fileEditorManager);
 		toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
@@ -73,7 +70,6 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		initializeInfinitestLogging();
 		registerInfinitestWindow();
 		addCompilationStatusListener();
-		addScmGreenHookListener();
 		addResultClickListener();
 		addFileEditorListener();
 		addToolWindowListener();
@@ -83,20 +79,12 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		infinitestBuilder.addResultClickListener(new ResultClickListener(navigator));
 	}
 
-	public void addGreenHook(GreenHook hook) {
-		greenHookListener.add(hook);
-	}
-
 	private void initializeInfinitestLogging() {
 		InfinitestUtils.addLoggingListener(new InfinitestLoggingListener(infinitestBuilder.getView()));
 	}
 
 	private void addCompilationStatusListener() {
 		compilationNotifier.addCompilationStatusListener(testControl);
-	}
-
-	private void addScmGreenHookListener() {
-		infinitestBuilder.addStatusListener(greenHookListener);
 	}
 
 	private void registerInfinitestWindow() {
@@ -110,7 +98,6 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	@Override
 	public void stop() {
 		toolWindowRegistry.unregisterToolWindow(toolWindowId());
-		infinitestBuilder.removeStatusListener(greenHookListener);
 		compilationNotifier.removeCompilationStatusListener(testControl);
 	}
 

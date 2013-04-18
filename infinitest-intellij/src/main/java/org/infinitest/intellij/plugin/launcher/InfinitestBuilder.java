@@ -28,7 +28,6 @@
 package org.infinitest.intellij.plugin.launcher;
 
 import java.awt.*;
-import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -37,15 +36,15 @@ import org.infinitest.intellij.idea.language.*;
 import org.infinitest.intellij.plugin.swingui.*;
 
 public class InfinitestBuilder {
-	private ResultCollector resultCollector;
+	private final InfinitestCore core;
+	private final ResultCollector resultCollector;
 	private InfinitestPresenter presenter;
 	private InfinitestView view;
-	private final InfinitestCore core;
 	private TestControl testControl;
 
 	public InfinitestBuilder(InfinitestCore core) {
 		this.core = core;
-		resultCollector = new ResultCollector(core);
+		this.resultCollector = new ResultCollector(core);
 	}
 
 	public JPanel createPluginComponent(TestControl testControl) {
@@ -75,26 +74,6 @@ public class InfinitestBuilder {
 			presenter = new InfinitestPresenter(resultCollector, core, getView(), testControl, IdeaInfinitestAnnotator.getInstance());
 		}
 		return presenter;
-	}
-
-	public void startApp() {
-		createPresenter();
-		view.setVisible(true);
-		createStatusTimer();
-	}
-
-	private void createStatusTimer() {
-		javax.swing.Timer statusTimer = new javax.swing.Timer(999, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				createPresenter().updateStatus();
-			}
-		});
-		statusTimer.start();
-	}
-
-	public void setResultCollector(ResultCollector resultCollector) {
-		this.resultCollector = resultCollector;
 	}
 
 	public void addStatusListener(StatusChangeListener listener) {

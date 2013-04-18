@@ -88,17 +88,6 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 	}
 
 	@Test
-	public void shouldFireTreeStructureChangedWhenNewEventIsAdded() {
-		model.addTreeModelListener(this);
-		testRun(eventWithError(new AssertionFailedError()));
-		assertEquals(2, treeEvents.size());
-
-		model.removeTreeModelListener(this);
-		testRun(eventWithError(new AssertionFailedError()));
-		assertEquals(2, treeEvents.size());
-	}
-
-	@Test
 	public void shouldProvideIndexOfNodes() {
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
 		assertNodeReferenceIntegrity(model.getRoot(), 0);
