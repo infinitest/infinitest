@@ -39,7 +39,7 @@ import javassist.*;
 
 import org.infinitest.*;
 
-import com.beust.jcommander.internal.*;
+import com.google.common.collect.*;
 import com.google.common.hash.*;
 
 public class JavaAssistClassParser implements ClassParser {
