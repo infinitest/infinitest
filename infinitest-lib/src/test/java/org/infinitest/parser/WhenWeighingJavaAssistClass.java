@@ -27,21 +27,46 @@
  */
 package org.infinitest.parser;
 
-import java.io.*;
-import java.util.*;
+import static org.fest.assertions.Assertions.*;
+import static org.mockito.Mockito.*;
 
-public interface JavaClass {
-	String getName();
+import org.junit.*;
 
-	/**
-	 * Gets the collection on classes that this class depends on. i.e. the list
-	 * of this classes children.
-	 */
-	String[] getImports();
+import com.google.common.cache.*;
 
-	boolean isATest();
+public class WhenWeighingJavaAssistClass {
+	private final Weigher<String, JavaAssistClass> weighter = new JavaAssistClassWeigher();
 
-	boolean locatedInClassFile();
+	@Test
+	public void class_with_no_import_should_weight_its_key() {
+		JavaAssistClass clazz = classWithImports();
 
-	File getClassFile();
+		int weight = weighter.weigh("KEY", clazz);
+
+		assertThat(weight).isEqualTo("KEY".length()).isEqualTo(3);
+	}
+
+	@Test
+	public void each_import_should_weight_its_length() {
+		JavaAssistClass clazz = classWithImports("import", "otherimport");
+
+		int weight = weighter.weigh("", clazz);
+
+		assertThat(weight).isEqualTo("import".length() + "otherimport".length()).isEqualTo(17);
+	}
+
+	@Test
+	public void sum_up_key_length_and_imports_length() {
+		JavaAssistClass clazz = classWithImports("import");
+
+		int weight = weighter.weigh("OTHER_KEY", clazz);
+
+		assertThat(weight).isEqualTo("OTHER_KEY".length() + "import".length()).isEqualTo(15);
+	}
+
+	static JavaAssistClass classWithImports(String... imports) {
+		JavaAssistClass clazz = mock(JavaAssistClass.class);
+		when(clazz.getImports()).thenReturn(imports);
+		return clazz;
+	}
 }

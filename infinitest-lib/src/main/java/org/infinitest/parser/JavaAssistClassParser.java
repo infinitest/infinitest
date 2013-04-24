@@ -39,11 +39,15 @@ import javassist.*;
 
 import org.infinitest.*;
 
-import com.google.common.collect.*;
+import com.google.common.cache.*;
 import com.google.common.hash.*;
 
 public class JavaAssistClassParser implements ClassParser {
-	private final static Map<String, JavaAssistClass> classesByHash = Maps.newHashMap();
+	private final static Cache<String, JavaAssistClass> classesByHash = CacheBuilder.newBuilder()
+		.concurrencyLevel(1)
+		.maximumWeight(100 * 1024 * 1024L)
+		.weigher(new JavaAssistClassWeigher())
+		.build();
 
 	private final String classpath;
 	private ClassPool classPool;
@@ -96,7 +100,7 @@ public class JavaAssistClassParser implements ClassParser {
 		}
 
 		String hash = hash(ctClass);
-		JavaAssistClass clazz = classesByHash.get(hash);
+		JavaAssistClass clazz = classesByHash.getIfPresent(hash);
 		if (clazz == null) {
 			clazz = new JavaAssistClass(ctClass);
 			URL url = getClassPool().find(className);
@@ -142,7 +146,7 @@ public class JavaAssistClassParser implements ClassParser {
 			CtClass ctClass = getClassPool().makeClass(inputStream);
 
 			String hash = hash(ctClass);
-			JavaAssistClass clazz = classesByHash.get(hash);
+			JavaAssistClass clazz = classesByHash.getIfPresent(hash);
 			if (clazz == null) {
 				clazz = new JavaAssistClass(ctClass);
 				clazz.setClassFile(file);

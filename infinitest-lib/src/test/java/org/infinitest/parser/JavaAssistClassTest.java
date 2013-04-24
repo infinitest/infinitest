@@ -27,11 +27,9 @@
  */
 package org.infinitest.parser;
 
-import static org.hamcrest.Matchers.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
-
-import java.util.*;
 
 import javassist.*;
 import javax.swing.*;
@@ -60,9 +58,9 @@ public class JavaAssistClassTest {
 
 	@Test
 	public void shouldFindDependenciesInConstantPool() {
-		assertThat(dependenciesOf(FakeProduct.class), hasItem(FakeId.class.getName()));
-		assertThat(dependenciesOf(ANewClass.class), hasItem(FakeProduct.class.getName()));
-		assertThat(dependenciesOf(ANewClass.class), hasItem(Integer.class.getName()));
+		assertThat(dependenciesOf(FakeProduct.class)).contains(FakeId.class.getName());
+		assertThat(dependenciesOf(ANewClass.class)).contains(FakeProduct.class.getName());
+		assertThat(dependenciesOf(ANewClass.class)).contains(Integer.class.getName());
 	}
 
 	@Test
@@ -72,38 +70,38 @@ public class JavaAssistClassTest {
 
 	@Test
 	public void shouldDependOnParentClass() {
-		assertThat(dependenciesOf(FakeTree.class), hasItem(JTree.class.getName()));
+		assertThat(dependenciesOf(FakeTree.class)).contains(JTree.class.getName());
 	}
 
 	@Test
 	public void shouldFindFieldDependenciesInTheSamePackage() {
-		assertThat(dependenciesOf(FakeTree.class), hasItem(FakeDependency.class.getName()));
+		assertThat(dependenciesOf(FakeTree.class)).contains(FakeDependency.class.getName());
 	}
 
 	@Test
 	public void shouldFindMethodDependenciesInTheSameClass() {
-		assertThat(dependenciesOf(FakeUtils.class), hasItem(Integer.class.getName()));
-		assertThat(dependenciesOf(FakeUtils.class), hasItem(String.class.getName()));
+		assertThat(dependenciesOf(FakeUtils.class)).contains(Integer.class.getName());
+		assertThat(dependenciesOf(FakeUtils.class)).contains(String.class.getName());
 	}
 
 	@Test
 	public void shouldFindDependenciesForClassAnnotations() {
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(ClassAnnotation.class.getName()));
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(InvisibleClassAnnotation.class.getName()));
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(ClassAnnotation.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(InvisibleClassAnnotation.class.getName());
 	}
 
 	@Test
 	public void shouldFindDependenciesForFieldAnnotations() {
-		assertThat(dependenciesOf(FakeProduct.class), hasItem(FieldAnnotation.class.getName()));
+		assertThat(dependenciesOf(FakeProduct.class)).contains(FieldAnnotation.class.getName());
 	}
 
 	@Test
 	public void shouldFindDependenciesForMethodAnnotations() {
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(Test.class.getName()));
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(Ignore.class.getName()));
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(MethodAnnotation.class.getName()));
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(ParameterAnnotation.class.getName()));
-		assertThat(dependenciesOf(AnnotatedClass.class), hasItem(InvisibleParameterAnnotation.class.getName()));
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(Test.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(Ignore.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(MethodAnnotation.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(ParameterAnnotation.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(InvisibleParameterAnnotation.class.getName());
 	}
 
 	@Test
@@ -114,7 +112,7 @@ public class JavaAssistClassTest {
 		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
 	}
 
-	private Collection<String> dependenciesOf(Class<?> dependingClass) {
+	private String[] dependenciesOf(Class<?> dependingClass) {
 		return getClass(dependingClass).getImports();
 	}
 

@@ -27,21 +27,17 @@
  */
 package org.infinitest.parser;
 
-import java.io.*;
-import java.util.*;
+import com.google.common.cache.*;
 
-public interface JavaClass {
-	String getName();
+class JavaAssistClassWeigher implements Weigher<String, JavaAssistClass> {
+	@Override
+	public int weigh(String key, JavaAssistClass clazz) {
+		int weight = key.length();
 
-	/**
-	 * Gets the collection on classes that this class depends on. i.e. the list
-	 * of this classes children.
-	 */
-	String[] getImports();
+		for (String anImport : clazz.getImports()) {
+			weight += anImport.length();
+		}
 
-	boolean isATest();
-
-	boolean locatedInClassFile();
-
-	File getClassFile();
+		return weight;
+	}
 }

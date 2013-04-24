@@ -30,6 +30,7 @@ package org.infinitest.parser;
 import static java.io.File.*;
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
@@ -77,9 +78,10 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	@Test
 	public void shouldReturnUnparsableClassIfClassCannotBeFound() {
 		JavaClass javaClass = builder.createClass("foo.bar.com");
-		assertThat(javaClass, instanceOf(UnparsableClass.class));
-		assertEquals("foo.bar.com", javaClass.getName());
-		assertEquals(emptySet(), javaClass.getImports());
+
+		assertThat(javaClass).isInstanceOf(UnparsableClass.class);
+		assertThat(javaClass.getName()).isEqualTo("foo.bar.com");
+		assertThat(javaClass.getImports()).isEmpty();
 	}
 
 	@Test
@@ -89,7 +91,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 
 		builder = new JavaClassBuilder(parser);
 
-		assertThat(builder.createClass("MyClassName"), instanceOf(UnparsableClass.class));
+		Assert.assertThat(builder.createClass("MyClassName"), instanceOf(UnparsableClass.class));
 	}
 
 	@Test
@@ -111,7 +113,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	public void shouldAlsoLookForClassesInClassDirectories() throws Exception {
 		newDir = new File("tempClassDir");
 		List<File> buildPaths = asList(newDir);
-		ClasspathProvider classpath = new StandaloneClasspath(Collections.<File> emptyList(), buildPaths, FakeEnvironments.systemClasspath() + pathSeparator + newDir.getAbsolutePath());
+		ClasspathProvider classpath = new StandaloneClasspath(Collections.<File>emptyList(), buildPaths, FakeEnvironments.systemClasspath() + pathSeparator + newDir.getAbsolutePath());
 
 		String classname = "org.fakeco.Foobar2";
 		createClass(classname);
@@ -131,6 +133,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	@Test
 	public void shouldFindDependenciesInSamePackage() {
 		JavaClass javaClass = builder.createClass(FakeTree.class.getName());
-		assertThat(javaClass.getImports(), hasItem(FakeDependency.class.getName()));
+
+		assertThat(javaClass.getImports()).contains(FakeDependency.class.getName());
 	}
 }

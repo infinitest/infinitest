@@ -28,10 +28,10 @@
 package org.infinitest.parser;
 
 import java.io.*;
-import java.net.*;
-import java.util.*;
 
 public class FakeJavaClass extends AbstractJavaClass {
+	private static final String[] NO_IMPORT = new String[0];
+
 	private final String name;
 
 	public FakeJavaClass(String name) {
@@ -39,8 +39,8 @@ public class FakeJavaClass extends AbstractJavaClass {
 	}
 
 	@Override
-	public Set<String> getImports() {
-		return Collections.emptySet();
+	public String[] getImports() {
+		return NO_IMPORT;
 	}
 
 	@Override

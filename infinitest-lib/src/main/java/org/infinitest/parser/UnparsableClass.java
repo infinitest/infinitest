@@ -28,9 +28,10 @@
 package org.infinitest.parser;
 
 import java.io.*;
-import java.util.*;
 
 public class UnparsableClass implements JavaClass {
+	private static final String[] NO_IMPORT = new String[0];
+
 	private final String classname;
 
 	public UnparsableClass(String classname) {
@@ -43,8 +44,8 @@ public class UnparsableClass implements JavaClass {
 	}
 
 	@Override
-	public Set<String> getImports() {
-		return Collections.emptySet();
+	public String[] getImports() {
+		return NO_IMPORT;
 	}
 
 	@Override

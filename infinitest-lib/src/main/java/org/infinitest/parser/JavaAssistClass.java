@@ -42,12 +42,16 @@ import junit.framework.*;
 import org.junit.Test;
 import org.junit.runner.*;
 
+import com.google.common.annotations.*;
 import com.google.common.base.*;
 import com.google.common.collect.*;
-import com.google.common.collect.ImmutableSet.*;
 
+/**
+ * Be careful: instances of this class are kept in a cache
+ * so we should keep its footprint minimal.
+ */
 public class JavaAssistClass extends AbstractJavaClass {
-	private final Set<String> imports;
+	private final String[] imports;
 	private final boolean isATest;
 	private final String className;
 	private File classFile;
@@ -59,11 +63,11 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	@Override
-	public Set<String> getImports() {
+	public String[] getImports() {
 		return imports;
 	}
 
-	private Set<String> findImports(CtClass ctClass) {
+	private String[] findImports(CtClass ctClass) {
 		Set<String> imports = Sets.newHashSet();
 		addDependenciesFromConstantPool(ctClass, imports);
 		addFieldDependencies(ctClass, imports);
@@ -71,11 +75,13 @@ public class JavaAssistClass extends AbstractJavaClass {
 		addFieldAnnotationDependencies(ctClass, imports);
 		addMethodAnnotationDependencies(ctClass, imports);
 
-		Builder<String> builder = ImmutableSet.builder();
+		String[] array = new String[imports.size()];
+
+		int index = 0;
 		for (String anImport : imports) {
-			builder.add(anImport.intern()); // Use less memory
+			array[index++] = anImport.intern(); // Use less memory
 		}
-		return builder.build();
+		return array;
 	}
 
 	private void addFieldAnnotationDependencies(CtClass ctClass, Collection<String> imports) {

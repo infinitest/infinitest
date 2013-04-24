@@ -27,11 +27,11 @@
  */
 package org.infinitest.parser;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 
 import java.io.*;
-import java.util.*;
 
 import org.infinitest.*;
 import org.junit.*;
@@ -71,17 +71,19 @@ public class WhenParsingClassFiles {
 	public void shouldAddImportsFromAnnotations() {
 		JavaClass clazz = parseClass(AnnotatedClass.class);
 		assertEquals(AnnotatedClass.class.getName(), clazz.getName());
-		Collection<String> imports = clazz.getImports();
-		assertTrue(imports.contains(MethodAnnotation.class.getName()));
-		assertTrue(imports.contains(ParameterAnnotation.class.getName()));
-		assertTrue(imports.contains(ClassAnnotation.class.getName()));
+
+		String[] imports = clazz.getImports();
+
+		assertThat(imports).contains(MethodAnnotation.class.getName(), ParameterAnnotation.class.getName(), ClassAnnotation.class.getName());
 	}
 
 	@Test
 	public void shouldDetectFieldAnnotations() {
 		JavaClass javaClass = parseClass(FakeProduct.class);
-		Collection<String> imports = javaClass.getImports();
-		assertTrue(imports.contains(FieldAnnotation.class.getName()));
+
+		String[] imports = javaClass.getImports();
+
+		assertThat(imports).contains(FieldAnnotation.class.getName());
 	}
 
 	@Test
