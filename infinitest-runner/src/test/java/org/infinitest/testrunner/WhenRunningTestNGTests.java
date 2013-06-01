@@ -49,6 +49,8 @@ public class WhenRunningTestNGTests {
 		config = new TestNGConfiguration();
 		runner.setTestNGConfiguration(config);
 		TestWithTestNGGroups.fail = true;
+		TestWithTestNGClassAnnotationOnly.fail = true;
+		TestWithTestNGMixedLevelAnnotations.fail = true;
 		TestWithTestNGGroups.dependencyFail = true;
 		wasCalled = false;
 	}
@@ -56,6 +58,8 @@ public class WhenRunningTestNGTests {
 	@After
 	public void cleanup() {
 		TestWithTestNGGroups.fail = false;
+        TestWithTestNGClassAnnotationOnly.fail = false;
+        TestWithTestNGMixedLevelAnnotations.fail = false;
 		TestWithTestNGGroups.dependencyFail = false;
 		runner.setTestNGConfiguration(null);
 	}
@@ -149,6 +153,34 @@ public class WhenRunningTestNGTests {
 		assertFalse(TestWithTestNGGroupsAndSetup.setupWasCalled);
 		assertEquals(1, size(results));
 	}
+
+    @Test
+    public void should_run_tests_with_class_level_test_annotation_only() {
+        TestResults results = runner.runTest(TestWithTestNGClassAnnotationOnly.class.getName());
+
+        assertEquals(1, size(results));
+        //distinguish AssertionError (on tests failure) and Exception (thrown on initialization error)
+        TestEvent collectedEvent = results.iterator().next();
+        assertEquals(AssertionError.class.getName(), collectedEvent.getFullErrorClassName());
+    }
+
+    @Test
+   	public void should_execute_only_group_defined_in_class_level_test_annotation() {
+   		config.setGroups("manual");
+
+   		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
+
+   		assertEquals(2, size(results));
+   	}
+
+    @Test
+   	public void should_execute_only_group_overridden_by_method_level_test_annotation() {
+   		config.setGroups("slow");
+
+   		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
+
+   		assertEquals(1, size(results));
+   	}
 
 	private class MyJUnitXMLReporter extends JUnitXMLReporter {
 		@Override

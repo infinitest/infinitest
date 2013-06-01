@@ -28,7 +28,6 @@
 package org.infinitest.parser;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 
 import javassist.*;
@@ -40,20 +39,11 @@ import com.fakeco.fakeproduct.*;
 import com.fakeco.fakeproduct.id.*;
 
 public class JavaAssistClassTest {
-	private ClassPool classPool;
+	private ClassPoolForFakeClassesTestUtil classPoolUtil;
 
 	@Before
 	public void inContext() throws NotFoundException {
-		classPool = new ClassPool();
-		// If you get a NotFoundException here, you may need to make a copy of
-		// your jgrapht jar file
-		// that lives in a lib subdirectory. Not sure why a scalafied project
-		// doesn't parse the
-		// .classpath file correctly, but somewhere betweeen there and eclipse
-		// that path
-		// gets messed up.
-		classPool.appendPathList(fakeClasspath().getCompleteClasspath());
-		classPool.appendSystemPath();
+		classPoolUtil = new ClassPoolForFakeClassesTestUtil();
 	}
 
 	@Test
@@ -65,7 +55,7 @@ public class JavaAssistClassTest {
 
 	@Test
 	public void shouldReturnClassNameInToString() {
-		assertEquals(FakeProduct.class.getName(), getClass(FakeProduct.class).toString());
+		assertEquals(FakeProduct.class.getName(), classPoolUtil.getClass(FakeProduct.class).toString());
 	}
 
 	@Test
@@ -106,6 +96,7 @@ public class JavaAssistClassTest {
 
 	@Test
 	public void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
+		ClassPool classPool = classPoolUtil.getClassPool();
 		CtClass fakeClass = classPool.makeClass("FakeClass");
 		CtClass[] params = {classPool.get(Integer.class.getName())};
 		fakeClass.addConstructor(new CtConstructor(params, fakeClass));
@@ -113,14 +104,6 @@ public class JavaAssistClassTest {
 	}
 
 	private String[] dependenciesOf(Class<?> dependingClass) {
-		return getClass(dependingClass).getImports();
-	}
-
-	private JavaAssistClass getClass(Class<?> dependingClass) {
-		try {
-			return new JavaAssistClass(classPool.get(dependingClass.getName()));
-		} catch (NotFoundException e) {
-			throw new RuntimeException(e);
-		}
+		return classPoolUtil.dependenciesOf(dependingClass);
 	}
 }

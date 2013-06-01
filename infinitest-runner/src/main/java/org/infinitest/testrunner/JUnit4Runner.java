@@ -134,11 +134,21 @@ public class JUnit4Runner implements NativeRunner {
 	}
 
 	private boolean isTestNGTest(Class<?> clazz) {
+		if (containsTestNGTestAnnotation(clazz.getAnnotations())) {
+			return true;
+		}
 		for (Method method : clazz.getMethods()) {
-			for (Annotation annotation : method.getAnnotations()) {
-				if (annotation.annotationType() == org.testng.annotations.Test.class) {
-					return true;
-				}
+			if (containsTestNGTestAnnotation(method.getAnnotations())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsTestNGTestAnnotation(Annotation[] annotations) {
+		for (Annotation annotation : annotations) {
+			if (annotation.annotationType() == org.testng.annotations.Test.class) {
+				return true;
 			}
 		}
 		return false;
