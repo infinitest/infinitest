@@ -42,7 +42,6 @@ import junit.framework.*;
 import org.junit.Test;
 import org.junit.runner.*;
 
-import com.google.common.annotations.*;
 import com.google.common.base.*;
 import com.google.common.collect.*;
 
@@ -58,7 +57,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) && isAJUnitTest(classReference) && canInstantiate(classReference);
+		isATest = !isAbstract(classReference) && hasTests(classReference) && canInstantiate(classReference);
 		className = classReference.getName();
 	}
 
@@ -218,10 +217,10 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return getName();
 	}
 
-	private boolean isAJUnitTest(CtClass classReference) {
+	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
-			|| hasTestNGTestMethods(classReference) //
-			|| usesCustomRunner(classReference);
+			|| usesCustomRunner(classReference) //
+			|| hasTestNGTests(classReference);
 	}
 
 	private boolean usesCustomRunner(CtClass classReference) {
@@ -229,10 +228,14 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private boolean isAnnotatedWithCustomRunner(CtClass classReference) {
+		return isAnnotatedWithGivenAnnotation(classReference, RunWith.class);
+	}
+
+	private boolean isAnnotatedWithGivenAnnotation(CtClass classReference, Class<?> givenAnnotation) {
 		AnnotationsAttribute annotations = getAnnotationsOfType(visibleTag, classReference);
 		if (annotations != null) {
 			for (Annotation annotation : annotations.getAnnotations()) {
-				if (annotation.getTypeName().equals(RunWith.class.getName())) {
+				if (annotation.getTypeName().equals(givenAnnotation.getName())) {
 					return true;
 				}
 			}
@@ -249,13 +252,20 @@ public class JavaAssistClass extends AbstractJavaClass {
 		};
 	}
 
-	private boolean hasTestNGTestMethods(CtClass classReference) {
+	private boolean hasTestNGTests(CtClass classReference) {
+		if (isTestNGTestClass(classReference)) {
+			return true;
+		}
 		for (CtMethod ctMethod : classReference.getMethods()) {
 			if (isTestNGTestMethod(ctMethod)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean isTestNGTestClass(CtClass classReference) {
+		return isAnnotatedWithGivenAnnotation(classReference, org.testng.annotations.Test.class);
 	}
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
