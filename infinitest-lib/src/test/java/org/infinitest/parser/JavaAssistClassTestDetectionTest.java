@@ -27,20 +27,15 @@
  */
 package org.infinitest.parser;
 
-import static junitparams.JUnitParamsRunner.*;
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.*;
 
 import javassist.*;
-import junitparams.*;
 
 import org.junit.*;
-import org.junit.runner.*;
 
 import com.fakeco.fakeproduct.*;
 
-@RunWith(JUnitParamsRunner.class)
 public class JavaAssistClassTestDetectionTest {
-
 	private ClassPoolForFakeClassesTestUtil classPoolUtil;
 
 	@Before
@@ -49,27 +44,20 @@ public class JavaAssistClassTestDetectionTest {
 	}
 
 	@Test
-	@Parameters
-	public void shouldDetectTestsInClass(Class clazz) {
-		assertTrue(classPoolUtil.getClass(clazz).isATest());
+	public void shouldDetectTestsInClass() {
+		assertThat(classPoolUtil.getClass(TestJunit3TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestThatInherits.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(JUnit3TestThatInherits.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(JUnit4TestThatInherits.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestWithACustomRunner.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(ParameterizedTest.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestNGFakeProductTest.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestNGWithClassLevelOnlyTestAnnotationFakeTest.class).isATest()).isTrue();
 	}
 
 	@Test
 	public void shouldNotDetectTestsInNotTestClass() throws NotFoundException {
-		assertFalse(classPoolUtil.getClass(FakeProduct.class).isATest());
-	}
-
-	private Object[] parametersForShouldDetectTestsInClass() {
-		return $(
-				$(TestJunit3TestCase.class),
-				$(TestJUnit4TestCase.class),
-				$(TestThatInherits.class),
-				$(JUnit3TestThatInherits.class),
-				$(JUnit4TestThatInherits.class),
-				$(TestWithACustomRunner.class),
-				$(ParameterizedTest.class),
-				$(TestNGFakeProductTest.class),
-				$(TestNGWithClassLevelOnlyTestAnnotationFakeTest.class)
-		);
+		assertThat(classPoolUtil.getClass(FakeProduct.class).isATest()).isFalse();
 	}
 }
