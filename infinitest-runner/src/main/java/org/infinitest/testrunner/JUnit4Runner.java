@@ -56,7 +56,7 @@ public class JUnit4Runner implements NativeRunner {
 			TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
 			core.addListener(eventTranslator);
 
-			core.setTestClasses(new Class[] { clazz });
+			core.setTestClasses(new Class[]{clazz});
 			addTestNGSettings(core);
 			core.run();
 
@@ -107,7 +107,7 @@ public class JUnit4Runner implements NativeRunner {
 		}
 
 		private boolean hasWarnings() {
-			for (Enumeration<Test> tests = tests(); tests.hasMoreElements();) {
+			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
 				Test test = tests.nextElement();
 				if (test instanceof TestCase) {
 					TestCase testCase = (TestCase) test;

@@ -27,10 +27,9 @@
  */
 package org.infinitest.parser;
 
-import javassist.ClassPool;
-import javassist.NotFoundException;
+import static org.infinitest.util.FakeEnvironments.*;
 
-import static org.infinitest.util.FakeEnvironments.fakeClasspath;
+import javassist.*;
 
 class ClassPoolForFakeClassesTestUtil {
 

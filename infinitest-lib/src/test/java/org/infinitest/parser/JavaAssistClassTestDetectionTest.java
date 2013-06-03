@@ -27,17 +27,16 @@
  */
 package org.infinitest.parser;
 
-import com.fakeco.fakeproduct.*;
-import javassist.NotFoundException;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static junitparams.JUnitParamsRunner.*;
+import static org.junit.Assert.*;
 
-import static junitparams.JUnitParamsRunner.$;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import javassist.*;
+import junitparams.*;
+
+import org.junit.*;
+import org.junit.runner.*;
+
+import com.fakeco.fakeproduct.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class JavaAssistClassTestDetectionTest {

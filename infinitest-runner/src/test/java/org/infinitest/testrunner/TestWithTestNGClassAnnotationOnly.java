@@ -27,18 +27,18 @@
  */
 package org.infinitest.testrunner;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.*;
+import org.testng.annotations.*;
 
 @Test
 public class TestWithTestNGClassAnnotationOnly {
-    static boolean fail;
+	static boolean fail;
 
-   	public void shouldPass() {
-   		Assert.assertTrue(true);
-   	}
+	public void shouldPass() {
+		Assert.assertTrue(true);
+	}
 
-   	public void shouldFail() {
-   		Assert.assertFalse(fail);
-   	}
+	public void shouldFail() {
+		Assert.assertFalse(fail);
+	}
 }

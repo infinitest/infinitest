@@ -219,8 +219,8 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
-			|| usesCustomRunner(classReference) //
-			|| hasTestNGTests(classReference);
+				|| usesCustomRunner(classReference) //
+				|| hasTestNGTests(classReference);
 	}
 
 	private boolean usesCustomRunner(CtClass classReference) {

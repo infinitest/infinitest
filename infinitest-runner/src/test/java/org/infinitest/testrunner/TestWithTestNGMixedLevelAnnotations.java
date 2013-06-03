@@ -27,23 +27,23 @@
  */
 package org.infinitest.testrunner;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.*;
+import org.testng.annotations.*;
 
 @Test(groups = "manual")
 public class TestWithTestNGMixedLevelAnnotations {
-    static boolean fail;
+	static boolean fail;
 
-   	public void shouldPass() {
-   		Assert.assertTrue(true);
-   	}
+	public void shouldPass() {
+		Assert.assertTrue(true);
+	}
 
-   	public void shouldFail() {
-   		Assert.assertFalse(fail);
-   	}
+	public void shouldFail() {
+		Assert.assertFalse(fail);
+	}
 
-    @Test(groups = "slow")
-   	public void shouldFailSlow() {
-   		Assert.assertFalse(fail);
-   	}
+	@Test(groups = "slow")
+	public void shouldFailSlow() {
+		Assert.assertFalse(fail);
+	}
 }

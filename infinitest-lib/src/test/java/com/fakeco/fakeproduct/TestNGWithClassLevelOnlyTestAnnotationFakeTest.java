@@ -27,12 +27,11 @@
  */
 package com.fakeco.fakeproduct;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.*;
+import org.testng.annotations.*;
 
 @Test
 public class TestNGWithClassLevelOnlyTestAnnotationFakeTest {
-
 	public void shouldPass() {
 		Assert.assertTrue(true);
 	}
