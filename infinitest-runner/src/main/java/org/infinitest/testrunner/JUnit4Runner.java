@@ -29,7 +29,6 @@ package org.infinitest.testrunner;
 
 import static org.junit.runner.Request.*;
 
-import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -40,7 +39,11 @@ import org.junit.runner.*;
 import org.testng.*;
 
 public class JUnit4Runner implements NativeRunner {
-	private TestNGConfiguration config = null;
+	private TestNGConfiguration config;
+
+	public void setTestNGConfiguration(TestNGConfiguration configuration) {
+		config = configuration;
+	}
 
 	@Override
 	public TestResults runTest(String testClass) {
@@ -51,20 +54,35 @@ public class JUnit4Runner implements NativeRunner {
 			throw new MissingClassException(testClass);
 		}
 
-		if (isTestNGTest(clazz)) {
-			TestNG core = new TestNG();
-			TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
-			core.addListener(eventTranslator);
+		return isTestNGTest(clazz) ? runTestNGTest(clazz) : runJUnitTest(clazz);
+	}
 
-			core.setTestClasses(new Class[]{clazz});
-			addTestNGSettings(core);
-			core.run();
+	private TestResults runTestNGTest(Class<?> clazz) {
+		TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
 
-			return eventTranslator.getTestResults();
+		TestNG core = new TestNG();
+		core.addListener(eventTranslator);
+		core.setTestClasses(new Class[]{clazz});
+		if (config == null) {
+			config = new TestNGConfigurator().getConfig();
+		}
+		core.setExcludedGroups(config.getExcludedGroups());
+		core.setGroups(config.getGroups());
+		if (config.getListeners() != null) {
+			for (Object listener : config.getListeners()) {
+				core.addListener(listener);
+			}
 		}
 
-		JUnitCore core = new JUnitCore();
+		core.run();
+
+		return eventTranslator.getTestResults();
+	}
+
+	private TestResults runJUnitTest(Class<?> clazz) {
 		EventTranslator eventTranslator = new EventTranslator();
+
+		JUnitCore core = new JUnitCore();
 		core.addListener(eventTranslator);
 
 		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
@@ -72,31 +90,15 @@ public class JUnit4Runner implements NativeRunner {
 		} else {
 			core.run(classWithoutSuiteMethod(clazz));
 		}
+
 		return eventTranslator.getTestResults();
 	}
 
-	private void addTestNGSettings(TestNG core) {
-		if (config == null) {
-			config = new TestNGConfigurator().getConfig();
-		}
-		core.setExcludedGroups(config.getExcludedGroups());
-		core.setGroups(config.getGroups());
-		setListeners(core);
-	}
-
-	private void setListeners(TestNG core) {
-		if (config.getListeners() != null) {
-			for (Object listener : config.getListeners()) {
-				core.addListener(listener);
-			}
-		}
-	}
-
-	private boolean isJUnit3TestCase(Class<?> clazz) {
+	private static boolean isJUnit3TestCase(Class<?> clazz) {
 		return TestCase.class.isAssignableFrom(clazz);
 	}
 
-	private boolean cannotBeInstantiated(Class<?> clazz) {
+	private static boolean cannotBeInstantiated(Class<?> clazz) {
 		CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
 		return testSuite.hasWarnings();
 	}
@@ -106,7 +108,7 @@ public class JUnit4Runner implements NativeRunner {
 			super(testClass);
 		}
 
-		private boolean hasWarnings() {
+		boolean hasWarnings() {
 			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
 				Test test = tests.nextElement();
 				if (test instanceof TestCase) {
@@ -133,41 +135,28 @@ public class JUnit4Runner implements NativeRunner {
 		}
 	}
 
-	private boolean isTestNGTest(Class<?> clazz) {
-		if (containsTestNGTestAnnotation(clazz.getAnnotations())) {
+	private static boolean isTestNGTest(Class<?> clazz) {
+		if (containsTestNGTestAnnotation(clazz)) {
 			return true;
 		}
 		for (Method method : clazz.getMethods()) {
-			if (containsTestNGTestAnnotation(method.getAnnotations())) {
+			if (containsTestNGTestAnnotation(method)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean containsTestNGTestAnnotation(Annotation[] annotations) {
-		for (Annotation annotation : annotations) {
-			if (annotation.annotationType() == org.testng.annotations.Test.class) {
-				return true;
-			}
-		}
-		return false;
+	private static boolean containsTestNGTestAnnotation(AnnotatedElement annotatedElement) {
+		return annotatedElement.getAnnotation(org.testng.annotations.Test.class) != null;
 	}
 
-	static class TestNGEventTranslator implements ITestListener {
-		private final List<TestEvent> eventsCollected = new ArrayList<TestEvent>();
-
-		@Override
-		public void onTestStart(ITestResult result) {
-		}
-
-		@Override
-		public void onTestSuccess(ITestResult result) {
-		}
+	private static class TestNGEventTranslator implements ITestListener {
+		private final List<TestEvent> events = new ArrayList<TestEvent>();
 
 		@Override
 		public void onTestFailure(ITestResult failure) {
-			eventsCollected.add(createEventFrom(failure));
+			events.add(createEventFrom(failure));
 		}
 
 		private TestEvent createEventFrom(ITestResult failure) {
@@ -175,7 +164,15 @@ public class JUnit4Runner implements NativeRunner {
 		}
 
 		public TestResults getTestResults() {
-			return new TestResults(eventsCollected);
+			return new TestResults(events);
+		}
+
+		@Override
+		public void onTestStart(ITestResult result) {
+		}
+
+		@Override
+		public void onTestSuccess(ITestResult result) {
 		}
 
 		@Override
@@ -193,9 +190,5 @@ public class JUnit4Runner implements NativeRunner {
 		@Override
 		public void onFinish(ITestContext context) {
 		}
-	}
-
-	public void setTestNGConfiguration(TestNGConfiguration configuration) {
-		config = configuration;
 	}
 }
