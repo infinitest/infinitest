@@ -70,14 +70,6 @@ public abstract class DependencyGraphTestBase {
 		findTestsForChangedFiles(classes);
 	}
 
-	protected void addDependency(String parent, String child) throws NotFoundException, CannotCompileException, IOException {
-		ClassPool pool = ClassPool.getDefault();
-		CtClass parentClass = pool.get(parent);
-		CtClass childClass = pool.get(child);
-		parentClass.addField(new CtField(childClass, "dep", parentClass));
-		parentClass.writeFile(FakeEnvironments.fakeClassDirectory().getAbsolutePath());
-	}
-
 	protected void assertClassRecognizedAsTest(Class<?> testClass) {
 		Set<File> fileSet = setify(InfinitestTestUtils.getFileForClass(testClass));
 		Set<JavaClass> testsToRun = getGraph().findTestsToRun(fileSet);
@@ -99,5 +91,4 @@ public abstract class DependencyGraphTestBase {
 	protected void addFilter(String className) {
 		filter.addClass(className);
 	}
-
 }
