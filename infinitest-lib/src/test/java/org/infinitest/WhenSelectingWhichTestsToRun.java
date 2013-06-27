@@ -31,6 +31,7 @@ import static java.util.Arrays.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import java.io.*;
 import java.util.*;
@@ -49,7 +50,7 @@ public class WhenSelectingWhichTestsToRun {
 		String rawClasspath = fakeClasspath().getCompleteClasspath();
 		StandaloneClasspath classpath = new StandaloneClasspath(outputDirs, classDirsInClasspath, rawClasspath);
 
-		ClassFileTestDetector testDetector = new ClassFileTestDetector(new FilterStub());
+		ClassFileTestDetector testDetector = new ClassFileTestDetector(mock(TestFilter.class));
 		testDetector.setClasspathProvider(classpath);
 		File classFileNotInOutputDirectory = getFileForClass(TestFakeProduct.class);
 		assertTrue(testDetector.findTestsToRun(asList(classFileNotInOutputDirectory)).isEmpty());

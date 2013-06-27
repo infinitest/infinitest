@@ -29,6 +29,7 @@ package org.infinitest;
 
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.*;
 import java.util.*;
@@ -38,33 +39,26 @@ import org.infinitest.parser.*;
 import org.junit.*;
 
 public class WhenTheFilterFileChanges {
-	private TestFilter list;
-	private final String CLASS_NAME = "com.foo.Bar";
+  @Test
+  public void shouldUpdateTheFilterList() throws IOException {
+    File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
 
-	@Test
-	public void shouldUpdateTheFilterList() throws Exception {
-		File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
-		list = new RegexFileFilter(file);
-		assertFalse(list.match(CLASS_NAME));
+    TestFilter list = new RegexFileFilter(file);
+    assertFalse(list.match("com.foo.Bar"));
 
-		PrintWriter writer = new PrintWriter(file);
-		writer.println(CLASS_NAME);
-		writer.close();
-		list.updateFilterList();
-		assertTrue(list.match(CLASS_NAME));
-	}
+    new PrintWriter(file).append("com.foo.Bar").close();
+    list.updateFilterList();
+    assertTrue(list.match("com.foo.Bar"));
+  }
 
-	@Test
-	public void shouldRecognizeChangesBeforeLookingForTests() {
-		TestFilter fakeFilterList = new RegexFileFilter() {
-			@Override
-			public void updateFilterList() {
-				addFilter(CLASS_NAME);
-			}
-		};
-		TestDetector detector = new ClassFileTestDetector(fakeFilterList);
-		detector.setClasspathProvider(emptyClasspath());
-		detector.findTestsToRun(Collections.<File> emptySet());
-		assertTrue(fakeFilterList.match(CLASS_NAME));
-	}
+  @Test
+  public void shouldRecognizeChangesBeforeLookingForTests() {
+    TestFilter testFilter = mock(TestFilter.class);
+    TestDetector detector = new ClassFileTestDetector(testFilter);
+
+    detector.setClasspathProvider(emptyClasspath());
+    detector.findTestsToRun(Collections.<File>emptySet());
+
+    verify(testFilter).updateFilterList();
+  }
 }

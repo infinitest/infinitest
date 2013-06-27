@@ -42,53 +42,65 @@ import org.infinitest.util.*;
 import org.junit.*;
 
 public abstract class DependencyGraphTestBase {
-	private ClassFileTestDetector testDetector = null;
-	private FilterStub filter;
+  private final FilterStub filter = new FilterStub();
+  private ClassFileTestDetector testDetector;
 
-	@Before
-	public final void setUp() {
-		filter = new FilterStub();
-		testDetector = new ClassFileTestDetector(filter);
-		testDetector.setClasspathProvider(fakeClasspath());
-		testDetector.findTestsToRun(Collections.<File> emptySet());
-	}
+  @Before
+  public final void setUp() {
+    testDetector = new ClassFileTestDetector(filter);
+    testDetector.setClasspathProvider(fakeClasspath());
+    testDetector.findTestsToRun(Collections.<File>emptySet());
+  }
 
-	@After
-	public final void tearDown() {
-		testDetector = null;
-	}
+  protected Set<JavaClass> findTestsForChangedFiles(Class<?>... classes) {
+    Set<File> fileSet = new HashSet<File>();
+    for (Class<?> clazz : classes) {
+      fileSet.add(getFileForClass(clazz));
+    }
+    return getGraph().findTestsToRun(fileSet);
+  }
 
-	protected Set<JavaClass> findTestsForChangedFiles(Class<?>... classes) {
-		Set<File> fileSet = new HashSet<File>();
-		for (Class<?> clazz : classes) {
-			fileSet.add(getFileForClass(clazz));
-		}
-		return getGraph().findTestsToRun(fileSet);
-	}
+  protected void addToDependencyGraph(Class<?>... classes) {
+    findTestsForChangedFiles(classes);
+  }
 
-	protected void addToDependencyGraph(Class<?>... classes) {
-		findTestsForChangedFiles(classes);
-	}
+  protected void assertClassRecognizedAsTest(Class<?> testClass) {
+    Set<File> fileSet = setify(InfinitestTestUtils.getFileForClass(testClass));
+    Set<JavaClass> testsToRun = getGraph().findTestsToRun(fileSet);
+    assertEquals(testClass.getSimpleName() + " should have been recognized as a test", 1, testsToRun.size());
+    JavaClass testToRun = testsToRun.iterator().next();
+    assertEquals(testClass.getName(), testToRun.getName());
+    assertTrue(testToRun.isATest());
+  }
 
-	protected void assertClassRecognizedAsTest(Class<?> testClass) {
-		Set<File> fileSet = setify(InfinitestTestUtils.getFileForClass(testClass));
-		Set<JavaClass> testsToRun = getGraph().findTestsToRun(fileSet);
-		assertEquals(testClass.getSimpleName() + " should have been recognized as a test", 1, testsToRun.size());
-		JavaClass testToRun = testsToRun.iterator().next();
-		assertEquals(testClass.getName(), testToRun.getName());
-		assertTrue(testToRun.isATest());
-	}
+  protected void verifyDependency(Class<?> changedFile, Class<?> expectedTest) {
+    Set<JavaClass> testsToRun = findTestsForChangedFiles(changedFile);
+    assertTrue("Changing " + changedFile + " did not cause " + expectedTest + " to be run", testsToRun.contains(getGraph().findJavaClass(expectedTest.getName())));
+  }
 
-	protected void verifyDependency(Class<?> changedFile, Class<?> expectedTest) {
-		Set<JavaClass> testsToRun = findTestsForChangedFiles(changedFile);
-		assertTrue("Changing " + changedFile + " did not cause " + expectedTest + " to be run", testsToRun.contains(getGraph().findJavaClass(expectedTest.getName())));
-	}
+  protected ClassFileTestDetector getGraph() {
+    return testDetector;
+  }
 
-	protected ClassFileTestDetector getGraph() {
-		return testDetector;
-	}
+  protected void addFilter(String className) {
+    filter.addClass(className);
+  }
 
-	protected void addFilter(String className) {
-		filter.addClass(className);
-	}
+  static class FilterStub implements TestFilter {
+    private final Set<String> classesToFilter = new HashSet<String>();
+
+    @Override
+    public boolean match(String className) {
+      return classesToFilter.contains(className);
+    }
+
+    @Override
+    public void updateFilterList() {
+      // nothing to do here
+    }
+
+    void addClass(String className) {
+      classesToFilter.add(className);
+    }
+  }
 }

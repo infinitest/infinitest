@@ -29,29 +29,28 @@ package org.infinitest.plugin;
 
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import org.infinitest.*;
 import org.infinitest.filter.*;
 import org.infinitest.parser.*;
 import org.junit.*;
+import org.mockito.*;
 
 public class WhenConfiguringBuilder {
 	protected InfinitestCoreBuilder builder;
-	private EventSupport eventSupport;
 	private TestFilter filterUsedToCreateCore;
 
 	@Before
 	public final void mustProvideRuntimeEnvironmentAndEventQueue() {
 		RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), systemClasspath(), currentJavaHome());
 		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue());
-		builder.setFilter(new InfinitestTestFilter());
 	}
 
 	@Test
 	public void canUseCustomFilterToRemoveTestsFromTestRun() {
-		TestFilter testFilter = new InfinitestTestFilter();
+		TestFilter testFilter = mock(TestFilter.class);
 		builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue()) {
-
 			@Override
 			protected TestDetector createTestDetector(TestFilter testFilter) {
 				filterUsedToCreateCore = testFilter;
@@ -80,19 +79,5 @@ public class WhenConfiguringBuilder {
 	public void shouldSetRuntimeEnvironment() {
 		InfinitestCore core = builder.createCore();
 		assertEquals(fakeEnvironment(), core.getRuntimeEnvironment());
-	}
-
-	protected EventSupport createEventSupport(InfinitestCore core) {
-		EventSupport event = new EventSupport(5000);
-		core.addTestQueueListener(event);
-		core.addTestResultsListener(event);
-		return event;
-	}
-
-	protected void runTests() throws InterruptedException {
-		InfinitestCore core = builder.createCore();
-		eventSupport = createEventSupport(core);
-		core.update();
-		eventSupport.assertRunComplete();
 	}
 }

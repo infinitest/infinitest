@@ -30,51 +30,57 @@ package org.infinitest.plugin;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
+import static org.mockito.AdditionalMatchers.*;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;
+import org.infinitest.filter.*;
 import org.junit.*;
 
 import com.fakeco.fakeproduct.simple.*;
 
 public class WhenRunningTests {
-	private static EventSupport eventHistory;
-	private static ResultCollector collector;
+  private static EventSupport eventHistory;
+  private static ResultCollector collector;
 
-	@BeforeClass
-	public static void inContext() throws InterruptedException {
-		if (eventHistory == null) {
-			InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue());
-			builder.setUpdateSemaphore(mock(ConcurrencyController.class));
-			builder.setFilter(new InfinitestTestFilter());
-			InfinitestCore core = builder.createCore();
-			collector = new ResultCollector(core);
+  @BeforeClass
+  public static void inContext() throws InterruptedException {
+    if (eventHistory == null) {
+      InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue());
+      builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
-			eventHistory = new EventSupport();
-			core.addTestResultsListener(eventHistory);
-			core.addTestQueueListener(eventHistory);
+      TestFilter testFilter = mock(TestFilter.class);
+      when(testFilter.match(not(startsWith("com.fakeco.fakeproduct.simple")))).thenReturn(true);
+      builder.setFilter(testFilter);
 
-			core.update();
-			eventHistory.assertRunComplete();
-		}
-	}
+      InfinitestCore core = builder.createCore();
+      collector = new ResultCollector(core);
 
-	@Test
-	public void canListenForResultEvents() {
-		eventHistory.assertTestFailed(FailingTest.class);
-		eventHistory.assertTestPassed(PassingTest.class);
-	}
+      eventHistory = new EventSupport();
+      core.addTestResultsListener(eventHistory);
+      core.addTestQueueListener(eventHistory);
 
-	// This will frequently hang when something goes horribly wrong in the test
-	// runner
-	@Test(timeout = 5000)
-	public void canListenForChangesToTheTestQueue() throws Exception {
-		eventHistory.assertQueueChanges(3);
-	}
+      core.update();
+      eventHistory.assertRunComplete();
+    }
+  }
 
-	@Test
-	public void canCollectStateUsingAResultCollector() {
-		assertEquals(1, collector.getFailures().size());
-		assertEquals(FAILING, collector.getStatus());
-	}
+  @Test
+  public void canListenForResultEvents() {
+    eventHistory.assertTestFailed(FailingTest.class);
+    eventHistory.assertTestPassed(PassingTest.class);
+  }
+
+  // This will frequently hang when something goes horribly wrong in the test
+  // runner
+  @Test(timeout = 5000)
+  public void canListenForChangesToTheTestQueue() throws Exception {
+    eventHistory.assertQueueChanges(3);
+  }
+
+  @Test
+  public void canCollectStateUsingAResultCollector() {
+    assertEquals(1, collector.getFailures().size());
+    assertEquals(FAILING, collector.getStatus());
+  }
 }
