@@ -102,7 +102,7 @@ public class ClassFileTestDetector implements TestDetector {
 	}
 
 	private boolean isATest(JavaClass jclass) {
-		return jclass.isATest() && !filters.match(jclass.getName());
+		return jclass.isATest() && !filters.match(jclass);
 	}
 
 	boolean isIndexed(Class<Object> clazz) {

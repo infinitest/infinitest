@@ -27,65 +27,64 @@
  */
 package org.infinitest.filter;
 
+import static com.google.common.collect.Lists.*;
 import static java.util.logging.Level.*;
+import static org.apache.commons.lang.StringUtils.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 
+import org.infinitest.parser.*;
+
+import com.google.common.base.*;
 import com.google.common.io.*;
 
-/**
- * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
- */
-public class RegexFileFilter extends ClassNameFilter implements TestFilter {
-	private File file;
+public class RegexFileFilter implements TestFilter {
+  private final File file;
+  private final List<Pattern> filters = newArrayList();
 
-	public RegexFileFilter(File filterFile) {
-		file = filterFile;
-		if (!file.exists()) {
-			log(INFO, "Filter file " + file + " does not exist.");
-		}
-
-		updateFilterList();
-	}
-
-	public RegexFileFilter() {
-		super();
-	}
-
-	@Override
-	public void updateFilterList() {
-		if (file == null) {
-			return;
-		}
-
-		clearFilters();
-		if (file.exists()) {
-			tryToReadFilterFile();
-		}
-	}
-
-	private void tryToReadFilterFile() {
-		try {
-			readFilterFile();
-		} catch (IOException e) {
-			throw new RuntimeException("Something horrible happened to the filter file", e);
-		}
-	}
-
-	private void readFilterFile() throws IOException {
-    Closer closer = Closer.create();
-    try {
-      BufferedReader reader = closer.register(new BufferedReader(new FileReader(file)));
-      String line;
-      do {
-        line = reader.readLine();
-        addFilter(line);
-      } while (line != null);
-    } catch (Throwable e) {
-      throw closer.rethrow(e);
-    } finally {
-      closer.close();
+  public RegexFileFilter(File file) {
+    this.file = file;
+    if (!file.exists()) {
+      log(INFO, "Filter file " + file + " does not exist.");
     }
-	}
+    updateFilterList();
+  }
+
+  public boolean match(JavaClass javaClass) {
+    String className = javaClass.getName();
+    for (Pattern pattern : filters) {
+      if (pattern.matcher(className).lookingAt()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void updateFilterList() {
+    filters.clear();
+
+    if (file.exists()) {
+      readFilterFile();
+    }
+  }
+
+  private void readFilterFile() {
+    try {
+      for (String line : Files.readLines(file, Charsets.UTF_8)) {
+        if (isValidFilter(line)) {
+          filters.add(Pattern.compile(line));
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Something horrible happened to the filter file", e);
+    }
+  }
+
+  private boolean isValidFilter(String line) {
+    return !isBlank(line) && !line.startsWith("!") && !line.startsWith("#");
+  }
 }

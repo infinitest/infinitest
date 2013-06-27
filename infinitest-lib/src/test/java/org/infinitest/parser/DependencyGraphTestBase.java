@@ -90,8 +90,8 @@ public abstract class DependencyGraphTestBase {
     private final Set<String> classesToFilter = new HashSet<String>();
 
     @Override
-    public boolean match(String className) {
-      return classesToFilter.contains(className);
+    public boolean match(JavaClass javaClass) {
+      return classesToFilter.contains(javaClass.getName());
     }
 
     @Override

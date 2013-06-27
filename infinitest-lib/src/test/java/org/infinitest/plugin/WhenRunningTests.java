@@ -30,12 +30,14 @@ package org.infinitest.plugin;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
-import static org.mockito.AdditionalMatchers.*;
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;
 import org.infinitest.filter.*;
+import org.infinitest.parser.*;
 import org.junit.*;
+import org.mockito.*;
 
 import com.fakeco.fakeproduct.simple.*;
 
@@ -50,7 +52,7 @@ public class WhenRunningTests {
       builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
       TestFilter testFilter = mock(TestFilter.class);
-      when(testFilter.match(not(startsWith("com.fakeco.fakeproduct.simple")))).thenReturn(true);
+      when(testFilter.match(not(argThat(startsWith("com.fakeco.fakeproduct.simple"))))).thenReturn(true);
       builder.setFilter(testFilter);
 
       InfinitestCore core = builder.createCore();
@@ -82,5 +84,14 @@ public class WhenRunningTests {
   public void canCollectStateUsingAResultCollector() {
     assertEquals(1, collector.getFailures().size());
     assertEquals(FAILING, collector.getStatus());
+  }
+
+  static ArgumentMatcher<JavaClass> startsWith(final String namePrefix) {
+    return new ArgumentMatcher<JavaClass>() {
+      @Override
+      public boolean matches(Object argument) {
+        return (argument instanceof JavaClass) && ((JavaClass) argument).getName().startsWith(namePrefix);
+      }
+    };
   }
 }

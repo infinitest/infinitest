@@ -30,28 +30,35 @@ package org.infinitest.eclipse.resolution;
 import static com.google.common.collect.Lists.*;
 
 import java.util.*;
-
-import org.infinitest.filter.*;
+import java.util.regex.*;
 
 public class StackTraceFilter {
-	private final ClassNameFilter nameFilter;
+  private final Pattern[] filters = {
+      Pattern.compile("org\\.infinitest\\.runner\\.*"),
+      Pattern.compile("org\\.junit\\..*"),
+      Pattern.compile("junit\\.framework\\..*"),
+      Pattern.compile("sun\\.reflect\\..*"),
+      Pattern.compile("java\\.lang\\.reflect\\.Method")
+  };
 
-	public StackTraceFilter() {
-		nameFilter = new ClassNameFilter();
-		nameFilter.addFilter("org\\.infinitest\\.runner\\.*");
-		nameFilter.addFilter("org\\.junit\\..*");
-		nameFilter.addFilter("junit\\.framework\\..*");
-		nameFilter.addFilter("sun\\.reflect\\..*");
-		nameFilter.addFilter("java\\.lang\\.reflect\\.Method");
-	}
+  public List<StackTraceElement> filterStack(List<StackTraceElement> stackTrace) {
+    List<StackTraceElement> filtered = newArrayList();
 
-	public List<StackTraceElement> filterStack(List<StackTraceElement> stackTrace) {
-		List<StackTraceElement> filteredStackTrace = newArrayList();
-		for (StackTraceElement each : stackTrace) {
-			if (!nameFilter.match(each.getClassName())) {
-				filteredStackTrace.add(each);
-			}
-		}
-		return filteredStackTrace;
-	}
+    for (StackTraceElement each : stackTrace) {
+      if (!match(each.getClassName())) {
+        filtered.add(each);
+      }
+    }
+
+    return filtered;
+  }
+
+  private boolean match(String className) {
+    for (Pattern pattern : filters) {
+      if (pattern.matcher(className).lookingAt()) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

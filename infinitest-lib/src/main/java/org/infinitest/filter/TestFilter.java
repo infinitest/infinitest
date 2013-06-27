@@ -27,6 +27,8 @@
  */
 package org.infinitest.filter;
 
+import org.infinitest.parser.*;
+
 /**
  * This filter prevents any matching tests from being run as part of a core
  * update.
@@ -42,11 +44,9 @@ public interface TestFilter {
 	void updateFilterList();
 
 	/**
-	 * Check if a test class (identified by the fully qualified name) should be
-	 * removed from the test run.
+	 * Check if a test class should be removed from the test run.
 	 * 
 	 * @return <code>true</code> if the test should not be run
-	 * @see Class#getName()
 	 */
-	boolean match(String className);
+	boolean match(JavaClass javaClass);
 }

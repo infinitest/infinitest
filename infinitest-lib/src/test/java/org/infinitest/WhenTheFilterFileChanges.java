@@ -44,11 +44,11 @@ public class WhenTheFilterFileChanges {
     File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
 
     TestFilter list = new RegexFileFilter(file);
-    assertFalse(list.match("com.foo.Bar"));
+    assertFalse(list.match(javaClass("com.foo.Bar")));
 
     new PrintWriter(file).append("com.foo.Bar").close();
     list.updateFilterList();
-    assertTrue(list.match("com.foo.Bar"));
+    assertTrue(list.match(javaClass("com.foo.Bar")));
   }
 
   @Test
@@ -60,5 +60,11 @@ public class WhenTheFilterFileChanges {
     detector.findTestsToRun(Collections.<File>emptySet());
 
     verify(testFilter).updateFilterList();
+  }
+
+  static JavaClass javaClass(String name) {
+    JavaClass javaClass = mock(JavaClass.class);
+    when(javaClass.getName()).thenReturn(name);
+    return javaClass;
   }
 }
