@@ -27,9 +27,9 @@
  */
 package org.infinitest.intellij;
 
+import static com.google.common.collect.Iterables.*;
 import static org.fest.assertions.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.infinitest.util.CollectionUtils.*;
 
 import org.fest.assertions.*;
 import org.infinitest.intellij.idea.language.*;
@@ -48,7 +48,7 @@ public class WhenAnnotatingClass {
   public void shouldAnnotateTopLevelClass() {
     annotator.annotate(eventWithError(new Exception()));
 
-    assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
+    assertThat(getOnlyElement(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
   }
 
   @Test
@@ -56,7 +56,7 @@ public class WhenAnnotatingClass {
   public void shouldAnnotateContainingClassOfInnerClassFailures() {
     annotator.annotate(eventWithError(InnerClass.createException()));
 
-    assertThat(first(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
+    assertThat(getOnlyElement(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
   }
 
   static class InnerClass {
