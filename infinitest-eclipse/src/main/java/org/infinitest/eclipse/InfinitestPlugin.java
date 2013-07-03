@@ -39,6 +39,8 @@ import org.eclipse.ui.plugin.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.util.*;
 import org.osgi.framework.*;
+import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.*;
 
 import com.google.common.annotations.*;
@@ -51,7 +53,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	private static InfinitestPlugin sharedInstance;
 	private static Bundle pluginBundle;
 
-	private ClassPathXmlApplicationContext context;
+	private ApplicationContext context;
 
 	static {
 		addLoggingListener(new EclipseLoggingListener());
@@ -111,12 +113,12 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> beanClass) {
 		if (context == null) {
-			context = new ClassPathXmlApplicationContext(new String[] { "/META-INF/spring/plugin-context.xml", "/META-INF/spring/eclipse-context.xml" });
+      context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
 
 			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
 			InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
 		}
-		return (T) getOnlyElement(context.getBeansOfType(beanClass).values());
+		return getOnlyElement(context.getBeansOfType(beanClass).values());
 	}
 
 	@VisibleForTesting

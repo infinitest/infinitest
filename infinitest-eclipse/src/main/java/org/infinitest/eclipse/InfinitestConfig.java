@@ -27,28 +27,22 @@
  */
 package org.infinitest.eclipse;
 
-import static org.fest.assertions.Assertions.*;
+import static org.eclipse.core.resources.ResourcesPlugin.*;
 
 import org.eclipse.core.resources.*;
-import org.infinitest.eclipse.beans.*;
-import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
-import org.springframework.context.*;
+import org.eclipse.debug.core.sourcelookup.containers.*;
 import org.springframework.context.annotation.*;
 
-public class PluginContextIntegrationTest {
-  @Test
-  public void shouldWireComponentsTogetherByTypeUsingSpringAutowiring() {
-    ApplicationContext ctx = new AnnotationConfigApplicationContext(TestInfinitestConfig.class);
-
-    assertThat(ctx.getBeansOfType(IResourceChangeListener.class)).isNotEmpty();
-    assertThat(ctx.getBeansOfType(ResourceFinder.class)).isNotEmpty();
+@Configuration
+@ComponentScan(basePackages = "org.infinitest")
+public class InfinitestConfig {
+  @Bean
+  public IWorkspace workspace() {
+    return getWorkspace();
   }
 
-  static class TestInfinitestConfig extends InfinitestConfig {
-    @Bean
-    public IWorkspace workspace() {
-      return new FakeWorkspace();
-    }
+  @Bean
+  public WorkspaceSourceContainer sourceContainer() {
+    return new WorkspaceSourceContainer();
   }
 }
