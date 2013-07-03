@@ -29,8 +29,7 @@ package org.infinitest;
 
 import static java.io.File.*;
 import static java.util.Arrays.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.*;
 
 import java.io.*;
 import java.util.*;
@@ -38,13 +37,14 @@ import java.util.*;
 import org.junit.*;
 
 public class WhenSearchingForClassFilesToIndex {
-	@Test
-	public void shouldSearchClassDirectoriesOnTheClasspath() {
-		File outputDir = new File("target/classes");
-		List<File> outputDirs = asList(outputDir);
-		String classpath = "target/classes" + pathSeparator + "target/test-classes";
-		RuntimeEnvironment environment = new RuntimeEnvironment(outputDirs, new File("."), classpath, new File("javahome"));
-		List<File> directoriesInClasspath = environment.classDirectoriesInClasspath();
-		assertThat(directoriesInClasspath, hasItems(new File("target/test-classes"), outputDir));
-	}
+  @Test
+  public void shouldSearchClassDirectoriesOnTheClasspath() {
+    File outputDir = new File("target/classes");
+    List<File> outputDirs = asList(outputDir);
+    String classpath = "target/classes" + pathSeparator + "target/test-classes";
+    RuntimeEnvironment environment = new RuntimeEnvironment(outputDirs, new File("."), classpath, new File("javahome"));
+    List<File> directoriesInClasspath = environment.classDirectoriesInClasspath();
+
+    assertThat(directoriesInClasspath).contains(new File("target/test-classes"), outputDir);
+  }
 }

@@ -27,10 +27,9 @@
  */
 package org.infinitest.util;
 
-import static org.hamcrest.Matchers.*;
+import static org.fest.assertions.Assertions.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
 
 import org.infinitest.*;
 import org.junit.*;
@@ -38,24 +37,24 @@ import org.junit.*;
 import com.google.common.collect.*;
 
 public class WhenSearchingForEntriesOnTheClasspath {
-	private String systemClasspath;
+  private String systemClasspath;
 
-	@Before
-	public void inContext() {
-		systemClasspath = systemClasspath();
-	}
+  @Before
+  public void inContext() {
+    systemClasspath = systemClasspath();
+  }
 
-	@Test
-	public void shouldFindJarsThatContainAClass() {
-		String entry = findClasspathEntryFor(systemClasspath, Iterables.class);
-		assertThat(entry, containsString(".jar"));
-		assertThat(entry, containsString("google"));
-	}
+  @Test
+  public void shouldFindJarsThatContainAClass() {
+    String entry = findClasspathEntryFor(systemClasspath, Iterables.class);
 
-	@Test
-	public void shouldFindClassDirectoriesThatContainAClass() {
-		String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
-		assertThat(entry, not(containsString(".jar")));
-		assertThat(entry, containsString("target/classes"));
-	}
+    assertThat(entry).contains(".jar").contains("google");
+  }
+
+  @Test
+  public void shouldFindClassDirectoriesThatContainAClass() {
+    String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
+
+    assertThat(entry).excludes(".jar").contains("target/classes");
+  }
 }

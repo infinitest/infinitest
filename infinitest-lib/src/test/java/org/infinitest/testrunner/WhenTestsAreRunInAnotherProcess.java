@@ -27,9 +27,8 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.logging.Level.*;
-import static org.hamcrest.Matchers.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
@@ -41,168 +40,165 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 import static org.mockito.Mockito.*;
 
-import java.util.*;
-
 import org.infinitest.*;
 import org.infinitest.util.*;
 import org.junit.*;
 
 public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
-	private EventSupport eventSupport;
-	private AbstractTestRunner runner;
-	public boolean outputPrinted;
+  private EventSupport eventSupport;
+  private AbstractTestRunner runner;
+  public boolean outputPrinted;
 
-	@Before
-	public void inContext() {
-		eventSupport = new EventSupport(5000);
-		runner = createRunner();
-		runner.addTestResultsListener(eventSupport);
-		runner.addTestQueueListener(eventSupport);
-		outputPrinted = false;
-	}
+  @Before
+  public void inContext() {
+    eventSupport = new EventSupport(5000);
+    runner = createRunner();
+    runner.addTestResultsListener(eventSupport);
+    runner.addTestQueueListener(eventSupport);
+    outputPrinted = false;
+  }
 
-	@AfterClass
-	public static void resetStatefulCounter() {
-		StubStatefulTest.counter = 0;
-	}
+  @AfterClass
+  public static void resetStatefulCounter() {
+    StubStatefulTest.counter = 0;
+  }
 
-	@Test
-	public void shouldHandleLargeAmountsOfConsoleOutput() throws Exception {
-		final StringBuffer stdOut = new StringBuffer();
-		final StringBuffer stdErr = new StringBuffer();
-		runner = new MultiProcessRunner();
-		runner.setRuntimeEnvironment(fakeEnvironment());
-		runner.addTestQueueListener(eventSupport);
-		runner.addConsoleOutputListener(new ConsoleListenerAdapter() {
-			@Override
-			public void consoleOutputUpdate(String newText, ConsoleOutputListener.OutputType outputType) {
-				if (outputType.equals(STDOUT)) {
-					stdOut.append(newText);
-				} else {
-					stdErr.append(newText);
-				}
-			}
-		});
-		// DEBT Race condition in this test. We need to check the status of
-		// stdOut and stdErr in the
-		// consoleOutputUpdate method and notify a lock that we can hold in the
-		// test instead of just
-		// assuming that all the output will be ready by the time the tests
-		// finish running. But
-		// I don't have the brain cells for that right now.
+  @Test
+  public void shouldHandleLargeAmountsOfConsoleOutput() throws Exception {
+    final StringBuffer stdOut = new StringBuffer();
+    final StringBuffer stdErr = new StringBuffer();
+    runner = new MultiProcessRunner();
+    runner.setRuntimeEnvironment(fakeEnvironment());
+    runner.addTestQueueListener(eventSupport);
+    runner.addConsoleOutputListener(new ConsoleListenerAdapter() {
+      @Override
+      public void consoleOutputUpdate(String newText, ConsoleOutputListener.OutputType outputType) {
+        if (outputType.equals(STDOUT)) {
+          stdOut.append(newText);
+        } else {
+          stdErr.append(newText);
+        }
+      }
+    });
+    // DEBT Race condition in this test. We need to check the status of
+    // stdOut and stdErr in the
+    // consoleOutputUpdate method and notify a lock that we can hold in the
+    // test instead of just
+    // assuming that all the output will be ready by the time the tests
+    // finish running. But
+    // I don't have the brain cells for that right now.
 
-		runner.runTest(TestWithLotsOfConsoleOutput.class.getName());
-		waitForCompletion();
-		assertThat(stdOut.toString(), containsString("Hello"));
-		assertThat(stdOut.toString(), not(containsString("World")));
-		assertThat(stdErr.toString(), containsString("World"));
-		assertThat(stdErr.toString(), not(containsString("Hello")));
-	}
+    runner.runTest(TestWithLotsOfConsoleOutput.class.getName());
+    waitForCompletion();
 
-	@Test
-	public void shouldHandleVeryLongClasspath() throws Exception {
-		runner.setRuntimeEnvironment(fakeVeryLongClasspathEnvironment());
-		runTest(StubStatefulTest.class.getName());
-		eventSupport.assertTestsStarted(StubStatefulTest.class);
-		eventSupport.assertTestPassed(StubStatefulTest.class);
-	}
+    assertThat(stdOut.toString()).contains("Hello").excludes("World");
+    assertThat(stdErr.toString()).contains("World").excludes("Hello");
+  }
 
-	public static class TestWithLotsOfConsoleOutput {
-		@Test
-		public void shouldFail() {
-			assumeTrue(testIsBeingRunFromInfinitest());
-			for (int i = 0; i < 10; i++) {
-				System.out.println("Hello");
-				System.err.println("World");
-			}
-		}
-	}
+  @Test
+  public void shouldHandleVeryLongClasspath() throws Exception {
+    runner.setRuntimeEnvironment(fakeVeryLongClasspathEnvironment());
+    runTest(StubStatefulTest.class.getName());
+    eventSupport.assertTestsStarted(StubStatefulTest.class);
+    eventSupport.assertTestPassed(StubStatefulTest.class);
+  }
 
-	@Test
-	public void individualTestRunsAreIndependent() throws Exception {
-		runTest(StubStatefulTest.class.getName());
-		eventSupport.assertTestsStarted(StubStatefulTest.class);
-		eventSupport.assertTestPassed(StubStatefulTest.class);
+  public static class TestWithLotsOfConsoleOutput {
+    @Test
+    public void shouldFail() {
+      assumeTrue(testIsBeingRunFromInfinitest());
+      for (int i = 0; i < 10; i++) {
+        System.out.println("Hello");
+        System.err.println("World");
+      }
+    }
+  }
 
-		eventSupport.reset();
-		runTest(StubStatefulTest.class.getName());
-		eventSupport.assertTestsStarted(StubStatefulTest.class);
-		eventSupport.assertTestPassed(StubStatefulTest.class);
-	}
+  @Test
+  public void individualTestRunsAreIndependent() throws Exception {
+    runTest(StubStatefulTest.class.getName());
+    eventSupport.assertTestsStarted(StubStatefulTest.class);
+    eventSupport.assertTestPassed(StubStatefulTest.class);
 
-	@Test
-	public void canControlParallelUpdatesOfCores() throws Exception {
-		ConcurrencyController controller = mock(ConcurrencyController.class);
+    eventSupport.reset();
+    runTest(StubStatefulTest.class.getName());
+    eventSupport.assertTestsStarted(StubStatefulTest.class);
+    eventSupport.assertTestPassed(StubStatefulTest.class);
+  }
 
-		runner.setConcurrencyController(controller);
-		runTest(PASSING_TEST.getName());
+  @Test
+  public void canControlParallelUpdatesOfCores() throws Exception {
+    ConcurrencyController controller = mock(ConcurrencyController.class);
 
-		verify(controller).acquire();
-		verify(controller).release();
-	}
+    runner.setConcurrencyController(controller);
+    runTest(PASSING_TEST.getName());
 
-	@Test
-	public void shouldFireStartingEventBeforeTestIsActuallyStarted() throws Exception {
-		runTest("thisIsNotATest");
-		eventSupport.assertEventsReceived(TEST_CASE_STARTING, METHOD_FAILURE);
-	}
+    verify(controller).acquire();
+    verify(controller).release();
+  }
 
-	@Test
-	public void subsequentTestRunAreIndependent() throws Exception {
-		runTest(PASSING_TEST.getName());
-		eventSupport.assertTestsStarted(PASSING_TEST);
-		eventSupport.assertTestPassed(PASSING_TEST);
-		eventSupport.reset();
+  @Test
+  public void shouldFireStartingEventBeforeTestIsActuallyStarted() throws Exception {
+    runTest("thisIsNotATest");
+    eventSupport.assertEventsReceived(TEST_CASE_STARTING, METHOD_FAILURE);
+  }
 
-		runTest(FAILING_TEST.getName());
-		eventSupport.assertTestsStarted(FAILING_TEST);
-		eventSupport.assertTestFailed(FAILING_TEST);
-	}
+  @Test
+  public void subsequentTestRunAreIndependent() throws Exception {
+    runTest(PASSING_TEST.getName());
+    eventSupport.assertTestsStarted(PASSING_TEST);
+    eventSupport.assertTestPassed(PASSING_TEST);
+    eventSupport.reset();
 
-	@Test
-	public void shouldGroupTestRunsTogether() throws Exception {
-		runTests(StubStatefulTest.class, OtherStubStatefulTest.class);
-		eventSupport.assertTestsStarted(StubStatefulTest.class, OtherStubStatefulTest.class);
-		eventSupport.assertTestPassed(StubStatefulTest.class);
-		eventSupport.assertTestFailed(OtherStubStatefulTest.class);
-	}
+    runTest(FAILING_TEST.getName());
+    eventSupport.assertTestsStarted(FAILING_TEST);
+    eventSupport.assertTestFailed(FAILING_TEST);
+  }
 
-	@Test
-	public void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
-		LoggingAdapter adapter = new LoggingAdapter();
-		addLoggingListener(adapter);
-		emptyRuntimeEnvironment().getCompleteClasspath();
-		String expectedMessage = "Could not find classpath entry [classpath] at file system root or relative to working " + "directory [.].";
-		assertTrue(adapter.toString(), adapter.hasMessage(expectedMessage, WARNING));
-	}
+  @Test
+  public void shouldGroupTestRunsTogether() throws Exception {
+    runTests(StubStatefulTest.class, OtherStubStatefulTest.class);
+    eventSupport.assertTestsStarted(StubStatefulTest.class, OtherStubStatefulTest.class);
+    eventSupport.assertTestPassed(StubStatefulTest.class);
+    eventSupport.assertTestFailed(OtherStubStatefulTest.class);
+  }
 
-	public static class OtherStubStatefulTest {
-		@Test
-		public void incrementStaticVariable() {
-			assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
-			StubStatefulTest.counter++;
-			assertEquals(1, StubStatefulTest.counter);
-		}
-	}
+  @Test
+  public void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
+    LoggingAdapter adapter = new LoggingAdapter();
+    addLoggingListener(adapter);
+    emptyRuntimeEnvironment().getCompleteClasspath();
+    String expectedMessage = "Could not find classpath entry [classpath] at file system root or relative to working " + "directory [.].";
+    assertTrue(adapter.toString(), adapter.hasMessage(expectedMessage, WARNING));
+  }
 
-	public static class StubStatefulTest {
-		private static int counter = 0;
+  public static class OtherStubStatefulTest {
+    @Test
+    public void incrementStaticVariable() {
+      assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
+      StubStatefulTest.counter++;
+      assertEquals(1, StubStatefulTest.counter);
+    }
+  }
 
-		@Test
-		public void incrementStaticVariable() {
-			assumeTrue(testIsBeingRunFromInfinitest());
-			counter++;
-			assertEquals(1, counter);
-		}
-	}
+  public static class StubStatefulTest {
+    private static int counter = 0;
 
-	@Override
-	protected AbstractTestRunner getRunner() {
-		return runner;
-	}
+    @Test
+    public void incrementStaticVariable() {
+      assumeTrue(testIsBeingRunFromInfinitest());
+      counter++;
+      assertEquals(1, counter);
+    }
+  }
 
-	@Override
-	protected void waitForCompletion() throws InterruptedException {
-		eventSupport.assertRunComplete();
-	}
+  @Override
+  protected AbstractTestRunner getRunner() {
+    return runner;
+  }
+
+  @Override
+  protected void waitForCompletion() throws InterruptedException {
+    eventSupport.assertRunComplete();
+  }
 }

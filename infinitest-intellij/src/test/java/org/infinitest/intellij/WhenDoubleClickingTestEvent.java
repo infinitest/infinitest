@@ -27,9 +27,8 @@
  */
 package org.infinitest.intellij;
 
-import static org.hamcrest.Matchers.*;
+import static org.fest.assertions.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
 
 import java.awt.event.*;
 
@@ -41,28 +40,28 @@ import org.infinitest.testrunner.*;
 import org.junit.*;
 
 public class WhenDoubleClickingTestEvent {
-	@Test
-	public void shouldNavigateToSource() {
-		FakeSourceNavigator navigator = new FakeSourceNavigator();
+  @Test
+  public void shouldNavigateToSource() {
+    FakeSourceNavigator navigator = new FakeSourceNavigator();
 
-		ResultClickListener listener = new ResultClickListener(navigator);
-		listener.mouseClicked(doubleClick(eventWithError()));
+    ResultClickListener listener = new ResultClickListener(navigator);
+    listener.mouseClicked(doubleClick(eventWithError()));
 
-		assertThat(navigator.getClassName(), is(getClass().getName()));
-		assertThat(navigator.getLine(), not(0));
-	}
+    assertThat(navigator.getClassName()).isEqualTo(getClass().getName());
+    assertThat(navigator.getLine()).isNotEqualTo(0);
+  }
 
-	@SuppressWarnings("serial")
-	private MouseEvent doubleClick(final TestEvent event) {
-		return new MouseEvent(new JTree() {
-			@Override
-			public TreePath getClosestPathForLocation(int x, int y) {
-				return new TreePath(event);
-			}
-		}, 0, 0, 0, 0, 0, 2, false);
-	}
+  @SuppressWarnings("serial")
+  private MouseEvent doubleClick(final TestEvent event) {
+    return new MouseEvent(new JTree() {
+      @Override
+      public TreePath getClosestPathForLocation(int x, int y) {
+        return new TreePath(event);
+      }
+    }, 0, 0, 0, 0, 0, 2, false);
+  }
 
-	private static TestEvent eventWithError() {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new Exception());
-	}
+  private static TestEvent eventWithError() {
+    return new TestEvent(METHOD_FAILURE, "", "", "", new Exception());
+  }
 }

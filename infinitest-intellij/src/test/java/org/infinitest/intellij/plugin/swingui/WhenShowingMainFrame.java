@@ -27,7 +27,7 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.hamcrest.Matchers.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 
@@ -35,7 +35,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
-
 import junit.framework.*;
 
 import org.infinitest.testrunner.*;
@@ -43,55 +42,57 @@ import org.junit.*;
 import org.junit.Test;
 
 public class WhenShowingMainFrame {
-	private FailureCellRenderer cellRenderer;
-	private InfinitestMainFrame mainFrame;
-	private InfinitestResultsPane resultsPane;
-	private Component focusedComponent;
+  private FailureCellRenderer cellRenderer;
+  private InfinitestMainFrame mainFrame;
+  private InfinitestResultsPane resultsPane;
+  private Component focusedComponent;
 
-	@Before
-	public void inContext() {
-		resultsPane = new InfinitestResultsPane();
-		mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane());
-		cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
-	}
+  @Before
+  public void inContext() {
+    resultsPane = new InfinitestResultsPane();
+    mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane());
+    cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
+  }
 
-	@Test
-	public void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
-		assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
-	}
+  @Test
+  public void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+    assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
+  }
 
-	@Test
-	public void shouldStartWithTreeFocused() {
-		TreeFocusListener listener = new TreeFocusListener() {
-			@Override
-			protected void setFocus(Component c) {
-				focusedComponent = c;
-			}
-		};
-		listener.windowGainedFocus(new WindowEvent(mainFrame, 0));
-		assertEquals(resultsPane.getTree(), focusedComponent);
-	}
+  @Test
+  public void shouldStartWithTreeFocused() {
+    TreeFocusListener listener = new TreeFocusListener() {
+      @Override
+      protected void setFocus(Component c) {
+        focusedComponent = c;
+      }
+    };
+    listener.windowGainedFocus(new WindowEvent(mainFrame, 0));
+    assertEquals(resultsPane.getTree(), focusedComponent);
+  }
 
-	@Test
-	public void shouldHaveIconToIndicatePoFNodes() {
-		Object node = "PointOfFailure.java:32";
-		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
-		assertThat(treeCell.getIcon().toString(), is(expectedIcon("error")));
-	}
+  @Test
+  public void shouldHaveIconToIndicatePoFNodes() {
+    Object node = "PointOfFailure.java:32";
+    JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-	@Test
-	public void shouldHaveIconToIndicateFailingTest() {
-		Object node = eventWithError();
-		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
-		assertThat(treeCell.getIcon().toString(), is(expectedIcon("failure")));
-	}
+    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("error"));
+  }
 
-	private String expectedIcon(String iconName) {
-		ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
-		return expectedIcon.toString();
-	}
+  @Test
+  public void shouldHaveIconToIndicateFailingTest() {
+    Object node = eventWithError();
+    JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-	private static TestEvent eventWithError() {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
-	}
+    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("failure"));
+  }
+
+  private String expectedIcon(String iconName) {
+    ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
+    return expectedIcon.toString();
+  }
+
+  private static TestEvent eventWithError() {
+    return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+  }
 }

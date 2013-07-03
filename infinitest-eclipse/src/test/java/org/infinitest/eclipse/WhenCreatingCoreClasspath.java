@@ -28,8 +28,8 @@
 package org.infinitest.eclipse;
 
 import static java.util.Collections.*;
+import static org.fest.assertions.Assertions.*;
 import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
@@ -37,35 +37,37 @@ import java.net.*;
 import java.util.*;
 
 import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.mockito.runners.*;
 import org.osgi.framework.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class WhenCreatingCoreClasspath {
-	private InfinitestPlugin plugin;
+  @Mock
+  Bundle bundle;
 
-	@Before
-	public void inContext() {
-		Bundle bundle = mock(Bundle.class);
-		List<URL> urls = Arrays.asList(getClass().getResource("WhenCreatingCoreClasspath.class"));
-		when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls));
-		plugin = new InfinitestPlugin();
-		plugin.setPluginBundle(bundle);
-	}
+  InfinitestPlugin plugin = new InfinitestPlugin();
 
-	@Test
-	public void shouldWriteInfinitestCoreOutToTempDirectory() {
-		File coreJarLocation = getCoreJarLocation(plugin);
-		assertTrue(coreJarLocation.exists());
-		assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
-	}
+  @Test
+  public void shouldWriteInfinitestCoreOutToTempDirectory() {
+    File coreJarLocation = getCoreJarLocation(plugin);
 
-	@Test
-	public void shouldRecreateJarIfItIsDeleted() {
-		File coreJarLocation = getCoreJarLocation(plugin);
-		assertTrue(coreJarLocation.exists());
-		assertTrue(coreJarLocation.getAbsolutePath().endsWith(".jar"));
-		assertTrue(coreJarLocation.delete());
+    assertThat(coreJarLocation).exists();
+    assertThat(coreJarLocation.getAbsolutePath()).endsWith(".jar");
+  }
 
-		coreJarLocation = getCoreJarLocation(plugin);
-		assertTrue(coreJarLocation.exists());
-	}
+  @Test
+  public void shouldRecreateJarIfItIsDeleted() {
+    List<URL> urls = Arrays.asList(getClass().getResource("WhenCreatingCoreClasspath.class"));
+    when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls), enumeration(urls));
+    plugin.setPluginBundle(bundle);
+
+    File coreJarLocation = getCoreJarLocation(plugin);
+    assertThat(coreJarLocation.delete()).isTrue();
+
+    coreJarLocation = getCoreJarLocation(plugin);
+    assertThat(coreJarLocation).exists();
+    assertThat(coreJarLocation.getAbsolutePath()).endsWith(".jar");
+  }
 }
