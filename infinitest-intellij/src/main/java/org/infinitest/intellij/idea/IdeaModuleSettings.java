@@ -216,11 +216,11 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 	@Nullable
 	private File getSdkHomePath() {
-		Sdk projectJdk = ProjectRootManager.getInstance(module.getProject()).getProjectJdk();
-		if (projectJdk == null) {
+		Sdk projectSdk = ProjectRootManager.getInstance(module.getProject()).getProjectSdk();
+		if (projectSdk == null) {
 			return null;
 		}
 
-		return new File(projectJdk.getHomePath());
+		return new File(projectSdk.getHomePath());
 	}
 }
