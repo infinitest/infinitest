@@ -31,7 +31,6 @@ import javax.swing.*;
 
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.*;
-import com.intellij.peer.*;
 import com.intellij.ui.content.*;
 
 public class IdeaWindowHelper {
@@ -42,7 +41,7 @@ public class IdeaWindowHelper {
 
 	@SuppressWarnings("deprecation")
 	public void addPanelToWindow(JPanel rootPanel, ToolWindow window) {
-		ContentFactory contentFactory = PeerFactory.getInstance().getContentFactory();
+		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
 		window.getContentManager().addContent(content);
 		window.setIcon(IconLoader.getIcon(WAITING_ICON_PATH));

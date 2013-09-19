@@ -38,6 +38,8 @@ import org.junit.runner.*;
 import org.mockito.*;
 import org.mockito.runners.*;
 
+import java.io.File;
+
 @RunWith(MockitoJUnitRunner.class)
 public class WhenResolvingClassPath {
 	@InjectMocks
@@ -75,7 +77,7 @@ public class WhenResolvingClassPath {
 
 		String classpath = classPathResolver.rawClasspath(project);
 
-		assertThat(classpath).isEqualTo("1.jar:2.jar");
+		assertThat(classpath).isEqualTo("1.jar" + File.pathSeparator + "2.jar");
 	}
 
 	@Test
@@ -91,7 +93,7 @@ public class WhenResolvingClassPath {
 
 		String classpath = classPathResolver.rawClasspath(project);
 
-		assertThat(classpath).isEqualTo("1.jar:2.jar:3.jar");
+		assertThat(classpath).isEqualTo("1.jar" + File.pathSeparator + "2.jar" + File.pathSeparator + "3.jar");
 	}
 
 	@Test
