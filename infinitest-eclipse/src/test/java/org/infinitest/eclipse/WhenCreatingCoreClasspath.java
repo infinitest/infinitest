@@ -28,7 +28,7 @@
 package org.infinitest.eclipse;
 
 import static java.util.Collections.*;
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
 import static org.mockito.Mockito.*;
 

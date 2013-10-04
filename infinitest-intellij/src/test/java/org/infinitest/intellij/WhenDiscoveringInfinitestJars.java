@@ -29,7 +29,7 @@ package org.infinitest.intellij;
 
 import static com.google.common.base.Charsets.*;
 import static org.apache.commons.lang.StringUtils.*;
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.*;
 import java.util.*;

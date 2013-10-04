@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;

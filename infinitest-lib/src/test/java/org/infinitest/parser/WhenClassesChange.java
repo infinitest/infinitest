@@ -27,7 +27,7 @@
  */
 package org.infinitest.parser;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.infinitest.util.InfinitestUtils.*;
 import static org.junit.Assert.*;
@@ -37,7 +37,7 @@ import java.util.*;
 
 import javassist.*;
 
-import org.fest.assertions.*;
+import org.assertj.core.api.Assertions;
 import org.infinitest.util.*;
 import org.junit.*;
 import org.junit.Assert;

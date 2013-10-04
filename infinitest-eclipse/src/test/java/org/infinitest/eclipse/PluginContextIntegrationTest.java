@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.core.resources.*;
 import org.infinitest.eclipse.beans.*;

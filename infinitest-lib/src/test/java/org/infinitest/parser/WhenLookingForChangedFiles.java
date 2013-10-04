@@ -28,7 +28,7 @@
 package org.infinitest.parser;
 
 import static java.util.Collections.*;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
@@ -107,7 +107,7 @@ public class WhenLookingForChangedFiles {
     newFile.delete();
 
     assertTrue(detector.filesWereRemoved());
-    assertThat(detector.findChangedFiles()).excludes(newFile);
+    assertThat(detector.findChangedFiles()).doesNotContain(newFile);
   }
 
   @Test

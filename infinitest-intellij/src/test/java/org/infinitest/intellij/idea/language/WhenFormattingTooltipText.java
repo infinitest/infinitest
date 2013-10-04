@@ -27,7 +27,7 @@
  */
 package org.infinitest.intellij.idea.language;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.*;
 
 import org.junit.*;

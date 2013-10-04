@@ -28,7 +28,7 @@
 package org.infinitest.testrunner;
 
 import static java.util.logging.Level.*;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
@@ -91,8 +91,8 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
     runner.runTest(TestWithLotsOfConsoleOutput.class.getName());
     waitForCompletion();
 
-    assertThat(stdOut.toString()).contains("Hello").excludes("World");
-    assertThat(stdErr.toString()).contains("World").excludes("Hello");
+    assertThat(stdOut.toString()).contains("Hello").doesNotContain("World");
+    assertThat(stdErr.toString()).contains("World").doesNotContain("Hello");
   }
 
   @Test

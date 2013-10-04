@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
