@@ -28,7 +28,7 @@
 package org.infinitest.testrunner;
 
 import static java.lang.System.*;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.EventSupport.*;
 import static org.junit.Assert.*;
 

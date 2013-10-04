@@ -29,7 +29,7 @@ package org.infinitest;
 
 import static java.io.File.*;
 import static java.util.Arrays.*;
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.*;
 import java.util.*;

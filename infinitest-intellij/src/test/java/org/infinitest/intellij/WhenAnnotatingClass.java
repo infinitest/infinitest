@@ -28,10 +28,11 @@
 package org.infinitest.intellij;
 
 import static com.google.common.collect.Iterables.*;
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+import org.assertj.core.internal.Failures;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
-import org.fest.assertions.*;
+import org.assertj.core.api.Fail;
 import org.infinitest.intellij.idea.language.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;
@@ -62,7 +63,7 @@ public class WhenAnnotatingClass {
   static class InnerClass {
     public static Throwable createException() {
       try {
-        throw Fail.fail("Intentional exception");
+        return Failures.instance().failure("Intentional exception");
       } catch (Throwable e) {
         return e;
       }

@@ -27,7 +27,7 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
@@ -98,7 +98,7 @@ public class TestCustomProgressBar {
     for (CoreStatus status : statuses) {
       progressBar.setStatusMessage(getMessage(status));
 
-      assertThat(progressBar.getStatusMessage()).excludes("$");
+      assertThat(progressBar.getStatusMessage()).doesNotContain("$");
     }
   }
 }
