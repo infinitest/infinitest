@@ -29,7 +29,7 @@ package org.infinitest;
 
 import static com.google.common.collect.Iterables.*;
 import static java.util.Arrays.*;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 

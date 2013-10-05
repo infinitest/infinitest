@@ -27,7 +27,7 @@
  */
 package org.infinitest;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.*;
 import java.util.*;

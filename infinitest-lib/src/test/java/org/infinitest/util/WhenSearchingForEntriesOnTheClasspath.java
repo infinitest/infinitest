@@ -27,7 +27,7 @@
  */
 package org.infinitest.util;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
@@ -55,6 +55,6 @@ public class WhenSearchingForEntriesOnTheClasspath {
   public void shouldFindClassDirectoriesThatContainAClass() {
     String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
 
-    assertThat(entry).excludes(".jar").contains("target/classes");
+    assertThat(entry).doesNotContain(".jar").contains("target/classes");
   }
 }

@@ -27,7 +27,7 @@
  */
 package org.infinitest.intellij;
 
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
 import java.awt.event.*;

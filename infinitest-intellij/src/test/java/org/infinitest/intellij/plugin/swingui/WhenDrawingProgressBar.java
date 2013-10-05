@@ -28,7 +28,7 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static java.awt.Color.*;
-import static org.fest.assertions.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.*;
 

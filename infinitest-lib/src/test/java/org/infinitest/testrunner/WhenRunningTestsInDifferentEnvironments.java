@@ -31,7 +31,7 @@ import static com.google.common.collect.Iterables.*;
 import static com.google.common.io.Files.*;
 import static java.util.Arrays.*;
 import static java.util.logging.Level.*;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestUtils.*;

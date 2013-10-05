@@ -36,7 +36,7 @@ import java.util.*;
 
 import jdave.test.*;
 
-import org.fest.assertions.*;
+import org.assertj.core.api.Assertions;
 import org.infinitest.util.*;
 import org.junit.*;
 import org.junit.rules.*;
@@ -97,13 +97,13 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldSupportFestAssertAssertions() {
+	public void shouldSupportAssertJAssertions() {
 		try {
 			Assertions.assertThat(true).isFalse();
 		} catch (ComparisonFailure e) {
 			error = e;
 			event = eventWithError(e);
-			verifyPointOfFailureMessage(e.getStackTrace()[12].getLineNumber());
+			verifyPointOfFailureMessage(e.getStackTrace()[3].getLineNumber());
 		}
 	}
 
@@ -137,7 +137,7 @@ public class TestEventTest extends EqualityTestSupport {
 		String actual = event.getPointOfFailure().toString();
 		String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName() + "(" + Strings.nullToEmpty(error.getMessage()) + ")";
 
-		assertEquals(expected, actual);
+		Assertions.assertThat(actual).isEqualTo(expected);
 	}
 
 	@Override
