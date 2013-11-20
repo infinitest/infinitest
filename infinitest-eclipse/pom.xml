@@ -214,6 +214,7 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<Embed-Directory>lib</Embed-Directory>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 					</instructions>
 					<manifestLocation>META-INF/</manifestLocation>
 				</configuration>
