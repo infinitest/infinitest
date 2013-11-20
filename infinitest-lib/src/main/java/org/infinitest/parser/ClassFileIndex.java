@@ -41,7 +41,7 @@ import com.google.common.annotations.*;
 import com.google.common.collect.*;
 
 public class ClassFileIndex {
-	private final ClassBuilder builder;
+	private final JavaClassBuilder builder;
 	private DirectedGraph<JavaClass, DefaultEdge> graph;
 
 	public ClassFileIndex(ClasspathProvider classpath) {
@@ -49,16 +49,27 @@ public class ClassFileIndex {
 	}
 
 	@VisibleForTesting
-	ClassFileIndex(ClassBuilder classBuilder) {
+	ClassFileIndex(JavaClassBuilder classBuilder) {
 		builder = classBuilder;
 		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
 	}
 
 	public Set<JavaClass> findClasses(Collection<File> changedFiles) {
+		// First update class index
+		List<String> changedClassesNames = new ArrayList<String>();
+		for (File changedFile : changedFiles) {
+			String changedClassname = builder.classFileChanged(changedFile);
+			if (changedClassname != null) {
+				changedClassesNames.add(changedClassname);
+			}
+		}
+
+		// Then find dependencies
 		Set<JavaClass> changedClasses = newHashSet();
-		for (File file : changedFiles) {
-			JavaClass javaClass = loadClassFromFile(file);
+		for (String changedClassesName : changedClassesNames) {
+			JavaClass javaClass = builder.getClass(changedClassesName);
 			if (javaClass != null) {
+				addToIndex(javaClass);
 				changedClasses.add(javaClass);
 			}
 		}
@@ -69,7 +80,7 @@ public class ClassFileIndex {
 	public JavaClass findJavaClass(String classname) {
 		JavaClass clazz = findClass(classname);
 		if (clazz == null) {
-			clazz = builder.createClass(classname);
+			clazz = builder.getClass(classname);
 			if (clazz.locatedInClassFile()) {
 				addToIndex(clazz);
 			}
@@ -120,14 +131,6 @@ public class ClassFileIndex {
 				}
 			}
 		}
-	}
-
-	JavaClass loadClassFromFile(File file) {
-		JavaClass javaClass = builder.loadClass(file);
-		if (javaClass != null) {
-			addToIndex(javaClass);
-		}
-		return javaClass;
 	}
 
 	// Loop through all changed classes, adding their parents (and their

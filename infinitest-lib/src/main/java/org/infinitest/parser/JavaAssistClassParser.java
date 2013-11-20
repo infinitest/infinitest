@@ -39,16 +39,11 @@ import javassist.*;
 
 import org.infinitest.*;
 
-import com.google.common.cache.*;
-import com.google.common.hash.*;
+import com.google.common.collect.*;
+import com.google.common.hash.Hashing;
+import com.google.common.io.*;
 
-public class JavaAssistClassParser implements ClassParser {
-	private final static Cache<String, JavaAssistClass> classesByHash = CacheBuilder.newBuilder()
-		.concurrencyLevel(1)
-		.maximumWeight(100 * 1024 * 1024L)
-		.weigher(new JavaAssistClassWeigher())
-		.build();
-
+public class JavaAssistClassParser {
 	private final String classpath;
 	private ClassPool classPool;
 
@@ -56,14 +51,17 @@ public class JavaAssistClassParser implements ClassParser {
 		this.classpath = classpath;
 	}
 
+	public void clear() {
+		// classPool = null;
+	}
+
 	private ClassPool getClassPool() {
 		if (classPool == null) {
-			classPool = new ClassPool();
 			// This is used primarily for getting Java core objects like String
 			// and Integer,
 			// so if we don't have the project's JDK classpath, it's probably
 			// OK.
-			classPool.appendSystemPath();
+			classPool = new ClassPool(true);
 			try {
 				for (String pathElement : getPathElements()) {
 					classPool.appendClassPath(pathElement);
@@ -92,69 +90,60 @@ public class JavaAssistClassParser implements ClassParser {
 		return !new File(iter.next()).exists();
 	}
 
-	@Override
-	public JavaClass getClass(String className) {
-		CtClass ctClass = getCachedClass(className);
-		if (unparsableClass(ctClass)) {
-			return new UnparsableClass(className);
-		}
+	private final static Map<String, JavaClass> CLASSES_BY_NAME = Maps.newHashMap();
 
-		String hash = hash(ctClass);
-		JavaAssistClass clazz = classesByHash.getIfPresent(hash);
+	public JavaClass getClass(String className) {
+		JavaClass clazz = CLASSES_BY_NAME.get(className);
 		if (clazz == null) {
-			clazz = new JavaAssistClass(ctClass);
-			URL url = getClassPool().find(className);
-			if ((url != null) && url.getProtocol().equals("file")) {
-				clazz.setClassFile(new File(url.getFile()));
+			CtClass ctClass = getCachedClass(className);
+
+			if (unparsableClass(ctClass)) {
+				clazz = new UnparsableClass(className);
+			} else {
+				JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
+				URL url = getClassPool().find(className);
+				if ((url != null) && url.getProtocol().equals("file")) {
+					javaAssistClass.setClassFile(new File(url.getFile()));
+				}
+				clazz = javaAssistClass;
 			}
 
-			classesByHash.put(hash, clazz);
+			CLASSES_BY_NAME.put(className, clazz);
 		}
 
 		return clazz;
 	}
 
-	private boolean unparsableClass(CtClass cachedClass) {
-		return cachedClass.getClassFile2() == null;
-	}
+	private final static Map<String, CacheEntry> BY_PATH = Maps.newHashMap();
 
-	private CtClass getCachedClass(String className) {
-		try {
-			return getClassPool().get(className);
-		} catch (NotFoundException e) {
-			throw new MissingClassException("Expected to find " + className, e);
+	public static class CacheEntry {
+		final String sha1;
+		final String classname;
+
+		public CacheEntry(String sha1, String classname) {
+			this.sha1 = sha1;
+			this.classname = classname;
 		}
 	}
 
-	private String hash(CtClass ctClass) {
-		try {
-			String hash = Hashing.sha256().hashBytes(ctClass.toBytecode()).toString();
-			ctClass.defrost();
-			return hash;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (CannotCompileException e) {
-			throw new RuntimeException(e);
+	public String classFileChanged(File file) throws IOException {
+		String sha1 = Files.hash(file, Hashing.sha1()).toString();
+		CacheEntry entry = BY_PATH.get(file.getAbsolutePath());
+		if ((entry != null) && (entry.sha1.equals(sha1))) {
+			return entry.classname;
 		}
-	}
 
-	@Override
-	public JavaClass parse(File file) throws IOException {
 		FileInputStream inputStream = null;
 		try {
 			inputStream = new FileInputStream(file);
+
 			CtClass ctClass = getClassPool().makeClass(inputStream);
+			String classname = ctClass.getName();
 
-			String hash = hash(ctClass);
-			JavaAssistClass clazz = classesByHash.getIfPresent(hash);
-			if (clazz == null) {
-				clazz = new JavaAssistClass(ctClass);
-				clazz.setClassFile(file);
+			CLASSES_BY_NAME.remove(classname);
+			BY_PATH.put(file.getAbsolutePath(), new CacheEntry(sha1, classname));
 
-				classesByHash.put(hash, clazz);
-			}
-
-			return clazz;
+			return classname;
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
@@ -162,8 +151,15 @@ public class JavaAssistClassParser implements ClassParser {
 		}
 	}
 
-	@Override
-	public void clear() {
-		classPool = null;
+	private boolean unparsableClass(CtClass cachedClass) {
+		return cachedClass.getClassFile2() == null;
+	}
+
+	private CtClass getCachedClass(String className) {
+		CtClass clazz = getClassPool().getOrNull(className);
+		if (clazz == null) {
+			throw new MissingClassException("Expected to find " + className);
+		}
+		return clazz;
 	}
 }

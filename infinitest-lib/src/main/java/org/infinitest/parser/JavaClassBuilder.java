@@ -36,26 +36,25 @@ import org.infinitest.*;
 /**
  * @author Ben Rady
  */
-class JavaClassBuilder implements ClassBuilder {
-	private final ClassParser parser;
+class JavaClassBuilder {
+	private final JavaAssistClassParser parser;
 
 	JavaClassBuilder(ClasspathProvider classpath) {
 		this(new JavaAssistClassParser(classpath.getCompleteClasspath()));
 	}
 
-	public JavaClassBuilder(ClassParser parser) {
+	public JavaClassBuilder(JavaAssistClassParser parser) {
 		this.parser = parser;
 	}
 
-	@Override
-	public JavaClass createClass(String classname) {
+	public void clear() {
+		parser.clear();
+	}
+
+	public JavaClass getClass(String classname) {
 		try {
 			return parser.getClass(classname);
-		}
-		// CHECKSTYLE:OFF
-		catch (RuntimeException e)
-		// CHECKSTYLE:ON
-		{
+		} catch (RuntimeException e) {
 			// Can occur when a cached class disappears from the file system
 			rethrowIfSerious(e);
 			return new UnparsableClass(classname);
@@ -64,15 +63,10 @@ class JavaClassBuilder implements ClassBuilder {
 		}
 	}
 
-	@Override
-	public JavaClass loadClass(File file) {
+	public String classFileChanged(File file) {
 		try {
-			return parser.parse(file);
-		}
-		// CHECKSTYLE:OFF
-		catch (RuntimeException e)
-		// CHECKSTYLE:ON
-		{
+			return parser.classFileChanged(file);
+		} catch (RuntimeException e) {
 			// If the class goes missing after we read it in but before we
 			// process it,
 			// we might get an exception that looks like this
@@ -87,10 +81,5 @@ class JavaClassBuilder implements ClassBuilder {
 		if (!(e.getCause() instanceof NotFoundException)) {
 			throw e;
 		}
-	}
-
-	@Override
-	public void clear() {
-		parser.clear();
 	}
 }

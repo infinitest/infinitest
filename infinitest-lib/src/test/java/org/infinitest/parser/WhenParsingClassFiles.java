@@ -27,7 +27,7 @@
  */
 package org.infinitest.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 
@@ -39,7 +39,7 @@ import org.junit.*;
 import com.fakeco.fakeproduct.*;
 
 public class WhenParsingClassFiles {
-	private ClassParser parser;
+	private JavaAssistClassParser parser;
 
 	@Before
 	public void inContext() {

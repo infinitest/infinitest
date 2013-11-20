@@ -65,7 +65,9 @@ public class WhenTriggeringACoreUpdate {
 
 	@Test
 	public void shouldReturnTheNumberOfTestsRun() {
-		testsToExpect(new FakeJavaClass("FakeTest"));
+		JavaClass javaClass = mock(JavaClass.class);
+
+		testsToExpect(javaClass);
 
 		assertEquals(1, core.update(updatedFiles));
 	}

@@ -28,7 +28,6 @@
 package org.infinitest.parser;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
@@ -40,11 +39,11 @@ import org.junit.*;
 public class WhenClassFilesCannotBeFound {
 	@Test
 	public void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException {
-		ClassParser mockParser = mock(ClassParser.class);
+		JavaAssistClassParser mockParser = mock(JavaAssistClassParser.class);
 		JavaClassBuilder builder = new JavaClassBuilder(mockParser);
 		NotFoundException cause = new NotFoundException("");
-		when(mockParser.parse(any(File.class))).thenThrow(new RuntimeException(cause));
+		when(mockParser.classFileChanged(new File("UNKNOWN"))).thenThrow(new RuntimeException(cause));
 
-		assertNull(builder.loadClass(new File("")));
+		assertNull(builder.classFileChanged(new File("UNKNOWN")));
 	}
 }

@@ -69,7 +69,9 @@ public class CoreDependencySupport {
 				Set<JavaClass> testsToRun = new HashSet<JavaClass>();
 				if (!isCleared()) {
 					for (Class<?> each : testClasses) {
-						testsToRun.add(new FakeJavaClass(each.getName()));
+						JavaClass javaClass = mock(JavaClass.class);
+						when(javaClass.getName()).thenReturn(each.getName());
+						testsToRun.add(javaClass);
 					}
 				}
 
