@@ -42,7 +42,7 @@ public class WorkspaceStatusFactory {
 
 	public static WorkspaceStatus runningTests(int remainingTests, String currentTest) {
 		String message = "Running " + stripPackageName(currentTest) + " (" + (remainingTests - 1) + " remaining)";
-		return new TooltippedStatus(message, "Current test: " + currentTest);
+		return new TooltippedWarningStatus(message, "Current test: " + currentTest);
 	}
 
 	public static WorkspaceStatus testRunFinished(Collection<String> testsRan) {
@@ -84,6 +84,18 @@ public class WorkspaceStatusFactory {
 	private static class WarningStatus extends SimpleStringStatus {
 		public WarningStatus(String message) {
 			super(message);
+		}
+
+		@Override
+		public boolean warningMessage() {
+			return true;
+		}
+	}
+
+	private static class TooltippedWarningStatus extends TooltippedStatus {
+
+		public TooltippedWarningStatus(String message, String tooltip) {
+			super(message, tooltip);
 		}
 
 		@Override
