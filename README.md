@@ -70,3 +70,9 @@ Want to participate?
 --------------------
 
 You might want to read [this](https://github.com/infinitest/infinitest/wiki/Want-to-participate%3F)
+
+Credits
+-------
+
+[![Yourkit](http://infinitest.github.io/assets/img/yourkit.png)](http://www.yourkit.com/java/profiler/index.jsp)
+is kindly supporting Infinitest open source project with its full-featured Java Profiler.
