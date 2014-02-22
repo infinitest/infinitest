@@ -110,7 +110,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 				view.setProgressBarColor(FAILING_COLOR);
 				view.setProgress(view.getMaximumProgress());
 				view.setCurrentTest("");
-				showBalloon("Failure", MessageType.ERROR, 5000);
+				showBalloon("Failure", MessageType.ERROR, 5000L);
 				break;
 			case PASSING:
 				view.setProgressBarColor(PASSING_COLOR);
@@ -138,7 +138,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 				.createHtmlTextBalloonBuilder(html, type, null)
 				.setFadeoutTime(fadeoutTime)
 				.createBalloon()
-				.show(RelativePoint.getNorthEastOf(WindowManager.getInstance().getAllFrames()[0].getComponent()), Balloon.Position.above);
+				.show(RelativePoint.getNorthEastOf(WindowManager.getInstance().getAllProjectFrames()[0].getComponent()), Balloon.Position.above);
 		} catch (Exception e) {
 			// Ignore error. It's just a balloon
 		}
