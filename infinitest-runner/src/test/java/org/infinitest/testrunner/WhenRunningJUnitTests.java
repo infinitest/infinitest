@@ -32,6 +32,7 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.*;
+import org.infinitest.testrunner.FailingTestsWithCategories.IgnoreMe;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {
@@ -108,6 +109,29 @@ public class WhenRunningJUnitTests {
 		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
 		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldNotExecuteTestInExcludedCategories() {
+		String testWithCategories = FailingTestsWithCategories.class.getName();
+
+		TestResults results = runner.runTest(testWithCategories, IgnoreMe.class.getName());
+		assertEquals(2, size(results));
+
+		// test with both
+		// results = runner.runTest(testWithCategories,
+		// IgnoreMe.class.getName());
+		// assertEquals(1, size(results));
+
+		// more tests:
+		// - category is null
+		// - excluding a category that is not used
+		// - including categories
+		// - weird mixing of included and excluded
+
+		// try just setting the filter instead of the category classes
+
+		// still need to get this config from the infinitest.filters file though
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {

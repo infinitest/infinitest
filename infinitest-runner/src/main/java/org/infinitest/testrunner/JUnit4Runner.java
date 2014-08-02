@@ -35,14 +35,22 @@ import java.util.*;
 import junit.framework.*;
 
 import org.infinitest.*;
+import org.junit.experimental.categories.Categories.CategoryFilter;
 import org.junit.runner.*;
+import org.junit.runner.manipulation.*;
 import org.testng.*;
 
 public class JUnit4Runner implements NativeRunner {
 	private TestNGConfiguration config;
+	private String excludedCategory;
 
 	public void setTestNGConfiguration(TestNGConfiguration configuration) {
 		config = configuration;
+	}
+
+	public TestResults runTest(String testClass, String excludedCategories) {
+		this.excludedCategory = excludedCategories;
+		return runTest(testClass);
 	}
 
 	@Override
@@ -62,7 +70,7 @@ public class JUnit4Runner implements NativeRunner {
 
 		TestNG core = new TestNG();
 		core.addListener(eventTranslator);
-		core.setTestClasses(new Class[]{clazz});
+		core.setTestClasses(new Class[] { clazz });
 		if (config == null) {
 			config = new TestNGConfigurator().getConfig();
 		}
@@ -88,7 +96,35 @@ public class JUnit4Runner implements NativeRunner {
 		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
 			core.run(new UninstantiableJUnit3TestRequest(clazz));
 		} else {
-			core.run(classWithoutSuiteMethod(clazz));
+			Request request = classWithoutSuiteMethod(clazz);
+
+			if (excludedCategory != null) {
+				try {
+
+					request = request.filterWith(
+					// TODO consider setting the filter instead of just the
+					// class name
+							new Filter() {
+								Class<?> excludedCategoryClass = Class.forName(excludedCategory);
+								CategoryFilter include = CategoryFilter.include(excludedCategoryClass);
+
+								@Override
+								public boolean shouldRun(Description description) {
+									return !include.shouldRun(description);
+								}
+
+								@Override
+								public String describe() {
+									return "Not " + include.describe();
+								}
+							});
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			core.run(request);
 		}
 
 		return eventTranslator.getTestResults();
@@ -109,7 +145,7 @@ public class JUnit4Runner implements NativeRunner {
 		}
 
 		boolean hasWarnings() {
-			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
+			for (Enumeration<Test> tests = tests(); tests.hasMoreElements();) {
 				Test test = tests.nextElement();
 				if (test instanceof TestCase) {
 					TestCase testCase = (TestCase) test;
