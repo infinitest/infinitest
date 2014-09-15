@@ -38,10 +38,14 @@ public class PointOfFailure implements Serializable {
 	private final String message;
 
 	public PointOfFailure(String className, int lineNumber, String errorClassName, String message) {
-		this.className = className;
+		this.className = removeInnerClasses(className);
 		this.lineNumber = lineNumber;
 		this.errorClassName = errorClassName;
 		this.message = message;
+	}
+
+	private String removeInnerClasses(String className) {
+		return className.split("\\$")[0];
 	}
 
 	public String getMessage() {
