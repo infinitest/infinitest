@@ -25,29 +25,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest;
 
-import static org.junit.Assert.*;
+import java.util.*;
 
-import org.junit.*;
-import org.junit.experimental.categories.*;
+public class JUnitConfiguration {
 
-public class FailingTestsWithCategories {
+	private List<Class<?>> excludedCategories = Collections.emptyList();
 
-	@Test
-	public void shouldBeTested() {
-		fail();
+	public List<Class<?>> getExcludedCategories() {
+		return excludedCategories;
 	}
 
-	@Category(IgnoreMe.class)
-	@Test
-	public void shouldNotBeTested() {
-		fail();
+	public void setExcludedCategories(List<Class<?>> excludedCategories) {
+		this.excludedCategories = excludedCategories;
 	}
 
-	@Category(IgnoreMeToo.class)
-	@Test
-	public void shouldAlsoNotBeTested() {
-		fail();
-	}
 }

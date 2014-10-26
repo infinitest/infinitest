@@ -41,16 +41,17 @@ import org.junit.runner.manipulation.*;
 import org.testng.*;
 
 public class JUnit4Runner implements NativeRunner {
-	private TestNGConfiguration config;
-	private String excludedCategory;
+	private TestNGConfiguration testNGConfig;
+	private JUnitConfiguration junitConfig;
 
-	public void setTestNGConfiguration(TestNGConfiguration configuration) {
-		config = configuration;
+	// just used by tests, production code uses the TestRunConfigurator
+	void setTestNGConfiguration(TestNGConfiguration configuration) {
+		testNGConfig = configuration;
 	}
 
-	public TestResults runTest(String testClass, String excludedCategories) {
-		this.excludedCategory = excludedCategories;
-		return runTest(testClass);
+	// just used by tests, production code uses the TestRunConfigurator
+	void setJUnitConfiguration(JUnitConfiguration junitConfig) {
+		this.junitConfig = junitConfig;
 	}
 
 	@Override
@@ -71,13 +72,15 @@ public class JUnit4Runner implements NativeRunner {
 		TestNG core = new TestNG();
 		core.addListener(eventTranslator);
 		core.setTestClasses(new Class[] { clazz });
-		if (config == null) {
-			config = new TestNGConfigurator().getConfig();
+
+		// TODO RB try passing core to TestNGConfigurator.configure(core)
+		if (testNGConfig == null) {
+			testNGConfig = new TestRunConfigurator().getTestNGConfig();
 		}
-		core.setExcludedGroups(config.getExcludedGroups());
-		core.setGroups(config.getGroups());
-		if (config.getListeners() != null) {
-			for (Object listener : config.getListeners()) {
+		core.setExcludedGroups(testNGConfig.getExcludedGroups());
+		core.setGroups(testNGConfig.getGroups());
+		if (testNGConfig.getListeners() != null) {
+			for (Object listener : testNGConfig.getListeners()) {
 				core.addListener(listener);
 			}
 		}
@@ -98,30 +101,15 @@ public class JUnit4Runner implements NativeRunner {
 		} else {
 			Request request = classWithoutSuiteMethod(clazz);
 
-			if (excludedCategory != null) {
-				try {
-
-					request = request.filterWith(
-					// TODO consider setting the filter instead of just the
-					// class name
-							new Filter() {
-								Class<?> excludedCategoryClass = Class.forName(excludedCategory);
-								CategoryFilter include = CategoryFilter.include(excludedCategoryClass);
-
-								@Override
-								public boolean shouldRun(Description description) {
-									return !include.shouldRun(description);
-								}
-
-								@Override
-								public String describe() {
-									return "Not " + include.describe();
-								}
-							});
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			// TODO RB there's no test yet that TestRunConfigurator is ever
+			// consulted
+			if (junitConfig == null) {
+				junitConfig = new TestRunConfigurator().getJUnitConfig();
+			}
+			for (Class<?> excludedCategory : junitConfig.getExcludedCategories()) {
+				// TODO RB how might this be done better for future versions of
+				// junit?
+				request = request.filterWith(new ExcludeCategoryFilter(excludedCategory));
 			}
 
 			core.run(request);
@@ -137,6 +125,24 @@ public class JUnit4Runner implements NativeRunner {
 	private static boolean cannotBeInstantiated(Class<?> clazz) {
 		CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
 		return testSuite.hasWarnings();
+	}
+
+	private final class ExcludeCategoryFilter extends Filter {
+		private final CategoryFilter filterWithUnwantedCategory;
+
+		private ExcludeCategoryFilter(Class<?> unwantedCategoryClass) {
+			filterWithUnwantedCategory = CategoryFilter.include(unwantedCategoryClass);
+		}
+
+		@Override
+		public boolean shouldRun(Description description) {
+			return !filterWithUnwantedCategory.shouldRun(description);
+		}
+
+		@Override
+		public String describe() {
+			return "Not " + filterWithUnwantedCategory.describe();
+		}
 	}
 
 	private static class CustomTestSuite extends TestSuite {

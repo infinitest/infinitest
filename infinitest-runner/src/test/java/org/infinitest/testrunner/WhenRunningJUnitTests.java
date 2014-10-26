@@ -31,8 +31,9 @@ import static com.google.common.collect.Iterables.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
+import java.util.*;
+
 import org.infinitest.*;
-import org.infinitest.testrunner.FailingTestsWithCategories.IgnoreMe;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {
@@ -112,26 +113,35 @@ public class WhenRunningJUnitTests {
 	}
 
 	@Test
-	public void shouldNotExecuteTestInExcludedCategories() {
-		String testWithCategories = FailingTestsWithCategories.class.getName();
+	public void shouldNotExecuteTestInExcludedCategory() {
+		JUnitConfiguration junitConfig = new JUnitConfiguration();
 
-		TestResults results = runner.runTest(testWithCategories, IgnoreMe.class.getName());
+		junitConfig.setExcludedCategories(Arrays.<Class<?>> asList(IgnoreMe.class));
+
+		runner.setJUnitConfiguration(junitConfig);
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
 		assertEquals(2, size(results));
 
-		// test with both
-		// results = runner.runTest(testWithCategories,
-		// IgnoreMe.class.getName());
-		// assertEquals(1, size(results));
-
-		// more tests:
+		// TODO RB more features:
 		// - category is null
 		// - excluding a category that is not used
 		// - including categories
 		// - weird mixing of included and excluded
+	}
 
-		// try just setting the filter instead of the category classes
+	@Test
+	public void shouldNotExecuteTestInAnyExcludedCategories() {
+		JUnitConfiguration junitConfig = new JUnitConfiguration();
 
-		// still need to get this config from the infinitest.filters file though
+		junitConfig.setExcludedCategories(Arrays.<Class<?>> asList(IgnoreMe.class, IgnoreMeToo.class));
+
+		runner.setJUnitConfiguration(junitConfig);
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertEquals(1, size(results));
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {

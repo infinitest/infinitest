@@ -31,7 +31,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-public class TestNGConfigurator {
+public class TestRunConfigurator {
 	private static final String SUFFIX = "\\s?=\\s?(.+)";
 	private static final String PREFIX = "^\\s*#+\\s?";
 	private static final String EXCLUDED_GROUPS = "excluded-groups";
@@ -40,21 +40,20 @@ public class TestNGConfigurator {
 	private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
 	private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
 	private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
+	private static final Pattern EXCLUDED_CATEGORIES = Pattern.compile(PREFIX + "excluded-categories" + SUFFIX);
 	private static final File FILTERFILE = new File("infinitest.filters");
 
 	private final TestNGConfiguration testNGConfiguration;
-	private File file = null;
+	private final JUnitConfiguration junitConfiguration;
+	private final File file;
 
-	public TestNGConfigurator() {
-		testNGConfiguration = new TestNGConfiguration();
-		if (file == null) {
-			file = FILTERFILE;
-		}
-		updateFilterList();
+	public TestRunConfigurator() {
+		this(FILTERFILE);
 	}
 
-	public TestNGConfigurator(File filterFile) {
+	public TestRunConfigurator(File filterFile) {
 		testNGConfiguration = new TestNGConfiguration();
+		junitConfiguration = new JUnitConfiguration();
 		file = filterFile;
 
 		updateFilterList();
@@ -70,8 +69,12 @@ public class TestNGConfigurator {
 		}
 	}
 
-	public TestNGConfiguration getConfig() {
+	public TestNGConfiguration getTestNGConfig() {
 		return testNGConfiguration;
+	}
+
+	public JUnitConfiguration getJUnitConfig() {
+		return junitConfiguration;
 	}
 
 	private void tryToReadFilterFile() {
@@ -117,6 +120,26 @@ public class TestNGConfigurator {
 					testNGConfiguration.setListeners(listenerList);
 				}
 			}
+		}
+
+		// TODO RB refactor this method
+		matcher = EXCLUDED_CATEGORIES.matcher(line.trim());
+		if (matcher.matches()) {
+			String excludedCategoryNamesConfig = matcher.group(1);
+
+			String[] excludedCategoryNames = excludedCategoryNamesConfig.split(",");
+
+			List<Class<?>> excludedCategories = new ArrayList<Class<?>>();
+			for (String excludedCategoryName : excludedCategoryNames) {
+				try {
+					excludedCategories.add(Class.forName(excludedCategoryName));
+				} catch (ClassNotFoundException e) {
+					// TODO RB Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			junitConfiguration.setExcludedCategories(excludedCategories);
 		}
 	}
 
