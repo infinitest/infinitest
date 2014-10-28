@@ -21,9 +21,11 @@ You can pull only a shallow clone by specifying the number of commits you want w
 Build
 -----
 
-You need [maven](http://maven.apache.org/download.html). Did I mention that?
+You need [Maven](http://maven.apache.org/download.html). To run a reactor build in the repository root: 
 
 	mvn clean install
+
+This will compile, test and package all modules of the project in a single operation. 
 
 Finding your way around
 ------------------------
@@ -32,14 +34,14 @@ Finding your way around
 
 `testWorkspace` is a collection of sample projects that we use for exploratory testing. If you find something in the wild that makes Infinitest break, it's a good idea to reproduce it in testWorkspace, fix it, and then try it again to be sure you've really fixed it.
 
-Doing a release
-----------------
+Publishing a release
+--------------------
 
 When you finish something, release it. Also, make sure you don't push anything to github that's not in a releasable state. It's OK to temporarily disable stuff...just make sure that work in progress isn't breaking anything else.
 
-The `publish.sh` script will build a new version of the plugin, incrementing the version number, and copy it to the server hosting the update site. This copy will fail if Ben hasn't added your public ssh key to the server (See above). We like developers to do a release after implementing every feature.
+The `release.sh` script will build a new version of the plugin, incrementing the version number, and copy it to the server hosting the update site. This copy will fail if Ben hasn't added your public ssh key to the server (See above). We like developers to publish a release after implementing every feature.
 
-Running `publish.sh` copies the plugin to the experimental [update site](http://update.improvingworks.com/experimental). It's suggested that you publish and then test the plugin before promoting it to the main [update site](http://update.improvingworks.com). You do this using the `promote.sh` script.
+Running `release.sh` copies the plugin to the experimental [update site](http://update.improvingworks.com/experimental). It's suggested that you publish and then test the plugin before promoting it to the main [update site](http://update.improvingworks.com). You do this using the `promote.sh` script.
 
 Open Infinitest in Eclipse
 --------------------------------------------
