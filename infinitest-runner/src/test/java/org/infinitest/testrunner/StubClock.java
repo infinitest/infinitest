@@ -27,6 +27,9 @@
  */
 package org.infinitest.testrunner;
 
+/**
+ * A stub for the system clock, which is used in unit tests.
+ */
 public class StubClock implements Clock {
 	public long time;
 

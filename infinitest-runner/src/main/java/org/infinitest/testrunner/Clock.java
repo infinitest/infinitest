@@ -27,6 +27,9 @@
  */
 package org.infinitest.testrunner;
 
+/**
+ * Abstracts away the system clock, in order to make client code testable.
+ */
 public interface Clock {
-	long currentTimeMillis();
+  long currentTimeMillis();
 }

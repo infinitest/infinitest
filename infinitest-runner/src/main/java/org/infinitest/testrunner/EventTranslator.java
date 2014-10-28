@@ -34,6 +34,9 @@ import java.util.*;
 import org.junit.runner.*;
 import org.junit.runner.notification.*;
 
+/**
+ * A listener for JUnit lifecycle events during test execution.
+ */
 class EventTranslator extends RunListener {
 	private final List<TestEvent> eventsCollected;
 	private final Map<Description, MethodStats> methodStats;
