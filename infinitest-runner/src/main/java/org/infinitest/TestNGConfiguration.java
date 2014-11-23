@@ -29,6 +29,8 @@ package org.infinitest;
 
 import java.util.*;
 
+import org.testng.*;
+
 /** Provides testNG-settings. Just a data-provider, no logic here. */
 public class TestNGConfiguration {
 	private String excludedGroups;
@@ -57,5 +59,16 @@ public class TestNGConfiguration {
 
 	public void setListeners(List<Object> listenerList) {
 		listeners = listenerList;
+	}
+
+	public void configure(TestNG core) {
+		core.setExcludedGroups(excludedGroups);
+		core.setGroups(groups);
+
+		if (listeners != null) {
+			for (Object listener : listeners) {
+				core.addListener(listener);
+			}
+		}
 	}
 }

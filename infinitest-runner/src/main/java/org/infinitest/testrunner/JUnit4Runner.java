@@ -73,17 +73,11 @@ public class JUnit4Runner implements NativeRunner {
 		core.addListener(eventTranslator);
 		core.setTestClasses(new Class[] { clazz });
 
-		// TODO RB try passing core to TestNGConfigurator.configure(core)
 		if (testNGConfig == null) {
 			testNGConfig = new TestRunConfigurator().getTestNGConfig();
 		}
-		core.setExcludedGroups(testNGConfig.getExcludedGroups());
-		core.setGroups(testNGConfig.getGroups());
-		if (testNGConfig.getListeners() != null) {
-			for (Object listener : testNGConfig.getListeners()) {
-				core.addListener(listener);
-			}
-		}
+
+		testNGConfig.configure(core);
 
 		core.run();
 
