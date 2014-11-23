@@ -104,6 +104,42 @@ public class TestRunConfigurator {
 	}
 
 	private void addFilter(String line) {
+		addTestNGFilter(line);
+		addJUnitFilter(line);
+	}
+
+	private void addJUnitFilter(String line) {
+		Matcher matcher = EXCLUDED_CATEGORIES.matcher(line.trim());
+
+		if (!matcher.matches()) {
+			return;
+		}
+
+		String excludedCategoriesConfig = matcher.group(1);
+
+		String[] excludedCategoryNames = excludedCategoriesConfig.split(",");
+
+		List<Class<?>> excludedCategories = asClasses(excludedCategoryNames);
+
+		junitConfiguration.setExcludedCategories(excludedCategories);
+	}
+
+	private List<Class<?>> asClasses(String[] classNames) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+
+		for (String name : classNames) {
+			try {
+				classes.add(Class.forName(name));
+			} catch (ClassNotFoundException e) {
+				// ignore
+				// or should we throw a MissingClassException?
+			}
+		}
+
+		return classes;
+	}
+
+	private void addTestNGFilter(String line) {
 		Matcher matcher = EXCLUDED.matcher(line.trim());
 		if (matcher.matches()) {
 			String excludedGroups = matcher.group(1);
@@ -120,26 +156,6 @@ public class TestRunConfigurator {
 					testNGConfiguration.setListeners(listenerList);
 				}
 			}
-		}
-
-		// TODO RB refactor this method
-		matcher = EXCLUDED_CATEGORIES.matcher(line.trim());
-		if (matcher.matches()) {
-			String excludedCategoryNamesConfig = matcher.group(1);
-
-			String[] excludedCategoryNames = excludedCategoryNamesConfig.split(",");
-
-			List<Class<?>> excludedCategories = new ArrayList<Class<?>>();
-			for (String excludedCategoryName : excludedCategoryNames) {
-				try {
-					excludedCategories.add(Class.forName(excludedCategoryName));
-				} catch (ClassNotFoundException e) {
-					// TODO RB Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			junitConfiguration.setExcludedCategories(excludedCategories);
 		}
 	}
 
