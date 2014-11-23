@@ -123,12 +123,6 @@ public class WhenRunningJUnitTests {
 		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
 
 		assertEquals(2, size(results));
-
-		// TODO RB more features:
-		// - category is null
-		// - excluding a category that is not used
-		// - including categories
-		// - weird mixing of included and excluded
 	}
 
 	@Test
