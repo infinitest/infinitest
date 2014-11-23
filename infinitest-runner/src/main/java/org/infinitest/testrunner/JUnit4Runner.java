@@ -95,14 +95,16 @@ public class JUnit4Runner implements NativeRunner {
 		} else {
 			Request request = classWithoutSuiteMethod(clazz);
 
-			// TODO RB there's no test yet that TestRunConfigurator is ever
-			// consulted
 			if (junitConfig == null) {
 				junitConfig = new TestRunConfigurator().getJUnitConfig();
 			}
+
+			// Once we support JUnit 4.12, we can create just one filter instead
+			// with ExcludeCategories.createFilter(). eg:
+			//
+			// ExcludeCategories excludedFactory = new ExcludeCategories();
+			// excludedFactory.createFilter(junitConfig.getExcludedCategories());
 			for (Class<?> excludedCategory : junitConfig.getExcludedCategories()) {
-				// TODO RB how might this be done better for future versions of
-				// junit?
 				request = request.filterWith(new ExcludeCategoryFilter(excludedCategory));
 			}
 
