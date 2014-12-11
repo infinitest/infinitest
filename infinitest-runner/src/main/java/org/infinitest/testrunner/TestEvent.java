@@ -27,7 +27,8 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.Throwables.*;
+import junit.framework.AssertionFailedError;
+
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
 import java.io.*;
@@ -82,6 +83,10 @@ public class TestEvent implements Serializable {
 		simpleErrorClassName = error.getClass().getSimpleName();
 		fullErrorClassName = error.getClass().getName();
 	}
+
+  private static boolean isTestFailure(Throwable exception) {
+    return (exception instanceof AssertionFailedError) || (exception instanceof AssertionError);
+  }
 
 	public String getMessage() {
 		return null == message ? "" : message;
