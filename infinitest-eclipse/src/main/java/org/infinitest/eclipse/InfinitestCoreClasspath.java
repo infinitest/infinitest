@@ -80,9 +80,9 @@ public class InfinitestCoreClasspath {
         log(SEVERE, "Error creating testrunner classpath. Cannot find infinitest core bundle");
       } else {
         while (e.hasMoreElements()) {
-          URL resource = (URL) e.nextElement();
+          URL url = (URL) e.nextElement();
           try {
-            Files.copy(Resources.newInputStreamSupplier(resource), coreJarLocation);
+            Resources.asByteSource(url).copyTo(Files.asByteSink(coreJarLocation));
           } catch (IOException e1) {
             log(SEVERE, "Error creating testrunner classpath. Could not write to " + coreJarLocation);
             throw new RuntimeException(e1);
