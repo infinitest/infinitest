@@ -56,5 +56,5 @@ public enum CoreStatus {
 	/**
 	 * Building the class index. This is the initial state of the core.
 	 */
-	INDEXING;
+	INDEXING
 }
