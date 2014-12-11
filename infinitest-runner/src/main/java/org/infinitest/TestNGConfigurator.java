@@ -43,7 +43,7 @@ public class TestNGConfigurator {
 	private static final File FILTERFILE = new File("infinitest.filters");
 
 	private final TestNGConfiguration testNGConfiguration;
-	private File file = null;
+	private File file;
 
 	public TestNGConfigurator() {
 		testNGConfiguration = new TestNGConfiguration();
@@ -121,11 +121,11 @@ public class TestNGConfigurator {
 	}
 
 	private List<Object> createListenerList(String listeners) {
-		final String[] listenerTypes = listeners.split("\\s*,\\s*");
-		final List<Object> listenerList = new ArrayList<Object>();
-		for (final String listenername : listenerTypes) {
+		String[] listenerTypes = listeners.split("\\s*,\\s*");
+		List<Object> listenerList = new ArrayList<Object>();
+		for (String listenerName : listenerTypes) {
 			try {
-				listenerList.add(Class.forName(listenername).newInstance());
+				listenerList.add(Class.forName(listenerName).newInstance());
 			} catch (InstantiationException e) {
 				// unable to add this listener, just continue with the next.
 				e.printStackTrace();
