@@ -11,13 +11,14 @@
   <artifactId>infinitest-intellij</artifactId>
 
   <properties>
-    <intellij.version>11</intellij.version>
+    <intellij.version>12.1.4</intellij.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>project</id>
-      <url>file:${basedir}/src/repository</url>
+      <id>infinitest-intellij-openapi</id>
+      <name>Infinitest's Intellij Open API repository</name>
+      <url>http://dl.bintray.com/infinitest/intellij/</url>
     </repository>
   </repositories>
 
@@ -86,38 +87,38 @@
       <version>${guava.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>annotations</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-annotations</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>bootstrap</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-extensions</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>extensions</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-idea</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>idea</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-openapi</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>openapi</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-util</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.intellij.idea</groupId>
-      <artifactId>util</artifactId>
+      <groupId>org.infinitest.intellij</groupId>
+      <artifactId>intellij-trove4j</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -125,12 +126,6 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>trove</groupId>
-      <artifactId>trove</artifactId>
-      <version>1.0.2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
