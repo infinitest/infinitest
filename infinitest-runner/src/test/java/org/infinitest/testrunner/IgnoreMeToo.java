@@ -25,50 +25,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest;
+package org.infinitest.testrunner;
 
-import java.util.*;
-
-import org.testng.*;
-
-/** Provides testNG-settings. Just a data-provider, no logic here. */
-public class TestNGConfiguration {
-	private String excludedGroups;
-	private String groups;
-	private List<Object> listeners;
-
-	public void setExcludedGroups(String excludedGroups) {
-		this.excludedGroups = excludedGroups;
-	}
-
-	public String getExcludedGroups() {
-		return excludedGroups;
-	}
-
-	public void setGroups(String groupList) {
-		groups = groupList;
-	}
-
-	public String getGroups() {
-		return groups;
-	}
-
-	public List<Object> getListeners() {
-		return listeners;
-	}
-
-	public void setListeners(List<Object> listenerList) {
-		listeners = listenerList;
-	}
-
-	public void configure(TestNG core) {
-		core.setExcludedGroups(excludedGroups);
-		core.setGroups(groups);
-
-		if (listeners != null) {
-			for (Object listener : listeners) {
-				core.addListener(listener);
-			}
-		}
-	}
+/* acts as a JUnit Category for the pruposes of our tests */
+public interface IgnoreMeToo {
 }

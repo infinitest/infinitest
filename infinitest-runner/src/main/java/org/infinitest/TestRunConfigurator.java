@@ -31,7 +31,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-public class TestNGConfigurator {
+public class TestRunConfigurator {
 	private static final String SUFFIX = "\\s?=\\s?(.+)";
 	private static final String PREFIX = "^\\s*#+\\s?";
 	private static final String EXCLUDED_GROUPS = "excluded-groups";
@@ -40,21 +40,20 @@ public class TestNGConfigurator {
 	private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
 	private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
 	private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
+	private static final Pattern EXCLUDED_CATEGORIES = Pattern.compile(PREFIX + "excluded-categories" + SUFFIX);
 	private static final File FILTERFILE = new File("infinitest.filters");
 
 	private final TestNGConfiguration testNGConfiguration;
-	private File file = null;
+	private final JUnitConfiguration junitConfiguration;
+	private final File file;
 
-	public TestNGConfigurator() {
-		testNGConfiguration = new TestNGConfiguration();
-		if (file == null) {
-			file = FILTERFILE;
-		}
-		updateFilterList();
+	public TestRunConfigurator() {
+		this(FILTERFILE);
 	}
 
-	public TestNGConfigurator(File filterFile) {
+	public TestRunConfigurator(File filterFile) {
 		testNGConfiguration = new TestNGConfiguration();
+		junitConfiguration = new JUnitConfiguration();
 		file = filterFile;
 
 		updateFilterList();
@@ -70,8 +69,12 @@ public class TestNGConfigurator {
 		}
 	}
 
-	public TestNGConfiguration getConfig() {
+	public TestNGConfiguration getTestNGConfig() {
 		return testNGConfiguration;
+	}
+
+	public JUnitConfiguration getJUnitConfig() {
+		return junitConfiguration;
 	}
 
 	private void tryToReadFilterFile() {
@@ -101,6 +104,42 @@ public class TestNGConfigurator {
 	}
 
 	private void addFilter(String line) {
+		addTestNGFilter(line);
+		addJUnitFilter(line);
+	}
+
+	private void addJUnitFilter(String line) {
+		Matcher matcher = EXCLUDED_CATEGORIES.matcher(line.trim());
+
+		if (!matcher.matches()) {
+			return;
+		}
+
+		String excludedCategoriesConfig = matcher.group(1);
+
+		String[] excludedCategoryNames = excludedCategoriesConfig.split(",");
+
+		List<Class<?>> excludedCategories = asClasses(excludedCategoryNames);
+
+		junitConfiguration.setExcludedCategories(excludedCategories);
+	}
+
+	private List<Class<?>> asClasses(String[] classNames) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+
+		for (String name : classNames) {
+			try {
+				classes.add(Class.forName(name));
+			} catch (ClassNotFoundException e) {
+				// ignore
+				// or should we throw a MissingClassException?
+			}
+		}
+
+		return classes;
+	}
+
+	private void addTestNGFilter(String line) {
 		Matcher matcher = EXCLUDED.matcher(line.trim());
 		if (matcher.matches()) {
 			String excludedGroups = matcher.group(1);

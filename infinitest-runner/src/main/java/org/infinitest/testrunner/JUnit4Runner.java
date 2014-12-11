@@ -35,7 +35,9 @@ import java.util.*;
 import junit.framework.*;
 
 import org.infinitest.*;
+import org.junit.experimental.categories.Categories.CategoryFilter;
 import org.junit.runner.*;
+import org.junit.runner.manipulation.*;
 import org.testng.*;
 
 /**
@@ -45,10 +47,17 @@ import org.testng.*;
  * two classes with the respective JUnit/TestNG functionality.
  */
 public class JUnit4Runner implements NativeRunner {
-	private TestNGConfiguration config;
+	private TestNGConfiguration testNGConfig;
+	private JUnitConfiguration junitConfig;
 
-	public void setTestNGConfiguration(TestNGConfiguration configuration) {
-		config = configuration;
+	// just used by tests, production code uses the TestRunConfigurator
+	void setTestNGConfiguration(TestNGConfiguration configuration) {
+		testNGConfig = configuration;
+	}
+
+	// just used by tests, production code uses the TestRunConfigurator
+	void setJUnitConfiguration(JUnitConfiguration junitConfig) {
+		this.junitConfig = junitConfig;
 	}
 
 	@Override
@@ -68,17 +77,13 @@ public class JUnit4Runner implements NativeRunner {
 
 		TestNG core = new TestNG();
 		core.addListener(eventTranslator);
-		core.setTestClasses(new Class[]{clazz});
-		if (config == null) {
-			config = new TestNGConfigurator().getConfig();
+		core.setTestClasses(new Class[] { clazz });
+
+		if (testNGConfig == null) {
+			testNGConfig = new TestRunConfigurator().getTestNGConfig();
 		}
-		core.setExcludedGroups(config.getExcludedGroups());
-		core.setGroups(config.getGroups());
-		if (config.getListeners() != null) {
-			for (Object listener : config.getListeners()) {
-				core.addListener(listener);
-			}
-		}
+
+		testNGConfig.configure(core);
 
 		core.run();
 
@@ -94,7 +99,22 @@ public class JUnit4Runner implements NativeRunner {
 		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
 			core.run(new UninstantiableJUnit3TestRequest(clazz));
 		} else {
-			core.run(classWithoutSuiteMethod(clazz));
+			Request request = classWithoutSuiteMethod(clazz);
+
+			if (junitConfig == null) {
+				junitConfig = new TestRunConfigurator().getJUnitConfig();
+			}
+
+			// Once we support JUnit 4.12, we can create just one filter instead
+			// with ExcludeCategories.createFilter(). eg:
+			//
+			// ExcludeCategories excludedFactory = new ExcludeCategories();
+			// excludedFactory.createFilter(junitConfig.getExcludedCategories());
+			for (Class<?> excludedCategory : junitConfig.getExcludedCategories()) {
+				request = request.filterWith(new ExcludeCategoryFilter(excludedCategory));
+			}
+
+			core.run(request);
 		}
 
 		return eventTranslator.getTestResults();
@@ -109,13 +129,31 @@ public class JUnit4Runner implements NativeRunner {
 		return testSuite.hasWarnings();
 	}
 
+	private final class ExcludeCategoryFilter extends Filter {
+		private final CategoryFilter filterWithUnwantedCategory;
+
+		private ExcludeCategoryFilter(Class<?> unwantedCategoryClass) {
+			filterWithUnwantedCategory = CategoryFilter.include(unwantedCategoryClass);
+		}
+
+		@Override
+		public boolean shouldRun(Description description) {
+			return !filterWithUnwantedCategory.shouldRun(description);
+		}
+
+		@Override
+		public String describe() {
+			return "Not " + filterWithUnwantedCategory.describe();
+		}
+	}
+
 	private static class CustomTestSuite extends TestSuite {
 		public CustomTestSuite(Class<? extends TestCase> testClass) {
 			super(testClass);
 		}
 
 		boolean hasWarnings() {
-			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
+			for (Enumeration<Test> tests = tests(); tests.hasMoreElements();) {
 				Test test = tests.nextElement();
 				if (test instanceof TestCase) {
 					TestCase testCase = (TestCase) test;

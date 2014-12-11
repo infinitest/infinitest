@@ -29,46 +29,16 @@ package org.infinitest;
 
 import java.util.*;
 
-import org.testng.*;
+public class JUnitConfiguration {
 
-/** Provides testNG-settings. Just a data-provider, no logic here. */
-public class TestNGConfiguration {
-	private String excludedGroups;
-	private String groups;
-	private List<Object> listeners;
+	private List<Class<?>> excludedCategories = Collections.emptyList();
 
-	public void setExcludedGroups(String excludedGroups) {
-		this.excludedGroups = excludedGroups;
+	public List<Class<?>> getExcludedCategories() {
+		return excludedCategories;
 	}
 
-	public String getExcludedGroups() {
-		return excludedGroups;
+	public void setExcludedCategories(List<Class<?>> excludedCategories) {
+		this.excludedCategories = excludedCategories;
 	}
 
-	public void setGroups(String groupList) {
-		groups = groupList;
-	}
-
-	public String getGroups() {
-		return groups;
-	}
-
-	public List<Object> getListeners() {
-		return listeners;
-	}
-
-	public void setListeners(List<Object> listenerList) {
-		listeners = listenerList;
-	}
-
-	public void configure(TestNG core) {
-		core.setExcludedGroups(excludedGroups);
-		core.setGroups(groups);
-
-		if (listeners != null) {
-			for (Object listener : listeners) {
-				core.addListener(listener);
-			}
-		}
-	}
 }

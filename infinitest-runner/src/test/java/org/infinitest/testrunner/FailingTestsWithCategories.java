@@ -25,50 +25,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest;
+package org.infinitest.testrunner;
 
-import java.util.*;
+import static org.junit.Assert.*;
 
-import org.testng.*;
+import org.junit.*;
+import org.junit.experimental.categories.*;
 
-/** Provides testNG-settings. Just a data-provider, no logic here. */
-public class TestNGConfiguration {
-	private String excludedGroups;
-	private String groups;
-	private List<Object> listeners;
+public class FailingTestsWithCategories {
 
-	public void setExcludedGroups(String excludedGroups) {
-		this.excludedGroups = excludedGroups;
+	@Test
+	public void shouldBeTested() {
+		fail();
 	}
 
-	public String getExcludedGroups() {
-		return excludedGroups;
+	@Category(IgnoreMe.class)
+	@Test
+	public void shouldNotBeTested() {
+		fail();
 	}
 
-	public void setGroups(String groupList) {
-		groups = groupList;
-	}
-
-	public String getGroups() {
-		return groups;
-	}
-
-	public List<Object> getListeners() {
-		return listeners;
-	}
-
-	public void setListeners(List<Object> listenerList) {
-		listeners = listenerList;
-	}
-
-	public void configure(TestNG core) {
-		core.setExcludedGroups(excludedGroups);
-		core.setGroups(groups);
-
-		if (listeners != null) {
-			for (Object listener : listeners) {
-				core.addListener(listener);
-			}
-		}
+	@Category(IgnoreMeToo.class)
+	@Test
+	public void shouldAlsoNotBeTested() {
+		fail();
 	}
 }

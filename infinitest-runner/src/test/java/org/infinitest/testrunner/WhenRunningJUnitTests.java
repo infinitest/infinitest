@@ -31,6 +31,8 @@ import static com.google.common.collect.Iterables.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
+import java.util.*;
+
 import org.infinitest.*;
 import org.junit.*;
 
@@ -108,6 +110,32 @@ public class WhenRunningJUnitTests {
 		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
 		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldNotExecuteTestInExcludedCategory() {
+		JUnitConfiguration junitConfig = new JUnitConfiguration();
+
+		junitConfig.setExcludedCategories(Arrays.<Class<?>> asList(IgnoreMe.class));
+
+		runner.setJUnitConfiguration(junitConfig);
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertEquals(2, size(results));
+	}
+
+	@Test
+	public void shouldNotExecuteTestInAnyExcludedCategories() {
+		JUnitConfiguration junitConfig = new JUnitConfiguration();
+
+		junitConfig.setExcludedCategories(Arrays.<Class<?>> asList(IgnoreMe.class, IgnoreMeToo.class));
+
+		runner.setJUnitConfiguration(junitConfig);
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertEquals(1, size(results));
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
