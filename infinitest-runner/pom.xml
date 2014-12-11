@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.infinitest</groupId>
     <artifactId>infinitest-parent</artifactId>
-    <version>5.1.113</version>
+    <version>5.1.114-SNAPSHOT</version>
   </parent>
 
   <name>Infinitest Runner</name>
