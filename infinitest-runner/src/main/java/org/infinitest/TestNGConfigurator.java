@@ -121,22 +121,17 @@ public class TestNGConfigurator {
 	}
 
 	private List<Object> createListenerList(String listeners) {
-		String[] listenerTypes = listeners.split("\\s*,\\s*");
 		List<Object> listenerList = new ArrayList<Object>();
-		for (String listenerName : listenerTypes) {
+
+    for (String listenerName : listeners.split("\\s*,\\s*")) {
 			try {
 				listenerList.add(Class.forName(listenerName).newInstance());
-			} catch (InstantiationException e) {
-				// unable to add this listener, just continue with the next.
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// unable to add this listener, just continue with the next.
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
+			} catch (Exception e) {
 				// unable to add this listener, just continue with the next.
 				e.printStackTrace();
 			}
 		}
+
 		return listenerList;
 	}
 }
