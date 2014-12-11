@@ -33,10 +33,12 @@ import org.infinitest.util.*;
 import org.junit.*;
 
 public class PointOfFailureTest extends EqualityTestSupport {
+	private static final String TEST_CLASS_NAME = "org.infinitest.SomeTest";
+
 	@Test
 	public void shouldBeEqualIfExactMatch() {
-		PointOfFailure first = new PointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
-		PointOfFailure second = new PointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
+		PointOfFailure first = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
+		PointOfFailure second = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 
 		assertEquals(first.hashCode(), second.hashCode());
 		assertEquals(first, second);
@@ -44,24 +46,24 @@ public class PointOfFailureTest extends EqualityTestSupport {
 
 	@Test
 	public void shouldNotBeEqualIfAnyFieldDiffers() {
-		PointOfFailure pointOfFailure = new PointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
+		PointOfFailure pointOfFailure = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 
-		PointOfFailure differentTestClass = new PointOfFailure("SomeOtherTest", 1, NullPointerException.class.getName(), "");
+		PointOfFailure differentTestClass = createPointOfFailure("SomeOtherTest", 1, NullPointerException.class.getName(), "");
 		assertFalse(pointOfFailure.equals(differentTestClass));
 
-		PointOfFailure differentLineNumber = new PointOfFailure("SomeTest", 2, NullPointerException.class.getName(), "");
+		PointOfFailure differentLineNumber = createPointOfFailure("SomeTest", 2, NullPointerException.class.getName(), "");
 		assertFalse(pointOfFailure.equals(differentLineNumber));
 
-		PointOfFailure differentErrorClass = new PointOfFailure("SomeTest", 1, AssertionError.class.getName(), "");
+		PointOfFailure differentErrorClass = createPointOfFailure("SomeTest", 1, AssertionError.class.getName(), "");
 		assertFalse(pointOfFailure.equals(differentErrorClass));
 
-		PointOfFailure differentMessage = new PointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "foo");
+		PointOfFailure differentMessage = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "foo");
 		assertFalse(pointOfFailure.equals(differentMessage));
 	}
 
 	@Test
 	public void shouldProduceRepresentativeToString() {
-		PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1, NullPointerException.class.getSimpleName(), "message");
+		PointOfFailure pointOfFailure = createPointOfFailure(TEST_CLASS_NAME, 1, NullPointerException.class.getSimpleName(), "message");
 
 		String expected = "org.infinitest.SomeTest:1 - NullPointerException(message)";
 		assertEquals(expected, pointOfFailure.toString());
@@ -69,27 +71,44 @@ public class PointOfFailureTest extends EqualityTestSupport {
 
 	@Test
 	public void shouldProvideLineNumberAndClassName() {
-		String className = "org.infinitest.SomeTest";
-		PointOfFailure pointOfFailure = new PointOfFailure(className, 1, "", "");
+		PointOfFailure pointOfFailure = createSimplePointOfFailure(TEST_CLASS_NAME);
 		assertEquals(1, pointOfFailure.getLineNumber());
-		assertEquals(className, pointOfFailure.getClassName());
+		assertEquals(TEST_CLASS_NAME, pointOfFailure.getClassName());
+	}
+
+	@Test
+	public void shouldRemoveInnerClassesNamesAppendedToClassName() {
+		String INNER_CLASS_NAME = "$InnerClass";
+		PointOfFailure pointOfFailure1 = createSimplePointOfFailure(TEST_CLASS_NAME + INNER_CLASS_NAME);
+		PointOfFailure pointOfFailure2 = createSimplePointOfFailure(TEST_CLASS_NAME + INNER_CLASS_NAME + INNER_CLASS_NAME);
+
+		assertEquals(TEST_CLASS_NAME, pointOfFailure1.getClassName());
+		assertEquals(TEST_CLASS_NAME, pointOfFailure2.getClassName());
+	}
+
+	private PointOfFailure createSimplePointOfFailure(String className) {
+		return createPointOfFailure(className, 1, "", "");
 	}
 
 	@Test
 	public void shouldProduceRepresentativeToStringWithoutMessage() {
-		PointOfFailure pointOfFailure = new PointOfFailure("org.infinitest.SomeTest", 1, NullPointerException.class.getSimpleName(), null);
+		PointOfFailure pointOfFailure = createPointOfFailure(TEST_CLASS_NAME, 1, NullPointerException.class.getSimpleName(), null);
 
 		String expected = "org.infinitest.SomeTest:1 - NullPointerException";
 		assertEquals(expected, pointOfFailure.toString());
 	}
 
+	private PointOfFailure createPointOfFailure(String className, int lineNumber, String errorClassName, String message) {
+		return new PointOfFailure(className, lineNumber, errorClassName, message);
+	}
+
 	@Override
 	protected Object createEqualInstance() {
-		return new PointOfFailure("SomeTest", 1, NullPointerException.class.getName(), null);
+		return createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), null);
 	}
 
 	@Override
 	protected Object createUnequalInstance() {
-		return new PointOfFailure("SomeTest", 1, RuntimeException.class.getName(), null);
+		return createPointOfFailure("SomeTest", 1, RuntimeException.class.getName(), null);
 	}
 }
