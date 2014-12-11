@@ -66,7 +66,7 @@ public class WhenAStackTraceElementIsSelected {
 		resourceLookup = mock(ResourceLookup.class);
 		listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace) {
 			@Override
-			protected void jumpToMarker(IMarker marker) throws PartInitException {
+			protected void jumpToMarker(IMarker marker) {
 				selectedMarker = marker;
 			}
 		};

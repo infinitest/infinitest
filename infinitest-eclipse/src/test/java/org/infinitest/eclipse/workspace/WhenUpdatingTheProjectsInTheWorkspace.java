@@ -74,7 +74,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	private ProjectFacade newFacade(IJavaProject project) {
 		return new ProjectFacade(project) {
 			@Override
-			public String rawClasspath() throws CoreException {
+			public String rawClasspath() {
 				return "classpath";
 			}
 		};
