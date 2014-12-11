@@ -18,7 +18,7 @@ read release_message
 rm -Rf .privatebuild > /dev/null
 cd ${project_root}
 git stash save --quiet "Before publish"
-git clean -xdf
+git clean -df
 
 # Increment Version
 CURRENT=`grep "<version>" -i pom.xml --max-count 1 | sed -e "s/.*<version>\(.*\)<\/version>/\1/" | sed -e "s/-SNAPSHOT//"`
