@@ -42,57 +42,37 @@ public class TestNGConfigurator {
 	private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
 	private static final File FILTERFILE = new File("infinitest.filters");
 
-	private final TestNGConfiguration testNGConfiguration;
-	private File file;
-
 	public TestNGConfigurator() {
-		testNGConfiguration = new TestNGConfiguration();
-		if (file == null) {
-			file = FILTERFILE;
-		}
-		updateFilterList();
 	}
 
-	public TestNGConfigurator(File filterFile) {
-		testNGConfiguration = new TestNGConfiguration();
-		file = filterFile;
+  public TestNGConfiguration readConfig() {
+    return readConfig(FILTERFILE);
+  }
 
-		updateFilterList();
+	TestNGConfiguration readConfig(File file) {
+    TestNGConfiguration configuration = new TestNGConfiguration();
+
+    if ((file == null) || !file.exists()) {
+      return configuration;
+    }
+
+    try {
+      readFilters(file, configuration);
+    } catch (IOException e) {
+      throw new RuntimeException("Something horrible happened to the filter file", e);
+    }
+
+    return configuration;
 	}
 
-	public void updateFilterList() {
-		if (file == null) {
-			return;
-		}
-
-		if (file.exists()) {
-			tryToReadFilterFile();
-		}
-	}
-
-	public TestNGConfiguration getConfig() {
-		return testNGConfiguration;
-	}
-
-	private void tryToReadFilterFile() {
-		try {
-			readFilterFile();
-		} catch (IOException e) {
-			throw new RuntimeException("Something horrible happened to the filter file", e);
-		}
-	}
-
-	private void readFilterFile() throws IOException {
+	private void readFilters(File file, TestNGConfiguration configuration) throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			String line;
-			do {
-				line = reader.readLine();
-				if (line != null) {
-					addFilter(line);
-				}
-			} while (line != null);
+			while ((line = reader.readLine()) != null) {
+        addFilter(line, configuration);
+			}
 		} finally {
 			if (reader != null) {
 				reader.close();
@@ -100,25 +80,25 @@ public class TestNGConfigurator {
 		}
 	}
 
-	private void addFilter(String line) {
+	private void addFilter(String line, TestNGConfiguration configuration) {
 		Matcher matcher = EXCLUDED.matcher(line.trim());
 		if (matcher.matches()) {
 			String excludedGroups = matcher.group(1);
-			testNGConfiguration.setExcludedGroups(excludedGroups);
+      configuration.setExcludedGroups(excludedGroups);
       return;
 		}
 
     matcher = INCLUDED.matcher(line);
     if (matcher.matches()) {
       String includedGroups = matcher.group(1).trim();
-      testNGConfiguration.setGroups(includedGroups);
+      configuration.setGroups(includedGroups);
       return;
     }
 
     matcher = LISTENER.matcher(line);
     if (matcher.matches()) {
       List<Object> listenerList = createListenerList(matcher.group(1).trim());
-      testNGConfiguration.setListeners(listenerList);
+      configuration.setListeners(listenerList);
     }
   }
 

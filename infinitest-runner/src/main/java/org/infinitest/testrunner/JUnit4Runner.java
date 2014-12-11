@@ -70,7 +70,7 @@ public class JUnit4Runner implements NativeRunner {
 		core.addListener(eventTranslator);
 		core.setTestClasses(new Class[]{clazz});
 		if (config == null) {
-			config = new TestNGConfigurator().getConfig();
+			config = new TestNGConfigurator().readConfig();
 		}
 		core.setExcludedGroups(config.getExcludedGroups());
 		core.setGroups(config.getGroups());
