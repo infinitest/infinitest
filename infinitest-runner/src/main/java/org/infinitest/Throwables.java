@@ -29,6 +29,7 @@ package org.infinitest;
 
 import junit.framework.*;
 
+// TODO: it seems this class is not used, should we remove it?
 public abstract class Throwables {
 
 	public static boolean isTestFailure(Throwable exception) {

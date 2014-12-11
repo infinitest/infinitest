@@ -29,6 +29,9 @@ package org.infinitest.testrunner;
 
 import java.io.*;
 
+/**
+ * Represents the source code location where a test failed.
+ */
 public class PointOfFailure implements Serializable {
 	private static final long serialVersionUID = -1L;
 

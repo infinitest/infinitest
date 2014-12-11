@@ -38,6 +38,12 @@ import org.infinitest.*;
 import org.junit.runner.*;
 import org.testng.*;
 
+/**
+ * A proxy which delegates actual test execution JUnit or TestNG.
+ *
+ * TODO: we should either rename this class or split it up in
+ * two classes with the respective JUnit/TestNG functionality.
+ */
 public class JUnit4Runner implements NativeRunner {
 	private TestNGConfiguration config;
 

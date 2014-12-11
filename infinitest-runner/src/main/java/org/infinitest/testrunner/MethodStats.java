@@ -29,9 +29,14 @@ package org.infinitest.testrunner;
 
 import java.io.*;
 
+/**
+ * Holds temporal statistics about test method execution.
+ */
 public class MethodStats implements Serializable {
 	private static final long serialVersionUID = -8853619641593524214L;
 
+  // TODO: we could encapsulate write access to startTime/stopTime
+  // with something like start(timestamp) and stop(timestamp) methods.
 	public long startTime;
 	public long stopTime;
 	public final String methodName;
