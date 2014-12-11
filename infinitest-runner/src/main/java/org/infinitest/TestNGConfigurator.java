@@ -105,20 +105,22 @@ public class TestNGConfigurator {
 		if (matcher.matches()) {
 			String excludedGroups = matcher.group(1);
 			testNGConfiguration.setExcludedGroups(excludedGroups);
-		} else {
-			matcher = INCLUDED.matcher(line);
-			if (matcher.matches()) {
-				String includedGroups = matcher.group(1).trim();
-				testNGConfiguration.setGroups(includedGroups);
-			} else {
-				matcher = LISTENER.matcher(line);
-				if (matcher.matches()) {
-					final List<Object> listenerList = createListenerList(matcher.group(1).trim());
-					testNGConfiguration.setListeners(listenerList);
-				}
-			}
+      return;
 		}
-	}
+
+    matcher = INCLUDED.matcher(line);
+    if (matcher.matches()) {
+      String includedGroups = matcher.group(1).trim();
+      testNGConfiguration.setGroups(includedGroups);
+      return;
+    }
+
+    matcher = LISTENER.matcher(line);
+    if (matcher.matches()) {
+      List<Object> listenerList = createListenerList(matcher.group(1).trim());
+      testNGConfiguration.setListeners(listenerList);
+    }
+  }
 
 	private List<Object> createListenerList(String listeners) {
 		List<Object> listenerList = new ArrayList<Object>();
