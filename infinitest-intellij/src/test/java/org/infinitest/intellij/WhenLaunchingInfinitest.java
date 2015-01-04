@@ -27,6 +27,7 @@
  */
 package org.infinitest.intellij;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -34,28 +35,22 @@ import javax.swing.*;
 
 import org.infinitest.intellij.plugin.launcher.*;
 import org.junit.*;
-import org.mockito.*;
 
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.wm.*;
 
 public class WhenLaunchingInfinitest {
-	private ModuleSettings moduleSettings;
+	private ModuleSettings moduleSettings = new FakeModuleSettings("foo");
 
-	@Before
-	public void setUp() {
-		moduleSettings = new FakeModuleSettings("foo");
-	}
+	private ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
+	private FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
+	private ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
 
 	@Test
 	public void shouldNameToolWindowAfterModule() {
-		ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
-		FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
-		ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
-
-		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
+		InfinitestLauncher launcher = new InfinitestLauncher(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
 		launcher.launchInfinitest();
 
-		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("foo"));
+		verify(registry).registerToolWindow(any(JPanel.class), eq("foo"));
 	}
 }

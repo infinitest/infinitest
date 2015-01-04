@@ -75,7 +75,7 @@ public class InfinitestFacetConfiguration implements FacetConfiguration, Infinit
 		FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
 		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
 
-		return new InfinitestLauncherImpl(moduleSettings, toolWindowRegistry, compilationNotifier, navigator, fileEditorManager, toolWindowManager);
+		return new InfinitestLauncher(moduleSettings, toolWindowRegistry, compilationNotifier, navigator, fileEditorManager, toolWindowManager);
 	}
 
 	@Override
