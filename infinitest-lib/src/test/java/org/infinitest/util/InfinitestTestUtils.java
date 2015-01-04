@@ -35,8 +35,6 @@ import java.util.*;
 
 import org.infinitest.testrunner.*;
 
-import com.google.common.io.*;
-
 public abstract class InfinitestTestUtils {
 	private static final String BACKUP_EXT = ".infinitest_bak";
 
@@ -74,7 +72,7 @@ public abstract class InfinitestTestUtils {
 		return new File(baseDir, classname.replace(".", "/") + ".class");
 	}
 
-	public static void copyFile(File in, File out) throws Exception {
+	private static void copyFile(File in, File out) throws Exception {
 		if (!out.exists()) {
 			out.createNewFile();
 		}
@@ -94,10 +92,6 @@ public abstract class InfinitestTestUtils {
 		fos.close();
 	}
 
-	public static List<String> emptyStringList() {
-		return new ArrayList<String>();
-	}
-
 	public static boolean testIsBeingRunFromInfinitest() {
 		StackTraceElement[] currentStack = currentThread().getStackTrace();
 		List<String> classNames = InfinitestUtils.getClassNames(currentStack);
@@ -112,13 +106,5 @@ public abstract class InfinitestTestUtils {
 				return stack;
 			}
 		};
-	}
-
-	public static InputStream toInputStream(String text) {
-		return new ByteArrayInputStream(text.getBytes());
-	}
-
-	public static String toString(InputStream stream) throws IOException {
-		return new String(ByteStreams.toByteArray(stream));
 	}
 }

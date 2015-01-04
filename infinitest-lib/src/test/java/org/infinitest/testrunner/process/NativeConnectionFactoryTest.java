@@ -35,6 +35,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.util.concurrent.*;
 
+import com.google.common.io.ByteStreams;
 import org.infinitest.ConsoleOutputListener.OutputType;
 import org.infinitest.testrunner.*;
 import org.infinitest.util.*;
@@ -86,7 +87,7 @@ public class NativeConnectionFactoryTest {
 			@Override
 			public void processStream(InputStream stream, OutputType type) {
 				try {
-					errorMsg = InfinitestTestUtils.toString(stream);
+					errorMsg = new String(ByteStreams.toByteArray(stream));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}

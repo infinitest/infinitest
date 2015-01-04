@@ -36,6 +36,8 @@ import static org.junit.Assert.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;
 
+import java.util.Collections;
+
 public class WhenATestFails extends ResultCollectorTestSupport {
 	private DefaultInfinitestCore core;
 	private ControlledEventQueue eventQueue;
@@ -51,7 +53,7 @@ public class WhenATestFails extends ResultCollectorTestSupport {
 	@Test
 	public void shouldChangeStatusToFailing() {
 		testRun(methodFailed("", "", "", null));
-		collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
+		collector.testQueueUpdated(new TestQueueEvent(Collections.<String>emptyList(), 1));
 		collector.testRunComplete();
 		assertEquals(FAILING, collector.getStatus());
 	}

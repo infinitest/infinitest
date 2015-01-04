@@ -28,11 +28,12 @@
 package org.infinitest.testrunner;
 
 import static org.infinitest.ConsoleOutputListener.OutputType.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.*;
 import org.junit.*;
+
+import java.io.ByteArrayInputStream;
 
 public class ConsoleOutputProcessorTest {
 	@Test
@@ -45,7 +46,7 @@ public class ConsoleOutputProcessorTest {
 				updatedText.append(newText);
 			}
 		});
-		new ConsoleOutputProcessor(toInputStream("hello"), STDERR, eventSupport).run();
+		new ConsoleOutputProcessor(new ByteArrayInputStream("hello".getBytes()), STDERR, eventSupport).run();
 		assertEquals("hello", updatedText.toString());
 	}
 }

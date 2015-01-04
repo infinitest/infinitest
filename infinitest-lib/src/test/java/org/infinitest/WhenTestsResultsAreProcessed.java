@@ -70,7 +70,7 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	public void shouldChangeStatusToRunning() {
 		collector.addStatusChangeListener(statusListener);
 		collector.testQueueUpdated(new TestQueueEvent(asList("aTest"), 1));
-		collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
+		collector.testQueueUpdated(new TestQueueEvent(Collections.<String>emptyList(), 1));
 		statusListener.assertStatesChanged(RUNNING);
 
 		collector.testRunComplete();
