@@ -35,25 +35,21 @@ import org.infinitest.intellij.plugin.swingui.*;
 import org.junit.*;
 
 public class WhenTestRunCompleted {
-
-	private InfinitestView mockView;
 	private InfinitestPresenter presenter;
-	private InfinitestCore mockCore;
 	private PresenterListener mockPresenterListener;
 	private PresenterListener mockPresenterListenerBis;
-	private ResultCollector mockResultCollector;
 
 	@Before
 	public void inContext() {
-		mockView = mock(InfinitestView.class);
-		mockCore = mock(InfinitestCore.class);
 		mockPresenterListener = mock(PresenterListener.class);
 		mockPresenterListenerBis = mock(PresenterListener.class);
-		mockResultCollector = new ResultCollector(mockCore);
+		InfinitestView mockView = mock(InfinitestView.class);
+		InfinitestCore mockCore = mock(InfinitestCore.class);
+		ResultCollector mockResultCollector = new ResultCollector(mockCore);
 
 		TestControl mockTestControl = mock(TestControl.class);
 
-		presenter = new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+		presenter = new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl, mock(InfinitestAnnotator.class));
 	}
 
 	@Test

@@ -53,6 +53,6 @@ public class WhenInitializingProgressBar {
 	}
 
 	private void createPresenterWith(InfinitestView view) {
-		new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(), new FakeInfinitestAnnotator());
+		new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(), mock(InfinitestAnnotator.class));
 	}
 }

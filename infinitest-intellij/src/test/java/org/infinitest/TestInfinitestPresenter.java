@@ -58,7 +58,7 @@ public class TestInfinitestPresenter {
 		TestControl mockTestControl = mock(TestControl.class);
 		when(mockTestControl.shouldRunTests()).thenReturn(true);
 
-		presenter = new InfinitestPresenter(new ResultCollector(mockCore), mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+		presenter = new InfinitestPresenter(new ResultCollector(mockCore), mockCore, mockView, mockTestControl, mock(InfinitestAnnotator.class));
 	}
 
 	public void verifyMocks() {
