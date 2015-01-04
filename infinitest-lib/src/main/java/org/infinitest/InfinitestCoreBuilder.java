@@ -54,8 +54,7 @@ public class InfinitestCoreBuilder {
 
 		runtimeEnvironment = environment;
 		this.eventQueue = eventQueue;
-		String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator + "infinitest.filters";
-		filterList = new RegexFileFilter(new File(filterFileLocation));
+		filterList = new RegexFileFilter(new File(environment.getWorkingDirectory(), "infinitest.filters"));
 		runnerClass = MultiProcessRunner.class;
 		controller = new SingleLockConcurrencyController();
 	}
