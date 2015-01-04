@@ -186,10 +186,8 @@ public class IdeaModuleSettings implements ModuleSettings {
 	private String appendInfinitestJarTo(String classpath) {
 		StringBuilder builder = new StringBuilder(classpath);
 		for (String each : infinitestJarPaths()) {
-			builder.append(System.getProperty("path.separator"));
-			builder.append(each);
+			builder.append(File.pathSeparator).append(each);
 		}
-
 		return builder.toString();
 	}
 

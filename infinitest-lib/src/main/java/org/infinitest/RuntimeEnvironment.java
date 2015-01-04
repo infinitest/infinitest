@@ -151,7 +151,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	}
 
 	private File createJavaExecutableFile(String fileName) {
-		File javaExecutable = new File(javaHome.getAbsolutePath() + separator + "bin" + separator + fileName);
+		File javaExecutable = new File(new File(javaHome.getAbsolutePath(), "bin"), fileName);
 		return javaExecutable;
 	}
 
