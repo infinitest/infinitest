@@ -28,7 +28,6 @@
 package org.infinitest.intellij;
 
 import static java.util.logging.Level.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.intellij.plugin.swingui.*;

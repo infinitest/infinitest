@@ -29,7 +29,6 @@ package org.infinitest.parser;
 
 import static java.io.File.*;
 import static java.util.Arrays.*;
-import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

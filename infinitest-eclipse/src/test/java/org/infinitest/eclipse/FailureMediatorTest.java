@@ -29,7 +29,6 @@ package org.infinitest.eclipse;
 
 import static com.google.common.collect.Lists.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.*;
 import org.assertj.core.internal.Failures;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
-import org.assertj.core.api.Fail;
 import org.infinitest.intellij.idea.language.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;

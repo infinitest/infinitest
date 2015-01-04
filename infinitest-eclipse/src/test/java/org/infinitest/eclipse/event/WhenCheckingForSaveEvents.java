@@ -29,7 +29,6 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceDelta.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;

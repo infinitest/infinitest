@@ -30,7 +30,6 @@ package org.infinitest.eclipse.markers;
 import static java.util.Arrays.*;
 import static org.infinitest.eclipse.workspace.FakeResourceFactory.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

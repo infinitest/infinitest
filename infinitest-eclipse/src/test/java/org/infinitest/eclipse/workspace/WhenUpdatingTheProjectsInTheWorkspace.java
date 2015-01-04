@@ -33,7 +33,6 @@ import static org.infinitest.eclipse.util.StatusMatchers.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;

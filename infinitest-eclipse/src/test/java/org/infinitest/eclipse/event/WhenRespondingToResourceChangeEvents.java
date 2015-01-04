@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;

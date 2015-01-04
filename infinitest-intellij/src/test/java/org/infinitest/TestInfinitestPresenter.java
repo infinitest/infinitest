@@ -32,7 +32,6 @@ import static org.infinitest.CoreStatus.*;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
 import static org.infinitest.util.InfinitestUtils.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

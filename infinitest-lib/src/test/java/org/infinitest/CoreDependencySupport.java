@@ -43,7 +43,6 @@ import org.junit.*;
 
 import com.fakeco.fakeproduct.*;
 import com.fakeco.fakeproduct.simple.*;
-import com.fakeco.fakeproduct.simple.FailingTest;
 
 public class CoreDependencySupport {
 	public static final Class<?> FAILING_TEST = FailingTest.class;

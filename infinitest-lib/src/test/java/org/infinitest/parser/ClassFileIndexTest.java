@@ -28,7 +28,6 @@
 package org.infinitest.parser;
 
 import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;

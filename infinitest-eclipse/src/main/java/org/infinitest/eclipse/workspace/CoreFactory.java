@@ -27,8 +27,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.net.*;
-
 import org.infinitest.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;

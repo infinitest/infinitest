@@ -29,7 +29,6 @@ package org.infinitest.testrunner.queue;
 
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
 import static java.util.Collections.*;
 import static java.util.concurrent.TimeUnit.*;
 import static org.junit.Assert.*;

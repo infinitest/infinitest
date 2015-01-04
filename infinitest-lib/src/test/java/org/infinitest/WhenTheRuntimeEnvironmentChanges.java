@@ -30,7 +30,6 @@ package org.infinitest;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

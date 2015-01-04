@@ -41,7 +41,6 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.ui.*;
 import org.infinitest.eclipse.workspace.*;
 import org.junit.*;
 

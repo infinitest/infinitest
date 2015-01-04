@@ -35,8 +35,6 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.util.*;
 
-import javassist.*;
-
 import org.infinitest.filter.*;
 import org.infinitest.util.*;
 import org.junit.*;

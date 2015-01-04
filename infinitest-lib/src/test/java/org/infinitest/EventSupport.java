@@ -30,7 +30,6 @@ package org.infinitest;
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Maps.*;
-import static java.util.Arrays.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
@@ -39,7 +38,6 @@ import java.beans.*;
 import java.util.*;
 
 import org.infinitest.testrunner.*;
-import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.util.*;
 
 public class EventSupport implements StatusChangeListener, TestQueueListener, TestResultsListener {

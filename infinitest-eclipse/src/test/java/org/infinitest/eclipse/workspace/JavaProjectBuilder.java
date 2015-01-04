@@ -32,7 +32,6 @@ import static org.eclipse.core.resources.IResource.*;
 import static org.eclipse.jdt.core.IClasspathEntry.*;
 import static org.eclipse.jdt.core.IJavaModelMarker.*;
 import static org.eclipse.jdt.core.IPackageFragmentRoot.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.*;

@@ -41,7 +41,6 @@ import org.infinitest.util.*;
 import org.osgi.framework.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.*;
 
 import com.google.common.annotations.*;
 

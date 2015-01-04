@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;

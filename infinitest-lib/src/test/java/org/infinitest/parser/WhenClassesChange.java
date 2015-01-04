@@ -37,10 +37,8 @@ import java.util.*;
 
 import javassist.*;
 
-import org.assertj.core.api.Assertions;
 import org.infinitest.util.*;
 import org.junit.*;
-import org.junit.Assert;
 
 import com.fakeco.fakeproduct.*;
 

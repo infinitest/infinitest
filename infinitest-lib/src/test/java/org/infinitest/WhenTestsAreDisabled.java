@@ -32,7 +32,6 @@ import static com.google.common.collect.Sets.*;
 import static org.infinitest.CoreDependencySupport.*;
 import static org.infinitest.util.InfinitestUtils.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

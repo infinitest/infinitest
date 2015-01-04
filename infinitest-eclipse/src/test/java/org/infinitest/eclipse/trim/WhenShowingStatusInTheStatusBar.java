@@ -32,7 +32,6 @@ import static org.eclipse.swt.SWT.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.*;

@@ -28,7 +28,6 @@
 package org.infinitest.eclipse.event;
 
 import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
 
 import java.util.*;
 
