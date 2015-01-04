@@ -33,6 +33,7 @@ import static org.infinitest.util.FakeEnvironments.*;
 import java.io.*;
 import java.util.*;
 
+import com.google.common.io.Files;
 import org.infinitest.testrunner.*;
 
 public abstract class InfinitestTestUtils {
@@ -55,7 +56,7 @@ public abstract class InfinitestTestUtils {
 	public static File createBackup(String className) throws IOException {
 		File originalFile = getFileForClass(className);
 		File backupFile = new File(originalFile.getAbsolutePath() + BACKUP_EXT);
-		InfinitestTestUtils.copyFile(originalFile, backupFile);
+		Files.copy(originalFile, backupFile);
 		return backupFile;
 	}
 
@@ -70,26 +71,6 @@ public abstract class InfinitestTestUtils {
 
 	public static File getFileForClass(File baseDir, String classname) {
 		return new File(baseDir, classname.replace(".", "/") + ".class");
-	}
-
-	private static void copyFile(File in, File out) throws IOException {
-		if (!out.exists()) {
-			out.createNewFile();
-		}
-
-		if (!in.exists()) {
-			throw new IllegalArgumentException(in + " does not exist");
-		}
-
-		FileInputStream fis = new FileInputStream(in);
-		FileOutputStream fos = new FileOutputStream(out);
-		byte[] buf = new byte[1024];
-		int i;
-		while ((i = fis.read(buf)) != -1) {
-			fos.write(buf, 0, i);
-		}
-		fis.close();
-		fos.close();
 	}
 
 	public static boolean testIsBeingRunFromInfinitest() {

@@ -29,8 +29,11 @@ package org.infinitest.parser;
 
 import static java.io.File.*;
 import static java.util.Arrays.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
@@ -38,7 +41,6 @@ import java.util.*;
 
 import javassist.*;
 
-import org.assertj.core.api.*;
 import org.infinitest.*;
 import org.infinitest.util.*;
 import org.junit.*;
@@ -89,7 +91,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 
 		builder = new JavaClassBuilder(parser);
 
-		Assertions.assertThat(builder.getClass("MyClassName")).isInstanceOf(UnparsableClass.class);
+		assertThat(builder.getClass("MyClassName")).isInstanceOf(UnparsableClass.class);
 	}
 
 	@Test

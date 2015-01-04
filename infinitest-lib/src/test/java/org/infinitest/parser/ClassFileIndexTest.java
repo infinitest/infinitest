@@ -54,7 +54,7 @@ public class ClassFileIndexTest {
 	public void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint() {
 		when(builder.getClass("")).thenReturn(new FakeJavaClass(""));
 
-		index.findClasses(asList(getFileForClass(FakeProduct.class)));
+		index.findClasses(Arrays.asList(getFileForClass(FakeProduct.class)));
 
 		verify(builder).clear();
 	}

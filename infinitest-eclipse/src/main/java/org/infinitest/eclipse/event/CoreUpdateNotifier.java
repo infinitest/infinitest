@@ -49,7 +49,7 @@ class CoreUpdateNotifier implements IResourceChangeListener {
 
 	@Autowired
 	public void addProcessor(EclipseEventProcessor... eventProcessors) {
-		processors.addAll(asList(eventProcessors));
+		processors.addAll(Arrays.asList(eventProcessors));
 	}
 
 	/**

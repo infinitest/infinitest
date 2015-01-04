@@ -27,8 +27,8 @@
  */
 package org.infinitest.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
 
 import java.io.*;
 
@@ -63,13 +63,13 @@ public class WhenParsingClassFiles {
 	@Test
 	public void shouldIncludeSystemClasspathInClasspool() {
 		JavaClass stringClass = parseClass(String.class);
-		assertEquals(String.class.getName(), stringClass.getName());
+		assertThat(String.class.getName()).isEqualTo(stringClass.getName());
 	}
 
 	@Test
 	public void shouldAddImportsFromAnnotations() {
 		JavaClass clazz = parseClass(AnnotatedClass.class);
-		assertEquals(AnnotatedClass.class.getName(), clazz.getName());
+		assertThat(AnnotatedClass.class.getName()).isEqualTo(clazz.getName());
 
 		String[] imports = clazz.getImports();
 
@@ -90,7 +90,7 @@ public class WhenParsingClassFiles {
 		String classpath = fakeClasspath().getCompleteClasspath();
 		classpath += File.pathSeparator + "notAJar.jar";
 		parser = new JavaAssistClassParser(classpath);
-		assertNotNull(parseClass(FakeProduct.class));
+		assertThat(parseClass(FakeProduct.class)).isNotNull();
 	}
 
 	@Test

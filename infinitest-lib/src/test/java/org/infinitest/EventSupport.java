@@ -30,6 +30,7 @@ package org.infinitest;
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Maps.*;
+import static java.util.Arrays.asList;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
@@ -94,7 +95,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	}
 
 	public void assertEventsReceived(TestState... expectedTypes) {
-		ArrayList<TestState> actualTypes = new ArrayList<TestState>();
+		List<TestState> actualTypes = new ArrayList<TestState>();
 		for (TestEvent event : testEvents) {
 			actualTypes.add(event.getType());
 		}

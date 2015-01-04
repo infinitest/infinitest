@@ -77,8 +77,8 @@ public class WhenAggregatingTestQueues {
 
 	@Test
 	public void shouldOnlyFireTestRunCompleteWhenAllQueuesAreEmpty() {
-		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1"), 1));
-		listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test3"), 1));
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Arrays.asList("test1"), 1));
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(Arrays.asList("test3"), 1));
 		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
 		listenerForCore(0).testRunComplete();
 		assertEquals(0, finishCount.intValue());
@@ -95,11 +95,11 @@ public class WhenAggregatingTestQueues {
 
 	@Test
 	public void shouldCalculateTestQueueSizeBasedOnTheAggregatedQueues() {
-		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Arrays.asList("test1", "test2"), 2));
 		assertEquals(2, lastEvent().getInitialSize());
 		assertEquals(2, lastEvent().getTestQueue().size());
 
-		listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test2", "test3"), 2));
+		listenerForCore(1).testQueueUpdated(new TestQueueEvent(Arrays.asList("test2", "test3"), 2));
 		assertEquals(4, lastEvent().getInitialSize());
 		assertEquals(4, lastEvent().getTestQueue().size());
 		assertEquals(2, updateEvents.size());
@@ -110,7 +110,7 @@ public class WhenAggregatingTestQueues {
 		assertEquals(0, lastEvent().getTestQueue().size());
 		assertEquals(4, lastEvent().getInitialSize());
 
-		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
+		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Arrays.asList("test1", "test2"), 2));
 		assertEquals(2, lastEvent().getTestQueue().size());
 		assertEquals(2, lastEvent().getInitialSize());
 	}

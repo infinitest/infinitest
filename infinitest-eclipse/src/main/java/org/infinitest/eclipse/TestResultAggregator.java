@@ -42,7 +42,7 @@ public class TestResultAggregator implements CoreLifecycleListener, TestResultsL
 
 	@Autowired
 	public void addListeners(AggregateResultsListener... resultsListeners) {
-		listeners.addAll(asList(resultsListeners));
+		listeners.addAll(Arrays.asList(resultsListeners));
 	}
 
 	@Override
