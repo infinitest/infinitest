@@ -37,6 +37,7 @@ import junit.framework.*;
 
 import org.infinitest.*;
 import org.infinitest.intellij.plugin.launcher.*;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.infinitest.testrunner.*;
 import org.junit.*;
 import org.junit.Test;
@@ -49,10 +50,9 @@ public class WhenTestFailuresReported {
 
 	@Before
 	public void setUp() {
-		// InfinitestCore core = new FakeInfinitestCore();
 		InfinitestCore core = mock(InfinitestCore.class);
 		annotator = mock(InfinitestAnnotator.class);
-		presenter = new InfinitestPresenter(new ResultCollector(core), core, new FakeInfinitestView(), new FakeTestControl(), annotator);
+		presenter = new InfinitestPresenter(new ResultCollector(core), core, mock(InfinitestView.class), new FakeTestControl(), annotator);
 	}
 
 	@Test
