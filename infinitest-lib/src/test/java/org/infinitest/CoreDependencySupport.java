@@ -90,7 +90,7 @@ public class CoreDependencySupport {
 
 	public static ChangeDetector withChangedFiles(Class<?>... changedClasses) {
 		if (changedClasses.length == 0) {
-			createChangeDetector(new Class<?>[] { TestFakeProduct.class });
+			createChangeDetector(TestFakeProduct.class);
 		}
 		return createChangeDetector(changedClasses);
 	}

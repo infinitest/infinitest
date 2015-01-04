@@ -68,14 +68,14 @@ public class ResourceEventSupport {
 	}
 
 	protected IResourceDelta createEmptyDelta() {
-		return createResourceDelta(project, new IResourceDelta[] {});
+		return createResourceDelta(project);
 	}
 
 	protected IResourceDelta createDelta(JavaProjectBuilder project) {
 		IResourceDelta classResource = mock(IResourceDelta.class);
 		when(classResource.getFullPath()).thenReturn(new Path("a.class"));
 
-		return createResourceDelta(project, new IResourceDelta[] { classResource });
+		return createResourceDelta(project, classResource);
 	}
 
 	protected IResourceDelta createResourceDelta(JavaProjectBuilder project, IResourceDelta... resourceDeltas) {

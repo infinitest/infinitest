@@ -63,7 +63,7 @@ public class TestJunitCore {
 			}
 		});
 		StubTest.enable();
-		core.run(new Class[] { StubTest.class });
+		core.run(StubTest.class);
 	}
 
 	@After

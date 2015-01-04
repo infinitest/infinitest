@@ -27,14 +27,11 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IResourceDelta.*;
-import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.internal.events.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.*;
@@ -112,17 +109,5 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport {
 		when(classResourceDelta.getResource()).thenReturn(resource);
 		when(classResourceDelta.getFlags()).thenReturn(flags);
 		return classResourceDelta;
-	}
-
-	protected ResourceChangeEvent saveEvent() throws CoreException {
-		return new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, createSaveDelta());
-	}
-
-	protected IResourceDelta createSaveDelta() throws CoreException {
-		IResourceDelta javaResource = mock(IResourceDelta.class);
-		when(javaResource.getFullPath()).thenReturn(new Path("a.java"));
-		javaResource.accept((IResourceDeltaVisitor) anyObject());
-
-		return createResourceDelta(project, new IResourceDelta[] { javaResource });
 	}
 }
