@@ -71,7 +71,7 @@ public abstract class InfinitestTestUtils {
 	}
 
 	public static File getFileForClass(File baseDir, String classname) {
-		return new File(baseDir + "/" + classname.replace(".", "/") + ".class");
+		return new File(baseDir, classname.replace(".", "/") + ".class");
 	}
 
 	public static void copyFile(File in, File out) throws Exception {
