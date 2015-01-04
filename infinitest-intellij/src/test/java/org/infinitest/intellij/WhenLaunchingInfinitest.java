@@ -40,17 +40,13 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.wm.*;
 
 public class WhenLaunchingInfinitest {
-	private ModuleSettings moduleSettings = new FakeModuleSettings("foo");
+    @Test
+    public void shouldNameToolWindowAfterModule() {
+        ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
 
-	private ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
-	private FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
-	private ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
+        InfinitestLauncher launcher = new InfinitestLauncher(new FakeModuleSettings("foo"), registry, mock(CompilationNotifier.class), new FakeSourceNavigator(), mock(FileEditorManager.class), mock(ToolWindowManager.class));
+        launcher.launchInfinitest();
 
-	@Test
-	public void shouldNameToolWindowAfterModule() {
-		InfinitestLauncher launcher = new InfinitestLauncher(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
-		launcher.launchInfinitest();
-
-		verify(registry).registerToolWindow(any(JPanel.class), eq("foo"));
-	}
+        verify(registry).registerToolWindow(any(JPanel.class), eq("foo"));
+    }
 }
