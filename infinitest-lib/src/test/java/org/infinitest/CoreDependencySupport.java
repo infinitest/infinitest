@@ -48,7 +48,6 @@ import com.fakeco.fakeproduct.simple.FailingTest;
 public class CoreDependencySupport {
 	public static final Class<?> FAILING_TEST = FailingTest.class;
 	public static final Class<?> PASSING_TEST = PassingTest.class;
-	public static final Class<?> SLOW_TEST = SlowTest.class;
 
 	public static class SlowTest {
 		@Test
