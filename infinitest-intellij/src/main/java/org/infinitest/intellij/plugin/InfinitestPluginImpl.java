@@ -33,8 +33,8 @@ public class InfinitestPluginImpl implements InfinitestPlugin, InfinitestConfigu
 	private InfinitestLauncher launcher;
 
 	public InfinitestPluginImpl(InfinitestConfiguration configuration) {
-		configuration.registerListener(this);
 		launcher = configuration.createLauncher();
+		configuration.registerListener(this);
 	}
 
 	@Override

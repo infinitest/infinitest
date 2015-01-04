@@ -33,30 +33,13 @@ import org.jetbrains.annotations.*;
 
 import com.intellij.facet.*;
 import com.intellij.openapi.module.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.startup.*;
 
 public class InfinitestToolWindow implements ModuleComponent, FacetListener {
-	public static final String TOOL_WINDOW_ID = "Infinitest";
-
-	private InfinitestPlugin plugin;
-	private final Project project;
 	private final Module module;
-	private boolean projectOpened;
+	private InfinitestPlugin plugin;
 
-	public InfinitestToolWindow(Project project, Module module) {
-		this.project = project;
+	public InfinitestToolWindow(Module module) {
 		this.module = module;
-	}
-
-	@Override
-	public void initComponent() {
-		// nothing to do here
-	}
-
-	@Override
-	public void disposeComponent() {
-		// nothing to do here
 	}
 
 	@Override
@@ -65,52 +48,46 @@ public class InfinitestToolWindow implements ModuleComponent, FacetListener {
 		return "org.infinitest.intellij.idea.window.InfinitestToolWindow";
 	}
 
-	public void startInfinitestAfterStartup() {
-		StartupManager.getInstance(project).registerPostStartupActivity(new Runnable() {
-			@Override
-			public void run() {
-				plugin.startInfinitest();
-			}
-		});
-	}
-
 	@Override
 	public void facetInitialized() {
-		if (plugin != null) {
-			plugin.stopInfinitest();
-		}
+		stopInfinitest();
 
 		InfinitestFacet facet = FacetManager.getInstance(module).getFacetByType(InfinitestFacet.ID);
-		plugin = new InfinitestPluginImpl(facet.getConfiguration());
-
-		if (projectOpened) {
+		if (facet != null) {
+			plugin = new InfinitestPluginImpl(facet.getConfiguration());
 			plugin.startInfinitest();
-		} else {
-			startInfinitestAfterStartup();
 		}
 	}
 
 	@Override
 	public void facetDisposed() {
-		if (plugin != null) {
-			plugin.stopInfinitest();
-		}
-	}
-
-	@Override
-	public void projectOpened() {
-		projectOpened = true;
+		stopInfinitest();
 	}
 
 	@Override
 	public void projectClosed() {
+		stopInfinitest();
+	}
+
+	private void stopInfinitest() {
 		if (plugin != null) {
 			plugin.stopInfinitest();
 		}
 	}
 
 	@Override
+	public void initComponent() {
+	}
+
+	@Override
+	public void disposeComponent() {
+	}
+
+	@Override
+	public void projectOpened() {
+	}
+
+	@Override
 	public void moduleAdded() {
-		// nothing to do here
 	}
 }
