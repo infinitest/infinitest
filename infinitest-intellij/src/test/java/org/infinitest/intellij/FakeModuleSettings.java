@@ -28,7 +28,6 @@
 package org.infinitest.intellij;
 
 import static java.lang.System.*;
-import static java.util.Collections.*;
 
 import java.io.*;
 import java.util.*;
@@ -51,18 +50,6 @@ public class FakeModuleSettings implements ModuleSettings {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	public List<File> listOutputDirectories() {
-		return emptyList();
-	}
-
-	public String buildClasspathString() {
-		return null;
-	}
-
-	public File getWorkingDirectory() {
-		return new File(".");
 	}
 
 	@Override

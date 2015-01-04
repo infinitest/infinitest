@@ -37,17 +37,12 @@ import org.mockito.*;
 import com.intellij.openapi.compiler.*;
 
 public class WhenCompilationCompletes {
-	private final ModuleSettings moduleSettings = new FakeModuleSettings("test");
-	private InfinitestCore core;
+	private InfinitestCore core = mock(InfinitestCore.class);
 
-	@Before
-	public void inContext() {
-		core = mock(InfinitestCore.class);
-	}
+	private CompilationStatusListener listener = new IdeaCompilationListener(core, new FakeModuleSettings("test"));
 
 	@Test
 	public void shouldInvokeUpdateOnCore() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
 		listener.compilationFinished(false, 0, 0, null);
 
 		verify(core).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
@@ -56,7 +51,6 @@ public class WhenCompilationCompletes {
 
 	@Test
 	public void shouldNotUpdateIfCompilationAborted() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
 		listener.compilationFinished(true, 0, 0, null);
 
 		verify(core, never()).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
@@ -65,7 +59,6 @@ public class WhenCompilationCompletes {
 
 	@Test
 	public void shouldNotUpdateIfCompileErrorsOccurred() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
 		listener.compilationFinished(false, 1, 0, null);
 
 		verify(core, never()).setRuntimeEnvironment(Matchers.any(RuntimeEnvironment.class));
