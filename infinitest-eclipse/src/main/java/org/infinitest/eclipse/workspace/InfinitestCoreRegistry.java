@@ -83,10 +83,6 @@ class InfinitestCoreRegistry implements CoreRegistry {
 		}
 	}
 
-	public int indexedCoreCount() {
-		return coreMap.size();
-	}
-
 	@Override
 	public void addLifecycleListener(CoreLifecycleListener listener) {
 		listeners.add(listener);

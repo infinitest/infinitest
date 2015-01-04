@@ -53,7 +53,6 @@ class DefaultInfinitestCore implements InfinitestCore {
 	private String name;
 	private final List<ReloadListener> reloadListeners;
 	private final List<DisabledTestListener> disabledTestListeners;
-	private final RunStatistics stats;
 
 	DefaultInfinitestCore(TestRunner testRunner, EventQueue eventQueue) {
 		normalizer = new EventNormalizer(eventQueue);
@@ -62,7 +61,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		caughtExceptions = newLinkedHashSet();
 		disabledTestListeners = newArrayList();
 
-		stats = new RunStatistics();
+		RunStatistics stats = new RunStatistics();
 		runner.addTestResultsListener(stats);
 		runner.setTestPriority(new TestComparator(stats));
 	}
@@ -140,10 +139,6 @@ class DefaultInfinitestCore implements InfinitestCore {
 			log(name + " Files changed: " + changedFiles);
 		}
 		return changedFiles;
-	}
-
-	public RunStatistics getRunStatistics() {
-		return stats;
 	}
 
 	@Override

@@ -127,8 +127,4 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		}
 		return markersFound;
 	}
-
-	public int markerCount() {
-		return getMarkers().size();
-	}
 }

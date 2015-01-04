@@ -41,7 +41,6 @@ class EventInfoFrame extends JDialog {
 	private static final long serialVersionUID = -1L;
 
 	private final JTextArea textArea;
-	private final JButton closeButton;
 
 	public EventInfoFrame(TestEvent event) {
 		setAlwaysOnTop(true);
@@ -60,7 +59,7 @@ class EventInfoFrame extends JDialog {
 				dispose();
 			}
 		};
-		closeButton = new JButton(disposeAction);
+		JButton closeButton = new JButton(disposeAction);
 		southPanel.add(closeButton);
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
 		String message = event.getMessage();
@@ -70,10 +69,6 @@ class EventInfoFrame extends JDialog {
 		setTitle(event.getTestName() + "." + event.getTestMethod() + "()");
 		pack();
 		closeButton.requestFocusInWindow();
-	}
-
-	public JButton getCloseButton() {
-		return closeButton;
 	}
 
 	public static String stackTraceToString(StackTraceElement[] stackTrace) {

@@ -70,9 +70,4 @@ public class StandaloneClasspath implements ClasspathProvider {
 	public List<File> classDirectoriesInClasspath() {
 		return classDirsInClasspath;
 	}
-
-	public String getSystemClasspath() {
-		return systemClasspath();
-	}
-
 }

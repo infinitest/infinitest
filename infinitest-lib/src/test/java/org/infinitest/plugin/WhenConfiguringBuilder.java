@@ -35,7 +35,6 @@ import org.infinitest.*;
 import org.infinitest.filter.*;
 import org.infinitest.parser.*;
 import org.junit.*;
-import org.mockito.*;
 
 public class WhenConfiguringBuilder {
 	protected InfinitestCoreBuilder builder;

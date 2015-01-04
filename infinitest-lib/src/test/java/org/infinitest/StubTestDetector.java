@@ -55,10 +55,6 @@ class StubTestDetector implements TestDetector {
 		throw new UnsupportedOperationException();
 	}
 
-	public Set<String> getIndexedClasses() {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		throw new UnsupportedOperationException();

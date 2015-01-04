@@ -30,7 +30,6 @@ package org.infinitest;
 import static com.google.common.collect.Iterables.*;
 import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Maps.*;
-import static com.google.common.collect.Sets.*;
 import static java.util.Arrays.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
@@ -173,17 +172,9 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (TestEvent each : testEvents) {
-			builder.append(each.toString() + each.getErrorClassName() + each.getMessage());
+			builder.append(each).append(each.getErrorClassName()).append(each.getMessage());
 		}
 		return builder.toString();
-	}
-
-	public Iterable<String> getTestsRun() {
-		Set<String> tests = newHashSet();
-		for (TestEvent event : testEvents) {
-			tests.add(event.getTestName());
-		}
-		return tests;
 	}
 
 	private void resetRunComplete() {

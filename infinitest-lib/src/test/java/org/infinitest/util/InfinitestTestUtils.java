@@ -35,7 +35,6 @@ import java.util.*;
 
 import org.infinitest.testrunner.*;
 
-import com.google.common.base.*;
 import com.google.common.io.*;
 
 public abstract class InfinitestTestUtils {
@@ -93,15 +92,6 @@ public abstract class InfinitestTestUtils {
 		}
 		fis.close();
 		fos.close();
-	}
-
-	public static Predicate<String> containsSubstring(final String substring) {
-		return new Predicate<String>() {
-			@Override
-			public boolean apply(String input) {
-				return input.contains(substring);
-			}
-		};
 	}
 
 	public static List<String> emptyStringList() {
