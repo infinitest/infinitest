@@ -52,7 +52,7 @@ public abstract class InfinitestTestUtils {
 		throw new IllegalArgumentException(className + " does not exist");
 	}
 
-	public static File createBackup(String className) throws Exception {
+	public static File createBackup(String className) throws IOException {
 		File originalFile = getFileForClass(className);
 		File backupFile = new File(originalFile.getAbsolutePath() + BACKUP_EXT);
 		InfinitestTestUtils.copyFile(originalFile, backupFile);
@@ -72,7 +72,7 @@ public abstract class InfinitestTestUtils {
 		return new File(baseDir, classname.replace(".", "/") + ".class");
 	}
 
-	private static void copyFile(File in, File out) throws Exception {
+	private static void copyFile(File in, File out) throws IOException {
 		if (!out.exists()) {
 			out.createNewFile();
 		}
