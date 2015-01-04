@@ -37,22 +37,24 @@ import org.infinitest.intellij.plugin.swingui.*;
 import org.junit.*;
 
 public class WhenInitializingProgressBar {
-	@Test
-	public void shouldSetBackgroundColorToBlack() {
-		InfinitestView view = mock(InfinitestView.class);
-		createPresenterWith(view);
-		verify(view).setProgressBarColor(BLACK);
-	}
+    InfinitestView view = mock(InfinitestView.class);
 
-	@Test
-	public void shouldSetMaximumProgress() {
-		InfinitestView view = mock(InfinitestView.class);
-		createPresenterWith(view);
-		verify(view).setMaximumProgress(1);
-		verify(view).setProgress(1);
-	}
+    @Test
+    public void shouldSetBackgroundColorToBlack() {
+        createPresenterWith(view);
 
-	private void createPresenterWith(InfinitestView view) {
-		new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(), mock(InfinitestAnnotator.class));
-	}
+        verify(view).setProgressBarColor(BLACK);
+    }
+
+    @Test
+    public void shouldSetMaximumProgress() {
+        createPresenterWith(view);
+
+        verify(view).setMaximumProgress(1);
+        verify(view).setProgress(1);
+    }
+
+    private void createPresenterWith(InfinitestView view) {
+        new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, mock(TestControl.class), mock(InfinitestAnnotator.class));
+    }
 }

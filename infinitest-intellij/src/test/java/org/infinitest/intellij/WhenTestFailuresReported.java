@@ -52,7 +52,7 @@ public class WhenTestFailuresReported {
 	public void setUp() {
 		InfinitestCore core = mock(InfinitestCore.class);
 		annotator = mock(InfinitestAnnotator.class);
-		presenter = new InfinitestPresenter(new ResultCollector(core), core, mock(InfinitestView.class), new FakeTestControl(), annotator);
+		presenter = new InfinitestPresenter(new ResultCollector(core), core, mock(InfinitestView.class), mock(TestControl.class), annotator);
 	}
 
 	@Test
