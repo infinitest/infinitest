@@ -32,6 +32,7 @@ import static org.eclipse.swt.SWT.*;
 import java.util.List;
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.infinitest.eclipse.workspace.*;
@@ -62,9 +63,23 @@ public class FailureViewer {
 		createList(dialog);
 		dialog.pack();
 		dialog.layout();
+		moveToParentShellMonitor(dialog);
 		dialog.open();
+
 		dialog.forceActive();
 		dialog.addShellListener(new DialogDeactivationDisposer(dialog));
+	}
+
+	private void moveToParentShellMonitor(Shell dialog) {
+		if (dialog.getParent() == null) {
+			// No parent shell no positioning
+			return;
+		}
+		Monitor parentShellMonitor = dialog.getParent().getMonitor();
+		Point newPosition = new Point(parentShellMonitor.getBounds().x, parentShellMonitor.getBounds().y);
+
+		// Move preserving size
+		dialog.setBounds(newPosition.x, newPosition.y, dialog.getSize().x, dialog.getSize().y);
 	}
 
 	private void createMessage(Shell dialog) {
