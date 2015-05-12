@@ -53,7 +53,7 @@ public class WhenTestRunCompleted {
 
 		TestControl mockTestControl = mock(TestControl.class);
 
-		presenter = new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+		presenter = spy(new InfinitestPresenter(mockResultCollector, mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator()));
 	}
 
 	@Test
@@ -96,26 +96,27 @@ public class WhenTestRunCompleted {
 		verify(mockPresenterListenerBis).testRunCompleted();
 	}
 
-	/*
-	 * @Test FIXME: mocking Succeed/Failed state don't work for me public void
-	 * shouldCallSucceed() {
-	 * presenter.addPresenterListener(mockPresenterListener);
-	 * when(presenter.isSuccess()).thenReturn(true);
-	 * 
-	 * presenter.onComplete();
-	 * 
-	 * verify(mockPresenterListener, never()).testRunFailed();
-	 * verify(mockPresenterListener).testRunSucceed(); }
-	 * 
-	 * @Test public void shouldCallFailed() {
-	 * presenter.addPresenterListener(mockPresenterListener);
-	 * when(presenter.isSuccess()).thenReturn(false);
-	 * 
-	 * presenter.onComplete();
-	 * 
-	 * verify(mockPresenterListener).testRunFailed();
-	 * verify(mockPresenterListener, never()).testRunSucceed(); }
-	 */
+    @Test
+    public void shouldCallSucceed() {
+        presenter.addPresenterListener(mockPresenterListener);
+        when(presenter.isSuccess()).thenReturn(true);
+
+        presenter.onComplete();
+
+        verify(mockPresenterListener, never()).testRunFailed();
+        verify(mockPresenterListener).testRunSucceed();
+    }
+
+    @Test
+    public void shouldCallFailed() {
+        presenter.addPresenterListener(mockPresenterListener);
+        when(presenter.isSuccess()).thenReturn(false);
+
+        presenter.onComplete();
+
+        verify(mockPresenterListener).testRunFailed();
+        verify(mockPresenterListener, never()).testRunSucceed();
+    }
 
 	@Test
 	public void shouldCallWait() {
