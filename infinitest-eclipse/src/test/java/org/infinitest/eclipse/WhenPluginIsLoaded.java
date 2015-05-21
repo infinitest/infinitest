@@ -32,6 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.util.*;
 import org.junit.*;
@@ -53,10 +54,12 @@ public class WhenPluginIsLoaded {
 	public void shouldRestoreSavedPreferences() {
 		when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
 		when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
+		when(preferences.getInt(FAIL_BACKGROUND_COLOR)).thenReturn(1);
 
 		plugin.restoreSavedPreferences(preferences, coreSettings);
 
 		verify(coreSettings).setConcurrentCoreCount(4);
 		assertEquals(1000L, InfinitestGlobalSettings.getSlowTestTimeLimit());
+		assertEquals(1, ColorSettings.getFailBackgroundColor());
 	}
 }
