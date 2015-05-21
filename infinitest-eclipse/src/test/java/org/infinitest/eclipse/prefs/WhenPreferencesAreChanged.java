@@ -35,8 +35,10 @@ import static org.mockito.Mockito.*;
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.util.*;
+import org.eclipse.swt.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.markers.*;
+import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.junit.*;
 
@@ -87,6 +89,17 @@ public class WhenPreferencesAreChanged {
 		when(eventSource.getPreferenceName()).thenReturn(SLOW_TEST_WARNING);
 		changeProperty(VALUE, "500", "100");
 		assertEquals(100, getSlowTestTimeLimit());
+	}
+
+	@Test
+	public void shouldAdjustFailBackgroundColor() {
+		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAIL_BACKGROUND_COLOR);
+		int red = SWT.COLOR_DARK_RED;
+		int blue = SWT.COLOR_BLUE;
+
+		changeProperty(SwtColorFieldEditor.VALUE, red, String.valueOf(blue));
+
+		assertEquals(blue, ColorSettings.getFailBackgroundColor());
 	}
 
 	@Test

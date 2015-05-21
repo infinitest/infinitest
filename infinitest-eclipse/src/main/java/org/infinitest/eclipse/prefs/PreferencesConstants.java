@@ -41,4 +41,6 @@ public abstract class PreferencesConstants {
 
 	public static final String SLOW_TEST_WARNING = "org.infinitest.eclipse.slow-warning";
 
+	public static final String FAIL_BACKGROUND_COLOR = "org.infinitest.eclipse.color.fail.background";
+
 }
