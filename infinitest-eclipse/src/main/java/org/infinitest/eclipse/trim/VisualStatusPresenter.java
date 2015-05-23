@@ -56,8 +56,7 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 	public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
 		switch (newStatus) {
 			case PASSING:
-				status.setBackgroundColor(COLOR_DARK_GREEN);
-				status.setTextColor(COLOR_WHITE);
+				setPassingColors();
 				break;
 			case FAILING:
 				setFailingColors();
@@ -67,8 +66,13 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 		}
 	}
 
+	private void setPassingColors() {
+		status.setBackgroundColor(COLOR_DARK_GREEN);
+		status.setTextColor(COLOR_WHITE);
+	}
+
 	private void setFailingColors() {
-		status.setBackgroundColor(COLOR_DARK_RED);
+		status.setBackgroundColor(ColorSettings.getFailBackgroundColor());
 		status.setTextColor(COLOR_WHITE);
 	}
 

@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
+import org.eclipse.swt.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.status.*;
 import org.infinitest.testrunner.*;
@@ -74,7 +75,7 @@ public class WhenShowingStatusInTheStatusBar {
 	public void shouldImmediatelySetStatusToFailingWhenATestFails() {
 		presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "", new AssertionError()))));
 
-		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+		verify(statusBar).setBackgroundColor(ColorSettings.getFailBackgroundColor());
 		verify(statusBar).setTextColor(COLOR_WHITE);
 	}
 
@@ -111,10 +112,12 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldChangeToRedWhenTestsFail() {
+	public void shouldChangeToFailBackgroundColorWhenTestsFail() {
+		ColorSettings.setFailBackgroundColor(SWT.COLOR_DARK_RED);
+
 		presenter.coreStatusChanged(PASSING, FAILING);
 
-		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+		verify(statusBar).setBackgroundColor(ColorSettings.getFailBackgroundColor());
 		verify(statusBar).setTextColor(COLOR_WHITE);
 	}
 
