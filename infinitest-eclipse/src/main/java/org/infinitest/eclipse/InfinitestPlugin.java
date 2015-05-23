@@ -93,6 +93,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(PARALLEL_CORES, 1);
 		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
+		store.setDefault(FAIL_BACKGROUND_COLOR, ColorSettings.getFailBackgroundColor());
 	}
 
 	// Only used for testing.

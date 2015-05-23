@@ -60,10 +60,19 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	@Override
 	protected void createFieldEditors() {
-		BooleanFieldEditor autoTestEditor = new BooleanFieldEditor(AUTO_TEST, "Continuously Test", getFieldEditorParent());
-		addField(autoTestEditor);
+		addField(createAutoTestEditor());
 		addField(createParallelizationEditor());
 		addField(createSlowTestWarningCutoffEditor());
+		addField(createFailBackgroundColorEditor());
+	}
+
+	private BooleanFieldEditor createAutoTestEditor() {
+		BooleanFieldEditor autoTestEditor = new BooleanFieldEditor(AUTO_TEST, "Continuously Test", getFieldEditorParent());
+		return autoTestEditor;
+	}
+
+	private SwtColorFieldEditor createFailBackgroundColorEditor() {
+		return new SwtColorFieldEditor(PreferencesConstants.FAIL_BACKGROUND_COLOR, "Fail Background Color", getFieldEditorParent());
 	}
 
 	private FieldEditor createSlowTestWarningCutoffEditor() {
