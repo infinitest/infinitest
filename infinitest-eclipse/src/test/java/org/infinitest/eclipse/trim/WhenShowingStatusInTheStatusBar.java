@@ -37,7 +37,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
-import org.eclipse.swt.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.status.*;
 import org.infinitest.testrunner.*;
@@ -113,12 +112,13 @@ public class WhenShowingStatusInTheStatusBar {
 
 	@Test
 	public void shouldChangeToFailBackgroundColorWhenTestsFail() {
-		ColorSettings.setFailBackgroundColor(SWT.COLOR_DARK_RED);
+		ColorSettings.setFailBackgroundColor(COLOR_DARK_RED);
+		ColorSettings.setFailTextColor(COLOR_YELLOW);
 
 		presenter.coreStatusChanged(PASSING, FAILING);
 
-		verify(statusBar).setBackgroundColor(ColorSettings.getFailBackgroundColor());
-		verify(statusBar).setTextColor(COLOR_WHITE);
+		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
+		verify(statusBar).setTextColor(COLOR_YELLOW);
 	}
 
 	@Test

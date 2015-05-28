@@ -73,7 +73,7 @@ public class VisualStatusPresenter extends TestQueueAdapter implements VisualSta
 
 	private void setFailingColors() {
 		status.setBackgroundColor(ColorSettings.getFailBackgroundColor());
-		status.setTextColor(COLOR_WHITE);
+		status.setTextColor(ColorSettings.getFailTextColor());
 	}
 
 	@Override
