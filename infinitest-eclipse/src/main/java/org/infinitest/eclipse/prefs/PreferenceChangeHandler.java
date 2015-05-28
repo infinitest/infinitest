@@ -73,6 +73,14 @@ public class PreferenceChangeHandler {
 		if (PreferencesConstants.FAIL_BACKGROUND_COLOR.equals(preference)) {
 			updateFailBackgroundColor((String) newValue);
 		}
+
+		if (PreferencesConstants.FAIL_TEXT_COLOR.equals(preference)) {
+			updateFailTextColor((String) newValue);
+		}
+	}
+
+	private void updateFailTextColor(String newValue) {
+		ColorSettings.setFailTextColor(Integer.valueOf(newValue));
 	}
 
 	private void updateFailBackgroundColor(String newValue) {
