@@ -116,6 +116,9 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo {
 		if (isBlank(message) || isStringifiedNull(message)) {
 			return "";
 		}
+		
+		message = message.replaceAll("\\r|\\n", " ");
+		
 		return " (" + message + ")";
 	}
 
