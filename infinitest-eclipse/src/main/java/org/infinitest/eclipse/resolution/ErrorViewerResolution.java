@@ -97,19 +97,7 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 
 	private Shell getMainShell() {
 		// RISK Untested
-		for (Shell shell : Display.getDefault().getShells()) {
-			if (isPrimary(shell)) {
-				return shell;
-			}
-		}
-		// This is problematic because the active shell may be the Problems View
-		// QuickFix dialog,
-		// rather than the main eclipse shell
-		return Display.getDefault().getActiveShell();
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
 
-	private boolean isPrimary(Shell shell) {
-		// This is my best guess at how to identify the primary shell
-		return shell.getParent() == null;
-	}
 }
