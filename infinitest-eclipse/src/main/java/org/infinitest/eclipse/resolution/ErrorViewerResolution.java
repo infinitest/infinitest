@@ -81,7 +81,18 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 	protected void createStackViewWith(List<StackTraceElement> stackTrace, String message) {
 		List<StackTraceElement> filteredStackTrace = stackTraceFilter.filterStack(stackTrace);
 		ResourceLookup resourceLookup = InfinitestPlugin.getInstance().getBean(ResourceLookup.class);
-		new FailureViewer(getMainShell(), message, filteredStackTrace, resourceLookup).show();
+		final FailureViewer failureViewer = new FailureViewer(getMainShell(), message, filteredStackTrace, resourceLookup);
+
+		// We use async exec here to avoid issue #152
+		// Using asyncExec allows to open the FailerViewer after main shell have
+		// been reactivated
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				failureViewer.show();
+			}
+		});
+
 	}
 
 	private Shell getMainShell() {
