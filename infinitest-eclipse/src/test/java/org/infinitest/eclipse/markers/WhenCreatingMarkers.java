@@ -35,6 +35,8 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.eclipse.core.resources.IMarker;
+import org.infinitest.eclipse.workspace.FakeResourceFinder;
 import org.infinitest.testrunner.*;
 import org.junit.*;
 
@@ -87,6 +89,24 @@ public class WhenCreatingMarkers {
 
 		MarkerInfo marker = getOnlyElement(registry.getMarkers());
 		assertEquals(error.getClass().getSimpleName() + " in " + "TestName.methodName", getAttribute(marker, MESSAGE));
+	}
+
+	@Test
+	public void shouldRemoveLineBreaksFromErrorMessages() {
+		Throwable throwable = new Exception("message with\nline break");
+		ProblemMarkerInfo info = new ProblemMarkerInfo(methodFailed("testName", "methodName", throwable), new FakeResourceFinder());
+		
+		String message = (String) info.attributes().get(IMarker.MESSAGE);
+		assertThat(message, containsString("message with line break"));
+	}
+
+	@Test
+	public void shouldRemoveCarraigeReturnsFromErrorMessages() {
+		Throwable throwable = new Exception("message with\rline break");
+		ProblemMarkerInfo info = new ProblemMarkerInfo(methodFailed("testName", "methodName", throwable), new FakeResourceFinder());
+		
+		String message = (String) info.attributes().get(IMarker.MESSAGE);
+		assertThat(message, containsString("message with line break"));
 	}
 
 	private Object getAttribute(MarkerInfo marker, String message) {
