@@ -5,12 +5,10 @@
 	<formats>
 		<format>jar</format>
 	</formats>
-	<fileSets>
-		<fileSet>
+	<files>
+		<file>
+			<source>feature.xml</source>
 			<filtered>true</filtered>
-			<includes>
-				<include>feature.xml</include>
-			</includes>
-		</fileSet>
-	</fileSets>
+		</file>
+	</files>
 </assembly>
