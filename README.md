@@ -1,11 +1,7 @@
 Notes for new developers
 =========================
 
-We do TDD here. If you're not comfortable with TDD, find something else to work on. Thanks.
-
-- Code Style
-- FIXME comments
-- DEBT comments
+We strongly believe in Test-Driven Development.
 
 Get the source
 --------------
