@@ -75,7 +75,7 @@ public class WhenShowingStatusInTheStatusBar {
 		presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "", new AssertionError()))));
 
 		verify(statusBar).setBackgroundColor(ColorSettings.getFailBackgroundColor());
-		verify(statusBar).setTextColor(COLOR_WHITE);
+		verify(statusBar).setTextColor(ColorSettings.getFailTextColor());
 	}
 
 	@Test
