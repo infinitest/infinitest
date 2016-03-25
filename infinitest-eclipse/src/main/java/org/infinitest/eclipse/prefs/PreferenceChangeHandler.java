@@ -37,6 +37,7 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.jface.util.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.markers.*;
+import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
@@ -68,6 +69,22 @@ public class PreferenceChangeHandler {
 		if (PARALLEL_CORES.equals(preference)) {
 			updateConcurrency((String) newValue);
 		}
+
+		if (PreferencesConstants.FAIL_BACKGROUND_COLOR.equals(preference)) {
+			updateFailBackgroundColor((String) newValue);
+		}
+
+		if (PreferencesConstants.FAIL_TEXT_COLOR.equals(preference)) {
+			updateFailTextColor((String) newValue);
+		}
+	}
+
+	private void updateFailTextColor(String newValue) {
+		ColorSettings.setFailTextColor(Integer.valueOf(newValue));
+	}
+
+	private void updateFailBackgroundColor(String newValue) {
+		ColorSettings.setFailBackgroundColor(Integer.valueOf(newValue));
 	}
 
 	private void updateConcurrency(String newValue) {

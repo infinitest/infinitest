@@ -36,12 +36,13 @@ import static org.infinitest.util.InfinitestUtils.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.*;
 import org.eclipse.ui.plugin.*;
+import org.infinitest.eclipse.prefs.*;
+import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.util.*;
 import org.osgi.framework.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.*;
 
 import com.google.common.annotations.*;
 
@@ -92,6 +93,8 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(PARALLEL_CORES, 1);
 		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
+		store.setDefault(FAIL_BACKGROUND_COLOR, ColorSettings.getFailBackgroundColor());
+		store.setDefault(FAIL_TEXT_COLOR, ColorSettings.getFailTextColor());
 	}
 
 	// Only used for testing.
@@ -113,7 +116,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> beanClass) {
 		if (context == null) {
-      context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
+			context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
 
 			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
 			InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
@@ -125,5 +128,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings) {
 		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
+		ColorSettings.setFailBackgroundColor(preferences.getInt(PreferencesConstants.FAIL_BACKGROUND_COLOR));
+		ColorSettings.setFailTextColor(preferences.getInt(PreferencesConstants.FAIL_TEXT_COLOR));
 	}
 }
