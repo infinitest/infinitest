@@ -27,11 +27,15 @@
  */
 package org.infinitest.eclipse.console;
 
-import static org.eclipse.jface.resource.ImageDescriptor.*;
+import java.io.IOException;
 
-import java.io.*;
-
-import org.eclipse.ui.console.*;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
+import org.infinitest.eclipse.InfinitestPlugin;
 
 // RISK Untested
 public class ConsoleOutputWriter implements TextOutputWriter {
@@ -57,7 +61,8 @@ public class ConsoleOutputWriter implements TextOutputWriter {
 		if (console == null) {
 			ConsolePlugin plugin = ConsolePlugin.getDefault();
 			IConsoleManager conMan = plugin.getConsoleManager();
-			console = new MessageConsole("Infinitest Console", getMissingImageDescriptor());
+			final ImageDescriptor infiniTestIconDescriptor = InfinitestPlugin.imageDescriptorFromPlugin(InfinitestPlugin.PLUGIN_ID, "icons/infinitest-icon.png");
+			console = new MessageConsole("Infinitest Console", infiniTestIconDescriptor);
 			console.getDocument().set("");
 			conMan.addConsoles(new IConsole[] { console });
 		}
