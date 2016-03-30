@@ -27,21 +27,29 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.base.Splitter.*;
-import static com.google.common.collect.Lists.*;
-import static java.io.File.*;
+import static com.google.common.base.Splitter.on;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.io.File.pathSeparator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
-import javassist.*;
+import org.infinitest.MissingClassException;
 
-import org.infinitest.*;
-
-import com.google.common.collect.*;
+import com.google.common.collect.Maps;
 import com.google.common.hash.Hashing;
-import com.google.common.io.*;
+import com.google.common.io.Files;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 
 public class JavaAssistClassParser {
 	private final String classpath;
@@ -103,7 +111,11 @@ public class JavaAssistClassParser {
 				JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
 				URL url = getClassPool().find(className);
 				if ((url != null) && url.getProtocol().equals("file")) {
-					javaAssistClass.setClassFile(new File(url.getFile()));
+					try {
+						javaAssistClass.setClassFile(new File(URLDecoder.decode(url.getFile(), "UTF-8")));
+					} catch (UnsupportedEncodingException e) {
+						javaAssistClass.setClassFile(new File(url.getFile()));
+					}
 				}
 				clazz = javaAssistClass;
 			}
