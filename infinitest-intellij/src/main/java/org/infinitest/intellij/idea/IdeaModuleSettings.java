@@ -28,6 +28,7 @@
 package org.infinitest.intellij.idea;
 
 import static java.io.File.*;
+import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.*;
 import java.util.*;
@@ -49,6 +50,9 @@ import com.intellij.openapi.vfs.*;
 public class IdeaModuleSettings implements ModuleSettings {
 	private final Module module;
 	private final InfinitestJarLocator locator = new InfinitestJarLocator();
+
+	private static final Boolean TEST_CLASSES = true;
+	private static final Boolean MAIN_CLASSES = false;
 
 	public IdeaModuleSettings(Module module) {
 		this.module = module;
@@ -88,14 +92,26 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * 
 	 * @return A list of all of the output directories for the project
 	 */
-	private List<File> listOutputDirectories() {
-		List<File> outputDirectories = new ArrayList<File>();
+    private List<File> listOutputDirectories() {
+        List<File> outputDirectories = new ArrayList<File>();
 
-		outputDirectories.add(new File(CompilerPaths.getModuleOutputPath(module, false)));
-		outputDirectories.add(new File(CompilerPaths.getModuleOutputPath(module, true)));
+        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
+        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
+        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+        for (Module dependantModule : moduleRootManager.getDependencies()) {
+            addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
+        }
 
-		return outputDirectories;
-	}
+        return outputDirectories;
+    }
+
+    private void addOutputDirectory(List<File> outputDirectories, String path) {
+        if (path != null) {
+            log(java.util.logging.Level.FINE, "Adding output directory: " + path);
+            outputDirectories.add(new File(path));
+        }
+    }
+
 
 	/**
 	 * Creates a classpath string consisting of all libraries and output
