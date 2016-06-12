@@ -100,12 +100,16 @@ public class JavaAssistClassParser {
 			if (unparsableClass(ctClass)) {
 				clazz = new UnparsableClass(className);
 			} else {
-				JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
-				URL url = getClassPool().find(className);
-				if ((url != null) && url.getProtocol().equals("file")) {
-					javaAssistClass.setClassFile(new File(url.getFile()));
+				try {
+					JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
+					URL url = getClassPool().find(className);
+					if ((url != null) && url.getProtocol().equals("file")) {
+						javaAssistClass.setClassFile(new File(url.toURI()));
+					}
+					clazz = javaAssistClass;
+				} catch (URISyntaxException e) {
+					throw new RuntimeException(e);
 				}
-				clazz = javaAssistClass;
 			}
 
 			CLASSES_BY_NAME.put(className, clazz);
