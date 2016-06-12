@@ -1,7 +1,7 @@
 Notes for new developers
 =========================
 
-[![Build Status](https://travis-ci.org/sarod/infinitest.svg?branch=master)](https://travis-ci.org/infinitest/infinitest)
+[![Build Status](https://travis-ci.org/infinitest/infinitest.svg?branch=master)](https://travis-ci.org/infinitest/infinitest)
 
 We strongly believe in Test-Driven Development.
 
