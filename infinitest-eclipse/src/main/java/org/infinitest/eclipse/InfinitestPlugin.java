@@ -27,23 +27,27 @@
  */
 package org.infinitest.eclipse;
 
-import static com.google.common.collect.Iterables.*;
-import static java.util.Arrays.*;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static java.util.Arrays.asList;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
+import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
+import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.plugin.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.util.*;
-import org.osgi.framework.*;
-import org.springframework.context.*;
-import org.springframework.context.annotation.*;
-import org.springframework.context.support.*;
+import java.util.logging.Level;
 
-import com.google.common.annotations.*;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.infinitest.eclipse.workspace.CoreSettings;
+import org.infinitest.util.InfinitestGlobalSettings;
+import org.infinitest.util.InfinitestUtils;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Controls the plug-in life cycle.
@@ -110,13 +114,12 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 		return getBean(PluginActivationController.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> beanClass) {
 		if (context == null) {
       context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
 
 			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
-			InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
+			InfinitestUtils.log(Level.FINE, "Beans loaded: " + asList(context.getBeanDefinitionNames()));
 		}
 		return getOnlyElement(context.getBeansOfType(beanClass).values());
 	}
