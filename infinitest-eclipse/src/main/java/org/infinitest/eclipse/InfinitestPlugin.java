@@ -34,6 +34,8 @@ import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNIN
 import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 
+import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -117,7 +119,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
       context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
 
 			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
-			InfinitestUtils.log("Beans loaded: " + asList(context.getBeanDefinitionNames()));
+			InfinitestUtils.log(Level.FINE, "Beans loaded: " + asList(context.getBeanDefinitionNames()));
 		}
 		return getOnlyElement(context.getBeansOfType(beanClass).values());
 	}
