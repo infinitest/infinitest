@@ -27,14 +27,22 @@
  */
 package org.infinitest.eclipse.prefs;
 
-import static java.lang.Integer.*;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
+import static java.lang.Integer.MAX_VALUE;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.*;
-import org.eclipse.ui.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.markers.*;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.infinitest.MultiCoreConcurrencyController;
+import org.infinitest.eclipse.InfinitestPlugin;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	private final PreferenceChangeHandler handler;
@@ -76,7 +84,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private FieldEditor createParallelizationEditor() {
 		IntegerFieldEditor editor = new IntegerFieldEditor(PARALLEL_CORES, "Projects Tested Concurrently", getFieldEditorParent());
 		editor.setEmptyStringAllowed(false);
-		editor.setValidRange(1, 16);
+		editor.setValidRange(1, MultiCoreConcurrencyController.DEFAULT_MAX_CORES);
 		return editor;
 	}
 
