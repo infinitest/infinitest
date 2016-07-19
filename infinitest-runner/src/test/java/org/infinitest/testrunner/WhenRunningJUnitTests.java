@@ -32,6 +32,8 @@ import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.*;
+import org.infinitest.testrunner.exampletests.*;
+//import org.infinitest.testrunner.testables.*;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {

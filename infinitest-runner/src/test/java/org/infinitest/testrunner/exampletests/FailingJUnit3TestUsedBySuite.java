@@ -25,17 +25,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.exampletests;
 
 import junit.framework.*;
 
-public class JUnit3TestWithASuiteMethod extends TestCase {
-	public void testShouldPass() {
+public final class FailingJUnit3TestUsedBySuite extends TestCase {
+	FailingJUnit3TestUsedBySuite() {
+		super("testShouldFail");
 	}
 
-	public static junit.framework.Test suite() {
-		TestSuite suite = new TestSuite();
-		suite.addTest(new FailingJUnit3TestUsedBySuite());
-		return suite;
+	public void testShouldFail() {
+		fail();
 	}
 }
