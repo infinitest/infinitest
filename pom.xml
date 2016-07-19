@@ -63,6 +63,14 @@
 			<id>dgageot</id>
 			<name>David Gageot</name>
 		</developer>
+		<developer>
+			<id>apupier</id>
+			<name>Aurélien Pupier</name>
+		</developer>
+		<developer>
+			<id>sarod</id>
+			<name>Sébastien Arod</name>
+		</developer>
 	</developers>
 
 	<scm>
@@ -71,8 +79,8 @@
 	</scm>
 
 	<issueManagement>
-		<system>Lighthouse</system>
-		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
+		<system>GitHub Issues</system>
+		<url>https://github.com/infinitest/infinitest/issues</url>
 	</issueManagement>
 
 	<licenses>
