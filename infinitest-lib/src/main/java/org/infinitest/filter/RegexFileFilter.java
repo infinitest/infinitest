@@ -32,13 +32,13 @@ import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.Optional;
 import java.util.regex.*;
 
 import org.infinitest.parser.*;
 
 import com.google.common.base.*;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.io.*;
 
 public class RegexFileFilter implements TestFilter {
@@ -88,7 +88,7 @@ public class RegexFileFilter implements TestFilter {
 	private Optional<FilterEntry> readyFilterEntry(String line) {
 
 		if (!isValidFilterLine(line)) {
-			return Optional.empty();
+			return Optional.absent();
 		}
 
 		boolean including = line.startsWith("include=");

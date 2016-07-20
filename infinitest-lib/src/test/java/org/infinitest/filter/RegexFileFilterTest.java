@@ -38,6 +38,8 @@ import org.junit.*;
 import org.junit.rules.*;
 import org.testng.reporters.*;
 
+import com.google.common.base.*;
+
 public class RegexFileFilterTest {
 
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -146,7 +148,7 @@ public class RegexFileFilterTest {
 
 	private File createFilterFile(String... lines) throws Exception {
 		File file = temporaryFolder.newFile();
-		String content = String.join("\n", lines);
+		String content = Joiner.on("\n").join(lines);
 		Files.writeFile(content, file);
 		return file;
 	}
