@@ -27,27 +27,28 @@
  */
 package org.infinitest.filter;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.logging.Level.*;
-import static org.apache.commons.lang.StringUtils.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.Optional;
 import java.util.regex.*;
 
 import org.infinitest.parser.*;
 
 import com.google.common.base.*;
+import com.google.common.base.Objects;
 import com.google.common.io.*;
 
 public class RegexFileFilter implements TestFilter {
-	private final File file;
-	private final List<Pattern> filters = newArrayList();
-	private boolean isInverted = false;
+
+	private final File filterFile;
+	private final Set<FilterEntry> includeFilterEntries = new LinkedHashSet<FilterEntry>();
+	private final Set<FilterEntry> excludeFilterEntries = new LinkedHashSet<FilterEntry>();
 
 	public RegexFileFilter(File file) {
-		this.file = file;
+		this.filterFile = file;
 		if (!file.exists()) {
 			log(INFO, "Filter file " + file + " does not exist.");
 		}
@@ -55,48 +56,116 @@ public class RegexFileFilter implements TestFilter {
 	}
 
 	@Override
-	public boolean match(JavaClass javaClass) {
-		String className = javaClass.getName();
-		for (Pattern pattern : filters) {
-			if (pattern.matcher(className).lookingAt()) {
-				return !isInverted;
+	public void updateFilterList() {
+
+		includeFilterEntries.clear();
+		excludeFilterEntries.clear();
+
+		try {
+			List<String> lines = Files.readLines(filterFile, Charsets.UTF_8);
+			for (String line : lines) {
+
+				Optional<FilterEntry> filterEntry = readyFilterEntry(line);
+				if (filterEntry.isPresent()) {
+					addFilterEntry(filterEntry.get());
+				}
+
 			}
+
+		} catch (IOException e) {
+			log(WARNING, "failed to read filter file: " + filterFile);
 		}
-		return isInverted;
+	}
+
+	private void addFilterEntry(FilterEntry filterEntry) {
+		if (filterEntry.including) {
+			includeFilterEntries.add(filterEntry);
+		} else {
+			excludeFilterEntries.add(filterEntry);
+		}
+	}
+
+	private Optional<FilterEntry> readyFilterEntry(String line) {
+
+		if (!isValidFilterLine(line)) {
+			return Optional.empty();
+		}
+
+		boolean including = line.startsWith("include=");
+		String expression = line;
+		if (line.contains("=")) {
+			expression = line.substring(line.indexOf("=") + 1);
+		}
+
+		return Optional.of(new FilterEntry(including, expression));
+	}
+
+	private boolean isValidFilterLine(String line) {
+		return !Strings.isNullOrEmpty(line) && !line.startsWith("!") && !line.startsWith("#");
 	}
 
 	@Override
-	public void updateFilterList() {
-		filters.clear();
-		this.isInverted = false;
+	public boolean match(JavaClass javaClass) {
 
-		if (file.exists()) {
-			readFilterFile();
+		if (!includeFilterEntries.isEmpty() && !matchesFilters(javaClass, includeFilterEntries)) {
+			return true;
 		}
+
+		return matchesFilters(javaClass, excludeFilterEntries);
 	}
 
-	private void readFilterFile() {
-		try {
-
-			for (String line : Files.readLines(file, Charsets.UTF_8)) {
-
-				if (filters.isEmpty() && isWhitelistFilterOption(line)) {
-					this.isInverted = true;
-				} else if (isValidFilter(line)) {
-					filters.add(Pattern.compile(line));
-				}
+	private boolean matchesFilters(JavaClass javaClass, Set<FilterEntry> entries) {
+		for (FilterEntry entry : entries) {
+			if (entry.matches(javaClass.getName())) {
+				return true;
 			}
-		} catch (IOException e) {
-			throw new RuntimeException("Something horrible happened to the filter file", e);
 		}
+		return false;
 	}
 
-	private boolean isWhitelistFilterOption(String line) {
-		return !isBlank(line) && line.startsWith("!whitelist");
-	}
+	private static class FilterEntry {
 
-	private boolean isValidFilter(String line) {
-		return !isBlank(line) && !line.startsWith("!") && !line.startsWith("#");
+		final boolean including;
+		final String expression;
+		final Pattern pattern;
+
+		FilterEntry(boolean including, String expression) {
+			this.including = including;
+			this.expression = expression;
+			this.pattern = Pattern.compile(expression);
+		}
+
+		public boolean matches(String name) {
+			Matcher matcher = pattern.matcher(name);
+			return matcher.matches() || matcher.lookingAt();
+		}
+
+		@Override
+		public String toString() {
+			return expression;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(including, expression);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+
+			FilterEntry other = (FilterEntry) obj;
+			return Objects.equal(including, other.including) && Objects.equal(expression, other.expression);
+		}
+
 	}
 
 }

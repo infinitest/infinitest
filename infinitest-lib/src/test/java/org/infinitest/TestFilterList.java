@@ -57,15 +57,6 @@ public class TestFilterList {
 	}
 
 	@Test
-	public void shouldInvertWhenKeywordIsPlacedBeforeFirstFilter() throws Exception {
-
-		TestFilter filter = new RegexFileFilter(file("\n\n!whitelist\nMyClassName\n"));
-
-		assertFalse(filter.match(javaClass("MyClassName")));
-		assertTrue(filter.match(javaClass("MyOtherClassName")));
-	}
-
-	@Test
 	public void shouldNotInvertWhenKeywordIsPlacedAfterFirstFilter() throws Exception {
 
 		TestFilter filter = new RegexFileFilter(file("MyOtherClassName\n!whitelist\nMyClassName\n"));
