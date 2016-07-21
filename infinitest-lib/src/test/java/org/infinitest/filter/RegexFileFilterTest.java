@@ -101,7 +101,7 @@ public class RegexFileFilterTest {
 	@Test
 	public void testFilterContentContainsSimpleExcludesEntry() throws Exception {
 
-		File filterFile = createFilterFile("excludes=SomeTest");
+		File filterFile = createFilterFile("exclude=SomeTest");
 		RegexFileFilter filter = new RegexFileFilter(filterFile);
 
 		assertThat(filter.match(mockClass("SomeTest")), is(true));

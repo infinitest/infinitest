@@ -57,15 +57,6 @@ public class TestFilterList {
 	}
 
 	@Test
-	public void shouldNotInvertWhenKeywordIsPlacedAfterFirstFilter() throws Exception {
-
-		TestFilter filter = new RegexFileFilter(file("MyOtherClassName\n!whitelist\nMyClassName\n"));
-
-		assertTrue(filter.match(javaClass("MyClassName")));
-		assertTrue(filter.match(javaClass("MyOtherClassName")));
-	}
-
-	@Test
 	public void testJMockClasses() {
 		TestFilter filter = new RegexFileFilter(file("org.jmock.test.acceptance.junit4.testdata.JUnit4TestWithNonPublicBeforeMethod"));
 
