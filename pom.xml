@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.infinitest</groupId>
 	<artifactId>infinitest-parent</artifactId>
@@ -42,7 +42,8 @@
 				</os>
 			</activation>
 			<properties>
-				<stop.stealing.focus>-Dapple.awt.UIElement=true</stop.stealing.focus>
+				<!-- configure surefire arg line to stop stealing the focus -->
+				<argLine>-Dapple.awt.UIElement=true</argLine>
 			</properties>
 		</profile>
 	</profiles>
@@ -147,6 +148,11 @@
 					<artifactId>maven-license-plugin</artifactId>
 					<version>1.9.0</version>
 				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.7.7.201606060606</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -188,7 +194,7 @@
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
 					</excludes>
-					<argLine>${stop.stealing.focus}</argLine>
+					<!-- argLine is configured using a property to simplify jacoco configuration -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -202,7 +208,7 @@
 						</goals>
 						<configuration>
 							<rules>
-								<requireUpperBoundDep/>
+								<requireUpperBoundDep />
 							</rules>
 						</configuration>
 					</execution>
@@ -234,6 +240,26 @@
 						<phase>validate</phase>
 						<goals>
 							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<!-- report as part of test to let travis build reports for codecov -->
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
