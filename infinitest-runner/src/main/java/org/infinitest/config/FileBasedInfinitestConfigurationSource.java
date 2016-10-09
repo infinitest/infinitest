@@ -25,52 +25,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.filter;
+package org.infinitest.config;
 
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
 
-import org.infinitest.config.InfinitestConfiguration;
-import org.infinitest.config.InfinitestConfigurationSource;
-import org.infinitest.parser.JavaClass;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharSource;
+import com.google.common.io.Files;
 
-import com.google.common.collect.ImmutableSet;
+public class FileBasedInfinitestConfigurationSource implements InfinitestConfigurationSource {
 
-public class RegexFileFilter implements TestFilter {
+	private final File file;
 
-	private final InfinitestConfigurationSource configSource;
-	private Set<String> includedPatterns = ImmutableSet.<String>of();
-	private Set<String> excludedPatterns = ImmutableSet.<String>of();
-
-	public RegexFileFilter(InfinitestConfigurationSource configSource) {
-		this.configSource = configSource;
-		updateFilterList();
+	private FileBasedInfinitestConfigurationSource(File file) {
+		this.file = file;
 	}
 
 	@Override
-	public void updateFilterList() {
-		InfinitestConfiguration config = configSource.getConfiguration();
-		includedPatterns = config.includedPatterns();
-		excludedPatterns = config.excludedPatterns();
+	public InfinitestConfiguration getConfiguration() {
+		if (!file.exists()) {
+			return InfinitestConfiguration.empty();
+		}
+		CharSource charSource = Files.asCharSource(file, Charsets.UTF_8);
+		try {
+			return new InfinitestConfigurationParser().parseFileContent(charSource);
+		} catch (IOException e) {
+			throw new RuntimeException("Error loading configuration", e);
+		}
 	}
 
-	@Override
-	public boolean match(JavaClass javaClass) {
-		if (!includedPatterns.isEmpty() && !matchesAnyPattern(javaClass, includedPatterns)) {
-			// Rejected because not included
-			return true;
-		}
-
-		// Rejected because explicitely excluded
-		return matchesAnyPattern(javaClass, excludedPatterns);
+	public static FileBasedInfinitestConfigurationSource createFromFile(File configFile) {
+		return new FileBasedInfinitestConfigurationSource(configFile);
 	}
 
-	private boolean matchesAnyPattern(JavaClass javaClass, Set<String> patterns) {
-		for (String pattern : patterns) {
-			if (javaClass.getName().matches(pattern)) {
-				return true;
-			}
-		}
-		return false;
+	public static FileBasedInfinitestConfigurationSource createFromWorkingDirectory(File workingDirectory) {
+		File configFile = new File(workingDirectory, "infinitest.filters");
+		return new FileBasedInfinitestConfigurationSource(configFile);
+	}
+
+	public static InfinitestConfigurationSource createFromCurrentWorkingDirectory() {
+		File workingDirectory = new File(".");
+		return createFromWorkingDirectory(workingDirectory);
 	}
 
 }
