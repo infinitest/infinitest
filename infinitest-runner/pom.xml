@@ -65,6 +65,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <annotationProcessors>
+              <annotationProcessor>com.google.auto.value.processor.AutoValueProcessor</annotationProcessor>
+            </annotationProcessors>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -95,5 +103,11 @@
       <artifactId>jcommander</artifactId>
       <version>1.30</version>
     </dependency>
+		<dependency>
+			<groupId>com.google.auto.value</groupId>
+			<artifactId>auto-value</artifactId>
+			<version>${autovalue.version}</version>
+			<scope>provided</scope>
+		</dependency>
   </dependencies>
 </project>
