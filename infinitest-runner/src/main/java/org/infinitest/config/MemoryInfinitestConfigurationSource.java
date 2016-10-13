@@ -25,52 +25,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.filter;
+package org.infinitest.config;
 
-import java.util.Set;
+public class MemoryInfinitestConfigurationSource implements InfinitestConfigurationSource {
 
-import org.infinitest.config.InfinitestConfiguration;
-import org.infinitest.config.InfinitestConfigurationSource;
-import org.infinitest.parser.JavaClass;
+	private InfinitestConfiguration configuration;
 
-import com.google.common.collect.ImmutableSet;
-
-public class RegexFileFilter implements TestFilter {
-
-	private final InfinitestConfigurationSource configSource;
-	private Set<String> includedPatterns = ImmutableSet.<String>of();
-	private Set<String> excludedPatterns = ImmutableSet.<String>of();
-
-	public RegexFileFilter(InfinitestConfigurationSource configSource) {
-		this.configSource = configSource;
-		updateFilterList();
+	public MemoryInfinitestConfigurationSource(InfinitestConfiguration configuration) {
+		this.configuration = configuration;
 	}
-
+	
+	public void setConfiguration(InfinitestConfiguration configuration) {
+		this.configuration = configuration;
+	}
+	
 	@Override
-	public void updateFilterList() {
-		InfinitestConfiguration config = configSource.getConfiguration();
-		includedPatterns = config.includedPatterns();
-		excludedPatterns = config.excludedPatterns();
-	}
-
-	@Override
-	public boolean match(JavaClass javaClass) {
-		if (!includedPatterns.isEmpty() && !matchesAnyPattern(javaClass, includedPatterns)) {
-			// Rejected because not included
-			return true;
-		}
-
-		// Rejected because explicitely excluded
-		return matchesAnyPattern(javaClass, excludedPatterns);
-	}
-
-	private boolean matchesAnyPattern(JavaClass javaClass, Set<String> patterns) {
-		for (String pattern : patterns) {
-			if (javaClass.getName().matches(pattern)) {
-				return true;
-			}
-		}
-		return false;
+	public InfinitestConfiguration getConfiguration() {
+		return configuration;
 	}
 
 }

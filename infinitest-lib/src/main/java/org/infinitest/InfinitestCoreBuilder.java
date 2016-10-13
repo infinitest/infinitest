@@ -27,14 +27,17 @@
  */
 package org.infinitest;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.*;
-
-import org.infinitest.changedetect.*;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.changedetect.FileChangeDetector;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.filter.RegexFileFilter;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.ClassFileTestDetector;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.MultiProcessRunner;
+import org.infinitest.testrunner.TestRunner;
 
 /**
  * Used to create instances of an {@link InfinitestCore}.
@@ -54,8 +57,9 @@ public class InfinitestCoreBuilder {
 
 		runtimeEnvironment = environment;
 		this.eventQueue = eventQueue;
-		String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator + "infinitest.filters";
-		filterList = new RegexFileFilter(new File(filterFileLocation));
+		
+		InfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromWorkingDirectory(environment.getWorkingDirectory());
+		filterList = new RegexFileFilter(configSource);
 		runnerClass = MultiProcessRunner.class;
 		controller = new SingleLockConcurrencyController();
 	}

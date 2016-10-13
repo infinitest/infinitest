@@ -27,130 +27,142 @@
  */
 package org.infinitest.filter;
 
-import static org.hamcrest.core.Is.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfigurationParser;
+import org.infinitest.config.MemoryInfinitestConfigurationSource;
+import org.infinitest.parser.JavaClass;
+import org.junit.Test;
 
-import org.infinitest.parser.*;
-import org.junit.*;
-import org.junit.rules.*;
-import org.testng.reporters.*;
-
-import com.google.common.base.*;
+import com.google.common.base.Joiner;
+import com.google.common.io.CharSource;
 
 public class RegexFileFilterTest {
 
-	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
 	@Test
-	public void testFilterContentIsEmpty() throws Exception {
+	public void testFilterWithoutPatterns() throws Exception {
 
-		File filterFile = createFilterFile();
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
+		InfinitestConfigurationSource configSource = configSource(InfinitestConfiguration.builder().build());
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest")), is(false));
+		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(false);
 	}
 
 	@Test
-	public void testFilterContentContainsSimpleEntry() throws Exception {
+	public void matchShouldReturnTrueWhenClassMatchesAnExcludedPattern() throws Exception {
 
-		File filterFile = createFilterFile("SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
+		InfinitestConfigurationSource configSource = configSource(excluding("SomeTest"));
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest")), is(true));
+		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
 	}
 
 	@Test
-	public void testFilterContentContainsBlankLines() throws Exception {
+	public void matchShouldReturnFalseWhenClassDoesntMatchTheExcludedPattern() throws Exception {
+		InfinitestConfigurationSource configSource = configSource(
+				InfinitestConfiguration.builder().excludedPatterns("SomeTest").build());
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		File filterFile = createFilterFile("", "SomeTest", "");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
-
-		assertThat(filter.match(mockClass("SomeTest")), is(true));
-	}
-
-	@Test
-	public void testFilterContentContainsCommentedLines() throws Exception {
-
-		File filterFile = createFilterFile("!SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
-
-		assertThat(filter.match(mockClass("SomeTest")), is(false));
-	}
-
-	@Test
-	public void testFilterContentContainsCommentedLines2() throws Exception {
-
-		File filterFile = createFilterFile("#SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
-
-		assertThat(filter.match(mockClass("SomeTest")), is(false));
-	}
-
-	@Test
-	public void testFilterContentContainsSimpleEntryButDoesNotMatch() throws Exception {
-
-		File filterFile = createFilterFile("SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
-
-		assertThat(filter.match(mockClass("OtherTest")), is(false));
-	}
-
-	@Test
-	public void testFilterContentContainsSimpleExcludesEntry() throws Exception {
-
-		File filterFile = createFilterFile("exclude=SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
-
-		assertThat(filter.match(mockClass("SomeTest")), is(true));
+		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(false);
 	}
 
 	@Test
 	public void testFilterContentContainsSimpleIncludesEntry() throws Exception {
 
-		File filterFile = createFilterFile("include=SomeTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
+		InfinitestConfigurationSource configSource = configSource(
+				InfinitestConfiguration.builder().includedPatterns("SomeTest").build());
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest")), is(false));
-		assertThat(filter.match(mockClass("OtherTest")), is(true));
+		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
 	}
 
 	@Test
 	public void testFilterContentContainsIncludesExcludesEntries() throws Exception {
 
-		File filterFile = createFilterFile("include=SomeTest", "exclude=.*Test");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
+		InfinitestConfigurationSource configSource = configSource(
+				InfinitestConfiguration.builder().includedPatterns("SomeTest").excludedPatterns(".*Test").build());
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest")), is(true));
-		assertThat(filter.match(mockClass("OtherTest")), is(true));
-		assertThat(filter.match(mockClass("FooTest")), is(true));
+		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("FooTest"))).isEqualTo(true);
 
 	}
 
 	@Test
 	public void testFilterContentContainsComplexEntries() throws Exception {
 
-		File filterFile = createFilterFile("include=com\\.mycompany\\.mypackage1\\.*", "include=com\\.mycompany\\.mypackage2\\.*", "exclude=.*IT", "exclude=.*SlowTest");
-		RegexFileFilter filter = new RegexFileFilter(filterFile);
+		InfinitestConfigurationSource configSource = configSource(
+				InfinitestConfiguration.builder()
+				.includedPatterns(
+						"com\\.mycompany\\.mypackage1\\..*",
+						"com\\.mycompany\\.mypackage2\\..*"
+						)
+				.excludedPatterns(
+						".*IT",
+						".*SlowTest"
+						).build());
+		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeTest")), is(false));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.SomeTest")), is(false));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage3.SomeTest")), is(true));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeIT")), is(true));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherIT")), is(true));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SlowTest")), is(true));
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherTest")), is(false));
-		assertThat(filter.match(mockClass("OtherTest")), is(true));
-		assertThat(filter.match(mockClass("SomeTest")), is(true));
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.SomeTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage3.SomeTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeIT"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherIT"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SlowTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
 	}
 
-	private File createFilterFile(String... lines) throws Exception {
-		File file = temporaryFolder.newFile();
+	@Test
+	public void testExcludeWithLeadingWildcard() {
+		TestFilter filter = new RegexFileFilter(configSource(excluding(".*TestFilterList")));
+
+		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));
+	}
+
+	@Test
+	public void testExcludeWithTrailingWildcard() {
+		TestFilter filter = new RegexFileFilter(configSource(excluding("org\\..*")));
+
+		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));
+		assertFalse(filter.match(mockClass(com.fakeco.fakeproduct.TestFakeProduct.class)));
+		
+	}
+
+	@Test
+	public void testExcludeSingleTest() {
+		TestFilter filter = new RegexFileFilter(configSource(excluding("org\\.infinitest\\.TestFilterList")));
+
+		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));
+		assertFalse(filter.match(mockClass(com.fakeco.fakeproduct.TestFakeProduct.class)));		
+	}
+
+	private InfinitestConfigurationSource createConfigSource(String... lines) throws Exception {
 		String content = Joiner.on("\n").join(lines);
-		Files.writeFile(content, file);
-		return file;
+		InfinitestConfiguration config = new InfinitestConfigurationParser()
+				.parseFileContent(CharSource.wrap(content));
+		return configSource(config);
+	}
+
+	private InfinitestConfiguration excluding(String... excludedPatterns) {
+		return InfinitestConfiguration.builder().excludedPatterns(excludedPatterns).build();
+	}
+
+	private InfinitestConfigurationSource configSource(InfinitestConfiguration config) {
+		return new MemoryInfinitestConfigurationSource(config);
+	}
+
+	private JavaClass mockClass(Class<?> classToMatch) {
+		return mockClass(classToMatch.getName());
 	}
 
 	private JavaClass mockClass(String name) {

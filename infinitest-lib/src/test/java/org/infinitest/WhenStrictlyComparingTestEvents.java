@@ -28,13 +28,14 @@
 package org.infinitest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.util.InfinitestTestUtils.throwableWithStack;
+import static org.junit.Assert.assertEquals;
 
-import org.infinitest.testrunner.*;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.util.EqualityTestSupport;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenStrictlyComparingTestEvents extends EqualityTestSupport {
   private Throwable throwable;
