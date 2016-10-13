@@ -55,10 +55,10 @@ public class InfinitestConfigurationParser {
 		 * Process the line if relevant
 		 * 
 		 * @param line
-		 * @return true if the line was sucssefully parsed and processed by this
+		 * @return true if the line was successfully parsed and processed by this
 		 *         parser
 		 */
-		boolean maybeProcessLine(String line);
+		boolean processLineIfRelevant(String line);
 	}
 
 	private static class PatternLineParser implements LineParser {
@@ -72,7 +72,7 @@ public class InfinitestConfigurationParser {
 		}
 
 		@Override
-		public boolean maybeProcessLine(String line) {
+		public boolean processLineIfRelevant(String line) {
 			Matcher excludeMatcher = linePattern.matcher(line);
 			if (excludeMatcher.matches()) {
 				String lineContent = excludeMatcher.group(1);
@@ -92,7 +92,7 @@ public class InfinitestConfigurationParser {
 	private static class CommentLineParser implements LineParser {
 
 		@Override
-		public boolean maybeProcessLine(String line) {
+		public boolean processLineIfRelevant(String line) {
 			return line.startsWith("!") || line.startsWith("#");
 		}
 
@@ -127,7 +127,7 @@ public class InfinitestConfigurationParser {
 
 		for (String line : textConfiguration.readLines()) {
 			for (LineParser lineParser : orderedLineParsers) {
-				if (lineParser.maybeProcessLine(line)) {
+				if (lineParser.processLineIfRelevant(line)) {
 					break;
 				}
 			}
@@ -138,7 +138,6 @@ public class InfinitestConfigurationParser {
 
 	private static Pattern legacySyntaxLinePattern(String key) {
 		return Pattern.compile(LEGACY_PREFIX + Pattern.quote(key) + LEGACY_SUFFIX);
-
 	}
 
 	private static final Pattern linePattern(String key) {

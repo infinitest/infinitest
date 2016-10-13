@@ -36,6 +36,7 @@ import com.google.common.io.Files;
 
 public class FileBasedInfinitestConfigurationSource implements InfinitestConfigurationSource {
 
+	private static final String INFINITEST_FILTERS_FILE_NAME = "infinitest.filters";
 	private final File file;
 
 	private FileBasedInfinitestConfigurationSource(File file) {
@@ -60,7 +61,7 @@ public class FileBasedInfinitestConfigurationSource implements InfinitestConfigu
 	}
 
 	public static FileBasedInfinitestConfigurationSource createFromWorkingDirectory(File workingDirectory) {
-		File configFile = new File(workingDirectory, "infinitest.filters");
+		File configFile = new File(workingDirectory, INFINITEST_FILTERS_FILE_NAME);
 		return new FileBasedInfinitestConfigurationSource(configFile);
 	}
 
