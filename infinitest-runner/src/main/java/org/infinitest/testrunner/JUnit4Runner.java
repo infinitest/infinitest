@@ -27,51 +27,64 @@
  */
 package org.infinitest.testrunner;
 
-import static org.junit.runner.Request.*;
-
 import java.lang.reflect.*;
 import java.util.*;
 
-import junit.framework.*;
-
 import org.infinitest.*;
+import org.infinitest.config.*;
+import org.junit.experimental.categories.Categories.*;
 import org.junit.runner.*;
 import org.testng.*;
+
+import junit.framework.*;
 
 /**
  * A proxy which delegates actual test execution JUnit or TestNG.
  *
- * TODO: we should either rename this class or split it up in
- * two classes with the respective JUnit/TestNG functionality.
+ * TODO: we should either rename this class or split it up in two classes with
+ * the respective JUnit/TestNG functionality.
  */
 public class JUnit4Runner implements NativeRunner {
-	private TestNGConfiguration config;
+	private InfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory();
 
-	public void setTestNGConfiguration(TestNGConfiguration configuration) {
-		config = configuration;
+	// to override the default config source for unit tests
+	public void setTestConfigurationSource(InfinitestConfigurationSource configurationSource) {
+		configSource = configurationSource;
 	}
 
 	@Override
-	public TestResults runTest(String testClass) {
-		Class<?> clazz;
+	public TestResults runTest(String testClassName) {
+		Class<?> testClass;
 		try {
-			clazz = Class.forName(testClass);
+			testClass = Class.forName(testClassName);
 		} catch (ClassNotFoundException e) {
-			throw new MissingClassException(testClass);
+			throw new MissingClassException(testClassName);
 		}
 
-		return isTestNGTest(clazz) ? runTestNGTest(clazz) : runJUnitTest(clazz);
+		if (isTestNGTest(testClass)) {
+			return runTestNGTest(testClass);
+		} else {
+			return runJUnitTest(testClass);
+		}
 	}
 
-	private TestResults runTestNGTest(Class<?> clazz) {
+	private TestResults runTestNGTest(Class<?> classUnderTest) {
 		TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
 
 		TestNG core = new TestNG();
 		core.addListener(eventTranslator);
-		core.setTestClasses(new Class[]{clazz});
-		if (config == null) {
-			config = new TestNGConfigurator().readConfig();
-		}
+		core.setTestClasses(new Class[] { classUnderTest });
+
+		TestNGConfiguration config = new TestNGConfigurator(configSource).readConfig();
+
+		applyConfig(core, config);
+
+		core.run();
+
+		return eventTranslator.getTestResults();
+	}
+
+	private void applyConfig(TestNG core, TestNGConfiguration config) {
 		core.setExcludedGroups(config.getExcludedGroups());
 		core.setGroups(config.getGroups());
 		if (config.getListeners() != null) {
@@ -79,53 +92,70 @@ public class JUnit4Runner implements NativeRunner {
 				core.addListener(listener);
 			}
 		}
-
-		core.run();
-
-		return eventTranslator.getTestResults();
 	}
 
-	private TestResults runJUnitTest(Class<?> clazz) {
+	private TestResults runJUnitTest(Class<?> classUnderTest) {
 		EventTranslator eventTranslator = new EventTranslator();
 
 		JUnitCore core = new JUnitCore();
 		core.addListener(eventTranslator);
 
-		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
-			core.run(new UninstantiableJUnit3TestRequest(clazz));
-		} else {
-			core.run(classWithoutSuiteMethod(clazz));
-		}
+		core.run(junitTestsToRunFrom(classUnderTest));
 
 		return eventTranslator.getTestResults();
 	}
 
-	private static boolean isJUnit3TestCase(Class<?> clazz) {
-		return TestCase.class.isAssignableFrom(clazz);
-	}
-
-	private static boolean cannotBeInstantiated(Class<?> clazz) {
-		CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
-		return testSuite.hasWarnings();
-	}
-
-	private static class CustomTestSuite extends TestSuite {
-		public CustomTestSuite(Class<? extends TestCase> testClass) {
-			super(testClass);
+	private Request junitTestsToRunFrom(Class<?> classUnderTest) {
+		if (isJUnit3TestCaseWithWarnings(classUnderTest)) {
+			return new UninstantiableJUnit3TestRequest(classUnderTest);
 		}
 
-		boolean hasWarnings() {
-			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
-				Test test = tests.nextElement();
-				if (test instanceof TestCase) {
-					TestCase testCase = (TestCase) test;
-					if (testCase.getName().equals("warning")) {
-						return true;
-					}
-				}
+		Request request = Request.classWithoutSuiteMethod(classUnderTest);
+
+		Class<?>[] junitCategoriesToExclude = readExcludedGroupsFromConfiguration();
+
+		return request.filterWith(CategoryFilter.exclude(junitCategoriesToExclude));
+	}
+
+	/**
+	 * we use the TestNGConfigurator do this kind of work for TestNG, but
+	 * there's only one configuration option that we're looking at for JUnit at
+	 * the moment (excludedGroups) so it's simpler to just leave it in one
+	 * method for now.
+	 */
+	private Class<?>[] readExcludedGroupsFromConfiguration() {
+		InfinitestConfiguration configuration = configSource.getConfiguration();
+
+		List<Class<?>> categoriesToExclude = new ArrayList<Class<?>>();
+		for (String excludedGroup : configuration.excludedGroups()) {
+			try {
+				categoriesToExclude.add(Class.forName(excludedGroup));
+			} catch (ClassNotFoundException e) {
+				// can't find the specified class so log it and keep looking for
+				// the others
+				e.printStackTrace();
 			}
+		}
+
+		return categoriesToExclude.toArray(new Class<?>[0]);
+	}
+
+	private boolean isJUnit3TestCaseWithWarnings(Class<?> classUnderTest) {
+		if (!TestCase.class.isAssignableFrom(classUnderTest)) {
 			return false;
 		}
+
+		List<Test> tests = Collections.list(new TestSuite(classUnderTest).tests());
+
+		for (Test test : tests) {
+			if (test instanceof TestCase) {
+				if (((TestCase) test).getName().equals("warning")) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private static class UninstantiableJUnit3TestRequest extends Request {
