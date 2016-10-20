@@ -60,6 +60,15 @@
                   <outputDirectory>target/classes</outputDirectory>
                   <includes>**/*.*</includes>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>${guava.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
