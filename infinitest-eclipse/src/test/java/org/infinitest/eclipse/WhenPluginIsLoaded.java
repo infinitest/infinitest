@@ -54,14 +54,14 @@ public class WhenPluginIsLoaded {
 	public void shouldRestoreSavedPreferences() {
 		when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
 		when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
-		when(preferences.getInt(FAIL_BACKGROUND_COLOR)).thenReturn(1);
+		when(preferences.getInt(FAILING_BACKGROUND_COLOR)).thenReturn(1);
 		when(preferences.getInt(FAIL_TEXT_COLOR)).thenReturn(2);
 
 		plugin.restoreSavedPreferences(preferences, coreSettings);
 
 		verify(coreSettings).setConcurrentCoreCount(4);
 		assertEquals(1000L, InfinitestGlobalSettings.getSlowTestTimeLimit());
-		assertEquals(1, ColorSettings.getFailBackgroundColor());
+		assertEquals(1, ColorSettings.getFailingBackgroundColor());
 		assertEquals(2, ColorSettings.getFailTextColor());
 	}
 }

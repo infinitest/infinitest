@@ -92,14 +92,14 @@ public class WhenPreferencesAreChanged {
 	}
 
 	@Test
-	public void shouldAdjustFailBackgroundColor() {
-		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAIL_BACKGROUND_COLOR);
+	public void shouldAdjustFailingBackgroundColor() {
+		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAILING_BACKGROUND_COLOR);
 		int red = SWT.COLOR_DARK_RED;
 		int blue = SWT.COLOR_BLUE;
 
 		changeProperty(SwtColorFieldEditor.VALUE, String.valueOf(red), String.valueOf(blue));
 
-		assertEquals(blue, ColorSettings.getFailBackgroundColor());
+		assertEquals(blue, ColorSettings.getFailingBackgroundColor());
 	}
 
 	@Test

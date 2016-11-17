@@ -70,8 +70,8 @@ public class PreferenceChangeHandler {
 			updateConcurrency((String) newValue);
 		}
 
-		if (PreferencesConstants.FAIL_BACKGROUND_COLOR.equals(preference)) {
-			updateFailBackgroundColor((String) newValue);
+		if (PreferencesConstants.FAILING_BACKGROUND_COLOR.equals(preference)) {
+			updateFailingBackgroundColor((String) newValue);
 		}
 
 		if (PreferencesConstants.FAIL_TEXT_COLOR.equals(preference)) {
@@ -83,8 +83,8 @@ public class PreferenceChangeHandler {
 		ColorSettings.setFailTextColor(Integer.valueOf(newValue));
 	}
 
-	private void updateFailBackgroundColor(String newValue) {
-		ColorSettings.setFailBackgroundColor(Integer.valueOf(newValue));
+	private void updateFailingBackgroundColor(String newValue) {
+		ColorSettings.setFailingBackgroundColor(Integer.valueOf(newValue));
 	}
 
 	private void updateConcurrency(String newValue) {

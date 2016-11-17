@@ -30,7 +30,7 @@ import org.eclipse.swt.*;
  * SOFTWARE.
  */
 public class ColorSettings {
-	private static int failBackgroundColor = SWT.COLOR_DARK_RED;
+	private static int failingBackgroundColor = SWT.COLOR_DARK_RED;
 	private static int failTextColor = SWT.COLOR_WHITE;
 
 	public static int getFailTextColor() {
@@ -41,12 +41,12 @@ public class ColorSettings {
 		ColorSettings.failTextColor = failTextColor;
 	}
 
-	public static int getFailBackgroundColor() {
-		return failBackgroundColor;
+	public static int getFailingBackgroundColor() {
+		return failingBackgroundColor;
 	}
 
-	public static void setFailBackgroundColor(int failBackgroundColor) {
-		ColorSettings.failBackgroundColor = failBackgroundColor;
+	public static void setFailingBackgroundColor(int failBackgroundColor) {
+		ColorSettings.failingBackgroundColor = failBackgroundColor;
 	}
 
 }

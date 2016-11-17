@@ -63,7 +63,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		addField(createAutoTestEditor());
 		addField(createParallelizationEditor());
 		addField(createSlowTestWarningCutoffEditor());
-		addField(createFailBackgroundColorEditor());
+		addField(createFailingBackgroundColorEditor());
 		addField(createFailTextColorEditor());
 	}
 
@@ -72,8 +72,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		return autoTestEditor;
 	}
 
-	private SwtColorFieldEditor createFailBackgroundColorEditor() {
-		return new SwtColorFieldEditor(PreferencesConstants.FAIL_BACKGROUND_COLOR, "Fail Background Color", getFieldEditorParent());
+	private SwtColorFieldEditor createFailingBackgroundColorEditor() {
+		return new SwtColorFieldEditor(PreferencesConstants.FAILING_BACKGROUND_COLOR, "Fail Background Color", getFieldEditorParent());
 	}
 
 	private SwtColorFieldEditor createFailTextColorEditor() {
