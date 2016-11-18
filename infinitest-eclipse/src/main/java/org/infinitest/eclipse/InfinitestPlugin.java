@@ -94,7 +94,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 		store.setDefault(PARALLEL_CORES, 1);
 		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
 		store.setDefault(FAILING_BACKGROUND_COLOR, ColorSettings.getFailingBackgroundColor());
-		store.setDefault(FAIL_TEXT_COLOR, ColorSettings.getFailTextColor());
+		store.setDefault(FAILING_TEXT_COLOR, ColorSettings.getFailingTextColor());
 	}
 
 	// Only used for testing.
@@ -129,6 +129,6 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
 		ColorSettings.setFailingBackgroundColor(preferences.getInt(PreferencesConstants.FAILING_BACKGROUND_COLOR));
-		ColorSettings.setFailTextColor(preferences.getInt(PreferencesConstants.FAIL_TEXT_COLOR));
+		ColorSettings.setFailngTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
 	}
 }

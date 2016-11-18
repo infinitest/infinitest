@@ -75,7 +75,7 @@ public class WhenShowingStatusInTheStatusBar {
 		presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "", new AssertionError()))));
 
 		verify(statusBar).setBackgroundColor(ColorSettings.getFailingBackgroundColor());
-		verify(statusBar).setTextColor(ColorSettings.getFailTextColor());
+		verify(statusBar).setTextColor(ColorSettings.getFailingTextColor());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class WhenShowingStatusInTheStatusBar {
 	@Test
 	public void shouldChangeToFailingBackgroundColorWhenTestsFail() {
 		ColorSettings.setFailingBackgroundColor(COLOR_DARK_RED);
-		ColorSettings.setFailTextColor(COLOR_YELLOW);
+		ColorSettings.setFailngTextColor(COLOR_YELLOW);
 
 		presenter.coreStatusChanged(PASSING, FAILING);
 

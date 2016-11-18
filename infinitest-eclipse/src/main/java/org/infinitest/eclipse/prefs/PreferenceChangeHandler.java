@@ -74,13 +74,13 @@ public class PreferenceChangeHandler {
 			updateFailingBackgroundColor((String) newValue);
 		}
 
-		if (PreferencesConstants.FAIL_TEXT_COLOR.equals(preference)) {
-			updateFailTextColor((String) newValue);
+		if (PreferencesConstants.FAILING_TEXT_COLOR.equals(preference)) {
+			updateFailingTextColor((String) newValue);
 		}
 	}
 
-	private void updateFailTextColor(String newValue) {
-		ColorSettings.setFailTextColor(Integer.valueOf(newValue));
+	private void updateFailingTextColor(String newValue) {
+		ColorSettings.setFailngTextColor(Integer.valueOf(newValue));
 	}
 
 	private void updateFailingBackgroundColor(String newValue) {

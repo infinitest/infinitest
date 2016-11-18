@@ -103,14 +103,14 @@ public class WhenPreferencesAreChanged {
 	}
 
 	@Test
-	public void shouldAdjustFailTextColor() {
-		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAIL_TEXT_COLOR);
+	public void shouldAdjustFailingTextColor() {
+		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAILING_TEXT_COLOR);
 		int white = SWT.COLOR_WHITE;
 		int yellow = SWT.COLOR_YELLOW;
 
 		changeProperty(SwtColorFieldEditor.VALUE, String.valueOf(white), String.valueOf(yellow));
 
-		assertEquals(yellow, ColorSettings.getFailTextColor());
+		assertEquals(yellow, ColorSettings.getFailingTextColor());
 	}
 
 	@Test

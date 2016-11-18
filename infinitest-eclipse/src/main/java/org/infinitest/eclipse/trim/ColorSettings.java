@@ -31,14 +31,14 @@ import org.eclipse.swt.*;
  */
 public class ColorSettings {
 	private static int failingBackgroundColor = SWT.COLOR_DARK_RED;
-	private static int failTextColor = SWT.COLOR_WHITE;
+	private static int failingTextColor = SWT.COLOR_WHITE;
 
-	public static int getFailTextColor() {
-		return failTextColor;
+	public static int getFailingTextColor() {
+		return failingTextColor;
 	}
 
-	public static void setFailTextColor(int failTextColor) {
-		ColorSettings.failTextColor = failTextColor;
+	public static void setFailngTextColor(int failTextColor) {
+		ColorSettings.failingTextColor = failTextColor;
 	}
 
 	public static int getFailingBackgroundColor() {
