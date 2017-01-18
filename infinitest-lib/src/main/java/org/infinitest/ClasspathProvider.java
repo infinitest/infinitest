@@ -44,4 +44,6 @@ public interface ClasspathProvider {
 	String getCompleteClasspath();
 
 	List<File> classDirectoriesInClasspath();
+
+	File getWorkingDirectory();
 }

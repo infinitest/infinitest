@@ -32,7 +32,7 @@ import java.io.*;
 class ClassFileFilter implements FileFilter {
 	@Override
 	public boolean accept(File pathname) {
-		return isClassFile(pathname) || pathname.isDirectory();
+		return !pathname.getName().endsWith(".java");
 	}
 
 	public static boolean isClassFile(File pathname) {

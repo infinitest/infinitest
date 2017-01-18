@@ -48,7 +48,8 @@ public class FileChangeDetector implements ChangeDetector {
 	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		clear();
-		List<File> classDirs = classpath.classDirectoriesInClasspath();
+		// List<File> classDirs = classpath.classDirectoriesInClasspath();
+		List<File> classDirs = Arrays.asList(classpath.getWorkingDirectory());
 		classDirectories = classDirs.toArray(new File[classDirs.size()]);
 	}
 
@@ -60,9 +61,10 @@ public class FileChangeDetector implements ChangeDetector {
 	private Set<File> findFiles(File[] classesOrDirectories, boolean isPackage) throws IOException {
 		Set<File> changedFiles = new HashSet<File>();
 		for (File classFileOrDirectory : classesOrDirectories) {
+			InfinitestUtils.log("ClassFileOrDirectory : " + classFileOrDirectory.toString());
 			if (classFileOrDirectory.isDirectory() && hasValidName(classFileOrDirectory, isPackage)) {
 				findChildren(changedFiles, classFileOrDirectory);
-			} else if (ClassFileFilter.isClassFile(classFileOrDirectory)) {
+			} else {
 				File classFile = classFileOrDirectory;
 				Long timestamp = timestampIndex.get(classFile);
 				if ((timestamp == null) || (getModificationTimestamp(classFile) != timestamp)) {

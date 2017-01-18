@@ -75,4 +75,9 @@ public class StandaloneClasspath implements ClasspathProvider {
 		return systemClasspath();
 	}
 
+	public File getWorkingDirectory() {
+		// FIXME have the working directory in Standalone Classpath.
+		return null;
+	}
+
 }

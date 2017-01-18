@@ -111,6 +111,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 			runner.setRuntimeEnvironment(environment);
 			changeDetector.setClasspathProvider(environment);
 			testDetector.setClasspathProvider(environment);
+
 			reload();
 		}
 	}

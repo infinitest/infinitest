@@ -32,6 +32,7 @@ import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.workspace.*;
+import org.infinitest.util.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -60,14 +61,20 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 	private boolean containsClassFileChanges(IResourceDelta... deltas) {
 		// DEBT SHould use IResourceDeltaVisitor instead
 		for (IResourceDelta delta : deltas) {
-			if (isClassFile(delta) || containsClassFileChanges(delta.getAffectedChildren())) {
+			InfinitestUtils.log("Delta vu : " + delta.toString());
+			if ((isNotJavaFile(delta) && (delta.getAffectedChildren().length == 0)) || containsClassFileChanges(delta.getAffectedChildren())) {
+				InfinitestUtils.log("Extension : " + delta.getFullPath().getFileExtension());
+				InfinitestUtils.log("Class : " + delta.getClass());
+				InfinitestUtils.log(delta.getFullPath().toFile().toString());
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean isClassFile(IResourceDelta delta) {
-		return delta.getFullPath().toPortableString().endsWith(".class");
+	private boolean isNotJavaFile(IResourceDelta delta) {
+		// Les deltas sur les fichiers Java ne sont pas des vrais delta (y les
+		// .class pour ça).
+		return !delta.getFullPath().toPortableString().endsWith(".java");
 	}
 }
