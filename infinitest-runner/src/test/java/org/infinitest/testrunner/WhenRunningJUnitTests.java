@@ -28,6 +28,8 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
@@ -121,7 +123,7 @@ public class WhenRunningJUnitTests {
 
 		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
 
-		assertEquals(3, size(results));
+		assertThat(size(results), is(3));
 	}
 
 	@Test
@@ -130,7 +132,7 @@ public class WhenRunningJUnitTests {
 
 		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
 
-		assertEquals(2, size(results));
+		assertThat(size(results), is(2));
 	}
 
 	@Test
@@ -139,7 +141,17 @@ public class WhenRunningJUnitTests {
 
 		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
 
-		assertEquals(1, size(results));
+		assertThat(size(results), is(1));
+	}
+
+	@Test
+	public void shouldNotRunAnyTestsIfAllAreExcluded() throws Exception {
+		String[] allCategories = { IgnoreMe.class.getName(), IgnoreMeToo.class.getName(), UsuallyRunMe.class.getName() };
+		runner.setTestConfigurationSource(withExcludedGroups(allCategories));
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertThat(results, is(emptyIterable()));
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
@@ -158,5 +170,4 @@ public class WhenRunningJUnitTests {
 
 		return new MemoryInfinitestConfigurationSource(configuration);
 	}
-
 }

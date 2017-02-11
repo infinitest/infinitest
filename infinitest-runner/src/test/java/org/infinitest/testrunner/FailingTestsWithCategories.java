@@ -40,19 +40,23 @@ public class FailingTestsWithCategories {
 	interface IgnoreMeToo {
 	}
 
+	interface UsuallyRunMe {
+	}
+
 	@Test
+	@Category(UsuallyRunMe.class)
 	public void shouldBeTested() {
 		fail();
 	}
 
-	@Category(IgnoreMe.class)
 	@Test
+	@Category(IgnoreMe.class)
 	public void shouldNotBeTested() {
 		fail();
 	}
 
-	@Category(IgnoreMeToo.class)
 	@Test
+	@Category(IgnoreMeToo.class)
 	public void shouldAlsoNotBeTested() {
 		fail();
 	}

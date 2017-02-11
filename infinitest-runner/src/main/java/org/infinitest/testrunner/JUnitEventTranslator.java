@@ -37,18 +37,18 @@ import org.junit.runner.notification.*;
 /**
  * A listener for JUnit lifecycle events during test execution.
  */
-class EventTranslator extends RunListener {
+class JUnitEventTranslator extends RunListener {
 	private final List<TestEvent> eventsCollected;
 	private final Map<Description, MethodStats> methodStats;
 	private final Clock clock;
 
-	EventTranslator(Clock clock) {
+	JUnitEventTranslator(Clock clock) {
 		this.clock = clock;
 		eventsCollected = new ArrayList<TestEvent>();
 		methodStats = new HashMap<Description, MethodStats>();
 	}
 
-	EventTranslator() {
+	JUnitEventTranslator() {
 		this(new SystemClock());
 	}
 
@@ -65,8 +65,18 @@ class EventTranslator extends RunListener {
 	@Override
 	public void testRunFinished(Result result) {
 		for (Failure failure : result.getFailures()) {
-			eventsCollected.add(createEventFrom(failure));
+			TestEvent event = createEventFrom(failure);
+			if (notCausedByFindingNoTests(event)) {
+				eventsCollected.add(event);
+			}
 		}
+	}
+
+	private boolean notCausedByFindingNoTests(TestEvent event) {
+		// if we try to run a test class but all of the test methods have been
+		// excluded by category filters, JUnit will still report a failure.
+		// It's not really a failure for our purposes, so we'll ignore it.
+		return !event.getMessage().startsWith("No tests found matching categories");
 	}
 
 	public TestResults getTestResults() {

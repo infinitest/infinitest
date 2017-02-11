@@ -37,7 +37,7 @@ import org.junit.runner.*;
 import org.junit.runner.notification.*;
 
 public class WhenConvertingJUnitEventsToInfinitestEvents {
-	private EventTranslator eventTranslator;
+	private JUnitEventTranslator eventTranslator;
 	private Result result;
 	private Description description;
 	private StubClock stubClock;
@@ -45,7 +45,7 @@ public class WhenConvertingJUnitEventsToInfinitestEvents {
 	@Before
 	public void inContext() throws Exception {
 		stubClock = new StubClock();
-		eventTranslator = new EventTranslator(stubClock);
+		eventTranslator = new JUnitEventTranslator(stubClock);
 		description = createTestDescription(getClass(), "methodName");
 		eventTranslator.testRunStarted(description);
 		result = new Result();

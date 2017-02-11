@@ -95,7 +95,7 @@ public class JUnit4Runner implements NativeRunner {
 	}
 
 	private TestResults runJUnitTest(Class<?> classUnderTest) {
-		EventTranslator eventTranslator = new EventTranslator();
+		JUnitEventTranslator eventTranslator = new JUnitEventTranslator();
 
 		JUnitCore core = new JUnitCore();
 		core.addListener(eventTranslator);
@@ -114,7 +114,9 @@ public class JUnit4Runner implements NativeRunner {
 
 		Class<?>[] junitCategoriesToExclude = readExcludedGroupsFromConfiguration();
 
-		return request.filterWith(CategoryFilter.exclude(junitCategoriesToExclude));
+		CategoryFilter excludeCategoriesFilter = CategoryFilter.exclude(junitCategoriesToExclude);
+
+		return request.filterWith(excludeCategoriesFilter);
 	}
 
 	/**
