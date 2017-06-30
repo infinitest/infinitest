@@ -106,7 +106,6 @@ public class JUnit4Runner implements NativeRunner {
 	public static boolean isJUnit5Test(Class<?> clazz) {
 		try {
 			Class<?> testEngineClass = Class.forName(JupiterTestEngine.class.getCanonicalName());
-			System.out.println(testEngineClass.getCanonicalName());
 		} catch (ClassNotFoundException e) {
 			throw new AssertionError("Jupiter engine not found");
 		}
