@@ -34,6 +34,51 @@
                   <includes>**/*.*</includes>
                 </artifactItem>
                 <artifactItem>
+                  <groupId>org.junit.jupiter</groupId>
+                  <artifactId>junit-jupiter-api</artifactId>
+                  <version>${junit5.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.junit.platform</groupId>
+                  <artifactId>junit-platform-launcher</artifactId>
+                  <version>${junit5-platform.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.junit.platform</groupId>
+                  <artifactId>junit-platform-commons</artifactId>
+                  <version>${junit5-platform.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.junit.platform</groupId>
+                  <artifactId>junit-platform-engine</artifactId>
+                  <version>${junit5-platform.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.junit.jupiter</groupId>
+                  <artifactId>junit-jupiter-engine</artifactId>
+                  <version>${junit5.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                  <includes>**/*.*</includes>
+                </artifactItem>
+                <artifactItem>
                   <groupId>org.testng</groupId>
                   <artifactId>testng</artifactId>
                   <version>${testng.version}</version>
@@ -100,6 +145,16 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit5-platform.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
