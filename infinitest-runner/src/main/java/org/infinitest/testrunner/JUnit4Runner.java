@@ -113,10 +113,17 @@ public class JUnit4Runner implements NativeRunner {
 				.selectors( selectClass(clazz) ).filters(EngineFilter.includeEngines("junit-jupiter"))
 				.build();
 
-		TestPlan plan = LauncherFactory.create().discover(request);
-		long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
-		boolean testsPresent = numberOfTests > 0;
-		return testsPresent;
+		try {
+			TestPlan plan = LauncherFactory.create().discover(request);
+			long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
+			boolean testsPresent = numberOfTests > 0;
+			return testsPresent;
+		} catch (Throwable e) {
+			// This might fail for any number of reasons...
+			// TODO : use some log instead?
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	private TestResults runTestNGTest(Class<?> clazz) {

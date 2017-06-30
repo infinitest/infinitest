@@ -221,7 +221,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		Class clazz;
 		try {
 			clazz = Class.forName(classReference.getName());
-		} catch (ClassNotFoundException e) {
+		} catch (NoClassDefFoundError | ClassNotFoundException e) {
 			e.printStackTrace();
 			clazz = null;
 		}
