@@ -28,21 +28,47 @@
 package org.infinitest.testrunner;
 
 import static org.infinitest.testrunner.TestEvent.methodFailed;
-import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
-import static org.junit.runner.Request.*;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.infinitest.*;
-import org.infinitest.config.*;
-import org.junit.experimental.categories.Categories.*;
-import org.junit.runner.*;
-import org.testng.*;
+import org.infinitest.MissingClassException;
+import org.infinitest.TestNGConfiguration;
+import org.infinitest.TestNGConfigurator;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.junit.experimental.categories.Categories.CategoryFilter;
+import org.junit.jupiter.engine.JupiterTestEngine;
+import org.junit.platform.commons.util.PreconditionViolationException;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.TestSource;
+import org.junit.platform.engine.support.descriptor.MethodSource;
+import org.junit.platform.launcher.EngineFilter;
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.TestExecutionListener;
+import org.junit.platform.launcher.TestIdentifier;
+import org.junit.platform.launcher.TestPlan;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
+import org.junit.runner.Runner;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+import org.testng.TestNG;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * A proxy which delegates actual test execution JUnit or TestNG.
@@ -69,10 +95,45 @@ public class JUnit4Runner implements NativeRunner {
 
 		if (isTestNGTest(testClass)) {
 			return runTestNGTest(testClass);
+		} else if (isJUnit5Test(testClass)) {
+			return runJUnit5Test(testClass);
 		} else {
 			return runJUnitTest(testClass);
 		}
 	}
+	
+	private TestResults runJUnit5Test(Class<?> clazz) {
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+				.selectors(selectClass(clazz)).filters(EngineFilter.includeEngines("junit-jupiter"))
+				.build();
+
+		Launcher launcher = LauncherFactory.create();
+
+		// Register a listener of your choice
+		JUnit5EventTranslator listener = new JUnit5EventTranslator();
+		launcher.registerTestExecutionListeners(listener);
+
+		launcher.execute(request, new TestExecutionListener[0]);
+
+		return listener.getTestResults();
+	}
+
+	public static boolean isJUnit5Test(Class<?> clazz) {
+		try {
+			Class<?> testEngineClass = Class.forName(JupiterTestEngine.class.getCanonicalName());
+		} catch (ClassNotFoundException e) {
+			throw new AssertionError("Jupiter engine not found");
+		}
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+				.selectors( selectClass(clazz) ).filters(EngineFilter.includeEngines("junit-jupiter"))
+				.build();
+
+		TestPlan plan = LauncherFactory.create().discover(request);
+		long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
+		boolean testsPresent = numberOfTests > 0;
+		return testsPresent;
+	}
+	
 
 	private TestResults runTestNGTest(Class<?> classUnderTest) {
 		TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
@@ -193,6 +254,98 @@ public class JUnit4Runner implements NativeRunner {
 
 	private static boolean containsTestNGTestAnnotation(AnnotatedElement annotatedElement) {
 		return annotatedElement.getAnnotation(org.testng.annotations.Test.class) != null;
+	}
+
+	private static class JUnit5EventTranslator implements TestExecutionListener {
+		private final List<TestEvent> eventsCollected;
+		private final Map<TestIdentifier, MethodStats> methodStats;
+		private final Clock clock;
+
+		public JUnit5EventTranslator() {
+			this.clock = new SystemClock();
+			eventsCollected = new ArrayList<TestEvent>();
+			methodStats = new HashMap<TestIdentifier, MethodStats>();
+		}
+
+		@Override
+		public void executionStarted(TestIdentifier testIdentifier) {
+			if (testIdentifier.isTest()) {
+				getMethodStats(testIdentifier).startTime = clock.currentTimeMillis();
+			}
+		}
+
+		@Override
+		public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
+			if (testIdentifier.isTest()) {
+				getMethodStats(testIdentifier).stopTime = clock.currentTimeMillis();
+				switch (testExecutionResult.getStatus()) {
+
+					case SUCCESSFUL:
+						break;
+
+
+					case ABORTED: {
+						break;
+					}
+
+					case FAILED: {
+						eventsCollected.add(createEventFrom(testIdentifier, testExecutionResult));
+						break;
+					}
+
+					default:
+						throw new PreconditionViolationException(
+								"Unsupported execution status:" + testExecutionResult.getStatus());
+				}
+			}
+		}
+
+		private TestEvent createEventFrom(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
+			String testCaseName = getTestCaseName(testIdentifier);
+			Throwable exception = testExecutionResult.getThrowable().get();
+
+			return methodFailed(testCaseName, getMethodName(testIdentifier), exception);
+		}
+
+		private static String getTestCaseName(TestIdentifier description) {
+			try {
+				TestSource testSource = description.getSource().get();
+				if (testSource instanceof MethodSource) {
+					return ((MethodSource)testSource).getClassName();
+				}
+				return description.getDisplayName().split("\\(|\\)")[1];
+			} catch (Exception e) {
+				return description.getDisplayName();
+			}
+		}
+
+		public TestResults getTestResults() {
+			TestResults results = new TestResults(eventsCollected);
+			results.addMethodStats(methodStats.values());
+			return results;
+		}
+
+		private String getMethodName(TestIdentifier description) {
+			try {
+				TestSource testSource = description.getSource().get();
+				if (testSource instanceof MethodSource) {
+					return ((MethodSource)testSource).getMethodName();
+				}
+				return description.getDisplayName().split("\\(|\\)")[0];
+			} catch (Exception e) {
+				return description.getDisplayName();
+			}
+		}
+
+		private MethodStats getMethodStats(TestIdentifier description) {
+			MethodStats stats = methodStats.get(description);
+			if (stats == null) {
+				stats = new MethodStats(getMethodName(description));
+				methodStats.put(description, stats);
+			}
+			return stats;
+		}
+
 	}
 
 	private static class TestNGEventTranslator implements ITestListener {
