@@ -15,6 +15,8 @@
                 <include>com.google.guava:guava</include>
                 <include>org.javassist:javassist</include>
                 <include>org.jgrapht:jgrapht-jdk1.5</include>
+                <include>org.junit.jupiter:junit-jupiter-api</include>
+                <include>org.junit.jupiter:junit-jupiter-engine</include>
             </includes>
         </dependencySet>
     </dependencySets>

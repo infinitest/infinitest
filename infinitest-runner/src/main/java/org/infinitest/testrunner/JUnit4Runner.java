@@ -27,6 +27,12 @@
  */
 package org.infinitest.testrunner;
 
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
+import static org.junit.runner.Request.*;
+
 import java.lang.reflect.*;
 import java.util.*;
 

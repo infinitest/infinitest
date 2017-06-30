@@ -33,6 +33,7 @@ import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
+import junit.framework.AssertionFailedError;
 import org.infinitest.*;
 import org.infinitest.config.*;
 import org.infinitest.testrunner.FailingTestsWithCategories.*;
@@ -154,6 +155,20 @@ public class WhenRunningJUnitTests {
 		assertThat(results, is(emptyIterable()));
 	}
 
+	
+	@Test
+	public void shouldSupportJUnit5() {
+		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
+		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError());
+		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldDetectJUnit5Tests() {
+		assertTrue(runner.isJUnit5Test(JUnit5Test.class));
+		assertFalse(runner.isJUnit5Test(PassingTestCase.class));
+	}
+	
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
 		assertEquals(expected, actual);
 		assertEquals(expected.getMessage(), actual.getMessage());
