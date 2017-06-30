@@ -31,10 +31,12 @@ import static com.google.common.collect.Iterables.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
+import junit.framework.AssertionFailedError;
 import org.infinitest.*;
 import org.infinitest.testrunner.exampletests.*;
 //import org.infinitest.testrunner.testables.*;
 import org.junit.*;
+import org.testng.junit.JUnit4TestClass;
 
 public class WhenRunningJUnitTests {
 	private JUnit4Runner runner;
@@ -110,6 +112,19 @@ public class WhenRunningJUnitTests {
 		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
 		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldSupportJUnit5() {
+		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
+		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError());
+		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldDetectJUnit5Tests() {
+		assertTrue(runner.isJUnit5Test(JUnit5Test.class));
+		assertFalse(runner.isJUnit5Test(PassingTestCase.class));
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {

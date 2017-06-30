@@ -39,7 +39,7 @@ import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
-import org.junit.Test;
+import org.infinitest.testrunner.JUnit4Runner;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -218,7 +218,14 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private boolean hasTests(CtClass classReference) {
-		return hasJUnitTestMethods(classReference) //
+		Class clazz;
+		try {
+			clazz = Class.forName(classReference.getName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			clazz = null;
+		}
+		return (clazz != null && JUnit4Runner.isJUnit5Test(clazz)) || hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
 				|| hasTestNGTests(classReference);
 	}
@@ -340,7 +347,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 			if (attribute instanceof AnnotationsAttribute) {
 				AnnotationsAttribute annotations = (AnnotationsAttribute) attribute;
 				for (Annotation each : annotations.getAnnotations()) {
-					if (Test.class.getName().equals(each.getTypeName())) {
+					if (org.junit.Test.class.getName().equals(each.getTypeName())) {
 						return true;
 					}
 				}
