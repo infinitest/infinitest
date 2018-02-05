@@ -158,7 +158,7 @@ public class WhenRunningJUnitTests {
 	@Test
 	public void shouldSupportJUnit5() {
 		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
-		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError());
+		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError("expected: <true> but was: <false>"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 
