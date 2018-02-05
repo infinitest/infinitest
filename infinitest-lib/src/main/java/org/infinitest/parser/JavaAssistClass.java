@@ -218,14 +218,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private boolean hasTests(CtClass classReference) {
-		Class clazz;
-		try {
-			clazz = Class.forName(classReference.getName());
-		} catch (NoClassDefFoundError | ClassNotFoundException e) {
-			e.printStackTrace();
-			clazz = null;
-		}
-		return (clazz != null && JUnit4Runner.isJUnit5Test(clazz)) || hasJUnitTestMethods(classReference) //
+		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
 				|| hasTestNGTests(classReference);
 	}
