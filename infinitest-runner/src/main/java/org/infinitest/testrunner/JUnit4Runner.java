@@ -28,32 +28,25 @@
 package org.infinitest.testrunner;
 
 import static org.infinitest.testrunner.TestEvent.methodFailed;
-import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 import static org.junit.runner.Request.*;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.function.Predicate;
 
 import junit.framework.*;
 
 import junit.framework.Test;
 import org.infinitest.*;
-import org.junit.jupiter.api.*;
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.platform.commons.util.PreconditionViolationException;
-import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
 import org.junit.platform.engine.support.descriptor.MethodSource;
 import org.junit.platform.launcher.*;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.runner.*;
-import org.junit.runner.notification.Failure;
 import org.testng.*;
 
 /**
