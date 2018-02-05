@@ -96,8 +96,7 @@ public class JavaAssistClassTest {
 
 	@Test
 	public void shouldFindDependenciesForJUnit5MethodAnnotations() {
-		assertThat(dependenciesOf(AnnotatedClass.class)).contains(org.junit.jupiter.api.Test.class.getName());
-		assertThat(dependenciesOf(AnnotatedClass.class)).contains(org.junit.jupiter.api.Disabled.class.getName());
+		assertThat(dependenciesOf(TestJUnit5TestCase.class)).contains(org.junit.jupiter.api.Test.class.getName());
 	}
 
 	@Test
