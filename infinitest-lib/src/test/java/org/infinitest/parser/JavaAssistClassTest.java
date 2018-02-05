@@ -95,6 +95,12 @@ public class JavaAssistClassTest {
 	}
 
 	@Test
+	public void shouldFindDependenciesForJUnit5MethodAnnotations() {
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(org.junit.jupiter.api.Test.class.getName());
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(org.junit.jupiter.api.Disabled.class.getName());
+	}
+
+	@Test
 	public void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
 		ClassPool classPool = classPoolUtil.getClassPool();
 		CtClass fakeClass = classPool.makeClass("FakeClass");
