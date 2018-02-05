@@ -34,9 +34,7 @@ import static org.junit.Assert.*;
 import junit.framework.AssertionFailedError;
 import org.infinitest.*;
 import org.infinitest.testrunner.exampletests.*;
-//import org.infinitest.testrunner.testables.*;
 import org.junit.*;
-import org.testng.junit.JUnit4TestClass;
 
 public class WhenRunningJUnitTests {
 	private JUnit4Runner runner;
