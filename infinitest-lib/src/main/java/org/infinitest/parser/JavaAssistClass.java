@@ -277,12 +277,23 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
 		for (CtMethod ctMethod : classReference.getMethods()) {
-			if (isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
+			if (isJUnit5TestMethod(ctMethod) || isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+    private boolean isJUnit5TestMethod(CtMethod ctMethod) {
+        final List<?> attributes = ctMethod.getMethodInfo2().getAttributes();
+        return attributes.stream()
+                .filter(clazz -> clazz instanceof AnnotationsAttribute)
+                .map(attribute -> (AnnotationsAttribute) attribute)
+                .map(AnnotationsAttribute::getAnnotations)
+                .flatMap(Arrays::stream)
+                .map(Annotation::getTypeName)
+                .anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+    }
 
 	private boolean isJUnit3TestMethod(CtMethod ctMethod) {
 		return ctMethod.getName().startsWith("test") && anySuperclassOf(ctMethod.getDeclaringClass(), isTestCase());
