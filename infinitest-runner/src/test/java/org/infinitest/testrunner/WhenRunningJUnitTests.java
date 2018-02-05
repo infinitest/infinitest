@@ -38,7 +38,6 @@ import org.infinitest.*;
 import org.infinitest.config.*;
 import org.infinitest.testrunner.FailingTestsWithCategories.*;
 import org.infinitest.testrunner.exampletests.*;
-//import org.infinitest.testrunner.testables.*;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {
