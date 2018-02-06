@@ -33,8 +33,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
-import junit.framework.*;
-
 import org.infinitest.*;
 import org.infinitest.intellij.plugin.launcher.*;
 import org.infinitest.testrunner.*;
@@ -44,7 +42,7 @@ import org.junit.Test;
 public class WhenTestFailuresReported {
 	private InfinitestAnnotator annotator;
 	private InfinitestPresenter presenter;
-	private final TestEvent failure = methodFailed("message", "test", "method", new AssertionFailedError());
+	private final TestEvent failure = methodFailed("message", "test", "method", new AssertionError());
 	private static final List<TestEvent> EMPTY_LIST = emptyList();
 
 	@Before

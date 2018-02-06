@@ -28,8 +28,9 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import junit.framework.AssertionFailedError;
 import org.infinitest.*;
@@ -65,12 +66,6 @@ public class WhenRunningJUnitTests {
 		TestResults results = runner.runTest(FailingTest.class.getName());
 		TestEvent expectedEvent = methodFailed("", FailingTest.class.getName(), "shouldFail", new AssertionError());
 		assertEventsEquals(expectedEvent, getOnlyElement(results));
-	}
-
-	@Test
-	public void shouldIgnoreSuiteMethods() {
-		TestResults results = runner.runTest(JUnit3TestWithASuiteMethod.class.getName());
-		assertTrue(isEmpty(results));
 	}
 
 	@Test
@@ -126,10 +121,10 @@ public class WhenRunningJUnitTests {
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getMessage(), actual.getMessage());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
+		assertThat(actual).isEqualTo(expected);
+		assertThat(actual.getMessage()).isEqualTo(expected.getMessage());
+		assertThat(actual.getType()).isEqualTo(expected.getType());
+		assertThat(actual.getErrorClassName()).isEqualTo(expected.getErrorClassName());
 	}
 
 	public void testCaseStarting(TestEvent event) {

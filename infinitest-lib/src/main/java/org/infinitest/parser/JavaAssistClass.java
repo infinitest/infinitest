@@ -37,9 +37,7 @@ import java.util.*;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
-import junit.framework.*;
 
-import org.infinitest.testrunner.JUnit4Runner;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -270,7 +268,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
 		for (CtMethod ctMethod : classReference.getMethods()) {
-			if (isJUnit5TestMethod(ctMethod) || isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
+			if (isJUnit5TestMethod(ctMethod) || isJUnit4TestMethod(ctMethod)) {
 				return true;
 			}
 		}
@@ -288,10 +286,6 @@ public class JavaAssistClass extends AbstractJavaClass {
                 .anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
     }
 
-	private boolean isJUnit3TestMethod(CtMethod ctMethod) {
-		return ctMethod.getName().startsWith("test") && anySuperclassOf(ctMethod.getDeclaringClass(), isTestCase());
-	}
-
 	private boolean anySuperclassOf(CtClass classReference, Predicate<CtClass> predicate) {
 		CtClass superclass = findSuperclass(classReference);
 		while (superclass != null) {
@@ -301,15 +295,6 @@ public class JavaAssistClass extends AbstractJavaClass {
 			superclass = findSuperclass(superclass);
 		}
 		return false;
-	}
-
-	private Predicate<CtClass> isTestCase() {
-		return new Predicate<CtClass>() {
-			@Override
-			public boolean apply(CtClass input) {
-				return input.getName().equals(TestCase.class.getName());
-			}
-		};
 	}
 
 	private CtClass findSuperclass(CtClass aClassReference) {

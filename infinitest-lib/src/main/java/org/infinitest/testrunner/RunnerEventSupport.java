@@ -75,7 +75,8 @@ public class RunnerEventSupport {
 	}
 
 	public void fireStartingEvent(String testClass) {
-		fireTestEvent(testCaseStarting(testClass));
+		TestEvent testEvent = testCaseStarting(testClass);
+		fireTestEvent(testEvent);
 	}
 
 	public void addConsoleOutputListener(ConsoleOutputListener listener) {

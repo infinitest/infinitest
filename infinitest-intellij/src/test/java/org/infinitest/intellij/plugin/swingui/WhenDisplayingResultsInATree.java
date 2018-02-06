@@ -37,8 +37,6 @@ import java.util.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import junit.framework.*;
-
 import org.infinitest.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;
@@ -66,7 +64,7 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 
 	@Test
 	public void shouldHaveChildNodesForPointsOfFailure() {
-		TestEvent event = eventWithError(new AssertionFailedError());
+		TestEvent event = eventWithError(new AssertionError());
 		testRun(event);
 		assertEquals(1, model.getChildCount(model.getRoot()));
 		assertEquals(event.getPointOfFailure(), model.getChild(model.getRoot(), 0));
@@ -74,13 +72,13 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 
 	@Test
 	public void shouldCreateNodesForEachEvent() {
-		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
+		testRun(eventWithError(new AssertionError()), eventWithError(new NullPointerException()));
 		assertEquals(2, model.getChildCount(model.getRoot()));
 	}
 
 	@Test
 	public void shouldHaveSubNodesForIndividualTests() {
-		TestEvent event = eventWithError(new AssertionFailedError());
+		TestEvent event = eventWithError(new AssertionError());
 		testRun(event);
 		Object pointOfFailureNode = model.getChild(model.getRoot(), 0);
 		assertEquals(1, model.getChildCount(pointOfFailureNode));
@@ -89,7 +87,7 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 
 	@Test
 	public void shouldProvideIndexOfNodes() {
-		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
+		testRun(eventWithError(new AssertionError()), eventWithError(new NullPointerException()));
 		assertNodeReferenceIntegrity(model.getRoot(), 0);
 		assertNodeReferenceIntegrity(model.getRoot(), 1);
 	}
@@ -98,7 +96,7 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 	public void shouldIdentifyOnlyTestNodesAsLeaves() {
 		assertTrue(model.isLeaf(model.getRoot()));
 
-		testRun(eventWithError(new AssertionFailedError()));
+		testRun(eventWithError(new AssertionError()));
 		assertFalse(model.isLeaf(model.getRoot()));
 
 		Object failureNode = model.getChild(model.getRoot(), 0);

@@ -36,8 +36,6 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
-import junit.framework.*;
-
 import org.infinitest.intellij.plugin.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;
@@ -133,6 +131,6 @@ public class WhenUserClicksOnResultTree {
 	}
 
 	private static TestEvent eventWithError() {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionError());
 	}
 }

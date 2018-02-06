@@ -34,9 +34,6 @@ import static org.junit.runner.Request.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-import junit.framework.*;
-
-import junit.framework.Test;
 import org.infinitest.*;
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.platform.commons.util.PreconditionViolationException;
@@ -98,25 +95,17 @@ public class JUnit4Runner implements NativeRunner {
 
 	public static boolean isJUnit5Test(Class<?> clazz) {
 		try {
-			Class<?> testEngineClass = Class.forName(JupiterTestEngine.class.getCanonicalName());
+			Class.forName(JupiterTestEngine.class.getCanonicalName());
 		} catch (ClassNotFoundException e) {
 			throw new AssertionError("Jupiter engine not found");
 		}
 		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
 				.selectors( selectClass(clazz) ).filters(EngineFilter.includeEngines("junit-jupiter"))
 				.build();
-
-		try {
-			TestPlan plan = LauncherFactory.create().discover(request);
-			long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
-			boolean testsPresent = numberOfTests > 0;
-			return testsPresent;
-		} catch (Throwable e) {
-			// This might fail for any number of reasons...
-			// TODO : use some log instead?
-			e.printStackTrace();
-			return false;
-		}
+		TestPlan plan = LauncherFactory.create().discover(request);
+		long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
+		boolean testsPresent = numberOfTests > 0;
+		return testsPresent;
 	}
 
 	private TestResults runTestNGTest(Class<?> clazz) {
@@ -146,55 +135,8 @@ public class JUnit4Runner implements NativeRunner {
 
 		JUnitCore core = new JUnitCore();
 		core.addListener(eventTranslator);
-
-		if (isJUnit3TestCase(clazz) && cannotBeInstantiated(clazz)) {
-			core.run(new UninstantiableJUnit3TestRequest(clazz));
-		} else {
-			core.run(classWithoutSuiteMethod(clazz));
-		}
-
+		core.run(classWithoutSuiteMethod(clazz));
 		return eventTranslator.getTestResults();
-	}
-
-	private static boolean isJUnit3TestCase(Class<?> clazz) {
-		return TestCase.class.isAssignableFrom(clazz);
-	}
-
-	private static boolean cannotBeInstantiated(Class<?> clazz) {
-		CustomTestSuite testSuite = new CustomTestSuite(clazz.asSubclass(TestCase.class));
-		return testSuite.hasWarnings();
-	}
-
-	private static class CustomTestSuite extends TestSuite {
-		public CustomTestSuite(Class<? extends TestCase> testClass) {
-			super(testClass);
-		}
-
-		boolean hasWarnings() {
-			for (Enumeration<Test> tests = tests(); tests.hasMoreElements(); ) {
-				Test test = tests.nextElement();
-				if (test instanceof TestCase) {
-					TestCase testCase = (TestCase) test;
-					if (testCase.getName().equals("warning")) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-	}
-
-	private static class UninstantiableJUnit3TestRequest extends Request {
-		private final Class<?> testClass;
-
-		public UninstantiableJUnit3TestRequest(Class<?> clazz) {
-			testClass = clazz;
-		}
-
-		@Override
-		public Runner getRunner() {
-			return new UninstantiateableJUnit3TestRunner(testClass);
-		}
 	}
 
 	private static boolean isTestNGTest(Class<?> clazz) {

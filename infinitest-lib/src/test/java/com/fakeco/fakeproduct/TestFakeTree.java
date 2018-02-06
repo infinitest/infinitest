@@ -27,25 +27,28 @@
  */
 package com.fakeco.fakeproduct;
 
-import junit.framework.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestFakeTree extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class TestFakeTree {
 	private FakeTree tree;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp() throws Exception {
 		tree = new FakeTree();
 	}
 
-	@Override
+	@AfterEach
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		tree = null;
 	}
 
+	@Test
 	public void testTree() {
-		assertNotNull(tree);
+		assertThat(tree).isNotNull();
 	}
 
 }

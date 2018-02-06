@@ -27,30 +27,36 @@
  */
 package com.fakeco.fakeproduct;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.*;
 import java.util.*;
 
-import junit.framework.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * This is a test who's behavior can be externally controlled using a set of
  * static methods.
- * 
+ *
  * It uses a property file because there's no way to get the instance of the
  * class that JUnit creates and we couldn't use a static variable because JUnit
  * (used to!) use a different classloader.
- * 
+ *
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
- * 
+ *
  */
-public class TestFakeProduct extends TestCase {
+public class TestFakeProduct {
 	private static final String CALLCOUNT_POSTFIX = ".callcount";
 	private static final String EXCEPTION_POSTFIX = ".exception";
 	@SuppressWarnings("unused") private FakeProduct fakeProduct = null;
 	private static File statFailureStateFile = new File("TestFakeProduct.data");
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		if (!statFailureStateFile.exists()) {
 			setUpState();
 			statFailureStateFile.deleteOnExit();
@@ -59,12 +65,13 @@ public class TestFakeProduct extends TestCase {
 		runTestMethod("setUp");
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		fakeProduct = null;
 		runTestMethod("tearDown");
 	}
 
+	@Test
 	public void testNumber1() throws Exception {
 		runTestMethod("testNumber1");
 		@SuppressWarnings("unused") Object o = new Runnable() {
@@ -75,6 +82,7 @@ public class TestFakeProduct extends TestCase {
 		};
 	}
 
+	@Test
 	public void testNumber2() throws Exception {
 		runTestMethod("testNumber2");
 	}
@@ -98,7 +106,9 @@ public class TestFakeProduct extends TestCase {
 
 	public static void setUpState() throws IOException {
 		tearDownState();
-		assertTrue("Could not re-initialize test state", statFailureStateFile.createNewFile());
+		assertThat(statFailureStateFile.createNewFile())
+                .as("Could not re-initialize test state")
+                .isTrue();
 	}
 
 	public static void tearDownState() {

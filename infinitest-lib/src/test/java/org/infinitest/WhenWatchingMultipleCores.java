@@ -31,7 +31,6 @@ import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import junit.framework.*;
 
 import org.infinitest.testrunner.*;
 import org.junit.*;
@@ -80,6 +79,6 @@ public class WhenWatchingMultipleCores {
 	}
 
 	private static TestEvent withFailingMethod(String methodName) {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionError());
 	}
 }

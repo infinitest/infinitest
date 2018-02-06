@@ -34,8 +34,6 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
-import junit.framework.*;
-
 import org.infinitest.testrunner.*;
 import org.junit.Test;
 
@@ -57,7 +55,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 
 	@Test
 	public void shouldUnifyEventsWithSamePointOfFailure() {
-		Throwable pointOfFailure = new AssertionFailedError().fillInStackTrace();
+		Throwable pointOfFailure = new AssertionError().fillInStackTrace();
 
 		testRun(eventWithError(pointOfFailure), eventWithError(pointOfFailure), eventWithError(new AssertionError()));
 
@@ -148,7 +146,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	private static TestEvent eventWithError() {
-		return eventWithError(new AssertionFailedError());
+		return eventWithError(new AssertionError());
 	}
 
 	private static TestEvent eventWithError(Throwable error) {

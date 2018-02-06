@@ -28,12 +28,15 @@
 package org.infinitest.testrunner;
 
 import static com.fakeco.fakeproduct.TestFakeProduct.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.*;
 import java.util.*;
-
-import junit.framework.*;
 
 import org.infinitest.*;
 import org.infinitest.util.*;
@@ -123,22 +126,6 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void exploreJUnit4TestAdapterBehavior() {
-		JUnit4TestAdapter adapter = new JUnit4TestAdapter(TestJUnit4TestCase.class);
-		assertEquals(2, adapter.countTestCases());
-	}
-
-	@Test
-	public void shouldHandleJUnit3TestsWithExceptionsInConstructor() throws InterruptedException {
-		runTests(JUnit3TestWithExceptionInConstructor.class);
-		support.assertTestFailed(JUnit3TestWithExceptionInConstructor.class.getName());
-
-		TestEvent event = methodEvents.get(0);
-		assertEquals(JUnit3TestWithExceptionInConstructor.class.getName(), event.getTestName());
-		assertTrue(event.getMessage().startsWith("Exception in constructor: testThatPasses (java.lang.NullPointerException"));
-	}
-
-	@Test
 	public void shouldFireTestCaseCompleteWhenFinished() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
 		support.assertTestRun(TestJUnit4TestCase.class);
@@ -147,30 +134,33 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	@Test
 	public void shouldHandleAnnotatedTests() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
-		assertEquals(methodEvents.toString(), 1, methodEvents.size());
+		assertEquals(1, methodEvents.size(), methodEvents.toString());
 
 		TestEvent testEvent = methodEvents.get(0);
-		assertEquals("Test Case Name", TestJUnit4TestCase.class.getName(), testEvent.getTestName());
-		assertEquals("shouldFailIfPropertyIsSet", testEvent.getTestMethod());
-		assertEquals("Test Failed", testEvent.getMessage());
-		assertTrue(testEvent.isFailure());
-		assertTrue(testEvent.getErrorClassName() + " is not an AssertionFailedError", testEvent.getErrorClassName().equals(AssertionError.class.getSimpleName()));
+		assertThat(testEvent.getTestName()).as("Test Case Name").isEqualTo(TestJUnit4TestCase.class.getName());
+		assertThat(testEvent.getTestMethod()).isEqualTo("shouldFailIfPropertyIsSet");
+		assertThat(testEvent.getMessage()).isEqualTo("Test Failed");
+		assertThat(testEvent.isFailure()).isTrue();
+		assertThat(testEvent.getErrorClassName())
+				.as(testEvent.getErrorClassName() + " is not an AssertionError")
+				.isEqualTo(AssertionError.class.getSimpleName());
 	}
 
 	@Test
 	public void shouldFireEventWhenTestIsStarted() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
-		assertEquals("One passing and one failing test", 1, startedEvents.size());
+		assertEquals(1, startedEvents.size(), "One passing and one failing test");
 	}
 
 	@Test
 	public void shouldFireEventsForFailingTestsOnly() throws IOException, InterruptedException {
 		setTestSuccess("testNumber1", TEST_SUCCEEDED, true);
 		runTests(TestFakeProduct.class);
-		assertNotNull("Test was not set up", getCallCount("setUp"));
-		assertNotNull("Test was not run", getCallCount("testRun"));
-		assertNotNull("Test was not torn down", getCallCount("tearDown"));
-		assertEquals("Event Size", 0, methodEvents.size());
+		assertThat(getCallCount("setUp")).as("Test was not set up").isNotZero();
+		assertThat(getCallCount("testNumber1")).as("Test 1 was not run").isNotZero();
+		assertThat(getCallCount("testNumber2")).as("Test 2 was not run").isNotZero();
+		assertThat(getCallCount("tearDown")).as("Test was not torn down").isNotZero();
+		assertThat(methodEvents).as("Event Size").isEmpty();
 		support.assertTestPassed(TestFakeProduct.class);
 	}
 
@@ -181,7 +171,7 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	public void testRunFailure() throws FileNotFoundException, IOException, InterruptedException {
 		TestFakeProduct.setTestSuccess("testNumber1", FAILURE_MSG, false);
 		runTests(TestFakeProduct.class);
-		assertEquals("No event was fired", 2, methodEvents.size());
+		assertEquals(2, methodEvents.size(), "No event was fired");
 
 		TestEvent e = methodEvents.get(0);
 		assertEquals(FAILURE_MSG, e.getMessage());
@@ -199,13 +189,13 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	public void shouldReportTestsInErrorAsFailures() throws Exception {
 		TestFakeProduct.setTestError("testNumber1", IllegalArgumentException.class);
 		runTests(TestFakeProduct.class);
-		assertEquals("Error event count", 1, methodEvents.size());
+		assertThat(methodEvents).as("Error event count").hasSize(1);
 
 		TestEvent e = methodEvents.get(0);
-		assertEquals("", e.getMessage());
+		assertThat(e.getMessage()).isBlank();
 		assertTrue(e.getErrorClassName().equals(IllegalArgumentException.class.getSimpleName()));
-		assertEquals("Test Case Name", TestFakeProduct.class.getName(), e.getTestName());
-		assertEquals("testNumber1", e.getTestMethod());
+		assertThat(e.getTestName()).as("Test Case Name").isEqualTo(TestFakeProduct.class.getName());
+		assertThat(e.getTestMethod()).isEqualTo("testNumber1");
 	}
 
 	@Override

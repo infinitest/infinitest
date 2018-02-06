@@ -27,10 +27,12 @@
  */
 package com.fakeco.fakeproduct;
 
-import junit.framework.*;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("all")
-public class TestAlmostNotATest extends TestCase {
+public class TestAlmostNotATest {
+
+	@Test
 	public void testANothing() {
 	}
 }

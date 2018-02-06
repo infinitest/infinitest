@@ -30,7 +30,6 @@ package org.infinitest.eclipse.markers;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import junit.framework.*;
 
 import org.eclipse.core.resources.*;
 import org.infinitest.eclipse.workspace.*;
@@ -61,6 +60,6 @@ public class WhenPlacingMarkersInTheWorkspace {
 	}
 
 	private static TestEvent createEvent() {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionError());
 	}
 }
