@@ -70,10 +70,6 @@ public class InfinitestCoreClasspath {
   }
 
   private static void writeJar(File coreJarLocation, InfinitestPlugin plugin) {
-    // Only for tests ->
-    if (plugin != null)
-    // <-
-    {
       Enumeration<?> e = plugin.getPluginBundle().findEntries("", "*infinitest-runner*.jar", true);
 
       if (e == null) {
@@ -89,6 +85,5 @@ public class InfinitestCoreClasspath {
           }
         }
       }
-    }
   }
 }
