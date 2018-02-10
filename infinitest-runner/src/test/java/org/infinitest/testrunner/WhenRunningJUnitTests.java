@@ -127,6 +127,18 @@ public class WhenRunningJUnitTests {
 		assertThat(actual.getErrorClassName()).isEqualTo(expected.getErrorClassName());
 	}
 
+	@Test
+	public void shouldIgnoreNonPublicJUnit4Tests() {
+		final String testClass = "org.infinitest.testrunner.exampletests.NonPublicJUnit4Test";
+		final Iterable<TestEvent> events = runner.runTest(testClass);
+		final TestEvent expectedEvent =
+				methodFailed(
+						testClass,
+						"initializationError",
+						new Exception("The class " + testClass + " is not public."));
+		assertEventsEquals(expectedEvent, getFirst(events, null));
+	}
+
 	public void testCaseStarting(TestEvent event) {
 		fail("Native runner should never fire this");
 	}

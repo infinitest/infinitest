@@ -27,6 +27,7 @@
  */
 package org.infinitest.parser;
 
+import static java.util.Arrays.stream;
 import static javassist.Modifier.*;
 import static javassist.bytecode.AnnotationsAttribute.*;
 import static org.infinitest.parser.DescriptorParser.*;
@@ -55,8 +56,15 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) && hasTests(classReference) && canInstantiate(classReference);
+		isATest = !isAbstract(classReference) &&
+				hasTests(classReference) &&
+				(isJUnit5TestClass(imports) || canInstantiate(classReference));
 		className = classReference.getName();
+	}
+
+	private boolean isJUnit5TestClass(final String[] imports) {
+		return stream(imports)
+				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
 	}
 
 	@Override
