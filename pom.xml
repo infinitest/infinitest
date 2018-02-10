@@ -196,6 +196,7 @@
 					<excludes>
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
+						<exclude>**/NonPublicJUnit4Test*</exclude>
 					</excludes>
 					<!-- argLine is configured using a property to simplify jacoco configuration -->
 				</configuration>
