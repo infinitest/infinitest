@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.infinitest</groupId>
             <artifactId>infinitest-lib</artifactId>
-            <version>${project.version}</version>
+            <version>5.1.117-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
