@@ -28,12 +28,13 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import junit.framework.AssertionFailedError;
 import org.infinitest.*;
 import org.infinitest.testrunner.exampletests.*;
-//import org.infinitest.testrunner.testables.*;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {
@@ -65,12 +66,6 @@ public class WhenRunningJUnitTests {
 		TestResults results = runner.runTest(FailingTest.class.getName());
 		TestEvent expectedEvent = methodFailed("", FailingTest.class.getName(), "shouldFail", new AssertionError());
 		assertEventsEquals(expectedEvent, getOnlyElement(results));
-	}
-
-	@Test
-	public void shouldIgnoreSuiteMethods() {
-		TestResults results = runner.runTest(JUnit3TestWithASuiteMethod.class.getName());
-		assertTrue(isEmpty(results));
 	}
 
 	@Test
@@ -112,11 +107,36 @@ public class WhenRunningJUnitTests {
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 
+	@Test
+	public void shouldSupportJUnit5() {
+		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
+		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError("expected: <true> but was: <false>"));
+		assertEventsEquals(expectedEvent, getOnlyElement(events));
+	}
+
+	@Test
+	public void shouldDetectJUnit5Tests() {
+		assertTrue(runner.isJUnit5Test(JUnit5Test.class));
+		assertFalse(runner.isJUnit5Test(PassingTestCase.class));
+	}
+
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getMessage(), actual.getMessage());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
+		assertThat(actual).isEqualTo(expected);
+		assertThat(actual.getMessage()).isEqualTo(expected.getMessage());
+		assertThat(actual.getType()).isEqualTo(expected.getType());
+		assertThat(actual.getErrorClassName()).isEqualTo(expected.getErrorClassName());
+	}
+
+	@Test
+	public void shouldIgnoreNonPublicJUnit4Tests() {
+		final String testClass = "org.infinitest.testrunner.exampletests.NonPublicJUnit4Test";
+		final Iterable<TestEvent> events = runner.runTest(testClass);
+		final TestEvent expectedEvent =
+				methodFailed(
+						testClass,
+						"initializationError",
+						new Exception("The class " + testClass + " is not public."));
+		assertEventsEquals(expectedEvent, getFirst(events, null));
 	}
 
 	public void testCaseStarting(TestEvent event) {

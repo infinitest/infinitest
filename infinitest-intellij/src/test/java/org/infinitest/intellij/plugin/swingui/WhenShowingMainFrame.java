@@ -35,7 +35,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
-import junit.framework.*;
 
 import org.infinitest.testrunner.*;
 import org.junit.*;
@@ -93,6 +92,6 @@ public class WhenShowingMainFrame {
   }
 
   private static TestEvent eventWithError() {
-    return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+    return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionError());
   }
 }

@@ -37,10 +37,8 @@ import java.util.*;
 
 import javassist.*;
 
-import org.assertj.core.api.Assertions;
 import org.infinitest.util.*;
 import org.junit.*;
-import org.junit.Assert;
 
 import com.fakeco.fakeproduct.*;
 
@@ -63,7 +61,7 @@ public class WhenClassesChange extends DependencyGraphTestBase {
     JavaClass javaClass = runTest(testClass);
     assertTrue("Inital state is incorrect", javaClass.isATest());
 
-    untestify();
+    untestify(TestAlmostNotATest.class, "testANothing", "()V");
     updateGraphWithChangedClass(testClass);
 
     assertThat(getGraph().getCurrentTests()).isEmpty();
@@ -83,10 +81,10 @@ public class WhenClassesChange extends DependencyGraphTestBase {
     return getGraph().findTestsToRun(setify(classFile));
   }
 
-  private void untestify() throws Exception {
+  private void untestify(final Class testClass, final String name, final String desc) throws Exception {
     ClassPool pool = ClassPool.getDefault();
-    CtClass cc = pool.makeClass(TestAlmostNotATest.class.getName());
-    cc.setSuperclass(pool.get(Object.class.getName()));
+    CtClass cc = pool.getCtClass(testClass.getName());
+    cc.getMethod(name, desc).getMethodInfo().getAttributes().clear();
     cc.writeFile(FakeEnvironments.fakeClassDirectory().getAbsolutePath());
   }
 }

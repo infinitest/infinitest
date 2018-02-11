@@ -25,19 +25,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.fakeco.fakeproduct;
+package org.infinitest.testrunner.exampletests;
 
-import static org.infinitest.util.InfinitestTestUtils.*;
-import junit.framework.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class JUnit3TestWithExceptionInConstructor extends TestCase {
-	public JUnit3TestWithExceptionInConstructor() {
-		if (testIsBeingRunFromInfinitest()) {
-			throw new NullPointerException();
-		}
-	}
+public class JUnit5Test {
+    @Test
+    public void shouldPass() {
+        Assertions.assertTrue(true);
+    }
 
-	public void testThatPasses() {
-		assertTrue(true);
-	}
+    @Test
+    public void shouldFail() {
+        Assertions.assertTrue(false);
+    }
 }

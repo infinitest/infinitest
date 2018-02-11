@@ -37,8 +37,10 @@ import java.io.*;
 import java.util.*;
 
 import javassist.*;
-import junit.framework.*;
 
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
 import org.infinitest.util.*;
 import org.junit.Test;
 
@@ -114,17 +116,16 @@ public class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTes
     ClassPool pool = ClassPool.getDefault();
     pool.appendPathList(systemClasspath());
     CtClass cc = pool.makeClass("ANewTest");
-    cc.setSuperclass(pool.get(TestCase.class.getName()));
-    cc.addMethod(CtMethod.make("public void testSomething(){}", cc));
+    CtMethod ctMethod = CtMethod.make("public void testSomething(){}", cc);
+    ConstPool constPool = cc.getClassFile().getConstPool();
+    AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+    annotationsAttribute.addAnnotation(new Annotation(org.junit.jupiter.api.Test.class.getName(), constPool));
+    ctMethod.getMethodInfo().addAttribute(annotationsAttribute);
+    cc.addMethod(ctMethod);
     cc.writeFile(FakeEnvironments.fakeClassDirectory().getAbsolutePath());
     Class<?> testClass = cc.toClass();
     InfinitestTestUtils.getFileForClass(testClass).deleteOnExit();
     assertClassRecognizedAsTest(testClass);
-  }
-
-  @Test
-  public void testJUnit3Tests() {
-    assertClassRecognizedAsTest(TestJunit3TestCase.class);
   }
 
   @Test

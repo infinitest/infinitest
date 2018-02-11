@@ -27,14 +27,13 @@
  */
 package org.infinitest.testrunner.exampletests;
 
-import junit.framework.*;
+import org.junit.Test;
 
-public final class FailingJUnit3TestUsedBySuite extends TestCase {
-	FailingJUnit3TestUsedBySuite() {
-		super("testShouldFail");
-	}
+import static org.junit.Assert.assertFalse;
 
-	public void testShouldFail() {
-		fail();
+class NonPublicJUnit4Test {
+	@Test
+	public void shouldFail() {
+		assertFalse(true);
 	}
 }

@@ -27,10 +27,17 @@
  */
 package com.fakeco.fakeproduct;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-public class LooksLikeAJUnit3TestButIsnt {
-	public void testFails() {
-		fail();
-	}
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Created by fpoyer on 28/06/17.
+ */
+public class TestJUnit5TestCase {
+
+    @Test
+    void nonPublicJUnit5TestShouldPass() {
+        assertThat(true).isTrue();
+    }
 }

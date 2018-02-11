@@ -29,7 +29,9 @@ package org.infinitest.eclipse.resolution;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.*;
 
@@ -53,7 +55,10 @@ public class WhenFilteringUnnecessaryClassesFromStackTraces {
 
 	@Test
 	public void shouldRemoveJUnitClasses() {
-		assertEquals(emptyList(), filter.filterStack(newArrayList(element("org.junit.Foobar"), element("junit.framework.Foobar"))));
+		assertThat(filter.filterStack(newArrayList(
+				element("org.junit.Foobar"),
+				element("junit.framework.Foobar"))))
+				.isEmpty();
 	}
 
 	@Test

@@ -45,10 +45,9 @@ public class JavaAssistClassTestDetectionTest {
 
 	@Test
 	public void shouldDetectTestsInClass() {
-		assertThat(classPoolUtil.getClass(TestJunit3TestCase.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestJUnit5TestCase.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestThatInherits.class).isATest()).isTrue();
-		assertThat(classPoolUtil.getClass(JUnit3TestThatInherits.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(JUnit4TestThatInherits.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestWithACustomRunner.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(ParameterizedTest.class).isATest()).isTrue();

@@ -27,6 +27,7 @@
  */
 package org.infinitest.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 import javassist.*;
@@ -56,11 +57,6 @@ public class WhenLookingForTests {
 	}
 
 	@Test
-	public void shouldIgnoreTestCasesWithSuiteMethods() {
-		assertFalse(classFor(AllTests.class).isATest());
-	}
-
-	@Test
 	public void shouldDetectParameterizedTestsWithAlternateConstructors() {
 		assertTrue(classFor(ParameterizedTest.class).isATest());
 	}
@@ -68,7 +64,6 @@ public class WhenLookingForTests {
 	@Test
 	public void shouldDetectClassesThatInheritFromTests() {
 		assertTrue(classFor(JUnit4TestThatInherits.class).isATest());
-		assertTrue(classFor(JUnit3TestThatInherits.class).isATest());
 	}
 
 	@Test
@@ -87,9 +82,8 @@ public class WhenLookingForTests {
 	}
 
 	@Test
-	public void canDetectJUnit3Tests() {
-		assertTrue(classFor(TestJunit3TestCase.class).isATest());
-		assertFalse(classFor(LooksLikeAJUnit3TestButIsnt.class).isATest());
+	public void canDetectJUnit5Tests() {
+		assertThat(classFor(TestJUnit5TestCase.class).isATest()).as("JUnit5 (Jupiter) annotated test is detected").isTrue();
 	}
 
 	@Test

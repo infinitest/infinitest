@@ -27,16 +27,6 @@
  */
 package com.fakeco.fakeproduct;
 
-import junit.framework.*;
-
-public abstract class AbstractTestFakeProduct extends TestCase {
-
-	public AbstractTestFakeProduct() {
-		super();
-	}
-
-	public AbstractTestFakeProduct(String name) {
-		super(name);
-	}
+public abstract class AbstractTestFakeProduct {
 
 }

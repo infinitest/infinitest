@@ -29,6 +29,8 @@ package org.infinitest.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 import javassist.*;
 import javax.swing.*;
@@ -95,10 +97,26 @@ public class JavaAssistClassTest {
 	}
 
 	@Test
+	public void shouldFindDependenciesForJUnit5MethodAnnotations() {
+		assertThat(dependenciesOf(TestJUnit5TestCase.class)).contains(org.junit.jupiter.api.Test.class.getName());
+	}
+
+	@Test
 	public void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
 		ClassPool classPool = classPoolUtil.getClassPool();
 		CtClass fakeClass = classPool.makeClass("FakeClass");
 		CtClass[] params = {classPool.get(Integer.class.getName())};
+		fakeClass.addConstructor(new CtConstructor(params, fakeClass));
+		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
+	}
+
+	@Test
+	public void shouldIgnoreTestsWithInvalidParameterNotInClassPool() throws Exception {
+		ClassPool classPool = classPoolUtil.getClassPool();
+		CtClass fakeClass = classPool.makeClass("FakeClass");
+		CtClass notInClassPool = mock(CtClass.class);
+		given(notInClassPool.getName()).willReturn("NonClassPoolClass");
+		CtClass[] params = {notInClassPool};
 		fakeClass.addConstructor(new CtConstructor(params, fakeClass));
 		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
 	}
