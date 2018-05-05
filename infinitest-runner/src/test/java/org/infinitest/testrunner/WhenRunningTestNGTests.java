@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
-import org.infinitest.*;
+import org.infinitest.config.*;
 import org.junit.*;
 import org.testng.*;
 import org.testng.reporters.*;
@@ -40,19 +40,15 @@ import org.testng.reporters.*;
 public class WhenRunningTestNGTests {
 	private JUnit4Runner runner;
 	private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
-	private TestNGConfiguration config;
-	private boolean wasCalled = false;
 
 	@Before
 	public void inContext() {
 		runner = new JUnit4Runner();
-		config = new TestNGConfiguration();
-		runner.setTestNGConfiguration(config);
 		TestWithTestNGGroups.fail = true;
 		TestWithTestNGClassAnnotationOnly.fail = true;
 		TestWithTestNGMixedLevelAnnotations.fail = true;
 		TestWithTestNGGroups.dependencyFail = true;
-		wasCalled = false;
+		MockListener.wasCalled = false;
 	}
 
 	@After
@@ -61,7 +57,6 @@ public class WhenRunningTestNGTests {
 		TestWithTestNGClassAnnotationOnly.fail = false;
 		TestWithTestNGMixedLevelAnnotations.fail = false;
 		TestWithTestNGGroups.dependencyFail = false;
-		runner.setTestNGConfiguration(null);
 	}
 
 	/**
@@ -93,18 +88,18 @@ public class WhenRunningTestNGTests {
 
 	@Test
 	public void shouldNotFailWithFilteredGroupsSet() {
-		config.setExcludedGroups("slow, manual, green");
+		runner.setTestConfigurationSource(withExcludedGroups("slow", "manual", "green"));
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 		assertEquals(0, size(results));
 	}
 
 	@Test
 	public void shouldExecuteOnlyTheSpecifiedGroup() {
-		config.setGroups("slow");
+		runner.setTestConfigurationSource(withGroups("slow"));
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 		assertEquals(2, size(results));
 
-		config.setGroups("shouldbetested");
+		runner.setTestConfigurationSource(withGroups("shouldbetested"));
 		results = runner.runTest(CLASS_UNDER_TEST);
 		assertEquals(0, size(results));
 	}
@@ -115,27 +110,32 @@ public class WhenRunningTestNGTests {
 	 */
 	@Test
 	public void combineIncludedAndExcludedGroups() {
-		config.setGroups("slow");
-		config.setExcludedGroups("mixed");
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("slow").excludedGroups("mixed").build();
+
+		runner.setTestConfigurationSource(withConfig(configuration));
+
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
+
 		assertEquals(1, size(results));
 	}
 
 	@Test
 	public void shouldReactToListener() {
-		MyJUnitXMLReporter testListener = new MyJUnitXMLReporter();
-		List<Object> reporters = new ArrayList<Object>();
-		reporters.add(testListener);
-		config.setListeners(reporters);
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().testngListeners(MockListener.class.getName()).build();
+
+		runner.setTestConfigurationSource(withConfig(configuration));
+
 		runner.runTest(CLASS_UNDER_TEST);
-		assertTrue(wasCalled);
+
+		assertTrue(MockListener.wasCalled);
 	}
 
 	@Test
 	public void should_call_setup_if_one_of_its_group_is_activated() {
 		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
 
-		config.setGroups("automated");
+		runner.setTestConfigurationSource(withGroups("automated"));
+
 		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
 
 		assertTrue(TestWithTestNGGroupsAndSetup.setupWasCalled);
@@ -146,8 +146,10 @@ public class WhenRunningTestNGTests {
 	public void should_NOT_call_setup_if_one_of_its_group_is_excluded() {
 		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
 
-		config.setGroups("automated");
-		config.setExcludedGroups("integration");
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("automated").excludedGroups("integration").build();
+
+		runner.setTestConfigurationSource(withConfig(configuration));
+
 		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
 
 		assertFalse(TestWithTestNGGroupsAndSetup.setupWasCalled);
@@ -159,14 +161,17 @@ public class WhenRunningTestNGTests {
 		TestResults results = runner.runTest(TestWithTestNGClassAnnotationOnly.class.getName());
 
 		assertEquals(1, size(results));
-		//distinguish AssertionError (on tests failure) and Exception (thrown on initialization error)
+		// distinguish AssertionError (on tests failure) and Exception (thrown
+		// on initialization error)
 		TestEvent collectedEvent = results.iterator().next();
 		assertEquals(AssertionError.class.getName(), collectedEvent.getFullErrorClassName());
 	}
 
 	@Test
 	public void should_execute_only_group_defined_in_class_level_test_annotation() {
-		config.setGroups("manual");
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("manual").build();
+
+		runner.setTestConfigurationSource(withConfig(configuration));
 
 		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
 
@@ -175,17 +180,37 @@ public class WhenRunningTestNGTests {
 
 	@Test
 	public void should_execute_only_group_overridden_by_method_level_test_annotation() {
-		config.setGroups("slow");
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("slow").build();
+
+		runner.setTestConfigurationSource(withConfig(configuration));
 
 		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
 
 		assertEquals(1, size(results));
 	}
 
-	private class MyJUnitXMLReporter extends JUnitXMLReporter {
+	public static class MockListener extends JUnitXMLReporter {
+		static boolean wasCalled = false;
+
 		@Override
 		public void onTestStart(ITestResult result) {
 			wasCalled = true;
 		}
+	}
+
+	private MemoryInfinitestConfigurationSource withExcludedGroups(String... excludedGroups) {
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().excludedGroups(excludedGroups).build();
+
+		return withConfig(configuration);
+	}
+
+	private MemoryInfinitestConfigurationSource withGroups(String... groups) {
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups(groups).build();
+
+		return withConfig(configuration);
+	}
+
+	private MemoryInfinitestConfigurationSource withConfig(InfinitestConfiguration configuration) {
+		return new MemoryInfinitestConfigurationSource(configuration);
 	}
 }

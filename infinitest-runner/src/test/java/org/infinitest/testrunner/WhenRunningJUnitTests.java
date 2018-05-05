@@ -28,15 +28,20 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.*;
+import org.infinitest.config.*;
+import org.infinitest.testrunner.FailingTestsWithCategories.*;
 import org.infinitest.testrunner.exampletests.*;
 //import org.infinitest.testrunner.testables.*;
 import org.junit.*;
 
 public class WhenRunningJUnitTests {
+	private static final String[] EMPTY = new String[0];
 	private JUnit4Runner runner;
 	private static final Class<?> TEST_CLASS = TestThatThrowsExceptionInConstructor.class;
 
@@ -112,6 +117,43 @@ public class WhenRunningJUnitTests {
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 
+	@Test
+	public void shouldExecuteAllTestsIfNoExcludedCategories() {
+		runner.setTestConfigurationSource(withExcludedGroups(EMPTY));
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertThat(size(results), is(3));
+	}
+
+	@Test
+	public void shouldNotExecuteTestInOneExcludedCategory() {
+		runner.setTestConfigurationSource(withExcludedGroups(IgnoreMe.class.getName()));
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertThat(size(results), is(2));
+	}
+
+	@Test
+	public void shouldNotExecuteTestInAnyExcludedCategories() {
+		runner.setTestConfigurationSource(withExcludedGroups(IgnoreMe.class.getName(), IgnoreMeToo.class.getName()));
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertThat(size(results), is(1));
+	}
+
+	@Test
+	public void shouldNotRunAnyTestsIfAllAreExcluded() throws Exception {
+		String[] allCategories = { IgnoreMe.class.getName(), IgnoreMeToo.class.getName(), UsuallyRunMe.class.getName() };
+		runner.setTestConfigurationSource(withExcludedGroups(allCategories));
+
+		TestResults results = runner.runTest(FailingTestsWithCategories.class.getName());
+
+		assertThat(results, is(emptyIterable()));
+	}
+
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
 		assertEquals(expected, actual);
 		assertEquals(expected.getMessage(), actual.getMessage());
@@ -121,5 +163,11 @@ public class WhenRunningJUnitTests {
 
 	public void testCaseStarting(TestEvent event) {
 		fail("Native runner should never fire this");
+	}
+
+	private MemoryInfinitestConfigurationSource withExcludedGroups(String... excludedGroups) {
+		InfinitestConfiguration configuration = InfinitestConfiguration.builder().excludedGroups(excludedGroups).build();
+
+		return new MemoryInfinitestConfigurationSource(configuration);
 	}
 }
