@@ -27,21 +27,42 @@
  */
 package org.infinitest.testrunner;
 
-import java.util.*;
+import org.infinitest.MissingClassException;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.testrunner.junit4.Junit4And3Runner;
+import org.infinitest.testrunner.junit5.Junit5Runner;
+import org.infinitest.testrunner.testng.TestNgRunner;
 
-public class InProcessRunner extends AbstractTestRunner {
-	private final NativeRunner runner;
+/**
+ * A proxy which delegates actual test execution JUnit or TestNG.
+ *
+ */
+public class DefaultRunner implements NativeRunner {
+	private InfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource
+			.createFromCurrentWorkingDirectory();
 
-	public InProcessRunner() {
-		runner = new DefaultRunner();
+	// to override the default config source for unit tests
+	public void setTestConfigurationSource(InfinitestConfigurationSource configurationSource) {
+		configSource = configurationSource;
 	}
 
 	@Override
-	public void runTests(List<String> testClasses) {
-		for (String testClass : testClasses) {
-			getEventSupport().fireStartingEvent(testClass);
-			getEventSupport().fireTestCaseComplete(testClass, runner.runTest(testClass));
+	public TestResults runTest(String testClassName) {
+		Class<?> testClass;
+		try {
+			testClass = Class.forName(testClassName);
+		} catch (ClassNotFoundException e) {
+			throw new MissingClassException(testClassName);
 		}
-		getEventSupport().fireTestRunComplete();
+
+		if (TestNgRunner.isTestNGTest(testClass)) {
+			return new TestNgRunner(configSource).runTest(testClass);
+		} else if (Junit5Runner.isJUnit5Test(testClass)) {
+			return new Junit5Runner(configSource).runTest(testClass);
+		} else {
+			return new Junit4And3Runner(configSource).runTest(testClass);
+		}
 	}
+
 }

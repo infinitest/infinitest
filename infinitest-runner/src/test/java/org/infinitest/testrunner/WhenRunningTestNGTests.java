@@ -38,12 +38,12 @@ import org.testng.*;
 import org.testng.reporters.*;
 
 public class WhenRunningTestNGTests {
-	private JUnit4Runner runner;
+	private DefaultRunner runner;
 	private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
 
 	@Before
 	public void inContext() {
-		runner = new JUnit4Runner();
+		runner = new DefaultRunner();
 		TestWithTestNGGroups.fail = true;
 		TestWithTestNGClassAnnotationOnly.fail = true;
 		TestWithTestNGMixedLevelAnnotations.fail = true;

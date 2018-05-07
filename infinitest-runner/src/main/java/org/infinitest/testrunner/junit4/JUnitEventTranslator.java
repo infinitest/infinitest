@@ -25,12 +25,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.junit4;
 
 import static org.infinitest.testrunner.TestEvent.*;
 
 import java.util.*;
 
+import org.infinitest.testrunner.Clock;
+import org.infinitest.testrunner.MethodStats;
+import org.infinitest.testrunner.SystemClock;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
 import org.junit.runner.*;
 import org.junit.runner.notification.*;
 

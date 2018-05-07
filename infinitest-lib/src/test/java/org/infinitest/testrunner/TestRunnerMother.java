@@ -33,6 +33,6 @@ import org.infinitest.testrunner.process.*;
 
 public abstract class TestRunnerMother {
 	public static AbstractTestRunner createRunner() {
-		return new MultiProcessRunner(new NativeConnectionFactory(JUnit4Runner.class), fakeEnvironment());
+		return new MultiProcessRunner(new NativeConnectionFactory(DefaultRunner.class), fakeEnvironment());
 	}
 }

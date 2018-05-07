@@ -27,22 +27,40 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Iterables.*;
+import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Iterables.isEmpty;
+import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.AssertionFailedError;
-import org.infinitest.*;
-import org.infinitest.config.*;
-import org.infinitest.testrunner.FailingTestsWithCategories.*;
-import org.infinitest.testrunner.exampletests.*;
-import org.junit.*;
+import org.infinitest.MissingClassException;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.MemoryInfinitestConfigurationSource;
+import org.infinitest.testrunner.FailingTestsWithCategories.IgnoreMe;
+import org.infinitest.testrunner.FailingTestsWithCategories.IgnoreMeToo;
+import org.infinitest.testrunner.FailingTestsWithCategories.UsuallyRunMe;
+import org.infinitest.testrunner.exampletests.FailingJUnit4TestWithBefore;
+import org.infinitest.testrunner.exampletests.FailingJUnit4TestWithBeforeClass;
+import org.infinitest.testrunner.exampletests.FailingTest;
+import org.infinitest.testrunner.exampletests.JUnit3TestWithASuiteMethod;
+import org.infinitest.testrunner.exampletests.MultiTest;
+import org.infinitest.testrunner.exampletests.PassingTestCase;
+import org.infinitest.testrunner.exampletests.TestNGTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class WhenRunningJUnitTests {
+public class WhenRunningJUnit4Tests {
 	private static final String[] EMPTY = new String[0];
-	private JUnit4Runner runner;
+	private DefaultRunner runner;
 	private static final Class<?> TEST_CLASS = TestThatThrowsExceptionInConstructor.class;
 
 	@Before
@@ -50,7 +68,7 @@ public class WhenRunningJUnitTests {
 		TestThatThrowsExceptionInConstructor.fail = true;
 		FailingTest.fail = true;
 		TestNGTest.fail = true;
-		runner = new JUnit4Runner();
+		runner = new DefaultRunner();
 	}
 
 	@After
@@ -154,19 +172,6 @@ public class WhenRunningJUnitTests {
 		assertThat(results, is(emptyIterable()));
 	}
 
-	
-	@Test
-	public void shouldSupportJUnit5() {
-		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
-		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail", new AssertionFailedError("expected: <true> but was: <false>"));
-		assertEventsEquals(expectedEvent, getOnlyElement(events));
-	}
-
-	@Test
-	public void shouldDetectJUnit5Tests() {
-		assertTrue(runner.isJUnit5Test(JUnit5Test.class));
-		assertFalse(runner.isJUnit5Test(PassingTestCase.class));
-	}
 	
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
 		assertEquals(expected, actual);

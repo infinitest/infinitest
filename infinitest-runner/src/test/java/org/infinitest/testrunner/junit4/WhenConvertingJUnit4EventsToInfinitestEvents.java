@@ -25,18 +25,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.junit4;
 
-import static com.google.common.collect.Iterables.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
-import static org.junit.runner.Description.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Iterables.isEmpty;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.runner.Description.createTestDescription;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runner.notification.*;
+import org.infinitest.testrunner.MethodStats;
+import org.infinitest.testrunner.StubClock;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
-public class WhenConvertingJUnitEventsToInfinitestEvents {
+public class WhenConvertingJUnit4EventsToInfinitestEvents {
 	private JUnitEventTranslator eventTranslator;
 	private Result result;
 	private Description description;

@@ -40,7 +40,7 @@ import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
-import org.infinitest.testrunner.JUnit4Runner;
+import org.infinitest.testrunner.DefaultRunner;
 import org.junit.runner.*;
 
 import com.google.common.base.*;

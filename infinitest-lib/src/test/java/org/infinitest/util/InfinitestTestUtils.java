@@ -111,7 +111,7 @@ public abstract class InfinitestTestUtils {
 	public static boolean testIsBeingRunFromInfinitest() {
 		StackTraceElement[] currentStack = currentThread().getStackTrace();
 		List<String> classNames = InfinitestUtils.getClassNames(currentStack);
-		return classNames.contains(InProcessRunner.class.getName()) || classNames.contains(JUnit4Runner.class.getName());
+		return classNames.contains(InProcessRunner.class.getName()) || classNames.contains(DefaultRunner.class.getName());
 	}
 
 	@SuppressWarnings("serial")

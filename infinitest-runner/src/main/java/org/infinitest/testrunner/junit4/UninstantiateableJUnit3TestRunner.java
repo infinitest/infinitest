@@ -25,7 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.junit4;
 
 import junit.framework.*;
 
