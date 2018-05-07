@@ -1,79 +1,47 @@
-Notes for new developers
-=========================
+# Infinitest
 
 [![Build Status](https://travis-ci.org/infinitest/infinitest.svg?branch=master)](https://travis-ci.org/infinitest/infinitest)
 [![codecov](https://codecov.io/gh/infinitest/infinitest/branch/master/graph/badge.svg)](https://codecov.io/gh/sarod/infinitest)
 
-We strongly believe in Test-Driven Development.
+## Description
+Infinitest is a Continuous Testing plugin for Eclipse and IntelliJ. 
 
-Get the source
---------------
+Each time a change is made on the source code, Infinitest runs all the tests that might fail because of these changes.
 
-Fork the project source code on [github](https://github.com/infinitest/infinitest):
+That's it, it's so simple!
 
-	git clone git://github.com/infinitest/infinitest.git
+You love TDD? You'll love Infinitest. You prefer "Test Last", take a shot too, you might fall in love as well!
 
-You can pull only a shallow clone by specifying the number of commits you want with `--depth`:
 
-	git clone git://github.com/infinitest/infinitest.git --depth 10
+## Installation
 
-Build
------
+### For eclipse 
 
-You need [Maven](http://maven.apache.org/download.html). To run a reactor build in the repository root: 
+You can install Infinitest from [Eclipse Marketplace](https://marketplace.eclipse.org/content/infinitest).
 
-	mvn clean install
+You can also install Infinitest using the update site: http://infinitest.github.io.
 
-This will compile, test and package all modules of the project in a single operation. 
+### For IntelliJ
 
-Finding your way around
-------------------------
+Install the [Infinitest plugin](https://plugins.jetbrains.com/plugin/3146-infinitest) from the plugin manager.
 
-`infinitest-lib` and `infinitest-runner` are included in every plugin. `infinitest-intellij` is the IntelliJ plugin, while `infinitest-eclipse` is the eclipse plugin.
+After installing the plugin from the Plugin Manager, enable the Infinitest facet for your project. 
+Right click on the project, choose facet, add Infinitest.
 
-`testWorkspace` is a collection of sample projects that we use for exploratory testing. If you find something in the wild that makes Infinitest break, it's a good idea to reproduce it in testWorkspace, fix it, and then try it again to be sure you've really fixed it.
+## Documentation
 
-Publishing a release
---------------------
+* [User Guide](http://infinitest.github.io/doc/user_guide.html)
+* [Introductory video by Brandan Jones](https://www.youtube.com/watch?v=bltBrpjdKIc)
 
-When you finish something, release it. Also, make sure you don't push anything to github that's not in a releasable state. It's OK to temporarily disable stuff...just make sure that work in progress isn't breaking anything else.
-
-The `release.sh` script will build a new version of the plugin, incrementing the version number, and copy it to the server hosting the update site. This copy will fail if Ben hasn't added your public ssh key to the server (See above). We like developers to publish a release after implementing every feature.
-
-Running `release.sh` copies the plugin to the experimental [update site](http://update.improvingworks.com/experimental). It's suggested that you publish and then test the plugin before promoting it to the main [update site](http://update.improvingworks.com). You do this using the `promote.sh` script.
-
-Open Infinitest in Eclipse
---------------------------------------------
-
-First, tell maven to generate eclipse project files (.project and .classpath):
-
-	mvn eclipse:eclipse
-
-Right-click in the Eclipse Package Explorer -> Import -> Existing Projects info Workspace -> Choose the root of your infinitest-repository -> Your maven-built-projects are displayed -> DON'T copy into workspace -> Finish.
-The "Eclipse Application" Runtime Configuration in eclipse allows you to fire up another Eclipse instance with the Infinitest plugin loaded into it. You can also debug this instance (which can be a very effective way to explore what the Eclipse SDK actually does): 
-
-Running and Debugging Infinitest in Eclipse
---------------------------------------------
-
-	mvn eclipse:eclipse install -Dmaven.test.skip=true
-
-Right-click plugin.xml -> Open With -> Plug-in Manifest Editor
-Tab Overview -> Launch/Debug an Eclipse application
-
-Keep in mind that while you can use Infinitest to test Infinitest, some weird things happen when you change anything in the `infinitest-runner` project, because that project is actually used to run the tests, so any changes you make may conflict with the classes in whatever version of the plugin you have installed. As a result, we try to keep `infinitest-runner` as thin as we can get it.
-
-License
--------
+## License
 
 Infinitest is distributed under [MIT License](http://opensource.org/licenses/MIT).
 
-Want to participate?
---------------------
+## Contributing
 
-You might want to read [this](https://github.com/infinitest/infinitest/wiki/Want-to-participate%3F)
+See [this](CONTRIBUTING.md)
 
-Credits
--------
+## Credits
 
 [![Yourkit](http://infinitest.github.io/assets/img/yourkit.png)](http://www.yourkit.com/java/profiler/index.jsp)
 is kindly supporting Infinitest open source project with its full-featured Java Profiler.
