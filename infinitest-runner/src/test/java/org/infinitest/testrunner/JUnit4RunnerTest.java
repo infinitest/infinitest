@@ -60,7 +60,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WhenRunningJUnit4Tests {
+public class JUnit4RunnerTest {
 	private static final String[] EMPTY = new String[0];
 	private DefaultRunner runner;
 	private static final Class<?> TEST_CLASS = Junit4TestThatThrowsExceptionInConstructor.class;

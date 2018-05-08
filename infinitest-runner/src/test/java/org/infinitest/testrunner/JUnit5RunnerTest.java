@@ -28,16 +28,26 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTest;
+import java.util.Set;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.xml.transform.stream.StreamSource;
+
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.MemoryInfinitestConfigurationSource;
+import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
-import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
+import org.infinitest.testrunner.exampletests.junit5.JUnit5DisabledTest;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5Test;
-import org.infinitest.testrunner.exampletests.testng.TestNGTest;
+import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingTag;
 import org.infinitest.testrunner.junit5.Junit5Runner;
 import org.junit.After;
 import org.junit.Before;
@@ -45,21 +55,22 @@ import org.junit.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenRunningJUnit5Tests {
+public class JUnit5RunnerTest {
 	private DefaultRunner runner;
-	
+
 	@Before
 	public void inContext() {
-		Junit4TestThatThrowsExceptionInConstructor.fail = true;
-		JUnit4FailingTest.fail = true;
-		TestNGTest.fail = true;
 		runner = new DefaultRunner();
 	}
 
 	@After
 	public void cleanup() {
-		Junit4TestThatThrowsExceptionInConstructor.fail = false;
-		JUnit4FailingTest.fail = false;
+	}
+
+	@Test
+	public void shouldDetectJUnit5Tests() {
+		assertTrue(Junit5Runner.isJUnit5Test(JUnit5Test.class));
+		assertFalse(Junit5Runner.isJUnit5Test(Junit4PassingTestCase.class));
 	}
 
 	@Test
@@ -71,9 +82,52 @@ public class WhenRunningJUnit5Tests {
 	}
 
 	@Test
-	public void shouldDetectJUnit5Tests() {
-		assertTrue(Junit5Runner.isJUnit5Test(JUnit5Test.class));
-		assertFalse(Junit5Runner.isJUnit5Test(Junit4PassingTestCase.class));
+	public void shouldIgnoreDisabledTest() {
+		Iterable<TestEvent> events = runner.runTest(JUnit5DisabledTest.class.getName());
+		assertThat(events).isEmpty();
+	}
+
+	@Test
+	public void shouldSupportExcludedTags() {
+		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
+				InfinitestConfiguration.builder().excludedGroups("Tag1").build()));
+
+		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
+
+		Set<String> failedMethodNames = failedMethodNames(events);
+		assertThat(failedMethodNames).contains("tag2", "noTag");
+		assertThat(failedMethodNames).doesNotContain("tag1", "tag1And2");
+	}
+
+	@Test
+	public void shouldSupportIncludeTags() {
+		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
+				InfinitestConfiguration.builder().includedGroups("Tag2").build()));
+
+		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
+		Set<String> failedMethodNames = failedMethodNames(events);
+
+		assertThat(failedMethodNames).contains("tag2", "tag1And2");
+		assertThat(failedMethodNames).doesNotContain("tag1", "noTag");
+
+	}
+
+	@Test
+	public void shouldSupportIncludeCombinedwithExcludeTags() {
+		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
+				InfinitestConfiguration.builder().includedGroups("Tag2").excludedGroups("Tag1").build()));
+
+		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
+		Set<String> failedMethodNames = failedMethodNames(events);
+
+		assertThat(failedMethodNames).contains("tag2");
+		assertThat(failedMethodNames).doesNotContain("tag1", "noTag", "tag1And2");
+
+	}
+
+	private Set<String> failedMethodNames(Iterable<TestEvent> events) {
+		return StreamSupport.stream(events.spliterator(), false).filter(e -> e.getType() == TestState.METHOD_FAILURE)
+				.map(e -> e.getTestMethod()).collect(Collectors.toSet());
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
