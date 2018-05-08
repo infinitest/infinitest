@@ -25,19 +25,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.exampletests;
+package org.infinitest.testrunner.exampletests.junit4;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 
-public class JUnit5Test {
-    @Test
-    public void shouldPass() {
-        Assertions.assertTrue(true);
-    }
+public final class JUnit4FailingTestWithBefore {
+	@Before
+	public void fail() {
+		throw new IllegalStateException("FAIL");
+	}
 
-    @Test
-    public void shouldFail() {
-        Assertions.assertTrue(false);
-    }
+	@Test
+	public void doNothing() {
+	}
 }

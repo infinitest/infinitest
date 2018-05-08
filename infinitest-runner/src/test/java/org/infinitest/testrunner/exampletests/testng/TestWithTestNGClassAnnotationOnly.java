@@ -25,25 +25,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.exampletests.testng;
 
 import org.testng.*;
 import org.testng.annotations.*;
 
-@Test(groups = "manual")
-public class TestWithTestNGMixedLevelAnnotations {
-	static boolean fail;
+@Test
+public class TestWithTestNGClassAnnotationOnly {
+	public static boolean fail;
 
 	public void shouldPass() {
 		Assert.assertTrue(true);
 	}
 
 	public void shouldFail() {
-		Assert.assertFalse(fail);
-	}
-
-	@Test(groups = "slow")
-	public void shouldFailSlow() {
 		Assert.assertFalse(fail);
 	}
 }

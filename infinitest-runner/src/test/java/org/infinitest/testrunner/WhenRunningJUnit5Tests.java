@@ -33,10 +33,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.infinitest.testrunner.exampletests.FailingTest;
-import org.infinitest.testrunner.exampletests.JUnit5Test;
-import org.infinitest.testrunner.exampletests.PassingTestCase;
-import org.infinitest.testrunner.exampletests.TestNGTest;
+import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTest;
+import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
+import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
+import org.infinitest.testrunner.exampletests.junit5.JUnit5Test;
+import org.infinitest.testrunner.exampletests.testng.TestNGTest;
 import org.infinitest.testrunner.junit5.Junit5Runner;
 import org.junit.After;
 import org.junit.Before;
@@ -49,16 +50,16 @@ public class WhenRunningJUnit5Tests {
 	
 	@Before
 	public void inContext() {
-		TestThatThrowsExceptionInConstructor.fail = true;
-		FailingTest.fail = true;
+		Junit4TestThatThrowsExceptionInConstructor.fail = true;
+		JUnit4FailingTest.fail = true;
 		TestNGTest.fail = true;
 		runner = new DefaultRunner();
 	}
 
 	@After
 	public void cleanup() {
-		TestThatThrowsExceptionInConstructor.fail = false;
-		FailingTest.fail = false;
+		Junit4TestThatThrowsExceptionInConstructor.fail = false;
+		JUnit4FailingTest.fail = false;
 	}
 
 	@Test
@@ -72,7 +73,7 @@ public class WhenRunningJUnit5Tests {
 	@Test
 	public void shouldDetectJUnit5Tests() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5Test.class));
-		assertFalse(Junit5Runner.isJUnit5Test(PassingTestCase.class));
+		assertFalse(Junit5Runner.isJUnit5Test(Junit4PassingTestCase.class));
 	}
 
 	private void assertEventsEquals(TestEvent expected, TestEvent actual) {

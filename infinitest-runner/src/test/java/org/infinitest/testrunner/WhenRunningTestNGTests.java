@@ -33,6 +33,10 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import org.infinitest.config.*;
+import org.infinitest.testrunner.exampletests.testng.TestWithTestNGClassAnnotationOnly;
+import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroups;
+import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroupsAndSetup;
+import org.infinitest.testrunner.exampletests.testng.TestWithTestNGMixedLevelAnnotations;
 import org.junit.*;
 import org.testng.*;
 import org.testng.reporters.*;

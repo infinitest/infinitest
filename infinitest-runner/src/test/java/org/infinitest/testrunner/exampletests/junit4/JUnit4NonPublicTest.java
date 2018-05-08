@@ -25,21 +25,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.exampletests.junit4;
 
-import org.junit.*;
+import org.junit.Test;
 
-@SuppressWarnings("all")
-public class TestThatThrowsExceptionInConstructor {
-	public static boolean fail;
+import static org.junit.Assert.assertFalse;
 
-	public TestThatThrowsExceptionInConstructor() {
-		if (fail) {
-			throw new IllegalStateException();
-		}
-	}
-
+class JUnit4NonPublicTest {
 	@Test
-	public void shouldPass() {
+	public void shouldFail() {
+		assertFalse(true);
 	}
 }

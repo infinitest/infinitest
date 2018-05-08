@@ -25,16 +25,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.exampletests;
+package org.infinitest.testrunner.exampletests.junit4;
+
+import static org.junit.Assert.*;
 
 import org.junit.*;
+import org.junit.experimental.categories.*;
 
-public class MultiTest {
-	@Test
-	public void shouldPass() {
+public class Junit4FailingTestsWithCategories {
+
+	public interface IgnoreMe {
+	}
+
+	public interface IgnoreMeToo {
+	}
+
+	public interface UsuallyRunMe {
 	}
 
 	@Test
-	public void shouldAlsoPass() {
+	@Category(UsuallyRunMe.class)
+	public void shouldBeTested() {
+		fail();
+	}
+
+	@Test
+	@Category(IgnoreMe.class)
+	public void shouldNotBeTested() {
+		fail();
+	}
+
+	@Test
+	@Category(IgnoreMeToo.class)
+	public void shouldAlsoNotBeTested() {
+		fail();
 	}
 }

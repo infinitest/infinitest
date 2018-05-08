@@ -25,16 +25,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.exampletests;
+package org.infinitest.testrunner.exampletests.junit4;
 
-import junit.framework.*;
+import org.junit.*;
 
-public final class FailingJUnit3TestUsedBySuite extends TestCase {
-	FailingJUnit3TestUsedBySuite() {
-		super("testShouldFail");
+public final class JUnit4FailingTestWithBeforeClass {
+	@BeforeClass
+	public static void fail() {
+		throw new IllegalStateException("FAIL");
 	}
 
-	public void testShouldFail() {
-		fail();
+	@Test
+	public void doNothing() {
 	}
 }

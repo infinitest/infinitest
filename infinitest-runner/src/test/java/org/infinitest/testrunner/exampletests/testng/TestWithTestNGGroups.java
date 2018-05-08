@@ -25,17 +25,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.exampletests;
+package org.infinitest.testrunner.exampletests.testng;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
-import org.junit.*;
+import org.testng.annotations.*;
 
-public class FailingTest {
+/** Provides a set of TestNG-tests as a base to test the TestNG-configuration */
+public class TestWithTestNGGroups {
 	public static boolean fail;
+	public static boolean dependencyFail;
 
 	@Test
-	public void shouldFail() {
+	public void hallo() {
+		// left is calculated result, right is expected result
+		assertEquals("actual", "actual");
+	}
+
+	@Test(groups = { "slow" })
+	public void shouldNotBeTestedGroup() {
 		assertFalse(fail);
+	}
+
+	@Test(groups = { "manual" })
+	public void shouldNotBeTestedGroup3() {
+		assertFalse(fail);
+	}
+
+	@Test(groups = { "shouldbetested" })
+	public void doSomeTest() {
+		long nano = System.nanoTime();
+		long nano2 = System.nanoTime();
+		assertTrue(nano2 >= nano);
+	}
+
+	@Test(groups = { "mixed", "slow" })
+	public void shouldNotBeTestedGroup2() {
+		assertFalse(fail);
+	}
+
+	@Test(groups = { "green" }, dependsOnGroups = { "slow" })
+	public void shouldNoBeTestedDueToDependencyOnFilteredGroup() {
+		assertFalse(dependencyFail);
 	}
 }

@@ -25,17 +25,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.exampletests;
+package org.infinitest.testrunner.exampletests.testng;
 
-import org.junit.*;
+import org.testng.*;
+import org.testng.annotations.*;
 
-public final class FailingJUnit4TestWithBeforeClass {
-	@BeforeClass
-	public static void fail() {
-		throw new IllegalStateException("FAIL");
+public class TestNGTest {
+	public static boolean fail;
+
+	@Test
+	public void shouldPass() {
+		Assert.assertTrue(true);
 	}
 
 	@Test
-	public void doNothing() {
+	public void shouldFail() {
+		Assert.assertFalse(fail);
 	}
 }

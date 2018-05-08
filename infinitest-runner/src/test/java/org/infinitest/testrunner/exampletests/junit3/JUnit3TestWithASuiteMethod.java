@@ -25,47 +25,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.testrunner.exampletests.junit3;
 
-import static org.testng.Assert.*;
+import junit.framework.*;
 
-import org.testng.annotations.*;
-
-/** Provides a set of TestNG-tests as a base to test the TestNG-configuration */
-public class TestWithTestNGGroups {
-	public static boolean fail;
-	public static boolean dependencyFail;
-
-	@Test
-	public void hallo() {
-		// left is calculated result, right is expected result
-		assertEquals("actual", "actual");
+public class JUnit3TestWithASuiteMethod extends TestCase {
+	public void testShouldPass() {
 	}
 
-	@Test(groups = { "slow" })
-	public void shouldNotBeTestedGroup() {
-		assertFalse(fail);
-	}
-
-	@Test(groups = { "manual" })
-	public void shouldNotBeTestedGroup3() {
-		assertFalse(fail);
-	}
-
-	@Test(groups = { "shouldbetested" })
-	public void doSomeTest() {
-		long nano = System.nanoTime();
-		long nano2 = System.nanoTime();
-		assertTrue(nano2 >= nano);
-	}
-
-	@Test(groups = { "mixed", "slow" })
-	public void shouldNotBeTestedGroup2() {
-		assertFalse(fail);
-	}
-
-	@Test(groups = { "green" }, dependsOnGroups = { "slow" })
-	public void shouldNoBeTestedDueToDependencyOnFilteredGroup() {
-		assertFalse(dependencyFail);
+	public static junit.framework.Test suite() {
+		TestSuite suite = new TestSuite();
+		suite.addTest(new FailingJUnit3TestUsedBySuite());
+		return suite;
 	}
 }
