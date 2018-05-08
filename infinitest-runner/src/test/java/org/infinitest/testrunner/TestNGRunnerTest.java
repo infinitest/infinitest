@@ -41,7 +41,7 @@ import org.junit.*;
 import org.testng.*;
 import org.testng.reporters.*;
 
-public class WhenRunningTestNGTests {
+public class TestNGRunnerTest {
 	private DefaultRunner runner;
 	private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
 

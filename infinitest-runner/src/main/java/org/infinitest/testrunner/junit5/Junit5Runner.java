@@ -29,12 +29,17 @@ package org.infinitest.testrunner.junit5;
 
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.testrunner.TestResults;
 import org.junit.jupiter.engine.JupiterTestEngine;
+import org.junit.platform.engine.Filter;
 import org.junit.platform.launcher.EngineFilter;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.TagFilter;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestPlan;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
@@ -49,8 +54,21 @@ public class Junit5Runner {
 	}
 
 	public TestResults runTest(Class<?> clazz) {
-		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request().selectors(selectClass(clazz))
-				.filters(EngineFilter.includeEngines("junit-jupiter")).build();
+		
+		
+		
+		List<Filter<?>> filters = new ArrayList<>();
+		filters.add(EngineFilter.includeEngines("junit-jupiter"));
+		if (!configSource.getConfiguration().includedGroups().isEmpty()) {
+			filters.add(TagFilter.includeTags(configSource.getConfiguration().includedGroups().asList()));
+		}
+		if (!configSource.getConfiguration().excludedGroups().isEmpty()) {
+			filters.add(TagFilter.excludeTags(configSource.getConfiguration().excludedGroups().asList()));		
+		}
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+				.selectors(selectClass(clazz))
+				.filters(filters.toArray(new Filter[0]))
+				.build();
 
 		Launcher launcher = LauncherFactory.create();
 
@@ -69,8 +87,10 @@ public class Junit5Runner {
 		} catch (ClassNotFoundException e) {
 			throw new AssertionError("Jupiter engine not found");
 		}
-		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request().selectors(selectClass(clazz))
-				.filters(EngineFilter.includeEngines("junit-jupiter")).build();
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+				.selectors(selectClass(clazz))
+				.filters(EngineFilter.includeEngines("junit-jupiter"))
+				.build();
 
 		try {
 			TestPlan plan = LauncherFactory.create().discover(request);
