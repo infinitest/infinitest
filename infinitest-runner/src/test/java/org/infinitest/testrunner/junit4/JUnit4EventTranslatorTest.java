@@ -44,7 +44,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-public class WhenConvertingJUnit4EventsToInfinitestEvents {
+public class JUnit4EventTranslatorTest {
 	private JUnitEventTranslator eventTranslator;
 	private Result result;
 	private Description description;
