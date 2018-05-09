@@ -27,12 +27,14 @@
  */
 package org.infinitest.eclipse;
 
+import static java.util.Collections.emptyList;
 import static java.util.logging.Level.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.function.Function;
 
 import com.google.common.io.*;
 
@@ -70,25 +72,31 @@ public class InfinitestCoreClasspath {
   }
 
   private static void writeJar(File coreJarLocation, InfinitestPlugin plugin) {
-    // Only for tests ->
-    if (plugin != null)
-    // <-
-    {
-      Enumeration<?> e = plugin.getPluginBundle().findEntries("", "*infinitest-runner*.jar", true);
-
-      if (e == null) {
-        log(SEVERE, "Error creating testrunner classpath. Cannot find infinitest core bundle");
-      } else {
-        while (e.hasMoreElements()) {
-          URL url = (URL) e.nextElement();
-          try {
-            Resources.asByteSource(url).copyTo(Files.asByteSink(coreJarLocation));
-          } catch (IOException e1) {
-            log(SEVERE, "Error creating testrunner classpath. Could not write to " + coreJarLocation);
-            throw new RuntimeException(e1);
-          }
-        }
-      }
+    final List<URL> coreBundleUrls = coreBundleUrls(plugin);
+    if (coreBundleUrls.isEmpty()) {
+      log(SEVERE, "Error creating testrunner classpath. Cannot find infinitest core bundle");
     }
+    coreBundleUrls.stream()
+            .map(Resources::asByteSource)
+            .forEach(byteSource -> writeBytesToJarfile(coreJarLocation, byteSource));
+  }
+
+  private static void writeBytesToJarfile(final File coreJarLocation, final ByteSource byteSource) {
+    try {
+      byteSource.copyTo(Files.asByteSink(coreJarLocation));
+    } catch (IOException e1) {
+      log(SEVERE, "Error creating testrunner classpath. Could not write to " + coreJarLocation);
+      throw new RuntimeException(e1);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<URL> coreBundleUrls(final InfinitestPlugin plugin) {
+    return Optional.ofNullable(plugin)
+            .map(InfinitestPlugin::getPluginBundle)
+            .map(bundle -> bundle.findEntries("", "*infinitest-runner*.jar", true))
+            .map((Function<Enumeration, List>) Collections::list)
+            .map(list -> (List<URL>) list)
+            .orElse(emptyList());
   }
 }

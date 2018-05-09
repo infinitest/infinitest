@@ -41,7 +41,7 @@ public class MultiProcessRunner extends AbstractTestRunner {
 	private Queue<String> queue;
 
 	public MultiProcessRunner() {
-		this(new NativeConnectionFactory(JUnit4Runner.class), null);
+		this(new NativeConnectionFactory(DefaultRunner.class), null);
 	}
 
 	public MultiProcessRunner(final ProcessConnectionFactory remoteProcessManager, RuntimeEnvironment environment) {

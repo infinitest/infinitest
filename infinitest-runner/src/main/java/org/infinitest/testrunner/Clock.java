@@ -29,6 +29,7 @@ package org.infinitest.testrunner;
 
 /**
  * Abstracts away the system clock, in order to make client code testable.
+ * TODO replace by {@link java.time.Clock}
  */
 public interface Clock {
   long currentTimeMillis();
