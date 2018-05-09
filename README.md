@@ -31,7 +31,8 @@ Right click on the project, choose facet, add Infinitest.
 ## Documentation
 
 * [User Guide](http://infinitest.github.io/doc/user_guide.html)
-* [Introductory video by Brandan Jones](https://www.youtube.com/watch?v=bltBrpjdKIc)
+* [Infinitest For Eclipse Introductory video by Brandan Jones](https://www.youtube.com/watch?v=bltBrpjdKIc)
+* [Infinitest For IntelliJ Introductory article by Mkyoing](https://www.mkyong.com/intellij/intellij-infinitest-continuous-testing/)
 
 ## License
 
