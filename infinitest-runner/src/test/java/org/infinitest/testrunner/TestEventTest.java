@@ -129,10 +129,6 @@ public class TestEventTest extends EqualityTestSupport {
 		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
 	}
 
-	private int getLineNumber() {
-		return error.getStackTrace()[0].getLineNumber();
-	}
-
 	private void verifyPointOfFailureMessage(int lineNumber) {
 		String actual = event.getPointOfFailure().toString();
 		String expected = TestEventTest.class.getName() + ":" + lineNumber + " - " + error.getClass().getSimpleName() + "(" + Strings.nullToEmpty(error.getMessage()) + ")";

@@ -33,7 +33,7 @@ public class InProcessRunner extends AbstractTestRunner {
 	private final NativeRunner runner;
 
 	public InProcessRunner() {
-		runner = new JUnit4Runner();
+		runner = new DefaultRunner();
 	}
 
 	@Override

@@ -27,6 +27,7 @@
  */
 package org.infinitest.parser;
 
+import static java.util.Arrays.stream;
 import static javassist.Modifier.*;
 import static javassist.bytecode.AnnotationsAttribute.*;
 import static org.infinitest.parser.DescriptorParser.*;
@@ -39,7 +40,7 @@ import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
-import org.junit.Test;
+import org.infinitest.testrunner.DefaultRunner;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -57,8 +58,15 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) && hasTests(classReference) && canInstantiate(classReference);
+		isATest = !isAbstract(classReference) &&
+				hasTests(classReference) &&
+				(isJUnit5TestClass(imports) || canInstantiate(classReference));
 		className = classReference.getName();
+	}
+
+	private boolean isJUnit5TestClass(final String[] imports) {
+		return stream(imports)
+				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
 	}
 
 	@Override
@@ -270,12 +278,23 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
 		for (CtMethod ctMethod : classReference.getMethods()) {
-			if (isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
+			if (isJUnit5TestMethod(ctMethod) || isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+    private boolean isJUnit5TestMethod(CtMethod ctMethod) {
+        final List<?> attributes = ctMethod.getMethodInfo2().getAttributes();
+        return attributes.stream()
+                .filter(clazz -> clazz instanceof AnnotationsAttribute)
+                .map(attribute -> (AnnotationsAttribute) attribute)
+                .map(AnnotationsAttribute::getAnnotations)
+                .flatMap(Arrays::stream)
+                .map(Annotation::getTypeName)
+                .anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+    }
 
 	private boolean isJUnit3TestMethod(CtMethod ctMethod) {
 		return ctMethod.getName().startsWith("test") && anySuperclassOf(ctMethod.getDeclaringClass(), isTestCase());
@@ -340,7 +359,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 			if (attribute instanceof AnnotationsAttribute) {
 				AnnotationsAttribute annotations = (AnnotationsAttribute) attribute;
 				for (Annotation each : annotations.getAnnotations()) {
-					if (Test.class.getName().equals(each.getTypeName())) {
+					if (org.junit.Test.class.getName().equals(each.getTypeName())) {
 						return true;
 					}
 				}

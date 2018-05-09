@@ -27,6 +27,7 @@
  */
 package org.infinitest.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 import javassist.*;
@@ -90,6 +91,11 @@ public class WhenLookingForTests {
 	public void canDetectJUnit3Tests() {
 		assertTrue(classFor(TestJunit3TestCase.class).isATest());
 		assertFalse(classFor(LooksLikeAJUnit3TestButIsnt.class).isATest());
+	}
+
+	@Test
+	public void canDetectJUnit5Tests() {
+		assertThat(classFor(TestJUnit5TestCase.class).isATest()).as("JUnit5 (Jupiter) annotated test is detected").isTrue();
 	}
 
 	@Test
