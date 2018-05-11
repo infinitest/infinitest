@@ -51,7 +51,7 @@ public class TestCaseEventTest extends EqualityTestSupport {
 	@Test
 	public void shouldIgnoreCompilerErrors() {
 		methodEvents.add(methodFailed("TestClass", "", new VerifyError()));
-		methodEvents.add(methodFailed("TestClass", "", new Error()));
+		methodEvents.add(methodFailed("TestClass", "", new Error("Unresolved compilation problems:")));
 		event = new TestCaseEvent("testName", source, new TestResults(methodEvents));
 		assertFalse(event.failed());
 	}
