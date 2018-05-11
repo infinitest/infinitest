@@ -30,20 +30,15 @@ package org.infinitest.testrunner;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
-import static org.junit.Assert.assertEquals;
+import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
+import static org.infinitest.testrunner.TestResultTestUtils.failedMethodNames;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
-import java.util.Spliterators;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.xml.transform.stream.StreamSource;
 
 import org.infinitest.config.InfinitestConfiguration;
 import org.infinitest.config.MemoryInfinitestConfigurationSource;
-import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5DisabledTest;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5Test;
@@ -124,17 +119,4 @@ public class JUnit5RunnerTest {
 		assertThat(failedMethodNames).doesNotContain("tag1", "noTag", "tag1And2");
 
 	}
-
-	private Set<String> failedMethodNames(Iterable<TestEvent> events) {
-		return StreamSupport.stream(events.spliterator(), false).filter(e -> e.getType() == TestState.METHOD_FAILURE)
-				.map(e -> e.getTestMethod()).collect(Collectors.toSet());
-	}
-
-	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getMessage(), actual.getMessage());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
-	}
-
 }

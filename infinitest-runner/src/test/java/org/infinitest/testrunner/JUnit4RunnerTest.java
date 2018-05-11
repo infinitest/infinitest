@@ -35,6 +35,7 @@ import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -45,17 +46,16 @@ import org.infinitest.MissingClassException;
 import org.infinitest.config.InfinitestConfiguration;
 import org.infinitest.config.MemoryInfinitestConfigurationSource;
 import org.infinitest.testrunner.exampletests.junit3.JUnit3TestWithASuiteMethod;
+import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTest;
 import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTestWithBefore;
 import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTestWithBeforeClass;
-import org.infinitest.testrunner.exampletests.junit4.JUnit4FailingTest;
 import org.infinitest.testrunner.exampletests.junit4.Junit4FailingTestsWithCategories;
-import org.infinitest.testrunner.exampletests.junit4.Junit4MultiTest;
-import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
-import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
 import org.infinitest.testrunner.exampletests.junit4.Junit4FailingTestsWithCategories.IgnoreMe;
 import org.infinitest.testrunner.exampletests.junit4.Junit4FailingTestsWithCategories.IgnoreMeToo;
 import org.infinitest.testrunner.exampletests.junit4.Junit4FailingTestsWithCategories.UsuallyRunMe;
-import org.infinitest.testrunner.exampletests.testng.TestNGTest;
+import org.infinitest.testrunner.exampletests.junit4.Junit4MultiTest;
+import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
+import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,6 @@ public class JUnit4RunnerTest {
 	public void inContext() {
 		Junit4TestThatThrowsExceptionInConstructor.fail = true;
 		JUnit4FailingTest.fail = true;
-		TestNGTest.fail = true;
 		runner = new DefaultRunner();
 	}
 
@@ -130,12 +129,6 @@ public class JUnit4RunnerTest {
 		runner.runTest("test");
 	}
 
-	@Test
-	public void shouldSupportTestNG() {
-		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
-		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
-		assertEventsEquals(expectedEvent, getOnlyElement(events));
-	}
 
 	@Test
 	public void shouldExecuteAllTestsIfNoExcludedCategories() {
@@ -175,12 +168,7 @@ public class JUnit4RunnerTest {
 	}
 
 	
-	private void assertEventsEquals(TestEvent expected, TestEvent actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getMessage(), actual.getMessage());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getErrorClassName(), actual.getErrorClassName());
-	}
+
 
 	@Test
 	public void shouldIgnoreNonPublicJUnit4Tests() {
@@ -191,7 +179,7 @@ public class JUnit4RunnerTest {
 						testClass,
 						"initializationError",
 						new Exception("The class " + testClass + " is not public."));
-		assertEventsEquals(expectedEvent, getFirst(events, null));
+		TestResultTestUtils.assertEventsEquals(expectedEvent, getFirst(events, null));
 	}
 
 	public void testCaseStarting(TestEvent event) {

@@ -27,19 +27,30 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Iterables.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Iterables.size;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.infinitest.config.*;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.MemoryInfinitestConfigurationSource;
+import org.infinitest.testrunner.exampletests.testng.TestNGTest;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGClassAnnotationOnly;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroups;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroupsAndSetup;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGMixedLevelAnnotations;
-import org.junit.*;
-import org.testng.*;
-import org.testng.reporters.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.testng.ITestResult;
+import org.testng.reporters.JUnitXMLReporter;
 
 public class TestNGRunnerTest {
 	private DefaultRunner runner;
@@ -48,6 +59,7 @@ public class TestNGRunnerTest {
 	@Before
 	public void inContext() {
 		runner = new DefaultRunner();
+		TestNGTest.fail = true;
 		TestWithTestNGGroups.fail = true;
 		TestWithTestNGClassAnnotationOnly.fail = true;
 		TestWithTestNGMixedLevelAnnotations.fail = true;
@@ -57,10 +69,19 @@ public class TestNGRunnerTest {
 
 	@After
 	public void cleanup() {
+		TestNGTest.fail = false;
 		TestWithTestNGGroups.fail = false;
 		TestWithTestNGClassAnnotationOnly.fail = false;
 		TestWithTestNGMixedLevelAnnotations.fail = false;
 		TestWithTestNGGroups.dependencyFail = false;
+	}
+	
+
+	@Test
+	public void shouldSupportTestNG() {
+		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
+		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
+		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 
 	/**
