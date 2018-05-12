@@ -15,13 +15,13 @@ You love TDD? You'll love Infinitest. You prefer "Test Last", take a shot too, y
 
 ## Installation
 
-### For eclipse 
+### Installation on Eclipse 
 
 You can install Infinitest from [Eclipse Marketplace](https://marketplace.eclipse.org/content/infinitest).
 
 You can also install Infinitest using the update site: http://infinitest.github.io.
 
-### For IntelliJ
+### Installation on IntelliJ
 
 Install the [Infinitest plugin](https://plugins.jetbrains.com/plugin/3146-infinitest) from the plugin manager.
 
