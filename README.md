@@ -18,7 +18,7 @@ Infinitest is distributed under [MIT License](http://opensource.org/licenses/MIT
 
 ## Contributing
 
-See [this](CONTRIBUTING.md)
+See [Contribution Guide](CONTRIBUTING.md)
 
 ## Credits
 
