@@ -27,16 +27,25 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static com.google.common.collect.Lists.*;
-import static org.eclipse.swt.SWT.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.swt.SWT.Deactivate;
+import static org.eclipse.swt.SWT.KeyDown;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.widgets.*;
-import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.infinitest.eclipse.workspace.FakeResourceFinder;
+import org.junit.Before;
+import org.junit.Test;
 
-public class WhenViewingAStackTrace {
+public class FailureViewerTest {
 	private List list;
 	private StackTraceElement element;
 	private FailureViewer view;
@@ -50,6 +59,17 @@ public class WhenViewingAStackTrace {
 		view.show(dialog);
 		list = (List) dialog.getChildren()[1];
 	}
+		
+	@Test
+	public void computeCenteredLocation() {
+		Point viewerShellSize = new Point(400, 200);
+		Rectangle parentShellBounds = new Rectangle(100, 10, 2000, 600);
+		
+		Point expectedCenterLocation = new Point(100 + 2000 / 2 - 400/2, 10 + 600/2 - 200/2);
+		
+		assertThat(FailureViewer.computeCenteredLocation(viewerShellSize, parentShellBounds)).isEqualTo(expectedCenterLocation);
+	}
+		
 
 	@Test
 	public void shouldBuildListItemsFromStackTrace() {
