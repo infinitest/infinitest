@@ -12,8 +12,18 @@ coverage:
       
 
     patch:
-      default:
-        if_no_uploads: error
+      default: false
+      infinitest-runner:
         target: auto
+        paths: "infinitest-runner/*"
+      infinitest-lib:
+        target: auto
+        paths: "infinitest-lib/*"
+      infinitest-eclipse:
+        target: 40
+        paths: "infinitest-eclipse/*"
+      infinitest-intellij:
+        target: 40
+        paths: "infinitest-intellij/*"
 
     changes: true
