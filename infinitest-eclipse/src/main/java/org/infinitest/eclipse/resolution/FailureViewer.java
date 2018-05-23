@@ -43,9 +43,10 @@ public class FailureViewer {
 	private final Shell viewerDialog;
 	private final String message;
 
-	public FailureViewer(Shell shell, String message, List<StackTraceElement> stackTrace, ResourceLookup resourceLookup) {
+	public FailureViewer(Shell parentShell, String message, List<StackTraceElement> stackTrace,
+			ResourceLookup resourceLookup) {
 		this.message = message;
-		viewerDialog = new Shell(shell, ON_TOP | APPLICATION_MODAL);
+		viewerDialog = new Shell(parentShell, ON_TOP | APPLICATION_MODAL);
 		GridLayout gridLayout = new GridLayout(1, true);
 		viewerDialog.setLayout(gridLayout);
 		this.stackTrace = stackTrace;
@@ -63,23 +64,28 @@ public class FailureViewer {
 		createList(dialog);
 		dialog.pack();
 		dialog.layout();
-		moveToParentShellMonitor(dialog);
+		moveToParentDialogCenter(dialog);
 		dialog.open();
 
 		dialog.forceActive();
 		dialog.addShellListener(new DialogDeactivationDisposer(dialog));
 	}
 
-	private void moveToParentShellMonitor(Shell dialog) {
+	private void moveToParentDialogCenter(Shell dialog) {
 		if (dialog.getParent() == null) {
 			// No parent shell no positioning
 			return;
 		}
-		Monitor parentShellMonitor = dialog.getParent().getMonitor();
-		Point newPosition = new Point(parentShellMonitor.getBounds().x, parentShellMonitor.getBounds().y);
+		Point dialogSize = dialog.getSize();
+		Rectangle parentDialogBounds = dialog.getParent().getBounds();
+		Point newLocation = computeCenteredLocation(dialogSize, parentDialogBounds);
+		dialog.setLocation(newLocation);
+	}
 
-		// Move preserving size
-		dialog.setBounds(newPosition.x, newPosition.y, dialog.getSize().x, dialog.getSize().y);
+	public static Point computeCenteredLocation(Point dialogSize, Rectangle parentDialogBounds) {
+		Point parentDialogCenter = new Point(parentDialogBounds.x + parentDialogBounds.width / 2,
+				parentDialogBounds.y + parentDialogBounds.height / 2);
+		return new Point(parentDialogCenter.x - dialogSize.x / 2, parentDialogCenter.y - dialogSize.y / 2);
 	}
 
 	private void createMessage(Shell dialog) {
@@ -99,7 +105,8 @@ public class FailureViewer {
 		for (StackTraceElement each : stackTrace) {
 			list.add(each.toString());
 		}
-		StackElementSelectionListener selectionListener = new StackElementSelectionListener(dialog, resourceFinder, stackTrace);
+		StackElementSelectionListener selectionListener = new StackElementSelectionListener(dialog, resourceFinder,
+				stackTrace);
 		list.addKeyListener(selectionListener);
 		list.addMouseListener(selectionListener);
 		GridData gridData = new GridData(FILL, FILL, true, true, 1, 1);

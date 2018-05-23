@@ -9,10 +9,11 @@ coverage:
         target: auto
         if_no_uploads: error
         threshold: 1%
+      
 
     patch:
       default:
         if_no_uploads: error
-        target: 80%
+        target: auto
 
     changes: true

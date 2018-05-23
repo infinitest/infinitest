@@ -78,26 +78,22 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 		}
 	}
 
-	protected void createStackViewWith(List<StackTraceElement> stackTrace, String message) {
-		List<StackTraceElement> filteredStackTrace = stackTraceFilter.filterStack(stackTrace);
-		ResourceLookup resourceLookup = InfinitestPlugin.getInstance().getBean(ResourceLookup.class);
-		final FailureViewer failureViewer = new FailureViewer(getMainShell(), message, filteredStackTrace, resourceLookup);
-
+	protected void createStackViewWith(List<StackTraceElement> stackTrace, String message) {		
 		// We use async exec here to avoid issue #152
 		// Using asyncExec allows to open the FailerViewer after main shell have
-		// been reactivated
+		// been reactivated.
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				List<StackTraceElement> filteredStackTrace = stackTraceFilter.filterStack(stackTrace);
+				ResourceLookup resourceLookup = InfinitestPlugin.getInstance().getBean(ResourceLookup.class);
+				Shell parentShell = Display.getCurrent().getActiveShell();
+				final FailureViewer failureViewer = new FailureViewer(parentShell, message, filteredStackTrace, resourceLookup);
+
 				failureViewer.show();
 			}
 		});
 
-	}
-
-	private Shell getMainShell() {
-		// RISK Untested
-		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
 
 }
