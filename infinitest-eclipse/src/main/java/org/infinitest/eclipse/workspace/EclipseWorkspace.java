@@ -91,8 +91,11 @@ class EclipseWorkspace implements WorkspaceFacade {
 	private int updateProjectsIn(ProjectSet projectSet) throws CoreException {
 		updateEvent.fire();
 		int totalTests = 0;
-		for (ProjectFacade project : projectSet.projects()) {
-			setStatus(findingTests(totalTests));
+		
+		List<ProjectFacade> projects = projectSet.projects();
+		for (int i = 0; i < projects.size(); i++) {
+			ProjectFacade project = projects.get(i);
+			setStatus(findingTests(i, projects.size(), totalTests));
 			totalTests += updateProject(project);
 		}
 		return totalTests;
