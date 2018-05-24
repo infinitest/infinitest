@@ -113,7 +113,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 
 		workspace.updateProjects();
 
-		assertStatusIs(findingTests(0));
+		assertStatusIs(findingTests(0, projects.size(), 0));
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 
 	}

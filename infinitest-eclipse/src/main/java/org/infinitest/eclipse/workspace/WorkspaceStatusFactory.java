@@ -27,13 +27,15 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static java.text.DateFormat.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static java.text.DateFormat.getTimeInstance;
+import static org.infinitest.util.InfinitestUtils.listToMultilineString;
+import static org.infinitest.util.InfinitestUtils.stripPackageName;
 
-import java.text.*;
-import java.util.*;
+import java.text.DateFormat;
+import java.util.Collection;
+import java.util.Date;
 
-import org.infinitest.eclipse.status.*;
+import org.infinitest.eclipse.status.WorkspaceStatus;
 
 public class WorkspaceStatusFactory {
 	public static WorkspaceStatus workspaceErrors() {
@@ -106,7 +108,7 @@ public class WorkspaceStatusFactory {
 		}
 	}
 
-	public static WorkspaceStatus findingTests(int totalTestsFound) {
-		return new SimpleStringStatus(totalTestsFound + " tests found so far");
+	public static WorkspaceStatus findingTests(int analyzedProjects, int totalProjects, int testsFoundSoFar) {		
+		return new TooltippedStatus("Looking for tests: "+ testsFoundSoFar +" found so far", analyzedProjects + " out of "+totalProjects +" projects analyzed");
 	}
 }
