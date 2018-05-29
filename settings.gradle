@@ -1,0 +1,10 @@
+rootProject.name = 'infinitest-parent'
+include ':infinitest-lib'
+include ':infinitest-runner'
+include ':infinitest-intellij'
+include ':infinitest-eclipse'
+
+project(':infinitest-lib').projectDir = "$rootDir/infinitest-lib" as File
+project(':infinitest-runner').projectDir = "$rootDir/infinitest-runner" as File
+project(':infinitest-intellij').projectDir = "$rootDir/infinitest-intellij" as File
+project(':infinitest-eclipse').projectDir = "$rootDir/infinitest-eclipse" as File

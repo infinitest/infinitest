@@ -1,0 +1,20 @@
+description = 'Infinitest Lib'
+dependencies {
+    // FIXME infinitest-lib should rely only on the runner api not on the full jar
+    // especially since it embeds it's dependency
+    implementation project(':infinitest-runner')
+    implementation ext.guava
+    implementation 'org.jgrapht:jgrapht-jdk1.5:0.7.3'
+    implementation 'org.javassist:javassist:3.18.2-GA'
+    implementation ext.commonsLang
+    implementation ext.junitJupiterApi
+    implementation ext.autoValueAnnotations
+    annotationProcessor ext.autoValueProcessor
+
+    testImplementation ext.assertjCore
+    testImplementation(ext.mockitoCore) {
+        exclude(module: 'hamcrest-core')
+    }
+    testImplementation ext.hamcrest
+
+}

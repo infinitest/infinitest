@@ -1,0 +1,132 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+group = 'org.infinitest.eclipse'
+description = 'Infinitest Plugin for Eclipse'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0'
+    }
+}
+apply plugin: 'biz.aQute.bnd.builder'
+
+repositories() {
+    // Defines a file based repository for eclipse deps.
+    // TODO consider using a mavenized version of an eclipse using one of wuff/goomph or buildship BuildDefinitionPlugin
+    maven { url "${projectDir}/src/repository" }
+}
+
+
+ext.currentOsMatches = { family, arch = '*' ->
+    Os.isFamily(family) && (arch == '*' || Os.isArch(arch))
+}
+
+// TODO do we still need to support x86 and i386 architectures ???
+ext.systemProps = ({
+    if (currentOsMatches(Os.FAMILY_WINDOWS, 'x86')) {
+        return [
+                swtVersion: '3.5.2',
+                swtJar    : 'swt-3.5.2-win32-win32-x86.jar',
+                testParams: ''
+        ]
+    } else if (currentOsMatches(Os.FAMILY_WINDOWS, 'amd64')) {
+        return [
+                swtVersion: '3.5.2',
+                swtJar    : 'swt-3.5.2-win32-win32-x86.jar',
+                testParams: ''
+        ]
+    } else if (currentOsMatches(Os.FAMILY_UNIX, 'i386')) {
+        return [
+                swtVersion: '3.5.2.v3557f',
+                swtJar    : 'org.eclipse.swt.gtk.linux.x86_3.5.2.v3557f.jar',
+                testParams: '-d32'
+        ]
+    } else if (currentOsMatches(Os.FAMILY_UNIX, 'amd64')) {
+        return [
+                swtVersion: '3.6.2.v3659b',
+                swtJar    : 'org.eclipse.swt.gtk.linux.x86_64_3.6.2.v3659b.jar',
+                testParams: ''
+        ]
+    } else if (currentOsMatches(Os.FAMILY_MAC)) {
+        return [
+                swtVersion: '3.4.1.v3449c',
+                swtJar    : 'org.eclipse.swt.cocoa.macosx.x86_64_3.6.2.v3659b.jar',
+                testParams: '-XstartOnFirstThread'
+        ]
+    } else {
+        throw new RuntimeException('Unexpectd OS')
+
+    }
+})()
+
+dependencies {
+
+    ext.eclipseDeps = [
+            'org.eclipse:core.net:1.0.0.I20070531',
+            'org.eclipse:equinox-preferences:3.2.200.v20080421-2006',
+            'org.eclipse:core-contenttype:3.3.0.v20080604-1400',
+            'org.eclipse:jdt-launching:3.4.0.v20080529-1300',
+            'org.eclipse:debug-core:3.4.0.v20080612',
+            'org.eclipse:text:3.4.0.v20080605-1800',
+            'org.eclipse:jdt-debug-ui:3.3.1.v20080730_r341',
+            'org.eclipse.ui:console:3.3.0.v20080529-1300',
+            'org.eclipse:ui-ide:3.4.1.M20080903-2000',
+            'org.eclipse:jdt-core:3.4.2.v_883_R34x',
+            "org.eclipse:eclipse.swt:${project.ext.systemProps.swtVersion}",
+            'org.eclipse:osgi:3.4.2.R34x_v20080826-1230',
+            'org.eclipse:core-resources:3.4.1.R34x_v20080902',
+            'org.eclipse:core-runtime:3.4.0.v20080512',
+            'org.eclipse:jface:3.4.1.M20080827-2000',
+            'org.eclipse:equinox-common:3.4.0.v20080421-2006',
+            'org.eclipse:ui-workbench:3.4.1.M20080827-0800a',
+            'org.eclipse:equinox-registry:3.4.0.v20080516-0950',
+            'org.eclipse:core-commands:3.4.0.I20080509-2000',
+            'org.eclipse:core-job:3.4.0.v20080512',
+    ]
+    compile project(':infinitest-lib')
+    compile project(':infinitest-runner')
+    compile ext.springContext
+    compile ext.commonsCodec
+    compile ext.commonsLang
+    compile ext.guava
+
+    testImplementation(ext.mockitoCore) {
+        exclude(module: 'hamcrest-core')
+    }
+    testImplementation ext.assertjCore
+    testImplementation ext.hamcrest
+
+    // libraries with provided scope similar to Maven:
+    ext.providedDeps = ext.eclipseDeps;
+    ext.providedDeps.each {
+        compileOnly it
+        testImplementation it
+    }
+}
+
+compileJava {
+    doLast {
+        // Recreate lib content
+        println "recreate ${project.name}/lib content"
+        delete file("${projectDir}/lib").listFiles()
+        copy {
+            from configurations.runtimeClasspath.files.
+                    findAll { it.name.endsWith('jar') }
+            into "${projectDir}/lib"
+        }
+    }
+}
+
+clean {
+    println "clean ${project.name}/lib content"
+    delete file("${projectDir}/lib").listFiles()
+}
+
+jar
+
+// TODO Generate Manifest.MF
+// TODO package the plugin
+// TODO create update site and feature

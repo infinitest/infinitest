@@ -59,8 +59,9 @@ public class InfinitestUtils {
 		return dateFmt.format(new Date(time));
 	}
 
+	@SafeVarargs
 	public static <T> Set<T> setify(T... items) {
-		Set<T> set = new HashSet<T>();
+		Set<T> set = new HashSet<>();
 		set.addAll(asList(items));
 		return set;
 	}

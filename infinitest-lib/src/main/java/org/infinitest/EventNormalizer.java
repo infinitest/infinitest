@@ -124,7 +124,7 @@ class EventNormalizer {
 			Class<?>[] interfaces = { proxyInterface };
 			proxyCache.put(key, newProxyInstance(classLoader, interfaces, createHandler(listener)));
 		}
-		return (T) proxyCache.get(key);
+		return proxyInterface.cast(proxyCache.get(key));
 	}
 
 	private <T> InvocationHandler createHandler(final T listener) {

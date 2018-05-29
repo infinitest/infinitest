@@ -3,7 +3,7 @@
     <name>Infinitest</name>
 
     <description>Infinitest plugin for Intellij</description>
-    <version>${project.parent.version}</version>
+    <version>${version}</version>
     <vendor>Infinitest</vendor>
     <idea-version since-build="9732"/>
     <application-components>

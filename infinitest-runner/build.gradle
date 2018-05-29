@@ -1,0 +1,41 @@
+description = 'Infinitest Runner'
+
+configurations {
+    embed
+}
+
+dependencies {
+    implementation ext.guava
+    implementation ext.junit
+    implementation ext.junitJupiterEngine
+    implementation ext.junitPlatform
+    implementation ext.testng
+    implementation ext.jcommander
+    implementation ext.autoValueAnnotations
+    annotationProcessor ext.autoValueProcessor
+
+    testImplementation ext.assertjCore
+    testImplementation ext.hamcrest
+
+
+    embed ext.guava
+    embed(ext.junit) {
+        exclude group: 'org.hamcrest'
+    }
+    embed ext.junitJupiterEngine
+    embed ext.junitPlatform
+    embed ext.testng
+    embed ext.jcommander
+}
+
+// FIXME The runner jar today embed junit & co and the infinitest plugins embed the runner in their class path
+// They should rather:
+// * embed the runner jar to be able to execute it
+// * include a runner api jar in classpath to work with lib
+jar {
+    from {
+        // embed package dependencies
+        configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+

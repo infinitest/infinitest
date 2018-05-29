@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.util.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
+import javassist.CtClass;
 import org.infinitest.*;
 import org.junit.*;
 
@@ -46,15 +47,15 @@ public class WhenSearchingForEntriesOnTheClasspath {
 
   @Test
   public void shouldFindJarsThatContainAClass() {
-    String entry = findClasspathEntryFor(systemClasspath, Iterables.class);
+    String entry = findClasspathEntryFor(systemClasspath, CtClass.class);
 
-    assertThat(entry).contains(".jar").contains("google");
+    assertThat(entry).contains(".jar").contains("javassist");
   }
 
   @Test
   public void shouldFindClassDirectoriesThatContainAClass() {
     String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
 
-    assertThat(entry).doesNotContain(".jar").contains("target/classes");
+    assertThat(entry).doesNotContain(".jar").contains("build/classes");
   }
 }

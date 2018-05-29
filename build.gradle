@@ -1,0 +1,78 @@
+// TODO
+// * migrate profiles
+// * migrate surefire params
+// * migrate setup of eclipse prefs?
+// * migrate setup of infinitest.args
+// * add License HEader check
+// * review usage of plugin: java vs plugin: java-library
+// * review usage of compile vs implementation accordingly
+// * Update CONTRIBUTING.md
+// * Update release process
+
+allprojects {
+    apply plugin: 'maven'
+
+    group = 'org.infinitest'
+    version = '5.2.1-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations.all {
+    }
+
+    dependencies {
+        ext.guava = 'com.google.guava:guava:18.0'
+        ext.junit = 'junit:junit:4.12'
+        ext.hamcrest = 'org.hamcrest:hamcrest-library:1.3'
+        ext.junitJupiterVersion = '5.0.3'
+        ext.junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:${ext.junitJupiterVersion}"
+        ext.junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:${ext.junitJupiterVersion}"
+        ext.junitPlatformVersion = '1.0.3'
+        ext.junitPlatform = "org.junit.platform:junit-platform-launcher:${ext.junitPlatformVersion}"
+        ext.testng = 'org.testng:testng:6.8.8'
+        ext.jcommander = 'com.beust:jcommander:1.30'
+
+        ext.commonsLang = 'commons-lang:commons-lang:2.6'
+        ext.springContext = 'org.springframework:spring-context:4.3.9.RELEASE'
+        ext.commonsCodec = 'commons-codec:commons-codec:1.10'
+
+        ext.mockitoCore = 'org.mockito:mockito-core:1.10.8'
+        ext.assertjCore = 'org.assertj:assertj-core:3.9.0'
+        ext.autoValueAnnotations = 'com.google.auto.value:auto-value-annotations:1.6'
+        ext.autoValueProcessor = 'com.google.auto.value:auto-value:1.6'
+    }
+
+//    compileJava {
+//        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+//    }
+//
+//    compileTestJava {
+//        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+//    }
+
+    test {
+        include('**/When*',
+                '**/*Test*',
+                '**/*TestCase*',
+                '**/*Simulation*')
+        exclude('**/*$*</exclude>',
+                'com/fakeco/**',
+                '**/exampletests/**')
+    }
+
+
+
+
+}
