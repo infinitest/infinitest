@@ -27,15 +27,23 @@
  */
 package org.infinitest.plugin;
 
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.infinitest.util.FakeEnvironments.currentJavaHome;
+import static org.infinitest.util.FakeEnvironments.fakeBuildPaths;
+import static org.infinitest.util.FakeEnvironments.fakeEnvironment;
+import static org.infinitest.util.FakeEnvironments.fakeWorkingDirectory;
+import static org.infinitest.util.FakeEnvironments.systemClasspath;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-import org.infinitest.*;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
-import org.mockito.*;
+import org.infinitest.FakeEventQueue;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.RuntimeEnvironment;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.TestDetector;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenConfiguringBuilder {
 	protected InfinitestCoreBuilder builder;
@@ -43,7 +51,7 @@ public class WhenConfiguringBuilder {
 
 	@Before
 	public final void mustProvideRuntimeEnvironmentAndEventQueue() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), systemClasspath(), currentJavaHome());
+		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
 		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue());
 	}
 

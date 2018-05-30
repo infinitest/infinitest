@@ -27,19 +27,29 @@
  */
 package org.infinitest.testrunner.process;
 
-import static com.google.common.collect.Iterables.*;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.addAll;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.infinitest.util.FakeEnvironments.fakeEnvironment;
+import static org.junit.Assert.assertEquals;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.List;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.RuntimeEnvironment;
+import org.infinitest.testrunner.CrashingTestRunner;
+import org.infinitest.testrunner.FakeRunner;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
 
 public class WhenCreatingRunnerProcessConnection {
 	private NativeConnectionFactory factory;
@@ -69,7 +79,11 @@ public class WhenCreatingRunnerProcessConnection {
 	private List<TestEvent> sendMessageWithServerSocket(String... messages) throws UnknownHostException, IOException, ClassNotFoundException {
 		ServerSocket serverSocket = new ServerSocket(0);
 		try {
-			factory.startProcess(serverSocket.getLocalPort(), fakeEnvironment());
+			
+			RuntimeEnvironment fakeEnvironment = fakeEnvironment();
+			File file = fakeEnvironment.createClasspathFile();
+			factory.startProcess(serverSocket.getLocalPort(), fakeEnvironment, file);
+			serverSocket.setSoTimeout(2500);
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
 			ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());

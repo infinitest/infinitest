@@ -74,9 +74,9 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
 
   @Test
   public void shouldThrowExceptionOnInvalidJavaHome() {
-    RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), FakeEnvironments.systemClasspath(), fakeJavaHome);
+    RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHome, fakeWorkingDirectory(), "runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(), FakeEnvironments.systemClasspath());
     try {
-      environment.createProcessArguments();
+      environment.createProcessArguments(new File("file.classpath"));
       fail("Should have thrown exception");
     } catch (JavaHomeException e) {
       assertThat(convertFromWindowsClassPath(e.getMessage())).contains(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java");
@@ -85,23 +85,23 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
 
   @Test
   public void shouldAllowAlternateJavaHomesOnUnixAndWindows() throws Exception {
-    RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), FakeEnvironments.systemClasspath(), fakeJavaHome);
+    RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHome, fakeWorkingDirectory(), "runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(), FakeEnvironments.systemClasspath());
 
     touch(new File(fakeJavaHome, "bin/java.exe"));
-    List<String> arguments = environment.createProcessArguments();
+    List<String> arguments = environment.createProcessArguments(new File("file.classpath"));
     assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java.exe", convertFromWindowsClassPath(get(arguments, 0)));
 
     touch(new File(fakeJavaHome, "bin/java"));
-    arguments = environment.createProcessArguments();
+    arguments = environment.createProcessArguments(new File("file.classpath"));
     assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java", convertFromWindowsClassPath(get(arguments, 0)));
   }
 
   @Test
   public void shouldAddInfinitestJarOrClassDirToClasspath() {
-    RuntimeEnvironment environment = new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), systemClasspath(), currentJavaHome());
-    String classpath = environment.getCompleteClasspath();
+    RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
+    String classpath = environment.getRunnerFullClassPath();
     assertTrue(classpath, classpath.contains("infinitest"));
-    assertTrue(classpath, classpath.endsWith(environment.findInfinitestJar()));
+    assertTrue(classpath, classpath.endsWith(environment.findInfinitestRunnerJar()));
   }
 
   @Test
@@ -110,9 +110,8 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
     addLoggingListener(listener);
 
     RuntimeEnvironment environment = emptyRuntimeEnvironment();
-    environment.setInfinitestRuntimeClassPath("noClasses");
-    environment.getCompleteClasspath();
-    assertTrue(listener.hasMessage("Could not find a classpath entry for Infinitest Core in noClasses", SEVERE));
+    environment.getRunnerFullClassPath();
+    assertTrue(listener.hasMessage("Could not find a classpath entry for infinitest-runner in infinitest-runner.classpath", SEVERE));
   }
 
   @Test
@@ -120,13 +119,13 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
     RuntimeEnvironment environment = fakeEnvironment();
     List<String> additionalArgs = asList("-Xdebug", "-Xnoagent", "-Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=y");
     environment.addVMArgs(additionalArgs);
-    List<String> actualArgs = environment.createProcessArguments();
+    List<String> actualArgs = environment.createProcessArguments(new File("file.classpath"));
     assertTrue(actualArgs.toString(), actualArgs.containsAll(additionalArgs));
   }
 
   @Test
   public void canUseACustomWorkingDirectory() throws Exception {
-    runner.setRuntimeEnvironment(new RuntimeEnvironment(fakeBuildPaths(), new File("src"), FakeEnvironments.systemClasspath(), currentJavaHome()));
+    runner.setRuntimeEnvironment(new RuntimeEnvironment(currentJavaHome(), new File("src"), FakeEnvironments.systemClasspath(), FakeEnvironments.systemClasspath(), fakeBuildPaths(), FakeEnvironments.systemClasspath()));
     runTests(WorkingDirectoryVerifier.class);
     eventAssert.assertTestPassed(WorkingDirectoryVerifier.class);
   }

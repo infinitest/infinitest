@@ -12,6 +12,7 @@
 	<modules>
 		<module>infinitest-lib</module>
 		<module>infinitest-runner</module>
+		<module>infinitest-classloader</module>
 		<module>infinitest-intellij</module>
 		<module>infinitest-eclipse</module>
 	</modules>

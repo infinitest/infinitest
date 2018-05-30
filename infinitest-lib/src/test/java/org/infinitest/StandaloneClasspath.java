@@ -57,7 +57,7 @@ public class StandaloneClasspath implements ClasspathProvider {
 	}
 
 	@Override
-	public String getCompleteClasspath() {
+	public String getRunnerFullClassPath() {
 		return classpath;
 	}
 

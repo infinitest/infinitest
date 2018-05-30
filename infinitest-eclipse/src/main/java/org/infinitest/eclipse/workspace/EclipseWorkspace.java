@@ -28,7 +28,7 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Lists.*;
-import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
+import static org.infinitest.eclipse.InfinitestJarsLocator.*;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
 import static org.infinitest.util.Events.*;
 import static org.infinitest.util.InfinitestUtils.*;
@@ -114,18 +114,21 @@ class EclipseWorkspace implements WorkspaceFacade {
 	public RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project) throws CoreException {
 		File javaHome = project.getJvmHome();
 		RuntimeEnvironment environment = buildRuntimeEnvironment(project, javaHome);
-		environment.setInfinitestRuntimeClassPath(getCoreJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath());
 		return environment;
 	}
 
 	private RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project, File javaHome) throws CoreException {
-		return new RuntimeEnvironment(projectSet.outputDirectories(project), project.workingDirectory(), project.rawClasspath(), javaHome);
+		String runnerBootsrapClassPath = getClassLoaderJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath();
+		String runnerProcessClassPath = getRunnerJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath();
+		
+		return new RuntimeEnvironment(javaHome, project.workingDirectory(), runnerBootsrapClassPath, runnerProcessClassPath, projectSet.outputDirectories(project), project.rawClasspath());
 	}
+
 
 	private InfinitestCore createCore(ProjectFacade project, RuntimeEnvironment environment) {
 		InfinitestCore core = coreFactory.createCore(project.getName(), environment);
 		coreRegistry.addCore(project.getLocationURI(), core);
-		log("Added core " + core.getName() + " with classpath " + environment.getCompleteClasspath());
+		log("Added core " + core.getName() + " with classpath " + environment.getRunnerFullClassPath());
 		return core;
 	}
 

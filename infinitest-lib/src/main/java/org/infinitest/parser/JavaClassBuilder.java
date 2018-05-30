@@ -40,7 +40,7 @@ class JavaClassBuilder {
 	private final JavaAssistClassParser parser;
 
 	JavaClassBuilder(ClasspathProvider classpath) {
-		this(new JavaAssistClassParser(classpath.getCompleteClasspath()));
+		this(new JavaAssistClassParser(classpath.getRunnerFullClassPath()));
 	}
 
 	public JavaClassBuilder(JavaAssistClassParser parser) {

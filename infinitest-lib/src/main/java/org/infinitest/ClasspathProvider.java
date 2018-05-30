@@ -41,7 +41,7 @@ public interface ClasspathProvider {
 	 * the class output directories. It will also include any supporting
 	 * infinitest jars or classes.
 	 */
-	String getCompleteClasspath();
+	String getRunnerFullClassPath();
 
 	List<File> classDirectoriesInClasspath();
 }

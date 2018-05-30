@@ -81,7 +81,7 @@ public class WhenComparingRuntimeEnvironments {
 	}
 
 	private RuntimeEnvironment createEnv(String outputDir, String workingDir, String classpath, String javahome) {
-		RuntimeEnvironment env = new RuntimeEnvironment(newArrayList(new File(outputDir)), new File(workingDir), classpath, new File(javahome));
+		RuntimeEnvironment env = new RuntimeEnvironment(new File(javahome), new File(workingDir), "runnerClassLoaderClassPath", "runnerProcessClassPath", newArrayList(new File(outputDir)), classpath);
 		return env;
 	}
 
