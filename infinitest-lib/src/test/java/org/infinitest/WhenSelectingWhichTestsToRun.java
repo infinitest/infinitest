@@ -47,7 +47,7 @@ public class WhenSelectingWhichTestsToRun {
 	public void shouldIgnoreTestsInDependentProjects() {
 		List<File> outputDirs = asList(new File("target/classes"));
 		List<File> classDirsInClasspath = fakeBuildPaths();
-		String rawClasspath = fakeClasspath().getCompleteClasspath();
+		String rawClasspath = fakeClasspath().getRunnerFullClassPath();
 		StandaloneClasspath classpath = new StandaloneClasspath(outputDirs, classDirsInClasspath, rawClasspath);
 
 		ClassFileTestDetector testDetector = new ClassFileTestDetector(mock(TestFilter.class));

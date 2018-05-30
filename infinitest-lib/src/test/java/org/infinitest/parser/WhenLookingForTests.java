@@ -42,7 +42,7 @@ public class WhenLookingForTests {
 	@Before
 	public void inContext() throws NotFoundException {
 		classPool = new ClassPool();
-		classPool.appendPathList(fakeClasspath().getCompleteClasspath());
+		classPool.appendPathList(fakeClasspath().getRunnerFullClassPath());
 		classPool.appendSystemPath();
 	}
 

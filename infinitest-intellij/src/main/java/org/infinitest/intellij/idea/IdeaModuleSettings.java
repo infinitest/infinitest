@@ -27,29 +27,40 @@
  */
 package org.infinitest.intellij.idea;
 
-import static java.io.File.*;
+import static java.io.File.pathSeparator;
 import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.jetbrains.annotations.*;
-import org.testng.collections.*;
+import org.apache.log4j.Logger;
+import org.infinitest.RuntimeEnvironment;
+import org.infinitest.intellij.InfinitestJarsLocator;
+import org.infinitest.intellij.ModuleSettings;
+import org.jetbrains.annotations.Nullable;
+import org.testng.collections.Lists;
 
-import com.intellij.ide.plugins.*;
-import com.intellij.openapi.compiler.*;
-import com.intellij.openapi.extensions.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.compiler.CompilerPaths;
+import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.LibraryOrderEntry;
+import com.intellij.openapi.roots.ModuleOrderEntry;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.OrderEnumerator;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
 	private final Module module;
-	private final InfinitestJarLocator locator = new InfinitestJarLocator();
+	private final InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
 	private static final Boolean TEST_CLASSES = true;
 	private static final Boolean MAIN_CLASSES = false;
@@ -83,7 +94,9 @@ public class IdeaModuleSettings implements ModuleSettings {
 		if (sdkPath == null) {
 			return null;
 		}
-		return new RuntimeEnvironment(listOutputDirectories(), getWorkingDirectory(), buildClasspathString(), new File(sdkPath.getAbsolutePath()));
+		String runnerClassLoaderClassPath = infinitestJarPath(locator.findInfinitestClassLoaderlJarName());
+		String runnerProcessClassPath  = infinitestJarPath(locator.findInfinitestRunnerJarName());
+		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()), getWorkingDirectory(), runnerClassLoaderClassPath, runnerProcessClassPath, listOutputDirectories(), buildClasspathString());
 	}
 
 	/**
@@ -132,7 +145,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 			builder.append(each.getAbsolutePath().replace("!", ""));
 		}
 
-		return appendInfinitestJarTo(builder.toString());
+		return builder.toString();
 	}
 
 	private File getWorkingDirectory() {
@@ -199,37 +212,15 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return CompilerModuleExtension.getInstance(module);
 	}
 
-	private String appendInfinitestJarTo(String classpath) {
-		StringBuilder builder = new StringBuilder(classpath);
-		for (String each : infinitestJarPaths()) {
-			builder.append(System.getProperty("path.separator"));
-			builder.append(each);
-		}
-
-		return builder.toString();
-	}
-
-	private List<String> infinitestJarPaths() {
+	private String infinitestJarPath(String jarName) {
 		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
 		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
 		File pluginPath = descriptor.getPath();
 
-		List<String> paths = new ArrayList<String>();
-		for (String each : locator.findInfinitestJarNames()) {
-			File jar = new File(pluginPath, "lib/" + each);
-			if (jar.exists()) {
-				paths.add(jar.getAbsolutePath());
-			}
-		}
-
-		File classes = new File(pluginPath, "classes");
-		if (classes.exists()) {
-			paths.add(classes.getAbsolutePath());
-		}
-
-		return paths;
+		File jar = new File(pluginPath, "lib/" + jarName);
+		return jar.getAbsolutePath();		
 	}
-
+	
 	@Nullable
 	private File getSdkHomePath() {
 		Sdk projectSdk = ProjectRootManager.getInstance(module.getProject()).getProjectSdk();

@@ -67,6 +67,6 @@ public class FakeModuleSettings implements ModuleSettings {
 
 	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
-		return new RuntimeEnvironment(Collections.<File> emptyList(), new File("."), "", new File(getProperty("java.home")));
+		return new RuntimeEnvironment(new File(getProperty("java.home")), new File("."), "runnerClassLoaderClassPath", "runnerProcessClassPath", Collections.<File> emptyList(), "");
 	}
 }

@@ -27,14 +27,17 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 // RISK This class is only tested by running it, which is slow and throws off coverage
 public class TestRunnerProcess {
 	public static final String TEST_RUN_ERROR = "Error occurred during test run";
+	
 	private NativeRunner runner;
 
 	private TestRunnerProcess(String runnerClass) {
@@ -72,9 +75,12 @@ public class TestRunnerProcess {
 
 	public static void main(String[] args) {
 		try {
-			checkForJUnit4();
-
-			TestRunnerProcess process = new TestRunnerProcess(args[0]);
+			checkForJUnit4();			
+			if (args.length != 2) {
+				throw new IllegalArgumentException("runner expects two parameters: runnerClass and port");
+			}
+			String runnerClass = args[0];
+			TestRunnerProcess process = new TestRunnerProcess(runnerClass);
 			int portNum = Integer.parseInt(args[1]);
 			Socket clientSocket = new Socket("127.0.0.1", portNum);
 			// DEBT Extract this to a reader class

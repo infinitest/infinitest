@@ -29,7 +29,7 @@ package org.infinitest.eclipse;
 
 import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
+import static org.infinitest.eclipse.InfinitestJarsLocator.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
@@ -51,7 +51,7 @@ public class WhenCreatingCoreClasspath {
 
   @Test
   public void shouldWriteInfinitestCoreOutToTempDirectory() {
-    File coreJarLocation = getCoreJarLocation(plugin);
+    File coreJarLocation = getRunnerJarLocation(plugin);
 
     assertThat(coreJarLocation).exists();
     assertThat(coreJarLocation.getAbsolutePath()).endsWith(".jar");
@@ -63,10 +63,10 @@ public class WhenCreatingCoreClasspath {
     when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(urls), enumeration(urls));
     plugin.setPluginBundle(bundle);
 
-    File coreJarLocation = getCoreJarLocation(plugin);
+    File coreJarLocation = getRunnerJarLocation(plugin);
     assertThat(coreJarLocation.delete()).isTrue();
 
-    coreJarLocation = getCoreJarLocation(plugin);
+    coreJarLocation = getRunnerJarLocation(plugin);
     assertThat(coreJarLocation).exists();
     assertThat(coreJarLocation.getAbsolutePath()).endsWith(".jar");
   }

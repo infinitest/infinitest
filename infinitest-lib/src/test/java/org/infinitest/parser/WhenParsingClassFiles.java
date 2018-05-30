@@ -43,7 +43,7 @@ public class WhenParsingClassFiles {
 
 	@Before
 	public void inContext() {
-		parser = new JavaAssistClassParser(fakeClasspath().getCompleteClasspath());
+		parser = new JavaAssistClassParser(fakeClasspath().getRunnerFullClassPath());
 	}
 
 	private JavaClass parseClass(Class<?> classToParse) {
@@ -88,7 +88,7 @@ public class WhenParsingClassFiles {
 
 	@Test
 	public void shouldSkipMissingJarFilesWhenCreatingClassPool() {
-		String classpath = fakeClasspath().getCompleteClasspath();
+		String classpath = fakeClasspath().getRunnerFullClassPath();
 		classpath += File.pathSeparator + "notAJar.jar";
 		parser = new JavaAssistClassParser(classpath);
 		assertNotNull(parseClass(FakeProduct.class));

@@ -48,7 +48,7 @@ public class FakeEnvironments {
 	}
 
 	public static RuntimeEnvironment fakeEnvironment() {
-		return new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), systemClasspath(), currentJavaHome());
+		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
 	}
 
 	public static File fakeWorkingDirectory() {
@@ -64,11 +64,11 @@ public class FakeEnvironments {
 	}
 
 	public static RuntimeEnvironment emptyRuntimeEnvironment() {
-		return new RuntimeEnvironment(asList(new File("thisdirectorydoesnotexist")), fakeWorkingDirectory(), "classpath", currentJavaHome());
+		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), "infinitest-classloader.classpath", "infinitest-runner.classpath", asList(new File("thisdirectorydoesnotexist")), "classpath");
 	}
 
 	public static RuntimeEnvironment fakeVeryLongClasspathEnvironment() {
-		return new RuntimeEnvironment(fakeBuildPaths(), fakeWorkingDirectory(), fakeVeryLongClassPaths(), currentJavaHome());
+		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), fakeVeryLongClassPaths(), fakeVeryLongClassPaths(), fakeBuildPaths(), fakeVeryLongClassPaths());
 	}
 
 	private static String fakeVeryLongClassPaths() {

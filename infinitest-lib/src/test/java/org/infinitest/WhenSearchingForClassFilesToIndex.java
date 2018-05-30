@@ -42,7 +42,7 @@ public class WhenSearchingForClassFilesToIndex {
     File outputDir = new File("target/classes");
     List<File> outputDirs = asList(outputDir);
     String classpath = "target/classes" + pathSeparator + "target/test-classes";
-    RuntimeEnvironment environment = new RuntimeEnvironment(outputDirs, new File("."), classpath, new File("javahome"));
+    RuntimeEnvironment environment = new RuntimeEnvironment(new File("javahome"), new File("."), "runnerClassLoaderClassPath", "runnerProcessClassPath", outputDirs, classpath);
     List<File> directoriesInClasspath = environment.classDirectoriesInClasspath();
 
     assertThat(directoriesInClasspath).contains(new File("target/test-classes"), outputDir);

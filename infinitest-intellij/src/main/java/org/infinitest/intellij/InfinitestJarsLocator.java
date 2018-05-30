@@ -27,21 +27,28 @@
  */
 package org.infinitest.intellij;
 
-import static java.util.Arrays.*;
+import java.util.Iterator;
 
-import java.util.*;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import javax.xml.namespace.*;
-import javax.xml.xpath.*;
+import org.xml.sax.InputSource;
 
-import org.xml.sax.*;
-
-public class InfinitestJarLocator {
+public class InfinitestJarsLocator {
 	private static final String BUNDLED_POM = "/META-INF/maven/org.infinitest/infinitest-intellij/pom.xml";
 
-	public List<String> findInfinitestJarNames() {
+
+	public String findInfinitestRunnerJarName() {
 		String version = findInfinitestVersion();
-		return asList("infinitest-lib-" + version + ".jar", "infinitest-runner-" + version + ".jar");
+		return "infinitest-runner-" + version + ".jar";
+	}
+	
+	public String findInfinitestClassLoaderlJarName() {
+		String version = findInfinitestVersion();
+		return "infinitest-classloader-" + version + ".jar";
 	}
 
 	public String findInfinitestVersion() {
