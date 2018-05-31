@@ -55,7 +55,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 		projects.add(new ProjectFacade(project));
 		coreRegistry = mock(CoreRegistry.class);
 		CoreFactory coreFactory = new CoreFactory(null);
-		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory, new SystemClassPathJarLocator());
 
 		when(projectSet.projects()).thenReturn(projects);
 		when(projectSet.hasErrors()).thenReturn(true);
