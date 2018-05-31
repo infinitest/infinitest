@@ -69,7 +69,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 		List<File> outputDirs = emptyList();
 		when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);
 
-		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory, new SystemClassPathJarLocator());
 	}
 
 	private ProjectFacade newFacade(IJavaProject project) {

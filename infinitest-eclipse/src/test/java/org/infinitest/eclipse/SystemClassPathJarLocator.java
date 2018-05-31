@@ -1,3 +1,5 @@
+package org.infinitest.eclipse;
+
 /*
  * Infinitest, a Continuous Test Runner.
  *
@@ -25,12 +27,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.eclipse;
-
-public interface InfinitestJarsLocator {
+public class SystemClassPathJarLocator implements InfinitestJarsLocator {
 	
-	public String getInfinitestRunnerClassPath();
+	public String systemClassPath() {
+		return System.getProperty("java.class.path");
+	}
 
-	public String getInfinitestClassLoaderClassPath();	
+	@Override
+	public String getInfinitestRunnerClassPath() { 
+		return systemClassPath();
+	}
+
+	@Override
+	public String getInfinitestClassLoaderClassPath() {
+		return systemClassPath();
+	}
 
 }

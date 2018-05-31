@@ -27,16 +27,17 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
 
-import org.infinitest.*;
 import org.infinitest.environment.ClasspathProvider;
-import org.infinitest.filter.*;
+import org.infinitest.filter.TestFilter;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>

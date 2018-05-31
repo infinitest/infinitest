@@ -27,23 +27,27 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.eclipse.InfinitestJarsLocator.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.infinitest.util.Events.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
+import static org.infinitest.util.Events.eventFor;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.infinitest.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.status.*;
+import org.eclipse.core.runtime.CoreException;
+import org.infinitest.InfinitestCore;
+import org.infinitest.eclipse.InfinitestJarsLocator;
+import org.infinitest.eclipse.UpdateListener;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.eclipse.status.WorkspaceStatusListener;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.util.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.infinitest.util.Events;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 class EclipseWorkspace implements WorkspaceFacade {
@@ -53,12 +57,17 @@ class EclipseWorkspace implements WorkspaceFacade {
 	private final List<WorkspaceStatusListener> statusListeners = newArrayList();
 	private final Events<UpdateListener> updateEvent = eventFor(UpdateListener.class);
 	private final ProjectSet projectSet;
+	private final InfinitestJarsLocator infinitestJarsClasspathProvider;
 
 	@Autowired
-	EclipseWorkspace(ProjectSet projectSet, CoreRegistry coreRegistry, CoreFactory coreFactory) {
+	EclipseWorkspace(ProjectSet projectSet, 
+			CoreRegistry coreRegistry, 
+			CoreFactory coreFactory, 
+			InfinitestJarsLocator infinitestJarsClasspathProvider) {
 		this.projectSet = projectSet;
 		this.coreRegistry = coreRegistry;
 		this.coreFactory = coreFactory;
+		this.infinitestJarsClasspathProvider = infinitestJarsClasspathProvider;
 	}
 
 	@Autowired
@@ -114,13 +123,12 @@ class EclipseWorkspace implements WorkspaceFacade {
 
 	public RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project) throws CoreException {
 		File javaHome = project.getJvmHome();
-		RuntimeEnvironment environment = buildRuntimeEnvironment(project, javaHome);
-		return environment;
+		return buildRuntimeEnvironment(project, javaHome);
 	}
 
 	private RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project, File javaHome) throws CoreException {
-		String runnerBootsrapClassPath = getClassLoaderJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath();
-		String runnerProcessClassPath = getRunnerJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath();
+		String runnerBootsrapClassPath = infinitestJarsClasspathProvider.getInfinitestClassLoaderClassPath();
+		String runnerProcessClassPath = infinitestJarsClasspathProvider.getInfinitestRunnerClassPath();
 		
 		return new RuntimeEnvironment(javaHome, project.workingDirectory(), runnerBootsrapClassPath, runnerProcessClassPath, projectSet.outputDirectories(project), project.rawClasspath());
 	}
