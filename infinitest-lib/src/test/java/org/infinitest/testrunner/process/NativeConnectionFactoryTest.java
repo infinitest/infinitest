@@ -28,8 +28,8 @@
 package org.infinitest.testrunner.process;
 
 import static com.google.common.collect.Iterables.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 import static org.infinitest.testrunner.FailingRunner.*;
-import static org.infinitest.util.FakeEnvironments.*;
 import static org.junit.Assert.*;
 
 import java.io.*;

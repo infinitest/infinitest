@@ -27,10 +27,12 @@
  */
 package org.infinitest;
 
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 
 import java.io.*;
 import java.util.*;
+
+import org.infinitest.environment.ClasspathProvider;
 
 public class StandaloneClasspath implements ClasspathProvider {
 	private final List<File> classDirs;

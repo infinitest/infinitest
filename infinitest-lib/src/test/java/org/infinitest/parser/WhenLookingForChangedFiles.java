@@ -29,7 +29,7 @@ package org.infinitest.parser;
 
 import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -39,6 +39,7 @@ import java.util.*;
 
 import org.infinitest.*;
 import org.infinitest.changedetect.*;
+import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.util.*;
 import org.junit.*;
 import org.junit.rules.*;

@@ -28,6 +28,7 @@
 package org.infinitest.intellij.idea;
 
 import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.*;
 
 import com.intellij.openapi.compiler.*;

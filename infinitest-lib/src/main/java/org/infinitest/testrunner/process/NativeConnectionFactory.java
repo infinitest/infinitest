@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
-import org.infinitest.RuntimeEnvironment;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.NativeRunner;
 import org.infinitest.testrunner.OutputStreamHandler;
 import org.infinitest.testrunner.TestRunnerProcess;

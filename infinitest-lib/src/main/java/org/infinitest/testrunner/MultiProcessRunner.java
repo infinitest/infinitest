@@ -31,6 +31,7 @@ import java.io.*;
 import java.util.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.process.*;
 import org.infinitest.testrunner.queue.*;
 

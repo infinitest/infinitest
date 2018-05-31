@@ -27,21 +27,17 @@
  */
 package org.infinitest.testrunner;
 
-import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.ConsoleOutputListener.OutputType.STDOUT;
 import static org.infinitest.CoreDependencySupport.FAILING_TEST;
 import static org.infinitest.CoreDependencySupport.PASSING_TEST;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.infinitest.environment.FakeEnvironments.fakeVeryLongClasspathEnvironment;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
 import static org.infinitest.testrunner.TestRunnerMother.createRunner;
-import static org.infinitest.util.FakeEnvironments.emptyRuntimeEnvironment;
-import static org.infinitest.util.FakeEnvironments.fakeEnvironment;
-import static org.infinitest.util.FakeEnvironments.fakeVeryLongClasspathEnvironment;
 import static org.infinitest.util.InfinitestTestUtils.testIsBeingRunFromInfinitest;
-import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -51,7 +47,6 @@ import org.infinitest.ConsoleListenerAdapter;
 import org.infinitest.ConsoleOutputListener;
 import org.infinitest.EventSupport;
 import org.infinitest.util.InfinitestTestUtils;
-import org.infinitest.util.LoggingAdapter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -173,15 +168,6 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
     eventSupport.assertTestsStarted(StubStatefulTest.class, OtherStubStatefulTest.class);
     eventSupport.assertTestPassed(StubStatefulTest.class);
     eventSupport.assertTestFailed(OtherStubStatefulTest.class);
-  }
-
-  @Test
-  public void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
-    LoggingAdapter adapter = new LoggingAdapter();
-    addLoggingListener(adapter);
-    emptyRuntimeEnvironment().getRunnerFullClassPath();
-    String expectedMessage = "Could not find classpath entry [classpath] at file system root or relative to working " + "directory [.].";
-    assertTrue(adapter.toString(), adapter.hasMessage(expectedMessage, WARNING));
   }
 
   public static class OtherStubStatefulTest {

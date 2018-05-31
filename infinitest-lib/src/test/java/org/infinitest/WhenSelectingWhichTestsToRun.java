@@ -28,7 +28,7 @@
 package org.infinitest;
 
 import static java.util.Arrays.*;
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

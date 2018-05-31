@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.infinitest.RuntimeEnvironment;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
 import org.jetbrains.annotations.Nullable;

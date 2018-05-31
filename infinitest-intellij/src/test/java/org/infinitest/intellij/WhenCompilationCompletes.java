@@ -30,6 +30,7 @@ package org.infinitest.intellij;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.idea.*;
 import org.junit.*;
 import org.mockito.*;

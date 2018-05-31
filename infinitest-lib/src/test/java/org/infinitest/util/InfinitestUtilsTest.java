@@ -27,15 +27,20 @@
  */
 package org.infinitest.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.systemClasspath;
 import static org.infinitest.util.InfinitestUtils.*;
 import static org.junit.Assert.*;
 
+import org.infinitest.InfinitestCore;
 import org.junit.*;
 
-public class TestInfinitestUtils {
+import com.google.common.collect.Iterables;
+
+public class InfinitestUtilsTest {
 	@Test
 	public void shouldFormatTimeAsHHMMSS() {
-		assertEquals("00:00:20", InfinitestUtils.formatTime(20 * 1000));
+		assertEquals("00:00:20", formatTime(20 * 1000));
 	}
 
 	@Test
@@ -51,7 +56,8 @@ public class TestInfinitestUtils {
 
 	@Test
 	public void shouldTruncateLongErrorMessages() {
-		String actualMessage = getExceptionMessage(new IllegalArgumentException("This is a really long error message that needs to be truncated to a reasonable length."));
+		String actualMessage = getExceptionMessage(new IllegalArgumentException(
+				"This is a really long error message that needs to be truncated to a reasonable length."));
 		assertEquals("This is a really long error message that needs to ...", actualMessage);
 	}
 
@@ -63,6 +69,23 @@ public class TestInfinitestUtils {
 
 	@Test
 	public void shouldAlwaysUseForwardSlashForResourcePath() {
-		assertFalse(getResourceName(TestInfinitestUtils.class.getName()).contains("\\"));
+		assertFalse(getResourceName(InfinitestUtilsTest.class.getName()).contains("\\"));
+	}
+
+	@Test
+	public void shouldFindJarsThatContainAClass() {
+		String systemClasspath = systemClasspath();
+
+		String entry = findClasspathEntryFor(systemClasspath, Iterables.class);
+
+		assertThat(entry).contains(".jar").contains("google");
+	}
+
+	@Test
+	public void shouldFindClassDirectoriesThatContainAClass() {
+		String systemClasspath = systemClasspath();
+		String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
+
+		assertThat(entry).doesNotContain(".jar").contains("target/classes");
 	}
 }

@@ -28,7 +28,7 @@
 package org.infinitest.util;
 
 import static java.lang.Thread.*;
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 
 import java.io.*;
 import java.util.*;

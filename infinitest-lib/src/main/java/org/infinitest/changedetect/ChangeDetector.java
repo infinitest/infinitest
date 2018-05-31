@@ -27,10 +27,11 @@
  */
 package org.infinitest.changedetect;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
 
-import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 
 public interface ChangeDetector {
 	Set<File> findChangedFiles() throws IOException;

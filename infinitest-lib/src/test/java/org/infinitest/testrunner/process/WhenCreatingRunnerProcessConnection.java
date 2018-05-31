@@ -28,8 +28,8 @@
 package org.infinitest.testrunner.process;
 
 import static com.google.common.collect.Iterables.addAll;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.infinitest.util.FakeEnvironments.fakeEnvironment;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -41,7 +41,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import org.infinitest.RuntimeEnvironment;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.CrashingTestRunner;
 import org.infinitest.testrunner.FakeRunner;
 import org.infinitest.testrunner.TestEvent;

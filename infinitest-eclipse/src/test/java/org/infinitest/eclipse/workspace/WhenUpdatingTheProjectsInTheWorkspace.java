@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.status.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.junit.*;
 
 public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {

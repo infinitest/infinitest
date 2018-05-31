@@ -30,6 +30,7 @@ package org.infinitest;
 import java.io.*;
 import java.util.*;
 
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.*;
 
 /**

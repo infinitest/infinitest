@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.status.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.util.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;

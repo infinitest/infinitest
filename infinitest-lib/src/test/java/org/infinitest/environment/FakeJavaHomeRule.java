@@ -25,14 +25,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest;
+package org.infinitest.environment;
 
-import java.io.*;
+import java.io.File;
 
-public class JavaHomeException extends RuntimeException {
-	private static final long serialVersionUID = -1L;
+import org.junit.rules.TemporaryFolder;
 
-	JavaHomeException(File javaHome) {
-		super("Could not find java executable at " + javaHome.getAbsolutePath());
+public class FakeJavaHomeRule extends TemporaryFolder {
+
+	@Override
+	protected void before() throws Throwable {
+		super.before();
+		File fakeJavaHome = getRoot();
+		new File(fakeJavaHome, "bin").mkdirs();
 	}
 }
