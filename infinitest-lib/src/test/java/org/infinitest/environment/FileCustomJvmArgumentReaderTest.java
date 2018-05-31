@@ -25,20 +25,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest;
+package org.infinitest.environment;
 
 import static com.google.common.base.Charsets.*;
 import static com.google.common.collect.Lists.*;
 import static com.google.common.io.Files.*;
-import static org.infinitest.FileCustomJvmArgumentReader.*;
+import static org.infinitest.environment.FileCustomJvmArgumentReader.*;
 import static org.junit.Assert.*;
 
 import java.io.*;
 import java.util.*;
 
+import org.infinitest.environment.FileCustomJvmArgumentReader;
 import org.junit.*;
 
-public class WhenReadingCustomJvmArgumentsFromFile {
+public class FileCustomJvmArgumentReaderTest {
 	private File tempDirectory;
 	private File file;
 	private FileCustomJvmArgumentReader reader;

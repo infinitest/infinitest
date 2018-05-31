@@ -36,6 +36,7 @@ import java.io.*;
 import java.util.*;
 
 import org.infinitest.changedetect.*;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.parser.*;
 import org.infinitest.testrunner.*;
 import org.infinitest.testrunner.queue.*;

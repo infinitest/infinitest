@@ -27,7 +27,7 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 import static org.junit.Assert.*;
 
 import org.junit.*;

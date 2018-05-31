@@ -38,6 +38,7 @@ import java.util.*;
 import javassist.*;
 
 import org.assertj.core.api.Assertions;
+import org.infinitest.environment.FakeEnvironments;
 import org.infinitest.util.*;
 import org.junit.*;
 import org.junit.Assert;

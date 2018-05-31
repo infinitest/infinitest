@@ -30,6 +30,7 @@ package org.infinitest.testrunner;
 import java.util.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
 
 public interface TestRunner {
 	void setTestPriority(Comparator<String> testPriority);

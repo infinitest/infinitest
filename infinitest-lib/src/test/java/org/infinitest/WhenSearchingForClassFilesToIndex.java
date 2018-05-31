@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.io.*;
 import java.util.*;
 
+import org.infinitest.environment.RuntimeEnvironment;
 import org.junit.*;
 
 public class WhenSearchingForClassFilesToIndex {

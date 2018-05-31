@@ -25,14 +25,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest;
+package org.infinitest.environment;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.io.File.pathSeparator;
 import static java.io.File.separator;
 import static java.util.logging.Level.CONFIG;
-import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import static org.infinitest.util.InfinitestUtils.findClasspathEntryFor;
 import static org.infinitest.util.InfinitestUtils.log;
@@ -57,6 +56,34 @@ import com.google.common.base.Charsets;
  * @author bjrady
  */
 public class RuntimeEnvironment implements ClasspathProvider {
+	
+	public static final class MissingInfinitestRunnerException extends RuntimeException {
+
+		private static final long serialVersionUID = 1L;
+
+		public MissingInfinitestRunnerException(String classpath) {
+			super("Could not find infinitest runner in classpath:\n" + classpath);
+		}
+	}
+	
+	public static final class MissingInfinitestClassLoaderException extends RuntimeException {
+
+		private static final long serialVersionUID = 1L;
+
+		public MissingInfinitestClassLoaderException(String classpath) {
+			super("Could not find infinitest class loader in classpath:\n" + classpath);
+		}
+	}
+
+
+	public static class JavaHomeException extends RuntimeException {
+		private static final long serialVersionUID = -1L;
+
+		JavaHomeException(File javaHome) {
+			super("Could not find java executable at " + javaHome.getAbsolutePath());
+		}
+	}
+
 	private final int heapSize = 256;
 	private final File javaHome;
 	private final File workingDirectory;
@@ -131,33 +158,31 @@ public class RuntimeEnvironment implements ClasspathProvider {
 
 	@Override
 	public String getRunnerFullClassPath() {
-		String completeClasspath;
 		String infinitestJarPath = findInfinitestRunnerJar();
 		log(CONFIG, "Found infinitest jar classpath entry at " + infinitestJarPath);
-		if (infinitestJarPath != null) {
-			completeClasspath = projectUnderTestClassPath + File.pathSeparator + infinitestJarPath;
-		} else {
-			completeClasspath = projectUnderTestClassPath;
-			log(SEVERE, "Could not find a classpath entry for infinitest-runner in " + runnerProcessClassPath);
-		}
-		validateClasspath(completeClasspath);
-		return completeClasspath;
+		String runnerFullClassPath = projectUnderTestClassPath + File.pathSeparator + infinitestJarPath;
+		validateClasspath(runnerFullClassPath);
+		return runnerFullClassPath;
 	}
 
-	public String getRunnerBootstrapClassPath() {
+	@VisibleForTesting
+	String getRunnerBootstrapClassPath() {
 		String entry = findClasspathEntryFor(runnerBootstrapClassPath, ClassPathFileClassLoader.class);
 		if (entry == null) {
-			String message = "Could not find classpath entry for infinitest-classloader in " + runnerProcessClassPath;
-			log(SEVERE, message);
-			throw new RuntimeException(message);
+			throw new MissingInfinitestClassLoaderException(runnerBootstrapClassPath);
 		}
 		return entry;
 	}
 
 	@VisibleForTesting
-	public String findInfinitestRunnerJar() {
-		return findClasspathEntryFor(runnerProcessClassPath, TestRunnerProcess.class);
+	String findInfinitestRunnerJar() {
+		String runnerClasspathEntry = findClasspathEntryFor(runnerProcessClassPath, TestRunnerProcess.class);
+		if (runnerClasspathEntry == null) {
+			throw new MissingInfinitestRunnerException(runnerProcessClassPath);
+		}
+		return runnerClasspathEntry;
 	}
+
 
 	private void validateClasspath(String completeClasspath) {
 		for (String entry : getClasspathEntries(completeClasspath)) {

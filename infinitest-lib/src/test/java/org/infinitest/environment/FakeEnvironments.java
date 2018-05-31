@@ -25,7 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.util;
+package org.infinitest.environment;
 
 import static java.util.Arrays.*;
 
@@ -33,6 +33,8 @@ import java.io.*;
 import java.util.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
+import org.infinitest.environment.RuntimeEnvironment;
 
 public class FakeEnvironments {
 	public static File fakeClassDirectory() {

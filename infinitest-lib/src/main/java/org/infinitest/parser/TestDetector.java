@@ -31,6 +31,7 @@ import java.io.*;
 import java.util.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 
 public interface TestDetector {
 	void clear();

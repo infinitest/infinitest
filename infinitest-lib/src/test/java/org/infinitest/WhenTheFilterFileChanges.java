@@ -27,7 +27,7 @@
  */
 package org.infinitest;
 
-import static org.infinitest.util.FakeEnvironments.emptyClasspath;
+import static org.infinitest.environment.FakeEnvironments.emptyClasspath;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;

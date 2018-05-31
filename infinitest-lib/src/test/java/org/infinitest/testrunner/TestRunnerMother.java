@@ -27,7 +27,7 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 
 import org.infinitest.testrunner.process.*;
 

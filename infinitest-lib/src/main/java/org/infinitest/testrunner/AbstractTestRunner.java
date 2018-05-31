@@ -32,8 +32,9 @@ import static com.google.common.collect.Lists.*;
 import java.util.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
 
-abstract class AbstractTestRunner implements TestRunner {
+public abstract class AbstractTestRunner implements TestRunner {
 	private final RunnerEventSupport eventSupport;
 	private RuntimeEnvironment environment;
 	private ConcurrencyController concurrencyController;

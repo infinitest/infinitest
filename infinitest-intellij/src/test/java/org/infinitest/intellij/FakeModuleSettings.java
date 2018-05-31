@@ -27,14 +27,15 @@
  */
 package org.infinitest.intellij;
 
-import static java.lang.System.*;
-import static java.util.Collections.*;
+import static java.lang.System.getProperty;
+import static java.util.Collections.emptyList;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
+import org.apache.log4j.Logger;
+import org.infinitest.environment.RuntimeEnvironment;
 
 public class FakeModuleSettings implements ModuleSettings {
 	private final String name;

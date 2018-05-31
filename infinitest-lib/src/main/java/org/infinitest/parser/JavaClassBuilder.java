@@ -32,6 +32,7 @@ import java.io.*;
 import javassist.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 
 /**
  * @author Ben Rady

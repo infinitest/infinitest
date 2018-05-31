@@ -27,19 +27,20 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
+import static org.infinitest.util.InfinitestUtils.setify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import javassist.*;
-
-import org.infinitest.filter.*;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.util.InfinitestTestUtils;
+import org.junit.Before;
 
 public abstract class DependencyGraphTestBase {
   private final FilterStub filter = new FilterStub();

@@ -27,24 +27,21 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.io.Files.*;
-import static java.util.Arrays.*;
-import static java.util.logging.Level.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestRunnerMother.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import static org.infinitest.testrunner.TestRunnerMother.createRunner;
+import static org.infinitest.environment.FakeEnvironments.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
 
-import org.infinitest.*;
-import org.infinitest.util.*;
-import org.junit.*;
-import org.junit.rules.*;
+import org.infinitest.EventSupport;
+import org.infinitest.environment.FakeEnvironments;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.util.InfinitestTestUtils;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest {
   private EventSupport eventAssert;
@@ -72,56 +69,7 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
     return runner;
   }
 
-  @Test
-  public void shouldThrowExceptionOnInvalidJavaHome() {
-    RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHome, fakeWorkingDirectory(), "runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(), FakeEnvironments.systemClasspath());
-    try {
-      environment.createProcessArguments(new File("file.classpath"));
-      fail("Should have thrown exception");
-    } catch (JavaHomeException e) {
-      assertThat(convertFromWindowsClassPath(e.getMessage())).contains(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java");
-    }
-  }
-
-  @Test
-  public void shouldAllowAlternateJavaHomesOnUnixAndWindows() throws Exception {
-    RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHome, fakeWorkingDirectory(), "runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(), FakeEnvironments.systemClasspath());
-
-    touch(new File(fakeJavaHome, "bin/java.exe"));
-    List<String> arguments = environment.createProcessArguments(new File("file.classpath"));
-    assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java.exe", convertFromWindowsClassPath(get(arguments, 0)));
-
-    touch(new File(fakeJavaHome, "bin/java"));
-    arguments = environment.createProcessArguments(new File("file.classpath"));
-    assertEquals(convertFromWindowsClassPath(fakeJavaHome.getAbsolutePath()) + "/bin/java", convertFromWindowsClassPath(get(arguments, 0)));
-  }
-
-  @Test
-  public void shouldAddInfinitestJarOrClassDirToClasspath() {
-    RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
-    String classpath = environment.getRunnerFullClassPath();
-    assertTrue(classpath, classpath.contains("infinitest"));
-    assertTrue(classpath, classpath.endsWith(environment.findInfinitestRunnerJar()));
-  }
-
-  @Test
-  public void shouldLogErrorIfInfinitestJarCannotBeFound() {
-    LoggingAdapter listener = new LoggingAdapter();
-    addLoggingListener(listener);
-
-    RuntimeEnvironment environment = emptyRuntimeEnvironment();
-    environment.getRunnerFullClassPath();
-    assertTrue(listener.hasMessage("Could not find a classpath entry for infinitest-runner in infinitest-runner.classpath", SEVERE));
-  }
-
-  @Test
-  public void canSetAdditionalVMArguments() {
-    RuntimeEnvironment environment = fakeEnvironment();
-    List<String> additionalArgs = asList("-Xdebug", "-Xnoagent", "-Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=y");
-    environment.addVMArgs(additionalArgs);
-    List<String> actualArgs = environment.createProcessArguments(new File("file.classpath"));
-    assertTrue(actualArgs.toString(), actualArgs.containsAll(additionalArgs));
-  }
+ 
 
   @Test
   public void canUseACustomWorkingDirectory() throws Exception {

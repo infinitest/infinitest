@@ -29,7 +29,7 @@ package org.infinitest.parser;
 
 import static com.google.common.collect.Lists.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 
 import java.io.*;
 import java.util.*;

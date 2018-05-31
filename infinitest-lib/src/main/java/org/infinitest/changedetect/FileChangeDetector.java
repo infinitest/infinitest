@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.logging.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.util.*;
 
 public class FileChangeDetector implements ChangeDetector {

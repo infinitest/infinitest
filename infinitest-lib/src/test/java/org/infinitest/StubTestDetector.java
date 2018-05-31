@@ -32,6 +32,7 @@ import static java.util.Collections.*;
 import java.io.*;
 import java.util.*;
 
+import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.parser.*;
 
 class StubTestDetector implements TestDetector {

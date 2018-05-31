@@ -27,11 +27,14 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.net.*;
-
-import org.infinitest.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.infinitest.ConcurrencyController;
+import org.infinitest.EventQueue;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.MultiCoreConcurrencyController;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 class CoreFactory implements CoreSettings {

@@ -32,6 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.infinitest.changedetect.FileChangeDetector;
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.filter.RegexFileFilter;
 import org.infinitest.filter.TestFilter;
 import org.infinitest.parser.ClassFileTestDetector;
