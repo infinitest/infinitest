@@ -128,6 +128,11 @@ public class TestEventTest extends EqualityTestSupport {
 	public void shouldSupportExceptionsWithoutStackTrace() {
 		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
 	}
+	
+	@Test
+	public void shouldSupportExceptionsWithNullStackTrace() {
+		methodFailed("", "", new ExceptionWithNullStackTrace()).getPointOfFailure();
+	}
 
 	private void verifyPointOfFailureMessage(int lineNumber) {
 		String actual = event.getPointOfFailure().toString();
@@ -162,6 +167,14 @@ public class TestEventTest extends EqualityTestSupport {
 		@Override
 		public synchronized Throwable fillInStackTrace() {
 			return this;
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private static class ExceptionWithNullStackTrace extends RuntimeException {
+		@Override
+		public StackTraceElement[] getStackTrace() {
+			return null;
 		}
 	}
 }

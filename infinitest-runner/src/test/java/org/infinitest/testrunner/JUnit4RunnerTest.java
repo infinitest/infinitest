@@ -56,6 +56,7 @@ import org.infinitest.testrunner.exampletests.junit4.Junit4FailingTestsWithCateg
 import org.infinitest.testrunner.exampletests.junit4.Junit4MultiTest;
 import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
 import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
+import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionWithNullStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +89,16 @@ public class JUnit4RunnerTest {
 	public void shouldFireEventsToReportFailingResults() {
 		TestResults results = runner.runTest(JUnit4FailingTest.class.getName());
 		TestEvent expectedEvent = methodFailed("", JUnit4FailingTest.class.getName(), "shouldFail", new AssertionError());
+		assertEventsEquals(expectedEvent, getOnlyElement(results));
+	}
+	
+	
+
+	@Test
+	public void shouldReportFailureEvenIfTestThrowsNullStackTrace() {
+		// Test https://github.com/infinitest/infinitest/issues/134
+		TestResults results = runner.runTest(Junit4TestThatThrowsExceptionWithNullStack.class.getName());
+		TestEvent expectedEvent = methodFailed("", Junit4TestThatThrowsExceptionWithNullStack.class.getName(), "shouldFail", Junit4TestThatThrowsExceptionWithNullStack.THROWABLE_WITH_NULL_STACK);
 		assertEventsEquals(expectedEvent, getOnlyElement(results));
 	}
 
