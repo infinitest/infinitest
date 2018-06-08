@@ -88,15 +88,54 @@ public class FileCustomJvmArgumentReaderTest {
 
 		assertEquals(newArrayList(singleArgument), arguments);
 	}
-
+	
 	@Test
-	public void shouldReturnEachArgumentAsSeparateEntryInList() throws IOException {
+	public void withoutSplitOnConfigShouldSplitArgumentsOnSpaces() throws IOException {
 		writeArguments("-DsomeArg=foo -DanotherArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
 
 		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
 	}
+	
+	@Test
+	public void withoutSplitOnConfigShouldNotSplitArgumentsOnSpacesBetweenQuotes() throws IOException {
+		writeArguments("-DsomeArg=\"hello world\" -DanotherArg=foo");
+
+		List<String> arguments = reader.readCustomArguments();
+
+		assertEquals(newArrayList("-DsomeArg=\"hello world\"", "-DanotherArg=foo"), arguments);
+	}
+	
+	@Test
+	public void withoutSplitOnConfigShouldSplitArgumentsOnLines() throws IOException {
+		writeArguments("-DsomeArg=foo\n-DanotherArg=foo");
+
+		List<String> arguments = reader.readCustomArguments();
+
+		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+	}
+
+	
+	@Test
+	public void withSplitOnLinesOnlyConfigShouldSplitArgumentsOnLines() throws IOException {
+		writeArguments("# SplitOn=LINES_ONLY\n-DsomeArg=foo\n-DanotherArg=foo");
+
+		List<String> arguments = reader.readCustomArguments();
+
+		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+	}
+	
+	@Test
+	public void withSplitOnLinesOnlyConfigShouldNotSplitArgumentsOnSpace() throws IOException {
+		writeArguments("# SplitOn=LINES_ONLY\n-DsomeArg=foo not another Arg");
+
+		List<String> arguments = reader.readCustomArguments();
+
+		assertEquals(newArrayList("-DsomeArg=foo not another Arg"), arguments);
+	}
+
+
 
 	private String writeArguments(String arguments) throws IOException, FileNotFoundException {
 		String singleArgument = arguments;

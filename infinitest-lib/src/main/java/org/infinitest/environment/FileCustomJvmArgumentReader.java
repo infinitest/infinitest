@@ -27,16 +27,25 @@
  */
 package org.infinitest.environment;
 
-import static com.google.common.collect.Lists.*;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.google.common.base.*;
-import com.google.common.io.*;
+import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
+import com.google.common.io.Files;
 
 public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader {
+
+	private static final String SPLIT_ON_LINE_PREFIX = "#SplitOn=";
+
+	private enum SplitOn {
+		LINES_ONLY, SPACES
+	}
+
 	public static final String FILE_NAME = "infinitest.args";
 
 	private final File parentDirectory;
@@ -54,20 +63,52 @@ public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader {
 
 		try {
 			List<String> lines = Files.readLines(file, Charsets.UTF_8);
-			return buildArgumentList(lines);
+			return parseLines(lines);
 		} catch (IOException e) {
 			return emptyList();
 		}
 	}
 
-	private List<String> buildArgumentList(List<String> lines) {
-		List<String> arguments = newArrayList();
-		for (String line : lines) {
-			for (String arg : line.split(" ")) {
-				arguments.add(arg);
-			}
+	private List<String> parseLines(List<String> lines) {
+		if (lines.isEmpty()) {
+			return emptyList();
 		}
+		SplitOn splitOn;
+		List<String> argumentLines;
+		if (isSplitOnConfigurationLine(lines.get(0))) {
+			splitOn = readSplitOn(lines.get(0));
+			argumentLines = lines.subList(1, lines.size());
+		} else {
+			// No split one configuration use SPACES by default
+			splitOn = SplitOn.SPACES;
+			argumentLines = lines;
+		}
+		return buildArgumentList(argumentLines, splitOn);
+	}
 
-		return arguments;
+	private boolean isSplitOnConfigurationLine(String line) {
+		return removeWhitespaces(line).startsWith(SPLIT_ON_LINE_PREFIX);
+	}
+
+	private String removeWhitespaces(String line) {
+		return line.replaceAll("\\s", "");
+	}
+
+	private SplitOn readSplitOn(String line) {
+		String splitOnTextValue = removeWhitespaces(line).substring(SPLIT_ON_LINE_PREFIX.length());
+		return SplitOn.valueOf(splitOnTextValue);
+	}
+
+	private List<String> buildArgumentList(List<String> lines, SplitOn splitOn) {
+		if (splitOn == SplitOn.LINES_ONLY) {
+				return lines;
+		} else {
+			return lines.stream().flatMap(line -> parseArgumentLineOnSpace(line).stream()).collect(Collectors.toList());			
+		}
+	}
+
+	private List<String> parseArgumentLineOnSpace(String line) {
+		// Split arguments on space unless
+		return Splitter.onPattern("\\s+(?=([^\"]*\"[^\"]*\")*[^\"]*$)").splitToList(line);
 	}
 }
