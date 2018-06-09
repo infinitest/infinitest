@@ -28,3 +28,5 @@ coverage:
         paths: "infinitest-intellij/*"
     patch: off
     changes: off
+comment:
+  layout: "diff"
