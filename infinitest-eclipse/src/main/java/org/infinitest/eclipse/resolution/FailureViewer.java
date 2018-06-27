@@ -62,13 +62,29 @@ public class FailureViewer {
 	public void show(final Shell dialog) {
 		createMessage(dialog);
 		createList(dialog);
-		dialog.pack();
-		dialog.layout();
+
+		sizeDialog(dialog);
+
 		moveToParentDialogCenter(dialog);
 		dialog.open();
 
 		dialog.forceActive();
 		dialog.addShellListener(new DialogDeactivationDisposer(dialog));
+	}
+
+	private void sizeDialog(final Shell dialog) {
+		dialog.pack();
+		Monitor monitor = dialog.getShell().getMonitor();
+		if (monitor != null) {
+			if (dialog.getSize().x > monitor.getClientArea().width) {
+				dialog.setSize(monitor.getClientArea().width, dialog.getSize().y);
+			}
+			if (dialog.getSize().y > monitor.getClientArea().height) {
+				dialog.setSize(dialog.getSize().x, monitor.getClientArea().height);
+			}
+		}
+		dialog.layout();
+
 	}
 
 	private void moveToParentDialogCenter(Shell dialog) {
@@ -96,8 +112,9 @@ public class FailureViewer {
 		failureMessageGroup.setLayoutData(gridData);
 		failureMessageGroup.setLayout(new FillLayout());
 		failureMessageGroup.setText("Failure Message:");
-		Label label = new Label(failureMessageGroup, WRAP);
+		Text label = new Text(failureMessageGroup, WRAP);
 		label.setText(message);
+		label.setEditable(false);
 	}
 
 	private void createList(final Shell dialog) {
