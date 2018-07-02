@@ -130,6 +130,17 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
+	public void shouldChangeToYellowWhenRunningTests() {
+		WorkspaceStatus runningTests = runningTests(10, "org.fakeco.MyCurrentTest");
+		presenter.statusChanged(runningTests);
+
+		verify(statusBar).setBackgroundColor(COLOR_YELLOW);
+		verify(statusBar).setTextColor(COLOR_BLACK);
+		verify(statusBar).setText(runningTests.getMessage());
+		verify(statusBar).setToolTip(runningTests.getToolTip());
+	}
+
+	@Test
 	public void shouldReportWhenAllTestsAreComplete() {
 		presenter.testCaseComplete(testFinished("Test1"));
 		presenter.testCaseComplete(testFinished("Test2"));
