@@ -38,6 +38,7 @@ import org.junit.experimental.categories.Categories.CategoryFilter;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Runner;
+import org.junit.runner.manipulation.Filter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -76,9 +77,20 @@ public class Junit4And3Runner {
 		Request request = Request.classWithoutSuiteMethod(classUnderTest);
 
 		Class<?>[] junitCategoriesToExclude = readExcludedGroupsFromConfiguration();
+		
+		if (junitCategoriesToExclude.length == 0) {
+			return request;
+		}
 
-		CategoryFilter excludeCategoriesFilter = CategoryFilter.exclude(junitCategoriesToExclude);
-
+		// If this was a JUnit 3 test it should have short circuited at the start of
+		// this method so this call won't generate a NoClassDefFoundError 
+		final Filter excludeCategoriesFilter;
+		try {
+			excludeCategoriesFilter = CategoryFilter.exclude(junitCategoriesToExclude);
+		} catch (NoSuchMethodError e) {
+			throw new CategoriesUnsupportedException(e);
+		}
+	
 		return request.filterWith(excludeCategoriesFilter);
 	}
 
@@ -136,5 +148,14 @@ public class Junit4And3Runner {
 		}
 	}
 
-
+	public class CategoriesUnsupportedException extends RuntimeException {
+		private static final long serialVersionUID = -1138798179402502449L;
+		
+		public CategoriesUnsupportedException(NoSuchMethodError e) {
+			super("Category export configuration has been supplied but the "+
+					"project uses JUnit < 4.12. JUnit 4.12 is required to use "+
+					"the category filter.", e);
+			
+		}
+	}
 }
