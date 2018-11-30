@@ -117,7 +117,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.5.1</version>
+					<version>3.8.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-eclipse-plugin</artifactId>
@@ -155,7 +155,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.7.7.201606060606</version>
+					<version>0.8.2</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
