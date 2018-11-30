@@ -81,7 +81,7 @@ class PomNamespaceContext implements NamespaceContext {
 	}
 
 	@Override
-	public Iterator<?> getPrefixes(String namespace) {
+	public Iterator<String> getPrefixes(String namespace) {
 		return null;
 	}
 }
