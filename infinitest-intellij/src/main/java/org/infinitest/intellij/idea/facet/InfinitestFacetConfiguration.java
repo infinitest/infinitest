@@ -36,7 +36,7 @@ import org.jdom.*;
 import com.intellij.facet.*;
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.wm.*;
 

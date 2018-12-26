@@ -36,7 +36,7 @@ import java.util.*;
 
 import org.junit.*;
 
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.*;
 

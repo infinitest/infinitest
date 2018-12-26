@@ -33,6 +33,7 @@ import org.jetbrains.annotations.*;
 
 import com.intellij.facet.*;
 import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.*;
 
 public class InfinitestFacetType extends FacetType<InfinitestFacet, InfinitestFacetConfiguration> {
