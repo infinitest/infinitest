@@ -18,7 +18,7 @@
     <repository>
       <id>infinitest-intellij-openapi</id>
       <name>Infinitest's Intellij Open API repository</name>
-      <url>http://dl.bintray.com/infinitest/intellij/</url>
+      <url>https://dl.bintray.com/infinitest/intellij/</url>
     </repository>
   </repositories>
 
