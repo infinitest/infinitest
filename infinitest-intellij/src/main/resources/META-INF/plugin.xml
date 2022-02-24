@@ -13,14 +13,12 @@
     </application-components>
     <project-components>
         <component>
-            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory
-            </implementation-class>
+            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory</implementation-class>
         </component>
     </project-components>
     <module-components>
         <component>
-            <implementation-class>org.infinitest.intellij.idea.window.InfinitestToolWindow
-            </implementation-class>
+            <implementation-class>org.infinitest.intellij.idea.window.InfinitestToolWindow</implementation-class>
         </component>
     </module-components>
 </idea-plugin>
