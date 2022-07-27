@@ -32,6 +32,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.codeHighlighting.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 
 public class InfinitestHighlightingPassFactory implements TextEditorHighlightingPassFactory {
