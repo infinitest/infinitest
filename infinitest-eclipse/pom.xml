@@ -288,12 +288,12 @@
 			<artifactId>infinitest-lib</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>4.3.9.RELEASE</version>
-    </dependency>
-    <dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.22</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core.net</artifactId>
 			<version>1.0.0.I20070531</version>
