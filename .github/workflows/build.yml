@@ -1,0 +1,30 @@
+name: Build
+on:
+  push:
+  pull_request:
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '11', '17', '18' ]
+    name: Unit tests Java ${{ matrix.Java }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.Java }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.Java }}
+          cache: 'maven'
+      - name: apt-get update
+        run: sudo apt-get update
+      - name: Install SWT dependencies
+      # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
+        run: sudo apt-get install -y gtk2.0 libxtst6
+      - name: Build and Test
+      # We need a virtual X11 for the Eclipse unit tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: |
+            mvn -B test
