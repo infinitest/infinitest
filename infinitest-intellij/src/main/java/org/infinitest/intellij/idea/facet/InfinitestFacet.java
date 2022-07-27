@@ -31,7 +31,7 @@ import org.infinitest.intellij.idea.window.*;
 import org.jetbrains.annotations.*;
 
 import com.intellij.facet.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 
 public class InfinitestFacet extends Facet<InfinitestFacetConfiguration> {
 	public static final FacetTypeId<InfinitestFacet> ID = new FacetTypeId<InfinitestFacet>();
