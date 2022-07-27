@@ -103,7 +103,26 @@ public class TestEventTest extends EqualityTestSupport {
 		} catch (ComparisonFailure e) {
 			error = e;
 			event = eventWithError(e);
-			verifyPointOfFailureMessage(e.getStackTrace()[3].getLineNumber());
+			
+			// AssertJ reflectively calls the constructor of org.junit.ComparisonFailure
+			// Between Java 11 and 17 a new stacktrace element was added:
+			// at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+			// In java 18 DirectConstructorHandleAccessor was introduced
+			// Depending on the Java version we're looking for the element with index 3, 4 or 2
+			int stackTraceElementIndex = 3;
+			for (int i = 0; i < e.getStackTrace().length; i++) {
+				StackTraceElement element = e.getStackTrace()[i];
+				if (element.getClassName().equals("jdk.internal.reflect.DirectConstructorHandleAccessor")) {
+					stackTraceElementIndex = 2;
+					break;
+				} else if (element.getMethodName().equals("newInstanceWithCaller")) {
+					stackTraceElementIndex = 4;
+					break;
+				}
+			}
+			
+			
+			verifyPointOfFailureMessage(e.getStackTrace()[stackTraceElementIndex].getLineNumber());
 		}
 	}
 
