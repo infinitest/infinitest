@@ -66,7 +66,7 @@ class ProjectFacade implements EclipseProject {
 				jvmInstall = findFirstJava5OrGreaterJvm(jvmInstall);
 			}
 		} catch (UnknownJvmVersionException e) {
-			log(WARNING, "Error determining JVM version. Using default version.");
+			log(WARNING, "Error determining JVM version (" + e.getVersion() + "). Using default version.");
 		}
 
 		if ((jvmInstall != null) && jvmInstall.getInstallLocation().exists()) {
@@ -87,7 +87,7 @@ class ProjectFacade implements EclipseProject {
 		return null;
 	}
 
-	private int parseMajorVersion(IVMInstall jvmInstall) throws UnknownJvmVersionException {
+	protected int parseMajorVersion(IVMInstall jvmInstall) throws UnknownJvmVersionException {
 		if (!(jvmInstall instanceof IVMInstall2)) {
 			throw new UnknownJvmVersionException();
 		}
@@ -95,21 +95,34 @@ class ProjectFacade implements EclipseProject {
 		String version = ((IVMInstall2) jvmInstall).getJavaVersion();
 
 		if ((version == null) || (version.length() < 3)) {
-			throw new UnknownJvmVersionException();
+			throw new UnknownJvmVersionException(version);
 		}
 
 		try {
-			if (version.startsWith("1")) {
+			if (version.startsWith("1.")) {
 				return Integer.parseInt(version.substring(2, 3));
 			}
-			return Integer.parseInt(version.substring(0, 1));
+			return Integer.parseInt(version.substring(0, version.indexOf('.')));
 		} catch (NumberFormatException e) {
-			throw new UnknownJvmVersionException();
+			throw new UnknownJvmVersionException(version);
 		}
 	}
 
 	private static class UnknownJvmVersionException extends Exception {
 		private static final long serialVersionUID = 9053017151840025522L;
+		
+		private String version;
+
+		public UnknownJvmVersionException() {
+		}
+		
+		public UnknownJvmVersionException(String version) {
+			this.version = version;
+		}
+		
+		public String getVersion() {
+			return version;
+		}
 	}
 
 	public boolean isOpen() {
