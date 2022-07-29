@@ -11,14 +11,25 @@
   <artifactId>infinitest-intellij</artifactId>
 
   <properties>
-    <intellij.version>12.1.4</intellij.version>
+    <intellij.version>20.1.0</intellij.version>
+    <intellij.api.version>221.5787.30</intellij.api.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>infinitest-intellij-openapi</id>
-      <name>Infinitest's Intellij Open API repository</name>
-      <url>http://dl.bintray.com/infinitest/intellij/</url>
+      <id>intellij</id>
+      <name>IntelliJ releases</name>
+      <url>https://www.jetbrains.com/intellij-repository/releases/</url>
+    </repository>
+    <repository>
+      <id>intellij-deps</id>
+      <name>IntelliJ dependencies</name>
+      <url>https://cache-redirector.jetbrains.com/intellij-dependencies/</url>
+    </repository>
+    <repository>
+      <id>central</id>
+      <name>Maven central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
     </repository>
   </repositories>
 
@@ -87,40 +98,55 @@
       <version>${guava.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-annotations</artifactId>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
       <version>${intellij.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-extensions</artifactId>
-      <version>${intellij.version}</version>
+      <groupId>com.jetbrains.intellij.platform</groupId>
+      <artifactId>extensions</artifactId>
+      <version>${intellij.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-idea</artifactId>
-      <version>${intellij.version}</version>
+      <groupId>com.jetbrains.intellij.platform</groupId>
+      <artifactId>core</artifactId>
+      <version>${intellij.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-openapi</artifactId>
-      <version>${intellij.version}</version>
+      <groupId>com.jetbrains.intellij.platform</groupId>
+      <artifactId>lang-core</artifactId>
+      <version>${intellij.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-util</artifactId>
-      <version>${intellij.version}</version>
+      <groupId>com.jetbrains.intellij.platform</groupId>
+      <artifactId>util</artifactId>
+      <version>${intellij.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.infinitest.intellij</groupId>
-      <artifactId>intellij-trove4j</artifactId>
-      <version>${intellij.version}</version>
+      <groupId>com.jetbrains.intellij.java</groupId>
+      <artifactId>java-compiler</artifactId>
+      <version>${intellij.api.version}</version>
       <scope>provided</scope>
+      <!-- These transitive dependencies dot not seem to exist on the repositories -->
+      <exclusions>
+        <exclusion>
+          <groupId>com.jetbrains.infra</groupId>
+          <artifactId>download-pgp-verifier</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.jetbrains.intellij.spellchecker</groupId>
+          <artifactId>spellchecker</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.ktor</groupId>
+        <artifactId>ktor-network-jvm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>jdom</groupId>

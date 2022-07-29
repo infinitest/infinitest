@@ -32,13 +32,13 @@ import org.jetbrains.annotations.*;
 import com.intellij.codeHighlighting.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 
 public class InfinitestHighlightingPassFactory implements TextEditorHighlightingPassFactory {
-	private final TextEditorHighlightingPassRegistrar passRegistrar;
 
 	public InfinitestHighlightingPassFactory(TextEditorHighlightingPassRegistrar passRegistrar) {
-		this.passRegistrar = passRegistrar;
+		passRegistrar.registerTextEditorHighlightingPass(this, TextEditorHighlightingPassRegistrar.Anchor.LAST, Pass.UPDATE_ALL, true, true);
 	}
 
 	@Override
@@ -49,28 +49,5 @@ public class InfinitestHighlightingPassFactory implements TextEditorHighlighting
 		}
 
 		return new InfinitestLineMarkersPass(module.getProject(), editor.getDocument(), editor.getMarkupModel());
-	}
-
-	@Override
-	public void projectOpened() {
-	}
-
-	@Override
-	public void projectClosed() {
-	}
-
-	@Override
-	@NotNull
-	public String getComponentName() {
-		return "InfinitestHighlighPassFactory";
-	}
-
-	@Override
-	public void initComponent() {
-		passRegistrar.registerTextEditorHighlightingPass(this, TextEditorHighlightingPassRegistrar.Anchor.LAST, Pass.UPDATE_ALL, true, true);
-	}
-
-	@Override
-	public void disposeComponent() {
 	}
 }

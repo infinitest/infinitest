@@ -27,23 +27,29 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.*;
-import static org.jgrapht.Graphs.*;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.jgrapht.Graphs.predecessorListOf;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.infinitest.*;
 import org.infinitest.environment.ClasspathProvider;
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
-import com.google.common.annotations.*;
-import com.google.common.collect.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
 
 public class ClassFileIndex {
 	private final JavaClassBuilder builder;
 	private DirectedGraph<JavaClass, DefaultEdge> graph;
+	private Map<String, JavaClass> classesByName;
 
 	public ClassFileIndex(ClasspathProvider classpath) {
 		this(new JavaClassBuilder(classpath));
@@ -52,7 +58,8 @@ public class ClassFileIndex {
 	@VisibleForTesting
 	ClassFileIndex(JavaClassBuilder classBuilder) {
 		builder = classBuilder;
-		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
+		graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+		classesByName = new HashMap<>();
 	}
 
 	public Set<JavaClass> findClasses(Collection<File> changedFiles) {
@@ -90,12 +97,7 @@ public class ClassFileIndex {
 	}
 
 	private JavaClass findClass(String classname) {
-		for (JavaClass jClass : graph.vertexSet()) {
-			if (jClass.getName().equals(classname)) {
-				return jClass;
-			}
-		}
-		return null;
+		return classesByName.get(classname);
 	}
 
 	private void addToIndex(JavaClass newClass) {
@@ -107,6 +109,8 @@ public class ClassFileIndex {
 		if (!graph.addVertex(newClass)) {
 			replaceVertex(newClass);
 		}
+		
+		classesByName.put(newClass.getName(), newClass);
 	}
 
 	private List<JavaClass> getParents(JavaClass childClass) {
@@ -155,18 +159,14 @@ public class ClassFileIndex {
 
 	public void clear() {
 		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
+		classesByName.clear();
 	}
 
 	public boolean isIndexed(Class<Object> clazz) {
-		return getIndexedClasses().contains(clazz.getName());
+		return classesByName.containsKey(clazz.getName());
 	}
 
 	public Set<String> getIndexedClasses() {
-		Set<String> classes = newHashSet();
-		Set<JavaClass> vertexSet = graph.vertexSet();
-		for (JavaClass each : vertexSet) {
-			classes.add(each.getName());
-		}
-		return classes;
+		return classesByName.keySet();
 	}
 }
