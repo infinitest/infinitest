@@ -27,9 +27,9 @@
  */
 package org.infinitest.intellij;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
 import org.infinitest.environment.RuntimeEnvironment;
+
+import com.intellij.openapi.diagnostic.Logger;
 
 public interface ModuleSettings {
 	void writeToLogger(Logger log);
