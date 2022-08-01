@@ -54,6 +54,7 @@ public class WhenTheFilterFileChanges {
 	@Test
 	public void shouldUpdateTheFilterList() throws IOException {
 		File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
+		file.deleteOnExit();
 
 		FileBasedInfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromFile(file);
 		TestFilter list = new RegexFileFilter(configSource);
