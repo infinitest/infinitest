@@ -124,4 +124,22 @@ public class JavaAssistClassTest {
 	private String[] dependenciesOf(Class<?> dependingClass) {
 		return classPoolUtil.dependenciesOf(dependingClass);
 	}
+	
+	@Test
+	public void shouldSupportParameterizedTest() throws NotFoundException {
+		ClassPool classPool = classPoolUtil.getClassPool();
+		CtClass ctClass = classPool.get(JUnit5ParameterizedTest.class.getName());
+		JavaAssistClass javaClass = new JavaAssistClass(ctClass);
+		
+		assertTrue(javaClass.isATest());
+	}
+	
+	@Test
+	public void shouldSupportCompositeTestAnnotation() throws NotFoundException {
+		ClassPool classPool = classPoolUtil.getClassPool();
+		CtClass ctClass = classPool.get(JUnit5CompositeAnnotationTest.class.getName());
+		JavaAssistClass javaClass = new JavaAssistClass(ctClass);
+		
+		assertTrue(javaClass.isATest());
+	}
 }

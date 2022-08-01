@@ -297,14 +297,14 @@ public class JavaAssistClass extends AbstractJavaClass {
                 .flatMap(Arrays::stream)
                 .anyMatch(annotation -> isJUnit5TestAnnotation(annotation, classPool));
     }
-    
-    /**
-     * @return <code>true</code> if the annotation is JUnit's <code>Test</code> or if the annotation type itself is annotated
-     * with <code>Test</code> or <code>TestTemplate</code>. Annotations such as <code>ParameterizedTest<code> are annotated with
-     * <code>TestTemplate</code> and should be detected as tests
-     */
-    private boolean isJUnit5TestAnnotation(Annotation annotation, ClassPool classPool) {
-    	String annotationTypeName = annotation.getTypeName();
+	
+	/**
+	 * @return <code>true</code> if the annotation is JUnit's <code>Test</code> or if the annotation type itself is annotated
+	 * with <code>Test</code> or <code>TestTemplate</code>. Annotations such as <code>ParameterizedTest<code> are annotated with
+	 * <code>TestTemplate</code> and should be detected as tests
+	 */
+	private boolean isJUnit5TestAnnotation(Annotation annotation, ClassPool classPool) {
+		String annotationTypeName = annotation.getTypeName();
 		boolean isJUnitTestAnnotation = org.junit.jupiter.api.Test.class.getName().equals(annotationTypeName);
 		
 		if (isJUnitTestAnnotation) {
