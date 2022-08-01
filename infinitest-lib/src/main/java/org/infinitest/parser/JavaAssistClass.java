@@ -34,13 +34,14 @@ import static org.infinitest.parser.DescriptorParser.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
 
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
-import org.infinitest.testrunner.DefaultRunner;
+import org.infinitest.util.InfinitestUtils;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -278,22 +279,48 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
 		for (CtMethod ctMethod : classReference.getMethods()) {
-			if (isJUnit5TestMethod(ctMethod) || isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
+			if (isJUnit5TestMethod(ctMethod, classReference.getClassPool())
+					|| isJUnit4TestMethod(ctMethod) 
+					|| isJUnit3TestMethod(ctMethod)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-    private boolean isJUnit5TestMethod(CtMethod ctMethod) {
+    private boolean isJUnit5TestMethod(CtMethod ctMethod, ClassPool classPool) {
         final List<?> attributes = ctMethod.getMethodInfo2().getAttributes();
         return attributes.stream()
                 .filter(clazz -> clazz instanceof AnnotationsAttribute)
                 .map(attribute -> (AnnotationsAttribute) attribute)
                 .map(AnnotationsAttribute::getAnnotations)
                 .flatMap(Arrays::stream)
-                .map(Annotation::getTypeName)
-                .anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+                .anyMatch(annotation -> isJUnit5TestAnnotation(annotation, classPool));
+    }
+    
+    /**
+     * @return <code>true</code> if the annotation is JUnit's <code>Test</code> or if the annotation type itself is annotated
+     * with <code>Test</code> or <code>TestTemplate</code>. Annotations such as <code>ParameterizedTest<code> are annotated with
+     * <code>TestTemplate</code> and should be detected as tests
+     */
+    private boolean isJUnit5TestAnnotation(Annotation annotation, ClassPool classPool) {
+    	String annotationTypeName = annotation.getTypeName();
+		boolean isJUnitTestAnnotation = org.junit.jupiter.api.Test.class.getName().equals(annotationTypeName);
+		
+		if (isJUnitTestAnnotation) {
+			return true;
+		}
+		
+		try {
+			CtClass annotationType = classPool.get(annotationTypeName);
+			
+			return isAnnotatedWithGivenAnnotation(annotationType, org.junit.jupiter.api.Test.class)
+					|| isAnnotatedWithGivenAnnotation(annotationType, org.junit.jupiter.api.TestTemplate.class);
+		} catch (NotFoundException  e) {
+			InfinitestUtils.log(Level.FINE, "Could not load class " + annotationTypeName + " : " + e.getMessage());
+			
+			return false;
+		}
     }
 
 	private boolean isJUnit3TestMethod(CtMethod ctMethod) {
