@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
@@ -45,6 +44,7 @@ import org.testng.collections.Lists;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.compiler.CompilerPaths;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;

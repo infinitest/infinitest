@@ -31,7 +31,6 @@ import java.awt.*;
 
 import javax.swing.*;
 
-import org.apache.log4j.*;
 import org.infinitest.*;
 import org.infinitest.intellij.*;
 import org.infinitest.intellij.idea.*;
@@ -39,6 +38,7 @@ import org.infinitest.intellij.plugin.*;
 import org.infinitest.intellij.plugin.swingui.*;
 import org.infinitest.util.*;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.wm.*;
 
@@ -64,7 +64,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 
 	@Override
 	public void launchInfinitest() {
-		moduleSettings.writeToLogger(Logger.getLogger(getClass()));
+		moduleSettings.writeToLogger(Logger.getFactory().getLoggerInstance(getClass().getName()));
 
 		testControl = new IdeaCompilationListener(infinitestBuilder.getCore(), moduleSettings);
 		initializeInfinitestLogging();

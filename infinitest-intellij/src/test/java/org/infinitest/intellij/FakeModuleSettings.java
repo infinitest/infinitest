@@ -34,8 +34,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.infinitest.environment.RuntimeEnvironment;
+
+import com.intellij.openapi.diagnostic.Logger;
 
 public class FakeModuleSettings implements ModuleSettings {
 	private final String name;
