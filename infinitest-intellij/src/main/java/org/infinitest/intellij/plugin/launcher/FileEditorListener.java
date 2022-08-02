@@ -27,8 +27,13 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import com.intellij.codeHighlighting.*;
-import com.intellij.openapi.fileEditor.*;
+import org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory;
+import org.infinitest.intellij.idea.language.InfinitestLineMarkersPass;
+
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.TextEditor;
 
 public class FileEditorListener implements PresenterListener {
 	FileEditorManager fileEditorManager;
@@ -40,8 +45,15 @@ public class FileEditorListener implements PresenterListener {
 	@Override
 	public void testRunCompleted() {
 		for (FileEditor fileEditor : fileEditorManager.getSelectedEditors()) {
-			for (HighlightingPass highlightingPass : fileEditor.getBackgroundHighlighter().createPassesForEditor()) {
-				highlightingPass.applyInformationToEditor();
+			if (fileEditor instanceof TextEditor) {
+				TextEditor textEditor = (TextEditor) fileEditor;
+				Editor editor = textEditor.getEditor();
+				
+				InfinitestLineMarkersPass pass = editor.getUserData(InfinitestHighlightingPassFactory.KEY);
+
+				if (pass != null) {
+					pass.applyInformationToEditor();
+				}
 			}
 		}
 	}
