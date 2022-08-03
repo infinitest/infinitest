@@ -190,6 +190,21 @@
 							</descriptors>
 						</configuration>
 					</execution>
+					<execution>
+						<id>site-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>update_site</finalName>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<descriptors>
+								<descriptor>src/main/assembly/assembly-site-zip.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
