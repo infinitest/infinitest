@@ -70,12 +70,48 @@ Keep in mind that while you can use Infinitest to test Infinitest, some weird th
 
 # Maintainers Area
 
+## Signing the Eclipse and IntelliJ plugins
+
+The plugins jars are signed with the key uploaded as the KEYSTORE_BASE64 Github secret, see [release.yml](.github/workflows/release.yml)
+To generate a new key (for instance in case it expired, see [how to renew the certificate with the same key](https://xacmlinfo.org/2017/08/03/how-to-renew-self-signed-certificate-keeping-old-private-key/)):
+
+`keytool -genkey -dname "cn=Guillaume Toison, ou=Developers, o=Infinitest, c=FR" -alias infinitest -keystore keystore.jks -validity 365`
+
+Use a complex password and upload it as the `KEYSTORE_PASSWORD` secret.
+
+We do not want to commit the key in Git, so we Base64 encode the keystore file and upload it as a Github secret. 
+
+On linux:
+
+`$ base64 -i keystore.jks -o keystore.base64`
+
+On Windows we can use `certutil` and upload the content between the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines *excluding the line breaks*:
+
+`certutil -f -encode keystore.jks keystore.base64 `
+
+
 ## Publishing a release 
 
-**This is obsoloete**
+- Test, obviously
+- Create a new branch for a pull request
+- Upgrade the `pom.xml` version: at the root of the project: 
 
-When you finish something, release it. Also, make sure you don't push anything to github that's not in a releasable state. It's OK to temporarily disable stuff...just make sure that work in progress isn't breaking anything else.
+`
+mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.3.0
+`
 
-The `release.sh` script will build a new version of the plugin, incrementing the version number, and copy it to the server hosting the update site. This copy will fail if Ben hasn't added your public ssh key to the server (See above). We like developers to publish a release after implementing every feature.
+- Update the version of the `infinitest-lib` dependency in `infinitest-intellij/src/main/resources/META-INF/org.infinitest/infinitest-intellij/pom.xml`
+- Commit the `pom.xml` files
+- Upgrade again the `pom.xml` files to the next SNAPSHOT version:
 
-Running `release.sh` copies the plugin to the experimental [update site](http://update.improvingworks.com/experimental). It's suggested that you publish and then test the plugin before promoting it to the main [update site](http://update.improvingworks.com). You do this using the `promote.sh` script.
+`
+mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.3.1-SNAPSHOT
+`
+
+- Create a pull request from the head and, once approved, merge it (do not squash it since we need the two commits)
+- Create a GitHub release on the commit with the final version
+- The release name and the tag name must be the version, e.g. `5.3.0`
+- In the release include the notable changes, GitHub can automatically list the Pull Requests since the last version
+- Once created the release should trigger the [release.yml](.github/workflows/release.yml), this will add the artifacts to the release
+- Get the IntelliJ plugin from the release page and upload the IntelliJ plugin to the [marketplace](https://plugins.jetbrains.com/plugin/3146-infinitest)
+- Get the Eclipse plugin from the release and commit the zip content to the [Infinitest website repository](https://github.com/infinitest/infinitest.github.com)

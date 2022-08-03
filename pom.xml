@@ -51,6 +51,36 @@
 				<argLine>-Dapple.awt.UIElement=true</argLine>
 			</properties>
 		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-jars</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<keystore>${keystore-file}</keystore>
+							<alias>infinitest</alias>
+							<storepass>${keystore-password}</storepass>
+							<keypass>${keystore-password}</keypass>
+							<removeExistingSignatures>true</removeExistingSignatures>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<developers>
@@ -147,6 +177,10 @@
 				<plugin>
 					<artifactId>maven-enforcer-plugin</artifactId>
 					<version>1.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>3.0.0</version>
 				</plugin>
 				<plugin>
 					<groupId>com.mycila.maven-license-plugin</groupId>

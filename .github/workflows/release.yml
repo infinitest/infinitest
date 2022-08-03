@@ -1,0 +1,74 @@
+name: Release
+on:
+  release:
+    types:
+      - published
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the Infinitest project in the "infinitest" folder and the Website in the "website" folder
+      - uses: actions/checkout@v2
+        with:
+          path: './infinitest/'
+      - uses: actions/checkout@v2
+        with:
+          repository: 'infinitest/infinitest.github.com' 
+          path: './website/'
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+          cache: 'maven'
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo $KEYSTORE_BASE64 | base64 --decode > ./infinitest/keystore.jks
+      - name: Install SWT dependencies
+      # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gtk2.0 libxtst6
+      - name: Build and Test
+      # We need a virtual X11 for the Eclipse unit tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: |
+            mvn -f ./infinitest/pom.xml -B install -P release -Dkeystore-password=${{ secrets.KEYSTORE_PASSWORD }} -Dkeystore-file=../keystore.jks -DskipTests=true
+      
+      # Upload the plugins artifacts to the release
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload the Eclipse plugin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./infinitest/infinitest-eclipse/target/update_site.zip
+          asset_name: infinitest-eclipse-${{ github.event.release.tag_name }}.zip
+          asset_content_type: application/zip
+      - name: Upload the IntelliJ plugin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./infinitest/infinitest-intellij/target/infinitest-intellij-${{ github.event.release.tag_name }}-dist.zip
+          asset_name: infinitest-intellij-${{ github.event.release.tag_name }}-dist.zip
+          asset_content_type: application/zip
+          
+      # Update the website and RSS feed
+      - name: Copy the Eclipse plugin to the website
+        run: cp -r ./infinitest/infinitest-eclipse/target/update_site/* ./website
+      - name: Update RSS
+        run: |
+          ruby ./website/update_rss.rb '${{ github.event.release.tag_name }}' '${{ github.event.release.name }}'
+          rm ./website/update_rss.rb
+
+      # Skip the part where we commit the website changes for now 
