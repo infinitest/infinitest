@@ -17,14 +17,41 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.Java }}
           cache: 'maven'
-      - name: apt-get update
-        run: sudo apt-get update
       - name: Install SWT dependencies
       # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
-        run: sudo apt-get install -y gtk2.0 libxtst6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gtk2.0 libxtst6
       - name: Build and Test
       # We need a virtual X11 for the Eclipse unit tests
         uses: GabrielBB/xvfb-action@v1
         with:
           run: |
             mvn -B test
+  code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+          cache: 'maven'
+      - name: Install SWT dependencies
+      # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gtk2.0 libxtst6
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: java
+      - name: Build and Test
+      # We need a virtual X11 for the Eclipse unit tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: |
+            mvn -B install -DskipTests=true
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
