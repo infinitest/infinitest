@@ -42,7 +42,7 @@ jobs:
       # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
         run: |
           sudo apt-get update
-          run: sudo apt-get install -y gtk2.0 libxtst6
+          sudo apt-get install -y gtk2.0 libxtst6
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
