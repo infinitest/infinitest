@@ -94,7 +94,7 @@
                 <artifactItem>
                   <groupId>com.beust</groupId>
                   <artifactId>jcommander</artifactId>
-                  <version>1.35</version>
+                  <version>${jcommander.version}</version>
                   <type>jar</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>target/classes</outputDirectory>
@@ -183,7 +183,7 @@
     <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
-      <version>1.35</version>
+      <version>${jcommander.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>
