@@ -52,6 +52,6 @@ jobs:
         uses: GabrielBB/xvfb-action@v1
         with:
           run: |
-            mvn -B test
+            mvn -B install -DskipTests=true
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
