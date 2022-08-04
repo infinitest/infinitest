@@ -100,7 +100,6 @@ On Windows we can use `certutil` and upload the content between the `BEGIN CERTI
 mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.3.0
 `
 
-- Update the version of the `infinitest-lib` dependency in `infinitest-intellij/src/main/resources/META-INF/org.infinitest/infinitest-intellij/pom.xml`
 - Commit the `pom.xml` files
 - Upgrade again the `pom.xml` files to the next SNAPSHOT version:
 
