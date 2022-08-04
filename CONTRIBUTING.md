@@ -113,5 +113,7 @@ mvn versions:set -DgenerateBackupPoms=false -DnewVersion=5.3.1-SNAPSHOT
 - The release name and the tag name must be the version, e.g. `5.3.0`
 - In the release include the notable changes, GitHub can automatically list the Pull Requests since the last version
 - Once created the release should trigger the [release.yml](.github/workflows/release.yml), this will add the artifacts to the release
-- Get the IntelliJ plugin from the release page and upload the IntelliJ plugin to the [marketplace](https://plugins.jetbrains.com/plugin/3146-infinitest)
+- Get the IntelliJ plugin from the release page
+- Manually remove the META-INF folder from the zip (there must be only one top level folder)
+- Upload the IntelliJ plugin to the [marketplace](https://plugins.jetbrains.com/plugin/3146-infinitest)
 - Get the Eclipse plugin from the release and commit the zip content to the [Infinitest website repository](https://github.com/infinitest/infinitest.github.com)

@@ -1,11 +1,11 @@
-<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin>
     <name>Infinitest</name>
 
-    <description>Infinitest plugin for Intellij</description>
+    <description>Infinitest is a continuous test runner for Java, and is valuable to developers using a unit testing tool called JUnit. Continuous testing is the practice of constantly running unit tests while developers make changes to source code. Kind of like a spellchecker, except that instead of looking for spelling errors like a regular spellchecker, or looking for syntax errors like many IDE's do, Infinitest constantly looks for logical errors and immediately identifies them. It does this by running an optimized set of unit tests every time a developer makes a change to source code.</description>
     <version>${project.parent.version}</version>
-    <vendor>Infinitest</vendor>
-    <idea-version since-build="9732"/>
+    <vendor url="http://infinitest.github.io/">Infinitest</vendor>
+    <idea-version since-build="183"/>
+    <depends>com.intellij.modules.platform</depends>
     <application-components>
         <component>
             <implementation-class>org.infinitest.intellij.idea.facet.InfinitestFacetLoader</implementation-class>
