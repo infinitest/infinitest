@@ -37,7 +37,7 @@ import com.fakeco.fakeproduct.JUnit5ParameterizedTest;
 public class RunnerJunit5Test {
 
 	@Test
-	void run() {
+	public void shouldSupportParameterizedTest() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5ParameterizedTest.class));
 	}
 }
