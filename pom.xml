@@ -15,6 +15,7 @@
 		<module>infinitest-classloader</module>
 		<module>infinitest-intellij</module>
 		<module>infinitest-eclipse</module>
+		<module>infinitest-runner-test</module>
 	</modules>
 
 	<prerequisites>

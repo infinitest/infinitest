@@ -43,6 +43,7 @@ import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5DisabledTest;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5Test;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingComposedAnnotation;
+import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingParameterizedTest;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingTag;
 import org.infinitest.testrunner.junit5.Junit5Runner;
 import org.junit.After;
@@ -129,5 +130,15 @@ public class JUnit5RunnerTest {
 		Set<String> failedMethodNames = failedMethodNames(events);
 
 		assertThat(failedMethodNames).contains("fastTest");
+	}
+	
+	@Test
+	public void shouldSupportParameterizedTest() {
+		assertTrue(Junit5Runner.isJUnit5Test(JUnit5TestUsingComposedAnnotation.class));
+		
+		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingParameterizedTest.class.getName());
+		Set<String> failedMethodNames = failedMethodNames(events);
+
+		assertThat(failedMethodNames).doesNotContain("nullEmptyAndBlankStrings");
 	}
 }

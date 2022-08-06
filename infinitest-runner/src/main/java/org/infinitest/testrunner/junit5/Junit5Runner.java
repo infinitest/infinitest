@@ -94,9 +94,8 @@ public class Junit5Runner {
 
 		try {
 			TestPlan plan = LauncherFactory.create().discover(request);
-			long numberOfTests = plan.countTestIdentifiers(t -> t.isTest());
-			boolean testsPresent = numberOfTests > 0;
-			return testsPresent;
+			
+			return plan.containsTests();
 		} catch (Throwable e) {
 			// This might fail for any number of reasons...
 			// TODO : use some log instead?
