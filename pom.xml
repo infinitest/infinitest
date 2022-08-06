@@ -15,6 +15,7 @@
 		<module>infinitest-classloader</module>
 		<module>infinitest-intellij</module>
 		<module>infinitest-eclipse</module>
+		<module>infinitest-runner-test</module>
 	</modules>
 
 	<prerequisites>
@@ -181,6 +182,10 @@
 				<plugin>
 					<artifactId>maven-jarsigner-plugin</artifactId>
 					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.3.0</version>
 				</plugin>
 				<plugin>
 					<groupId>com.mycila.maven-license-plugin</groupId>
