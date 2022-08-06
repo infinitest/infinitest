@@ -14,6 +14,7 @@
 		<module>infinitest-runner</module>
 		<module>infinitest-classloader</module>
 		<module>infinitest-intellij</module>
+		<module>infinitest-eclipse-feature</module>
 		<module>infinitest-eclipse</module>
 		<module>infinitest-runner-test</module>
 	</modules>
@@ -77,6 +78,9 @@
 							<includes>
 								<include>**/*.jar</include>
 							</includes>
+							<excludeClassifiers>
+								<excludeClassifier>dist</excludeClassifier>
+							</excludeClassifiers>
 						</configuration>
 					</plugin>
 				</plugins>
