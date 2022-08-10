@@ -7,6 +7,13 @@
 	</parent>
 	<artifactId>infinitest-eclipse-feature</artifactId>
 	<name>Infinitest Feature for Eclipse</name>
+	<groupId>org.infinitest.eclipse</groupId>
+	
+	<properties>
+		<plugin.version>${project.version}</plugin.version>
+		<plugin.id>${project.groupId}</plugin.id>
+		<feature.id>${plugin.id}.feature</feature.id>
+	</properties>
 
 	<build>
 		<finalName>org.infinitest.eclipse.feature_${project.parent.version}</finalName>

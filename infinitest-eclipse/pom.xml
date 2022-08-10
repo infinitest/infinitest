@@ -126,7 +126,7 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.infinitest</groupId>
+									<groupId>org.infinitest.eclipse</groupId>
 									<artifactId>infinitest-eclipse-feature</artifactId>
 									<version>${project.parent.version}</version>
 									<outputDirectory>${project.build.directory}/update_site/features</outputDirectory>
@@ -306,7 +306,7 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.infinitest</groupId>
+			<groupId>org.infinitest.eclipse</groupId>
 			<artifactId>infinitest-eclipse-feature</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>provided</scope>
