@@ -37,12 +37,13 @@ import static org.infinitest.util.InfinitestUtils.findClasspathEntryFor;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
 
 import org.infinitest.classloader.ClassPathFileClassLoader;
 import org.infinitest.testrunner.TestRunnerProcess;
@@ -130,18 +131,13 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		customArgumentsReader = new FileCustomJvmArgumentReader(workingDirectory);
 	}
 
-	public List<String> createProcessArguments(File classpathFile) {
+	public List<String> createProcessArguments(ClasspathArgumentBuilder classpathArgumentBuilder) {
 		String memorySetting = "-mx" + getHeapSize() + "m";
 		List<String> args = newArrayList(getJavaExecutable(), memorySetting);
 		args.addAll(additionalArgs);
-		args.addAll(registerClassPathFileClassLoaderArguments(classpathFile));
+		args.addAll(classpathArgumentBuilder.buildArguments());
 		args.addAll(addCustomArguments());
 		return args;
-	}
-
-	private Collection<? extends String> registerClassPathFileClassLoaderArguments(File classpathFile) {
-		return Arrays.asList("-Djava.system.class.loader=org.infinitest.classloader.ClassPathFileClassLoader",
-				"-Dorg.infinitest.classloader.classPathFile=" + classpathFile.getAbsolutePath());
 	}
 
 	public Map<String, String> createProcessEnvironment() {
@@ -281,6 +277,40 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	public List<String> getRunnerFullClassPathEntries() {
 		return getClasspathEntries(getRunnerFullClassPath());
 	}
+	
+	public ClasspathArgumentBuilder createClasspathArgumentBuilder() {
+		Integer javaVersion = getJavaVersion();
+		
+		if (javaVersion != null && javaVersion >= 9) {
+			// Argument files are only supported from Java 9
+			File classpathFile = createClasspathArgumentFile();
+
+			return new FileClasspathArgumentBuilder(classpathFile);
+		} else {
+			// We are below Java 9 or could not find the version
+			String classpath = getRunnerFullClassPath();
+			
+			return new SimpleClasspathArgumentBuilder(classpath);
+		}
+	}
+	
+	/**
+	 * @return The Java major version (e.g 8 for 8.xyz) or null if we could not get the version
+	 */
+	private Integer getJavaVersion() {
+		Properties properties = new Properties();
+		try (FileInputStream in = new FileInputStream(new File(javaHome, "release"))) {
+			properties.load(in);
+			
+			String javaVersion = properties.getProperty("JAVA_VERSION");
+			String javaMajorVersion = javaVersion.substring(1, javaVersion.indexOf('.'));
+			
+			return Integer.parseInt(javaMajorVersion);
+		} catch (IOException e) {
+			log(Level.SEVERE, "Could not get java version " + e.getClass() + " " + e.getMessage());
+			return null;
+		}
+	}
 
 	public File createClasspathFile() {
 		try {
@@ -293,4 +323,14 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		}
 	}
 
+	public File createClasspathArgumentFile() {
+		try {
+			File argumentFile = File.createTempFile("infinitest-", ".cp-argument");
+			argumentFile.deleteOnExit();
+			Files.writeString(argumentFile.toPath(), getRunnerFullClassPath(), Charsets.UTF_8);
+			return argumentFile;
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing argument file", e);
+		}
+	}
 }
