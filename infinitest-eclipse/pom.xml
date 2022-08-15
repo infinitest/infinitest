@@ -130,6 +130,7 @@
 									<artifactId>infinitest-eclipse-feature</artifactId>
 									<version>${project.parent.version}</version>
 									<outputDirectory>${project.build.directory}/update_site/features</outputDirectory>
+									<destFileName>org.infinitest.eclipse.feature_${project.parent.version}.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
