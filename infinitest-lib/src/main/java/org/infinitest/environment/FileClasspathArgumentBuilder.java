@@ -41,7 +41,7 @@ public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
 
 	@Override
 	public List<String> buildArguments() {
-		return Arrays.asList("-cp", "@" + classpathFile.getAbsolutePath());
+		return Arrays.asList("-cp", "@\"" + classpathFile.getAbsolutePath() + "\"");
 	}
 	
 	@Override
