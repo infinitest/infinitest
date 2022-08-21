@@ -25,61 +25,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
+import java.nio.charset.Charset;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JComponent;
 
-import org.infinitest.intellij.plugin.swingui.*;
+import org.infinitest.ConsoleOutputListener;
+import org.infinitest.ConsoleOutputListener.OutputType;
+import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("all")
-public class FakeInfinitestView implements InfinitestView {
-	public void setAngerBasedOnTime(long timeSinceGreen) {
-	}
+import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.process.OSProcessHandler;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.project.Project;
 
-	public void setVisible(boolean b) {
-	}
-
-	public void setProgress(int progress) {
-	}
-
-	public void setProgressBarColor(Color yellow) {
-	}
-
-	public void setMaximumProgress(int maxProgress) {
-	}
-
-	public int getMaximumProgress() {
-		return 0;
-	}
-
-	public void setCycleTime(String timeStamp) {
-	}
-
-	public void setCurrentTest(String testName) {
-	}
-
-	public void addAction(Action action) {
-	}
-
-	public void setResultsModel(TreeModel results) {
-	}
-
-	public void setStatusMessage(String string) {
-	}
-
-	public void writeLogMessage(String message) {
-	}
-
-	public void writeError(String message) {
-	}
-
-	public void addResultClickListener(ResultClickListener listener) {
+public class InfinitestConsoleFrame implements ConsoleOutputListener {
+	private ConsoleView consoleView;
+	
+	public InfinitestConsoleFrame(Project project) {
+		consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
 	}
 	
+	public JComponent getComponent() {
+		return consoleView.getComponent();
+	}
+
 	@Override
 	public void consoleOutputUpdate(String newText, OutputType outputType) {
+		@NotNull
+		ConsoleViewContentType consoleViewContentType;
+		switch (outputType) {
+		case STDOUT :
+			consoleViewContentType = ConsoleViewContentType.NORMAL_OUTPUT;
+			break;
+		case STDERR:
+			consoleViewContentType = ConsoleViewContentType.ERROR_OUTPUT;
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown output type: " + outputType);
+		}
+		
+		consoleView.print(newText, consoleViewContentType);
 	}
 }

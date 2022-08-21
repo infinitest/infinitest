@@ -37,6 +37,7 @@ import org.junit.*;
 import org.mockito.*;
 
 import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.*;
 
 public class WhenLaunchingInfinitest {
@@ -52,8 +53,9 @@ public class WhenLaunchingInfinitest {
 		ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
 		FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
 		ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
-
-		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
+		Project project = mock(Project.class);
+		
+		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock, project);
 		launcher.launchInfinitest();
 
 		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("foo"));

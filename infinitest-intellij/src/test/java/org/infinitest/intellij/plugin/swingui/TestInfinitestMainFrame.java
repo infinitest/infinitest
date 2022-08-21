@@ -29,6 +29,7 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,12 +38,15 @@ import javax.swing.*;
 
 import org.junit.*;
 
+import com.intellij.openapi.project.Project;
+
 public class TestInfinitestMainFrame {
 	private InfinitestMainFrame frame;
 
 	@Before
 	public void inContext() {
-		frame = new InfinitestMainFrame();
+		Project project = mock(Project.class);
+		frame = new InfinitestMainFrame(project);
 	}
 
 	@After

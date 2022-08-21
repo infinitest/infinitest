@@ -30,6 +30,7 @@ package org.infinitest.intellij.plugin.swingui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -41,6 +42,8 @@ import org.infinitest.testrunner.*;
 import org.junit.*;
 import org.junit.Test;
 
+import com.intellij.openapi.project.Project;
+
 public class WhenShowingMainFrame {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
@@ -49,8 +52,11 @@ public class WhenShowingMainFrame {
 
   @Before
   public void inContext() {
+    Project project = mock(Project.class);
+    InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
+    
     resultsPane = new InfinitestResultsPane();
-    mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane());
+	mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane(), consoleFrame);
     cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
   }
 
