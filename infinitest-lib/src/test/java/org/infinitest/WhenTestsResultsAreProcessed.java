@@ -27,21 +27,26 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static java.util.Arrays.*;
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static java.util.Arrays.asList;
+import static org.infinitest.CoreStatus.PASSING;
+import static org.infinitest.CoreStatus.RUNNING;
+import static org.infinitest.CoreStatus.SCANNING;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.util.InfinitestTestUtils.emptyStringList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Collection;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
 
 public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	private EventSupport statusListener;

@@ -27,13 +27,18 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import org.infinitest.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.console.*;
-import org.junit.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.ResultCollector;
+import org.infinitest.TestQueueListener;
+import org.infinitest.eclipse.CoreLifecycleObserver;
+import org.infinitest.eclipse.SlowTestObserver;
+import org.infinitest.eclipse.console.ConsolePopulatingListener;
+import org.junit.Test;
 
 public class WhenCoresAreAddedOrRemoved {
 	private InfinitestCore core;

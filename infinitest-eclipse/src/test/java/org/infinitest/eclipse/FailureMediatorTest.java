@@ -27,18 +27,22 @@
  */
 package org.infinitest.eclipse;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Collection;
 
-import org.infinitest.eclipse.markers.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
-import org.mockito.*;
+import org.infinitest.eclipse.markers.MarkerInfo;
+import org.infinitest.eclipse.markers.ProblemMarkerInfo;
+import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
+import org.infinitest.eclipse.workspace.FakeResourceFinder;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class FailureMediatorTest {
 	private FailureMediator mediator;

@@ -39,6 +39,6 @@ public class WhenNoProcessorsCanHandleEvent {
 
 		CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
 		factory.processEvent(null);
-		verifyZeroInteractions(eventQueue);
+		verifyNoInteractions(eventQueue);
 	}
 }
