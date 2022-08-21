@@ -71,7 +71,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 
 		assertStatusIs(workspaceErrors());
 
-		verifyZeroInteractions(project);
+		verifyNoInteractions(project);
 	}
 
 	private void assertStatusIs(WorkspaceStatus expectedStatus) {

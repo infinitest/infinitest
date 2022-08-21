@@ -27,26 +27,35 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static java.util.Collections.*;
-import static org.infinitest.eclipse.util.StatusMatchers.*;
-import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyList;
+import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
+import static org.infinitest.eclipse.workspace.JavaProjectBuilder.project;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.net.URI;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.infinitest.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.status.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.infinitest.InfinitestCore;
+import org.infinitest.eclipse.ResourceEventSupport;
+import org.infinitest.eclipse.SystemClassPathJarLocator;
+import org.infinitest.eclipse.UpdateListener;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.eclipse.status.WorkspaceStatusListener;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 	private List<ProjectFacade> projects;

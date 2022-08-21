@@ -50,12 +50,12 @@ public class WhenDispatchingResourceChangeEvents {
 		when(event.getDelta()).thenReturn(delta);
 
 		notifier.resourceChanged(event);
-		verifyZeroInteractions(eventQueue);
+		verifyNoInteractions(eventQueue);
 	}
 
 	@Test
 	public void shouldIgnoreEventsWithNoDelta() {
 		notifier.resourceChanged(mock(IResourceChangeEvent.class));
-		verifyZeroInteractions(eventQueue);
+		verifyNoInteractions(eventQueue);
 	}
 }

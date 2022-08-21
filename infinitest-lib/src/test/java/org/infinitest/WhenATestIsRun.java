@@ -27,14 +27,16 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Comparator;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.Test;
 
 public class WhenATestIsRun {
 	@Test

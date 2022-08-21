@@ -51,7 +51,7 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 
 	@After
 	public void verifyWorkspace() {
-		verifyZeroInteractions(workspace);
+		verifyNoInteractions(workspace);
 	}
 
 	@Test

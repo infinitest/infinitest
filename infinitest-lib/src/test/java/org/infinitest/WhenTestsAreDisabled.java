@@ -27,21 +27,25 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Sets.*;
-import static org.infinitest.CoreDependencySupport.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.infinitest.CoreDependencySupport.withChangedFiles;
+import static org.infinitest.util.InfinitestUtils.setify;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.Test;
 
-import com.fakeco.fakeproduct.simple.*;
+import com.fakeco.fakeproduct.simple.PassingTest;
 
 public class WhenTestsAreDisabled {
 	@SuppressWarnings("unchecked")
