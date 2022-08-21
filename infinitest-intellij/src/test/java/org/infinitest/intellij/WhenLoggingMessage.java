@@ -27,13 +27,17 @@
  */
 package org.infinitest.intellij;
 
-import static java.util.logging.Level.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.infinitest.intellij.plugin.swingui.*;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.infinitest.util.LoggingListener;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenLoggingMessage {
 	private LoggingListener listener;

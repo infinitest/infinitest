@@ -35,30 +35,37 @@ import javax.swing.tree.*;
 
 import org.infinitest.*;
 
+import com.intellij.openapi.project.Project;
+
 public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	private static final long serialVersionUID = -1L;
 	private static final String APP_TITLE = "Infinitest";
 
 	private final InfinitestResultsPane resultsPane;
 	private final InfinitestLogPane logPane;
+	private final InfinitestConsoleFrame consoleFrame;
 
-	public InfinitestMainFrame() {
-		this(new InfinitestResultsPane(), new InfinitestLogPane());
+	public InfinitestMainFrame(Project project) {
+		this(new InfinitestResultsPane(), new InfinitestLogPane(), new InfinitestConsoleFrame(project));
 	}
 
-	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane) {
+	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane, InfinitestConsoleFrame consoleFrame) {
 		this.resultsPane = resultsPane;
 		this.logPane = logPane;
+		this.consoleFrame = consoleFrame;
+		
 		initializeFrame();
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.add("Results", resultsPane);
 		tabbedPane.add("Logging", logPane);
+		tabbedPane.add("Console", consoleFrame.getComponent());
+		
 		add(tabbedPane);
 	}
 
-	public static InfinitestView createFrame(ResultCollector results) {
-		InfinitestMainFrame mainFrame = new InfinitestMainFrame();
+	public static InfinitestView createFrame(ResultCollector results, Project project) {
+		InfinitestMainFrame mainFrame = new InfinitestMainFrame(project);
 		mainFrame.setResultsModel(new TreeModelAdapter(results));
 		return mainFrame;
 	}
@@ -154,5 +161,10 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 
 	public Component getTree() {
 		return resultsPane.getTree();
+	}
+	
+	@Override
+	public void consoleOutputUpdate(String newText, OutputType outputType) {
+		consoleFrame.consoleOutputUpdate(newText, outputType);
 	}
 }

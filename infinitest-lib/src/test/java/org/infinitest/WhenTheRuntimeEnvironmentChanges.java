@@ -27,19 +27,24 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
-import static org.infinitest.environment.FakeEnvironments.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withNoChangedFiles;
+import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
+import static org.infinitest.environment.FakeEnvironments.emptyRuntimeEnvironment;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Comparator;
 
-import org.infinitest.changedetect.*;
+import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.Test;
 
 public class WhenTheRuntimeEnvironmentChanges {
 	@Test

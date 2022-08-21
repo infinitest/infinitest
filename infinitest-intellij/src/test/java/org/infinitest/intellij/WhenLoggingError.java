@@ -27,11 +27,12 @@
  */
 package org.infinitest.intellij;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.infinitest.intellij.plugin.swingui.*;
-import org.junit.*;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.junit.Test;
 
 public class WhenLoggingError {
 	private static final Exception ERROR = new Exception("test");

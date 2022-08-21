@@ -27,20 +27,30 @@
  */
 package org.infinitest.eclipse.trim;
 
-import static java.util.Arrays.*;
-import static org.eclipse.swt.SWT.*;
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
+import static org.eclipse.swt.SWT.COLOR_BLACK;
+import static org.eclipse.swt.SWT.COLOR_DARK_GREEN;
+import static org.eclipse.swt.SWT.COLOR_DARK_RED;
+import static org.eclipse.swt.SWT.COLOR_WHITE;
+import static org.eclipse.swt.SWT.COLOR_YELLOW;
+import static org.infinitest.CoreStatus.FAILING;
+import static org.infinitest.CoreStatus.PASSING;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.runningTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.mockito.ArgumentMatchers.startsWith;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Collections;
 
-import org.infinitest.*;
-import org.infinitest.eclipse.status.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.TestQueueEvent;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenShowingStatusInTheStatusBar {
 	private VisualStatusPresenter presenter;

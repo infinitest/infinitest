@@ -27,15 +27,17 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
+import java.awt.Color;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.Action;
+import javax.swing.tree.TreeModel;
+
+import org.infinitest.ConsoleOutputListener;
 
 /**
  * @author bjrady
  */
-public interface InfinitestView {
+public interface InfinitestView extends ConsoleOutputListener {
 	void setAngerBasedOnTime(long timeSinceGreen);
 
 	void setVisible(boolean b);

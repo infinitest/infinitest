@@ -27,17 +27,21 @@
  */
 package org.infinitest.intellij;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
-import org.infinitest.intellij.plugin.launcher.*;
-import org.junit.*;
-import org.mockito.*;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.wm.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.wm.ToolWindowManager;
 
 public class WhenLaunchingInfinitest {
 	private ModuleSettings moduleSettings;
@@ -52,10 +56,11 @@ public class WhenLaunchingInfinitest {
 		ToolWindowRegistry registry = mock(ToolWindowRegistry.class);
 		FileEditorManager fileEditorManagerMock = mock(FileEditorManager.class);
 		ToolWindowManager toolWindowManagerMock = mock(ToolWindowManager.class);
-
-		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock);
+		Project project = mock(Project.class);
+		
+		InfinitestLauncher launcher = new InfinitestLauncherImpl(moduleSettings, registry, new FakeCompilationNotifier(), new FakeSourceNavigator(), fileEditorManagerMock, toolWindowManagerMock, project);
 		launcher.launchInfinitest();
 
-		verify(registry).registerToolWindow(Matchers.any(JPanel.class), eq("foo"));
+		verify(registry).registerToolWindow(any(JPanel.class), eq("foo"));
 	}
 }

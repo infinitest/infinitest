@@ -27,18 +27,23 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static java.util.Arrays.*;
-import static org.infinitest.eclipse.workspace.FakeResourceFactory.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
+import static org.infinitest.eclipse.workspace.FakeResourceFactory.stubResource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Collections;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.eclipse.core.resources.IResource;
+import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.infinitest.testrunner.PointOfFailure;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenPlacingMarkersInJavaClasses {
 	private TestEvent event;

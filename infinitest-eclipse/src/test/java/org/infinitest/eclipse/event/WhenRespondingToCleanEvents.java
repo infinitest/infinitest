@@ -63,7 +63,7 @@ public class WhenRespondingToCleanEvents extends ResourceEventSupport {
 	@Test
 	public void shouldHandleACleanBuildOnAnUnIndexedProject() throws JavaModelException {
 		processEvent(cleanBuildEvent());
-		verifyZeroInteractions(coreRegistry);
+		verifyNoInteractions(coreRegistry);
 	}
 
 	@Test

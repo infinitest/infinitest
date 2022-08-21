@@ -27,24 +27,34 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import org.infinitest.*;
-import org.infinitest.intellij.idea.language.*;
-import org.infinitest.intellij.plugin.swingui.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.ResultCollector;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator;
+import org.infinitest.intellij.plugin.swingui.InfinitestMainFrame;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.infinitest.intellij.plugin.swingui.ResultClickListener;
+
+import com.intellij.openapi.project.Project;
 
 public class InfinitestBuilder {
 	private final InfinitestCore core;
 	private final ResultCollector resultCollector;
+	private final Project project;
+	
 	private InfinitestPresenter presenter;
 	private InfinitestView view;
 	private TestControl testControl;
 
-	public InfinitestBuilder(InfinitestCore core) {
+	public InfinitestBuilder(InfinitestCore core, Project project) {
 		this.core = core;
 		this.resultCollector = new ResultCollector(core);
+		this.project = project;
 	}
 
 	public JPanel createPluginComponent(TestControl testControl) {
@@ -64,7 +74,9 @@ public class InfinitestBuilder {
 
 	public InfinitestView getView() {
 		if (view == null) {
-			view = InfinitestMainFrame.createFrame(resultCollector);
+			view = InfinitestMainFrame.createFrame(resultCollector, project);
+			
+			core.addConsoleOutputListener(view);
 		}
 		return view;
 	}

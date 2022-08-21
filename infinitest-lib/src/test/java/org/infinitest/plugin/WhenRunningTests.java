@@ -27,19 +27,28 @@
  */
 package org.infinitest.plugin;
 
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.environment.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.infinitest.CoreStatus.FAILING;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.infinitest.*;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
-import org.mockito.*;
+import org.infinitest.ConcurrencyController;
+import org.infinitest.EventSupport;
+import org.infinitest.FakeEventQueue;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.ResultCollector;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.JavaClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 
-import com.fakeco.fakeproduct.simple.*;
+import com.fakeco.fakeproduct.simple.FailingTest;
+import com.fakeco.fakeproduct.simple.PassingTest;
 
 public class WhenRunningTests {
   private static EventSupport eventHistory;
@@ -89,8 +98,8 @@ public class WhenRunningTests {
   static ArgumentMatcher<JavaClass> startsWith(final String namePrefix) {
     return new ArgumentMatcher<JavaClass>() {
       @Override
-      public boolean matches(Object argument) {
-        return (argument instanceof JavaClass) && ((JavaClass) argument).getName().startsWith(namePrefix);
+      public boolean matches(JavaClass argument) {
+        return argument.getName().startsWith(namePrefix);
       }
     };
   }
