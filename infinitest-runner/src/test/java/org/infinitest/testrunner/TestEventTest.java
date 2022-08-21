@@ -100,7 +100,7 @@ public class TestEventTest extends EqualityTestSupport {
 	public void shouldSupportAssertJAssertions() {
 		try {
 			Assertions.assertThat(true).isFalse();
-		} catch (ComparisonFailure e) {
+		} catch (AssertionError e) {
 			error = e;
 			event = eventWithError(e);
 			
