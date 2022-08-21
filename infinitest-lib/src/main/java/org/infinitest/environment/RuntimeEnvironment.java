@@ -298,16 +298,26 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	 * @return The Java major version (e.g 8 for 8.xyz) or null if we could not get the version
 	 */
 	private Integer getJavaVersion() {
-		Properties properties = new Properties();
+		String javaVersion = null;
+		
 		try (FileInputStream in = new FileInputStream(new File(javaHome, "release"))) {
+			Properties properties = new Properties();
 			properties.load(in);
 			
-			String javaVersion = properties.getProperty("JAVA_VERSION");
-			String javaMajorVersion = javaVersion.substring(1, javaVersion.indexOf('.'));
+			javaVersion = properties.getProperty("JAVA_VERSION");
+			int indexOfPoint = javaVersion.indexOf('.');
+			String javaMajorVersion;
+			if (indexOfPoint == -1) {
+				// For the reference OpenJDK build the version is "18"
+				javaMajorVersion = javaVersion.substring(1, javaVersion.length() - 1);
+			} else {
+				// For temurin it is "18.0.2"
+				javaMajorVersion = javaVersion.substring(1, indexOfPoint);
+			}
 			
 			return Integer.parseInt(javaMajorVersion);
-		} catch (IOException e) {
-			log(Level.SEVERE, "Could not get java version " + e.getClass() + " " + e.getMessage());
+		} catch (Exception e) {
+			log(Level.SEVERE, "Could not get java version (" + javaVersion + ") " + e.getClass() + " " + e.getMessage());
 			return null;
 		}
 	}
