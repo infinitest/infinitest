@@ -27,20 +27,25 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.infinitest.intellij.idea.*;
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.intellij.plugin.swingui.*;
-import org.infinitest.util.*;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.intellij.CompilationNotifier;
+import org.infinitest.intellij.InfinitestLoggingListener;
+import org.infinitest.intellij.ModuleSettings;
+import org.infinitest.intellij.ToolWindowRegistry;
+import org.infinitest.intellij.idea.IdeaCompilationListener;
+import org.infinitest.intellij.plugin.SourceNavigator;
+import org.infinitest.intellij.plugin.swingui.ResultClickListener;
+import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
+import org.infinitest.util.InfinitestUtils;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.wm.*;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowManager;
 
 public class InfinitestLauncherImpl implements InfinitestLauncher {
 	private final ModuleSettings moduleSettings;
@@ -51,12 +56,15 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	private IdeaCompilationListener testControl;
 	private final FileEditorListener fileEditorListener;
 	private final ToolWindowListener toolWindowListener;
+	private final Project project;
 
-	public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry, CompilationNotifier compilationNotifier, SourceNavigator navigator, FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager) {
+	public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry, CompilationNotifier compilationNotifier, SourceNavigator navigator, FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager, Project project) {
 		this.moduleSettings = moduleSettings;
 		this.toolWindowRegistry = toolWindowRegistry;
 		this.compilationNotifier = compilationNotifier;
 		this.navigator = navigator;
+		this.project = project;
+		
 		infinitestBuilder = createInfinitestBuilder();
 		fileEditorListener = new FileEditorListener(fileEditorManager);
 		toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
@@ -107,7 +115,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 
 	private InfinitestBuilder createInfinitestBuilder() {
 		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(), new SwingEventQueue());
-		return new InfinitestBuilder(coreBuilder.createCore());
+		return new InfinitestBuilder(coreBuilder.createCore(), project);
 	}
 
 	private void addFileEditorListener() {
