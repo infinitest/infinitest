@@ -105,11 +105,6 @@ public class WhenResolvingClassPath {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[0]);
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("org.eclipse.jdt.launching.JRE_CONTAINER");
-		when(runtimeClasspathEntry.getPath()).thenReturn(path);
-		when(eclipseFacade.getClasspathContainer(path, project)).thenReturn(classpathContainer);
-		when(classpathContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[]{classpathEntry});
-		when(classpathEntry.getPath()).thenReturn(jarPath);
-		when(jarPath.toString()).thenReturn("3.jar");
 
 		String classpath = classPathResolver.rawClasspath(project);
 
@@ -121,11 +116,6 @@ public class WhenResolvingClassPath {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[0]);
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("SCALA_CONTAINER");
-		when(runtimeClasspathEntry.getPath()).thenReturn(path);
-		when(eclipseFacade.getClasspathContainer(path, project)).thenReturn(classpathContainer);
-		when(classpathContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[]{classpathEntry});
-		when(classpathEntry.getPath()).thenReturn(jarPath);
-		when(jarPath.toString()).thenReturn("3.zip");
 
 		String classpath = classPathResolver.rawClasspath(project);
 
