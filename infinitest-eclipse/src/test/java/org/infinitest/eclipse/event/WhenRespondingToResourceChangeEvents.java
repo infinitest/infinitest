@@ -27,12 +27,14 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.*;
-import org.junit.*;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.infinitest.EventQueue;
+import org.infinitest.NamedRunnable;
+import org.junit.Test;
 
 public class WhenRespondingToResourceChangeEvents {
 	private CoreUpdateNotifier chain;

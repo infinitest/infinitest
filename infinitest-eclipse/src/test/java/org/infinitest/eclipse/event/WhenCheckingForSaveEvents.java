@@ -27,19 +27,28 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
-import static org.eclipse.core.resources.IResourceDelta.*;
-import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
+import static org.eclipse.core.resources.IResourceDelta.CONTENT;
+import static org.eclipse.core.resources.IResourceDelta.MARKERS;
+import static org.eclipse.core.resources.IncrementalProjectBuilder.AUTO_BUILD;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.internal.events.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.trim.*;
-import org.junit.*;
+import org.eclipse.core.internal.events.ResourceChangeEvent;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
+import org.infinitest.eclipse.ResourceEventSupport;
+import org.infinitest.eclipse.trim.SaveListener;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenCheckingForSaveEvents extends ResourceEventSupport {
 	private SaveDetector detector;
@@ -121,7 +130,7 @@ public class WhenCheckingForSaveEvents extends ResourceEventSupport {
 	protected IResourceDelta createSaveDelta() throws CoreException {
 		IResourceDelta javaResource = mock(IResourceDelta.class);
 		when(javaResource.getFullPath()).thenReturn(new Path("a.java"));
-		javaResource.accept((IResourceDeltaVisitor) anyObject());
+		javaResource.accept(any(IResourceDeltaVisitor.class));
 
 		return createResourceDelta(project, new IResourceDelta[] { javaResource });
 	}

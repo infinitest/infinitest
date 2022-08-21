@@ -79,7 +79,7 @@ public class WhenPreferencesAreChanged {
 	public void shouldIgnoreIfPropertyNameDoesNotMatch() {
 		when(eventSource.getPreferenceName()).thenReturn("SomeEventName");
 		changeProperty(VALUE, true, false);
-		verifyZeroInteractions(controller);
+		verifyNoInteractions(controller);
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class WhenPreferencesAreChanged {
 	public void shouldIgnoreOtherPropertyTypes() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
 		changeProperty(IS_VALID, false, true);
-		verifyZeroInteractions(controller);
+		verifyNoInteractions(controller);
 	}
 
 	@Test

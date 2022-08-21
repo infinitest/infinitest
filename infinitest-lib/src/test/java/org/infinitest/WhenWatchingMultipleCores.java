@@ -27,15 +27,21 @@
  */
 package org.infinitest;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import junit.framework.*;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.Before;
 import org.junit.Test;
+
+import junit.framework.AssertionFailedError;
 
 public class WhenWatchingMultipleCores {
 	private static final String TEST_NAME = "com.fakeco.TestFoo";

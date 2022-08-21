@@ -27,17 +27,23 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import java.io.IOException;
 
-import org.infinitest.*;
+import org.infinitest.EventSupport;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.testrunner.process.*;
-import org.junit.*;
+import org.infinitest.testrunner.process.ProcessConnection;
+import org.infinitest.testrunner.process.ProcessConnectionFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ResultProcessorTest {
 	private TestQueueProcessor reader;
@@ -84,7 +90,7 @@ public class ResultProcessorTest {
 		reader.close();
 		eventAssert.assertRunComplete();
 
-		verify(factory, times(1)).getConnection(any(RuntimeEnvironment.class), any(OutputStreamHandler.class));
+		verify(factory, times(1)).getConnection(isNull(), any(OutputStreamHandler.class));
 	}
 
 	@Test
