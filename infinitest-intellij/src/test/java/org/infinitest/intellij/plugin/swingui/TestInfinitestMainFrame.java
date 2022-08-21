@@ -27,26 +27,53 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
-import static org.junit.Assert.*;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.intellij.openapi.project.Project;
+import com.intellij.execution.filters.TextConsoleBuilder;
+import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 
 public class TestInfinitestMainFrame {
 	private InfinitestMainFrame frame;
 
 	@Before
 	public void inContext() {
-		Project project = mock(Project.class);
-		frame = new InfinitestMainFrame(project);
+		Application application = mock(Application.class);
+		Disposable parent = mock(Disposable.class);
+		TextConsoleBuilder builder = mock(TextConsoleBuilder.class);
+		ConsoleView consoleView = mock(ConsoleView.class);
+		
+		TextConsoleBuilderFactory consoleBuilderFactory = mock(TextConsoleBuilderFactory.class);
+		
+		when(application.getService(TextConsoleBuilderFactory.class)).thenReturn(consoleBuilderFactory);
+		when(consoleBuilderFactory.createBuilder(any())).thenReturn(builder);
+		when(builder.getConsole()).thenReturn(consoleView);
+		
+		ApplicationManager.setApplication(application, parent);
+		
+		frame = new InfinitestMainFrame(null);
 	}
 
 	@After
