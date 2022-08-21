@@ -17,6 +17,7 @@
 		<module>infinitest-eclipse-feature</module>
 		<module>infinitest-eclipse</module>
 		<module>infinitest-runner-test</module>
+		<module>functional-tests/infinitest-runner-spock-test</module>
 	</modules>
 
 	<prerequisites>

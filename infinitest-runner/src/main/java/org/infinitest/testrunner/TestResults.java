@@ -58,4 +58,13 @@ public class TestResults implements Iterable<TestEvent>, Serializable {
 	public void addMethodStats(Collection<MethodStats> methodStatistics) {
 		methodStats.addAll(methodStatistics);
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("TestResults{");
+		sb.append("eventsCollected=").append(eventsCollected);
+		sb.append(", methodStats=").append(methodStats);
+		sb.append('}');
+		return sb.toString();
+	}
 }

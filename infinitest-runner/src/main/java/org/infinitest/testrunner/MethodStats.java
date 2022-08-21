@@ -48,4 +48,14 @@ public class MethodStats implements Serializable {
 	public long duration() {
 		return stopTime - startTime;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("MethodStats{");
+		sb.append("startTime=").append(startTime);
+		sb.append(", stopTime=").append(stopTime);
+		sb.append(", methodName='").append(methodName).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
 }
