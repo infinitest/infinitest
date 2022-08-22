@@ -1,4 +1,4 @@
-package org.infinitest.testrunner.junit5.testdata
+package org.infinitest.testdata
 
 import spock.lang.Specification
 

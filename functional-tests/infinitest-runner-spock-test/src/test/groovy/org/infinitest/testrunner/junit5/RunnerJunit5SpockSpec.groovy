@@ -1,9 +1,10 @@
 package org.infinitest.testrunner.junit5
 
+import org.infinitest.testdata.HierarchicSpockSpec
 import org.infinitest.testrunner.DefaultRunner
 import org.infinitest.testrunner.TestResults
-import org.infinitest.testrunner.junit5.testdata.ParameterizedSpockSpec
-import org.infinitest.testrunner.junit5.testdata.SimpleSpockSpec
+import org.infinitest.testdata.ParameterizedSpockSpec
+import org.infinitest.testdata.SimpleSpockSpec
 import spock.lang.Specification;
 
 class RunnerJunit5SpockSpec extends Specification {
@@ -12,7 +13,7 @@ class RunnerJunit5SpockSpec extends Specification {
         expect:
             Junit5Runner.isJUnit5Test(clazz)
         where:
-            clazz << [SimpleSpockSpec, ParameterizedSpockSpec]
+            clazz << [SimpleSpockSpec, HierarchicSpockSpec, ParameterizedSpockSpec]
     }
 
     void "should execute Spock 2 test (#clazz.simpleName)"() {
@@ -25,6 +26,7 @@ class RunnerJunit5SpockSpec extends Specification {
         where:
             clazz                  || expectedMethodStatsSize
             SimpleSpockSpec        || 1
+            HierarchicSpockSpec    || 2
             ParameterizedSpockSpec || 3
     }
 

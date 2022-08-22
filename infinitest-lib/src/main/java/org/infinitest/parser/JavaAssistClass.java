@@ -59,9 +59,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) &&
-				hasTests(classReference) &&
-				(isJUnit5TestClass(imports) || canInstantiate(classReference));
+		isATest = !isAbstract(classReference) && hasSupportedTests(classReference);
 		className = classReference.getName();
 	}
 
@@ -174,8 +172,20 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return className;
 	}
 
-	private boolean isAbstract(CtClass classReference) {
+	private static boolean isAbstract(CtClass classReference) {
 		return classReference.isInterface() || Modifier.isAbstract(classReference.getModifiers());
+	}
+
+	@SuppressWarnings("RedundantIfStatement")
+	private boolean hasSupportedTests(CtClass clazz) {
+		if (hasJUnitOrTestNGTests(clazz) &&
+				(isJUnit5TestClass(imports) || canInstantiate(clazz))) {
+			return true;
+		}
+		if (isSpockTestClass(clazz)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -226,7 +236,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return getName();
 	}
 
-	private boolean hasTests(CtClass classReference) {
+	private boolean hasJUnitOrTestNGTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
 				|| hasTestNGTests(classReference);
@@ -396,6 +406,10 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return false;
 	}
 
+	private boolean isSpockTestClass(CtClass clazz) {
+		return new SpockIsTestClassChecker(clazz).isATest();
+	}
+
 	public void setClassFile(File classFile) {
 		this.classFile = classFile;
 	}
@@ -409,4 +423,41 @@ public class JavaAssistClass extends AbstractJavaClass {
 	public File getClassFile() {
 		return classFile;
 	}
+
+	private static class SpockIsTestClassChecker {
+
+		private static final String SPOCK_BASE_CLASS_NAME = "spock.lang.Specification";
+		private final boolean isATest;
+
+		public SpockIsTestClassChecker(CtClass clazz) {
+			isATest = !isAbstract(clazz) && hasGivenClassSpockSpecificationAsSuperclass(clazz);
+		}
+
+		private boolean hasGivenClassSpockSpecificationAsSuperclass(CtClass clazz) {
+			try {
+				return isGivenClassSpockSpecification(clazz.getSuperclass());
+			} catch (NotFoundException e) {
+				return false;   //TODO: Log warning?
+			}
+		}
+
+		private boolean isGivenClassSpockSpecification(CtClass currentSuperclass) throws NotFoundException {
+			if (currentSuperclass == null || isSuperclassForInterface(currentSuperclass)) {
+				return false;
+			}
+			if (SPOCK_BASE_CLASS_NAME.equals(currentSuperclass.getName())) {
+				return true;
+			}
+			return isGivenClassSpockSpecification(currentSuperclass.getSuperclass());
+		}
+
+		private boolean isSuperclassForInterface(CtClass currentSuperclass) {
+			return "java.lang.Object".equals(currentSuperclass.getName());
+		}
+
+		boolean isATest() {
+			return isATest;
+		}
+	}
+
 }
