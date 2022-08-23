@@ -27,7 +27,6 @@
  */
 package org.infinitest.intellij.idea;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -84,7 +83,7 @@ public class WhenBuildingIdeaModuleClassPath {
 		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
 		
 		verifyNoInteractions(jdkOrderEntry);
-		assertThat(classPathElementsList).hasSize(1);
+		assertThat(classPathElementsList.size(), equalTo(1));
 	}
 
 	private static OrderEntry orderEntry() {
