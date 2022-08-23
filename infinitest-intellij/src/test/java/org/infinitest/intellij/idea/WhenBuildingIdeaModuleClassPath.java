@@ -27,6 +27,7 @@
  */
 package org.infinitest.intellij.idea;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -69,6 +70,21 @@ public class WhenBuildingIdeaModuleClassPath {
 		assertThat(classPathElementsList.get(2).getPath(), equalTo(PATH_C));
 		assertThat(classPathElementsList.get(3).getPath(), equalTo(PATH_D));
 		assertThat(classPathElementsList.size(), equalTo(4));
+	}
+	
+	@Test
+	public void shouldExcludeJdkModules() {
+		OrderEntry jdkOrderEntry = mock(JdkOrderEntry.class);
+		doReturn(new OrderEntry[] { jdkOrderEntry }).when(moduleRootManagerMock).getOrderEntries();
+		doReturn(new VirtualFile[] { fileWith(PATH_D) }).when(compilerModuleExtension).getOutputRoots(true);
+		doReturn(new VirtualFile[] { fileWith(PATH_C) }).when(jdkOrderEntry).getFiles(OrderRootType.CLASSES);
+		doReturn(moduleRootManagerMock).when(ideaModuleSettingsSpy).moduleRootManagerInstance();
+		doReturn(compilerModuleExtension).when(ideaModuleSettingsSpy).compilerModuleExtension();
+		
+		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
+		
+		verifyNoInteractions(jdkOrderEntry);
+		assertThat(classPathElementsList).hasSize(1);
 	}
 
 	private static OrderEntry orderEntry() {
