@@ -49,6 +49,7 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.JdkOrderEntry;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -182,7 +183,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 				 */
 				LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry) entry;
 				files.addAll(Arrays.asList(libraryOrderEntry.getRootFiles(OrderRootType.CLASSES)));
-			} else {
+			} else if (!(entry instanceof JdkOrderEntry)) {
 				/*
 				 * all other cases (whichever they are) we want to have their
 				 * classes outputs.
