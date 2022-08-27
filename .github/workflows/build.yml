@@ -32,6 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
@@ -53,7 +55,7 @@ jobs:
       - name: Sonarcloud analysis
         run: |
           xvfb-run --auto-servernum mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=infinitest_infinitest \
+            -Dsonar.projectKey=infinitest-parent \
             -Dsonar.organization=infinitest-github \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
