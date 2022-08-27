@@ -31,7 +31,13 @@ import java.util.List;
 
 public interface ClasspathArgumentBuilder {
 
+	/**
+	 * @return the command line argument(s) for the classpath
+	 */
 	List<String> buildArguments();
 
-	void cleanUp();
+	/**
+	 * Called when the runner process is aborted
+	 */
+	void cleanup();
 }

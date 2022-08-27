@@ -43,7 +43,7 @@ public class SimpleClasspathArgumentBuilder implements ClasspathArgumentBuilder 
 	}
 
 	@Override
-	public void cleanUp() {
+	public void cleanup() {
 		// Nothing to clean up here
 	}
 }

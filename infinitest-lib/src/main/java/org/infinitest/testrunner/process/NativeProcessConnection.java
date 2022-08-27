@@ -43,7 +43,7 @@ public class NativeProcessConnection implements ProcessConnection {
 
 	@Override
 	public boolean abort() {
-		classpathArgumentBuilder.cleanUp();
+		classpathArgumentBuilder.cleanup();
 		process.destroy();
 		try {
 			process.waitFor();

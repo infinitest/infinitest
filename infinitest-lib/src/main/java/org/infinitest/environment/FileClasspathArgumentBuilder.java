@@ -45,7 +45,7 @@ public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
 	}
 	
 	@Override
-	public void cleanUp() {
+	public void cleanup() {
 		classpathFile.delete();
 	}
 }
