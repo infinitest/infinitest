@@ -49,25 +49,20 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gtk2.0 libxtst6
+          sudo apt-get install -y xvfb x11-utils libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 xdotool
       - name: Sonarcloud analysis
-      # We need a virtual X11 for the Eclipse unit tests
-        uses: GabrielBB/xvfb-action@v1
+        run: |
+          xvfb-run --auto-servernum mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          run: |
-            mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: java
       - name: Build and Test
-      # We need a virtual X11 for the Eclipse unit tests
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: |
-            # The runner seems to fail when codeql is setup so we need to skip unit tests
-            mvn -B clean install -DskipTests=true
+        run: |
+          # The runner seems to fail when codeql is setup so we need to skip unit tests
+          xvfb-run --auto-servernum mvn -B clean install -DskipTests=true
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
