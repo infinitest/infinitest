@@ -52,7 +52,11 @@ jobs:
           sudo apt-get install -y xvfb x11-utils libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 xdotool
       - name: Sonarcloud analysis
         run: |
-          xvfb-run --auto-servernum mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest -Dsonar.host.url=https://sonarcloud.io
+          xvfb-run --auto-servernum mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=infinitest_infinitest \
+            -Dsonar.organization=infinitest-github \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
