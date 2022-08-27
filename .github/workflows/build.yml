@@ -38,6 +38,12 @@ jobs:
           distribution: 'temurin'
           java-version: 11
           cache: 'maven'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Install SWT dependencies
       # Eclipse/SWT 3.6 requires GTK+ 2.4.1 and its dependencies
         run: |
@@ -50,8 +56,11 @@ jobs:
       - name: Build and Test
       # We need a virtual X11 for the Eclipse unit tests
         uses: GabrielBB/xvfb-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           run: |
-            mvn -B install -DskipTests=true
+            run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
