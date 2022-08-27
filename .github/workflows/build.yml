@@ -61,6 +61,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           run: |
-            run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest
+            mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=infinitest_infinitest
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
