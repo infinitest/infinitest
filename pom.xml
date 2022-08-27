@@ -42,7 +42,6 @@
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.organization>infinitest-github</sonar.organization>
-		<sonar.projectKey>infinitest-parent</sonar.projectKey>
 	</properties>
 
 	<profiles>
