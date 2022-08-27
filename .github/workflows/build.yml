@@ -55,7 +55,6 @@ jobs:
       - name: Sonarcloud analysis
         run: |
           xvfb-run --auto-servernum mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=infinitest-parent \
             -Dsonar.organization=infinitest-github \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
