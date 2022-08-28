@@ -48,7 +48,8 @@ jobs:
           sudo apt-get install -y xvfb x11-utils libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 xdotool
       - name: Sonarcloud analysis
         run: |
-          mvn -e -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          xvfb-run --auto-servernum \
+            mvn -e -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN
         env:
