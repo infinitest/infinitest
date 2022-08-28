@@ -39,6 +39,9 @@
 		<autovalue.version>1.3</autovalue.version>
 		<jcommander.version>1.35</jcommander.version>
 		<surefire.version>3.0.0-M7</surefire.version>
+		
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.organization>infinitest-github</sonar.organization>
 	</properties>
 
 	<profiles>
