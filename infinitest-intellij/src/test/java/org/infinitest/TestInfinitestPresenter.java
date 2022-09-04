@@ -48,14 +48,13 @@ import java.util.List;
 
 import javax.swing.Action;
 
-import org.infinitest.intellij.FakeInfinitestAnnotator;
+import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.infinitest.testrunner.TestResultsListener;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestInfinitestPresenter {
+public class TestInfinitestPresenter extends IntellijMockBase {
 	private InfinitestView mockView;
 	private InfinitestPresenter presenter;
 	private InfinitestCore mockCore;
@@ -64,11 +63,12 @@ public class TestInfinitestPresenter {
 	public void inContext() {
 		mockView = mock(InfinitestView.class);
 		mockCore = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(mockCore);
 
-		TestControl mockTestControl = mock(TestControl.class);
-		when(mockTestControl.shouldRunTests()).thenReturn(true);
+		when(control.shouldRunTests()).thenReturn(true);
 
-		presenter = new InfinitestPresenter(new ResultCollector(mockCore), mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+		presenter = new InfinitestPresenter(project, mockView);
 	}
 
 	public void verifyMocks() {
@@ -76,10 +76,6 @@ public class TestInfinitestPresenter {
 		verify(mockView).setAngerBasedOnTime(anyLong());
 		verify(mockView).setStatusMessage(getMessage(SCANNING));
 		verify(mockView).setCycleTime(formatTime(0L));
-
-		verify(mockCore).addTestResultsListener(any(TestResultsListener.class));
-		verify(mockCore, times(2)).addTestQueueListener(any(TestQueueListener.class));
-		verify(mockCore).addDisabledTestListener(any(DisabledTestListener.class));
 	}
 
 	@Test

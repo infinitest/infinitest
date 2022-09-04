@@ -27,10 +27,15 @@
  */
 package org.infinitest.intellij;
 
+import java.util.Set;
+
+import org.infinitest.intellij.idea.language.InnerClassFriendlyTestEvent;
 import org.infinitest.testrunner.*;
 
 public interface InfinitestAnnotator {
 	void annotate(TestEvent event);
 
 	void clearAnnotation(TestEvent event);
+
+	Set<InnerClassFriendlyTestEvent> getTestEvents();
 }

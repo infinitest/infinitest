@@ -27,17 +27,12 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.nio.charset.Charset;
-
 import javax.swing.JComponent;
 
 import org.infinitest.ConsoleOutputListener;
-import org.infinitest.ConsoleOutputListener.OutputType;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.project.Project;

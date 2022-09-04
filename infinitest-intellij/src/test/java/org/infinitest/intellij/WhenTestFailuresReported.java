@@ -27,32 +27,32 @@
  */
 package org.infinitest.intellij;
 
-import static java.util.Collections.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.List;
 
-import junit.framework.*;
-
-import org.infinitest.*;
-import org.infinitest.intellij.plugin.launcher.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
 import org.junit.Test;
 
-public class WhenTestFailuresReported {
-	private InfinitestAnnotator annotator;
+import junit.framework.AssertionFailedError;
+
+public class WhenTestFailuresReported extends IntellijMockBase {
 	private InfinitestPresenter presenter;
 	private final TestEvent failure = methodFailed("message", "test", "method", new AssertionFailedError());
 	private static final List<TestEvent> EMPTY_LIST = emptyList();
 
 	@Before
 	public void setUp() {
-		// InfinitestCore core = new FakeInfinitestCore();
-		InfinitestCore core = mock(InfinitestCore.class);
-		annotator = mock(InfinitestAnnotator.class);
-		presenter = new InfinitestPresenter(new ResultCollector(core), core, new FakeInfinitestView(), new FakeTestControl(), annotator);
+		when(project.getService(TestControl.class)).thenReturn(new FakeTestControl());
+		
+		presenter = new InfinitestPresenter(project, new FakeInfinitestView());
 	}
 
 	@Test

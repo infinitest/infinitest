@@ -25,25 +25,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea.window;
+package org.infinitest.intellij.plugin.launcher;
 
-import javax.swing.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.intellij.openapi.util.*;
-import com.intellij.openapi.wm.*;
-import com.intellij.ui.content.*;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.ModuleSettings;
+import org.junit.Test;
 
-public class IdeaWindowHelper {
-	public static final String WAITING_ICON_PATH = "/infinitest-waiting.png";
-	public static final String RUNNING_ICON_PATH = "/infinitest.png";
-	public static final String SUCCESS_ICON_PATH = "/infinitest-success.png";
-	public static final String FAILURE_ICON_PATH = "/infinitest-failure.png";
-
-	@SuppressWarnings("deprecation")
-	public void addPanelToWindow(JPanel rootPanel, ToolWindow window) {
-		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-		Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
-		window.getContentManager().addContent(content);
-		window.setIcon(IconLoader.getIcon(WAITING_ICON_PATH));
+public class InfinitestLauncherImplTest extends IntellijMockBase {
+	@Test
+	public void launcherInitiatilization() {
+		ModuleSettings moduleSettings = mock(ModuleSettings.class);
+		RuntimeEnvironment runtimeEnvironment = mock(RuntimeEnvironment.class);
+		
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
+		
+		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(module);
+		
+		assertThat(launcher.getCore()).isNotNull();
+		assertThat(launcher.getResultCollector()).isNotNull();
 	}
 }

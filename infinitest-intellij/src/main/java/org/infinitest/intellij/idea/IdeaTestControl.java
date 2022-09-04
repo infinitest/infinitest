@@ -25,16 +25,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.launcher;
+package org.infinitest.intellij.idea;
 
-public interface PresenterListener extends java.util.EventListener {
-	void testRunCompleted();
+import org.infinitest.InfinitestCore;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
-	void testRunSucceed();
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
 
-	void testRunFailed();
+public class IdeaTestControl implements TestControl {
+	private Project project;
+	private boolean shouldRunTests = true;
+	
+	/**
+	 * @param project Injected by the platform
+	 */
+	public IdeaTestControl(Project project) {
+		this.project = project;
+	}
 
-	void testRunStarted();
+	@Override
+	public void setRunTests(boolean shouldRunTests) {
+		if (shouldRunTests && !shouldRunTests()) {
+			for (Module module : ModuleManager.getInstance(project).getModules()) {
+				InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+				InfinitestCore core = launcher.getCore();
+				core.reload();
+			}
+		}
+		this.shouldRunTests = shouldRunTests;
+	}
 
-	void testRunWaiting();
+	@Override
+	public boolean shouldRunTests() {
+		return shouldRunTests;
+	}
 }

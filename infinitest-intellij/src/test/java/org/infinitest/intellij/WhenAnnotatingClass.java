@@ -42,7 +42,7 @@ public class WhenAnnotatingClass {
 
   @Before
   public void setUp() {
-    annotator = IdeaInfinitestAnnotator.getInstance();
+    annotator = new IdeaInfinitestAnnotator();
   }
 
   @Test

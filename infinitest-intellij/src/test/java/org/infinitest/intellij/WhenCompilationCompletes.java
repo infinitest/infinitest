@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.environment.RuntimeEnvironment;
@@ -38,21 +39,29 @@ import org.infinitest.intellij.idea.IdeaCompilationListener;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intellij.openapi.compiler.CompilationStatusListener;
+import com.intellij.task.ProjectTaskListener;
+import com.intellij.task.ProjectTaskManager.Result;
 
-public class WhenCompilationCompletes {
+public class WhenCompilationCompletes extends IntellijMockBase {
 	private final ModuleSettings moduleSettings = new FakeModuleSettings("test");
 	private InfinitestCore core;
+	private Result result;
 
 	@Before
 	public void inContext() {
 		core = mock(InfinitestCore.class);
+		result = mock(Result.class);
+		
+		when(control.shouldRunTests()).thenReturn(true);
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		when(launcher.getCore()).thenReturn(core);
 	}
 
 	@Test
 	public void shouldInvokeUpdateOnCore() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
-		listener.compilationFinished(false, 0, 0, null);
+		ProjectTaskListener listener = new IdeaCompilationListener(project);
+		when(result.isAborted()).thenReturn(false);
+		listener.finished(result);
 
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 		verify(core).update();
@@ -60,8 +69,9 @@ public class WhenCompilationCompletes {
 
 	@Test
 	public void shouldNotUpdateIfCompilationAborted() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
-		listener.compilationFinished(true, 0, 0, null);
+		ProjectTaskListener listener = new IdeaCompilationListener(project);
+		when(result.isAborted()).thenReturn(true);
+		listener.finished(result);
 
 		verify(core, never()).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 		verify(core, never()).update();
@@ -69,8 +79,10 @@ public class WhenCompilationCompletes {
 
 	@Test
 	public void shouldNotUpdateIfCompileErrorsOccurred() {
-		CompilationStatusListener listener = new IdeaCompilationListener(core, moduleSettings);
-		listener.compilationFinished(false, 1, 0, null);
+		ProjectTaskListener listener = new IdeaCompilationListener(project);
+		when(result.isAborted()).thenReturn(false);
+		when(result.hasErrors()).thenReturn(true);
+		listener.finished(result);
 
 		verify(core, never()).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 		verify(core, never()).update();

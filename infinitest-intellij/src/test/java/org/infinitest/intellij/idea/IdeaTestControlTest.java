@@ -25,10 +25,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea.facet;
+package org.infinitest.intellij.idea;
 
-public interface FacetListener {
-	void facetInitialized();
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-	void facetDisposed();
+import org.infinitest.InfinitestCore;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.IntellijMockBase;
+import org.junit.Test;
+
+public class IdeaTestControlTest extends IntellijMockBase {
+	@Test
+	public void testControlTest() {
+		IdeaTestControl testControl = new IdeaTestControl(project);
+		InfinitestCore core = mock(InfinitestCore.class);
+		
+		when(module.getService(TestControl.class)).thenReturn(testControl);
+		when(launcher.getCore()).thenReturn(core);
+		
+		testControl.setRunTests(false);
+		
+		verify(core, never()).reload();
+		
+		testControl.setRunTests(true);
+		
+		verify(core).reload();
+	}
 }

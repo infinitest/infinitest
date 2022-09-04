@@ -25,27 +25,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea;
+package org.infinitest.intellij.idea.window;
 
-import org.infinitest.intellij.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.intellij.openapi.compiler.*;
-import com.intellij.openapi.project.*;
+import org.infinitest.ResultCollector;
+import org.infinitest.intellij.IntellijMockBase;
+import org.junit.Test;
 
-public class IdeaCompilationNotifier implements CompilationNotifier {
-	private final Project project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.content.ContentManager;
 
-	public IdeaCompilationNotifier(Project project) {
-		this.project = project;
-	}
-
-	@Override
-	public void addCompilationStatusListener(CompilationStatusListener compilationListener) {
-		CompilerManager.getInstance(project).addCompilationStatusListener(compilationListener);
-	}
-
-	@Override
-	public void removeCompilationStatusListener(CompilationStatusListener compilationListener) {
-		CompilerManager.getInstance(project).removeCompilationStatusListener(compilationListener);
+public class InfinitestToolWindowFactoryTest extends IntellijMockBase {
+	@Test
+	public void windowInitialization() {
+		IntellijMockBase.setupApplication();
+		InfinitestToolWindowFactory factory = new InfinitestToolWindowFactory();
+		
+		ToolWindow toolWindow = mock(ToolWindow.class);
+		ContentManager contentManager = mock(ContentManager.class);
+		
+		when(toolWindow.getContentManager()).thenReturn(contentManager);
+		
+		ResultCollector resultCollector = mock(ResultCollector.class);
+		
+		when(launcher.getResultCollector()).thenReturn(resultCollector);
+		
+		factory.createToolWindowContent(project, toolWindow);
+		
+		verify(toolWindow).setIcon(any());
 	}
 }
