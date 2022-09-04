@@ -44,7 +44,7 @@ class InfinitestGutterIconRenderer extends GutterIconRenderer {
 	@NotNull
 	@Override
 	public Icon getIcon() {
-		return IconLoader.getIcon("/infinitest-gutter.png");
+		return IconLoader.getIcon("/infinitest-gutter.png", getClass());
 	}
 
 	@Override
