@@ -27,10 +27,16 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
+import java.awt.Component;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
 
 /**
  * @author <a href="mailto:benrady@gmail.com".Ben Rady</a>
@@ -53,6 +59,12 @@ class FailureCellRenderer extends DefaultTreeCellRenderer {
 		if (node instanceof String) {
 			return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/error.png"));
 		}
+		
+		if (node instanceof Module) {
+			Module module = (Module) node;
+			return ModuleType.get(module).getIcon();
+		}
+		
 		return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/failure.png"));
 	}
 

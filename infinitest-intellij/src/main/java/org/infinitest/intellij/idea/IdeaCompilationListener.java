@@ -27,58 +27,54 @@
  */
 package org.infinitest.intellij.idea;
 
-import org.infinitest.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.TestControl;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.intellij.*;
+import org.infinitest.intellij.ModuleSettings;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.jetbrains.annotations.NotNull;
 
-import com.intellij.openapi.compiler.*;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.task.ProjectTaskListener;
+import com.intellij.task.ProjectTaskManager.Result;
 
-public class IdeaCompilationListener implements CompilationStatusListener, TestControl {
-	private final InfinitestCore core;
-	private final ModuleSettings moduleSettings;
-	private boolean shouldRunTests = true;
+public class IdeaCompilationListener implements ProjectTaskListener {
+	private final Project project;
 
-	public IdeaCompilationListener(InfinitestCore core, ModuleSettings moduleSettings) {
-		this.core = core;
-		this.moduleSettings = moduleSettings;
+	/**
+	 * @param project Injected by the platform
+	 */
+	public IdeaCompilationListener(Project project) {
+		this.project = project;
 	}
-
+	
 	@Override
-	public void compilationFinished(boolean aborted, int errors, int warnings, CompileContext compileContext) {
-		if (!aborted && (errors == 0)) {
+	public void finished(@NotNull Result result) {
+		if (!result.isAborted() && !result.hasErrors()) {
 			doRunTests();
 		}
 	}
 
-	@Override
-	public void fileGenerated(String outputRoot, String relativePath) {
-		doRunTests();
-	}
-
-	@Override
-	public void setRunTests(boolean shouldRunTests) {
-		if (shouldRunTests && !this.shouldRunTests) {
-			core.reload();
-		}
-		this.shouldRunTests = shouldRunTests;
-	}
-
-	@Override
-	public boolean shouldRunTests() {
-		return shouldRunTests;
-	}
-
 	private void doRunTests() {
-		if (!shouldRunTests) {
-			return;
-		}
+		TestControl testControl = project.getService(TestControl.class);
+		
+		for (Module module : ModuleManager.getInstance(project).getModules()) {
+			if (testControl.shouldRunTests()) {
+				InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+				ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
 
-		RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
-		if (runtimeEnvironment == null) {
-			return;
-		}
+				RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
+				if (runtimeEnvironment == null) {
+					return;
+				}
 
-		core.setRuntimeEnvironment(runtimeEnvironment);
-		core.update();
+				InfinitestCore core = launcher.getCore();
+
+				core.setRuntimeEnvironment(runtimeEnvironment);
+				core.update();
+			}
+		}
 	}
 }

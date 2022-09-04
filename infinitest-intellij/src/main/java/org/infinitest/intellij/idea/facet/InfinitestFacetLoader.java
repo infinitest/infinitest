@@ -29,7 +29,6 @@ package org.infinitest.intellij.idea.facet;
 
 import org.jetbrains.annotations.*;
 
-import com.intellij.facet.*;
 import com.intellij.openapi.components.*;
 
 public class InfinitestFacetLoader implements ApplicationComponent {
@@ -42,7 +41,7 @@ public class InfinitestFacetLoader implements ApplicationComponent {
 
 	@Override
 	public void initComponent() {
-		FacetTypeRegistry.getInstance().registerFacetType(InfinitestFacetType.INSTANCE);
+		// nothing to do here
 	}
 
 	@Override

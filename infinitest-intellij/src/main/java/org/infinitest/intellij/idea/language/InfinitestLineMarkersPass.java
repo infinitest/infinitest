@@ -29,6 +29,8 @@ package org.infinitest.intellij.idea.language;
 
 import static com.intellij.openapi.editor.markup.HighlighterLayer.*;
 
+import org.infinitest.intellij.InfinitestAnnotator;
+
 import com.intellij.codeHighlighting.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.markup.*;
@@ -67,8 +69,9 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 	@Override
 	public void execute(PsiClass psiClass) {
 		clearInfinitestMarkersFrom(model);
-
-		for (InnerClassFriendlyTestEvent each : IdeaInfinitestAnnotator.getInstance().getTestEvents()) {
+		InfinitestAnnotator annotator = project.getService(InfinitestAnnotator.class);
+		
+		for (InnerClassFriendlyTestEvent each : annotator.getTestEvents()) {
 			String name = psiClass.getQualifiedName();
 			if ((name != null) && name.equals(each.getPointOfFailureClassName())) {
 				int line = each.getPointOfFailureLineNumber() - 1;

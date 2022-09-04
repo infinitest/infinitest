@@ -27,13 +27,15 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
-import java.net.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.net.URL;
 
-import javax.swing.*;
-import javax.swing.tree.*;
-
-import org.infinitest.*;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.tree.TreeModel;
 
 import com.intellij.openapi.project.Project;
 
@@ -62,12 +64,6 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 		tabbedPane.add("Console", consoleFrame.getComponent());
 		
 		add(tabbedPane);
-	}
-
-	public static InfinitestView createFrame(ResultCollector results, Project project) {
-		InfinitestMainFrame mainFrame = new InfinitestMainFrame(project);
-		mainFrame.setResultsModel(new TreeModelAdapter(results));
-		return mainFrame;
 	}
 
 	private void initializeFrame() {

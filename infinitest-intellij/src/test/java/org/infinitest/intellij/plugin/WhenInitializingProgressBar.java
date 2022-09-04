@@ -27,16 +27,17 @@
  */
 package org.infinitest.intellij.plugin;
 
-import static java.awt.Color.*;
-import static org.mockito.Mockito.*;
+import static java.awt.Color.BLACK;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.infinitest.intellij.plugin.launcher.*;
-import org.infinitest.intellij.plugin.swingui.*;
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.junit.Test;
 
-public class WhenInitializingProgressBar {
+public class WhenInitializingProgressBar extends IntellijMockBase {
+
 	@Test
 	public void shouldSetBackgroundColorToBlack() {
 		InfinitestView view = mock(InfinitestView.class);
@@ -53,6 +54,6 @@ public class WhenInitializingProgressBar {
 	}
 
 	private void createPresenterWith(InfinitestView view) {
-		new InfinitestPresenter(new ResultCollector(), mock(InfinitestCore.class), view, new FakeTestControl(), new FakeInfinitestAnnotator());
+		new InfinitestPresenter(project, view);
 	}
 }

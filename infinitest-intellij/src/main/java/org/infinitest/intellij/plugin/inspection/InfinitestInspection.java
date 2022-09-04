@@ -25,56 +25,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.launcher;
+package org.infinitest.intellij.plugin.inspection;
 
-import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import org.infinitest.intellij.idea.window.*;
-
-import com.intellij.openapi.util.*;
-import com.intellij.openapi.wm.*;
+import com.intellij.codeInspection.InspectionManager;
+import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.LocalInspectionToolSession;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
 
 /**
- * Created by IntelliJ IDEA. User: aurelien Date: 09/06/11 Time: 21:26
+ * @author gtoison
+ *
  */
-public class ToolWindowListener implements PresenterListener {
-	ToolWindowManager toolWindowManager;
-	String toolWindowId;
-
-	public ToolWindowListener(ToolWindowManager toolWindowManager, String toolWindowId) {
-		this.toolWindowManager = toolWindowManager;
-		this.toolWindowId = toolWindowId;
-	}
+public class InfinitestInspection extends LocalInspectionTool {
 
 	@Override
-	public void testRunCompleted() {
-		// nothing to do here
+	public ProblemDescriptor @Nullable [] checkFile(@NotNull PsiFile file, @NotNull InspectionManager manager, boolean isOnTheFly) {
+		ProblemHighlightType highlightType = ProblemHighlightType.ERROR;
+		LocalQuickFix[] quickFixes = new LocalQuickFix[0];
+		ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(file, "Infinitest problem template", isOnTheFly, quickFixes, highlightType);
+		
+		return new ProblemDescriptor[] {problemDescriptor};
 	}
-
+	
 	@Override
-	public void testRunSucceed() {
-		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.SUCCESS_ICON_PATH));
-	}
-
-	@Override
-	public void testRunFailed() {
-		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.FAILURE_ICON_PATH));
-	}
-
-	@Override
-	public void testRunStarted() {
-		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.RUNNING_ICON_PATH));
-	}
-
-	@Override
-	public void testRunWaiting() {
-		editToolWindowIcon(IconLoader.getIcon(IdeaWindowHelper.WAITING_ICON_PATH));
-	}
-
-	private void editToolWindowIcon(Icon icon) {
-		ToolWindow toolWindow = toolWindowManager.getToolWindow(toolWindowId);
-		if (toolWindow != null) {
-			toolWindow.setIcon(icon);
-		}
+	public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly,
+			@NotNull LocalInspectionToolSession session) {
+		return super.buildVisitor(holder, isOnTheFly, session);
 	}
 }

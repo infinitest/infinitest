@@ -28,23 +28,34 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.event.WindowEvent;
 
-import javax.swing.*;
-import junit.framework.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.intellij.execution.filters.TextConsoleBuilder;
+import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 
-public class WhenShowingMainFrame {
+import junit.framework.AssertionFailedError;
+
+public class WhenShowingMainFrame extends IntellijMockBase {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
@@ -52,7 +63,8 @@ public class WhenShowingMainFrame {
 
   @Before
   public void inContext() {
-    Project project = mock(Project.class);
+    IntellijMockBase.setupApplication();
+    
     InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
     
     resultsPane = new InfinitestResultsPane();

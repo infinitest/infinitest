@@ -25,10 +25,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin;
+package org.infinitest.intellij.idea.window;
 
-public interface InfinitestPlugin {
-	void startInfinitest();
+import java.awt.BorderLayout;
 
-	void stopInfinitest();
+import javax.swing.JPanel;
+
+import org.infinitest.intellij.plugin.swingui.InfinitestResultsPane;
+
+import com.intellij.openapi.project.Project;
+import com.intellij.util.ui.JBUI;
+
+public class ToolWindowPanel extends JPanel {
+	private static final long serialVersionUID = -8970352477536145289L;
+	
+	private final Project project;
+	private final InfinitestResultsPane resultsPane; 
+
+	public ToolWindowPanel(Project project) {
+		super(new BorderLayout());
+		
+		this.project = project;
+
+		setBorder(JBUI.Borders.empty(1));
+		
+		resultsPane = new InfinitestResultsPane();
+	}
+	
+	
 }

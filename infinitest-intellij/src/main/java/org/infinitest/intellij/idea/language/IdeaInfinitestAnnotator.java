@@ -34,21 +34,11 @@ import java.util.*;
 import org.infinitest.intellij.*;
 import org.infinitest.testrunner.*;
 
+/**
+ * Project level service created by the platform
+ */
 public class IdeaInfinitestAnnotator implements InfinitestAnnotator {
 	private final Set<InnerClassFriendlyTestEvent> events = new HashSet<InnerClassFriendlyTestEvent>();
-
-	private static IdeaInfinitestAnnotator instance;
-
-	private IdeaInfinitestAnnotator() {
-
-	}
-
-	public static IdeaInfinitestAnnotator getInstance() {
-		if (instance == null) {
-			instance = new IdeaInfinitestAnnotator();
-		}
-		return instance;
-	}
 
 	@Override
 	public void annotate(final TestEvent event) {
@@ -60,6 +50,7 @@ public class IdeaInfinitestAnnotator implements InfinitestAnnotator {
 		events.remove(new InnerClassFriendlyTestEvent(event));
 	}
 
+	@Override
 	public Set<InnerClassFriendlyTestEvent> getTestEvents() {
 		return unmodifiableSet(events);
 	}
