@@ -35,6 +35,9 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 
@@ -43,9 +46,22 @@ import com.intellij.openapi.module.ModuleType;
  */
 class FailureCellRenderer extends DefaultTreeCellRenderer {
 	private static final long serialVersionUID = -1L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(FailureCellRenderer.class);
+	
+	private ModuleIconProvider moduleIconProvider;
 
 	public FailureCellRenderer() {
 		setToolTipText("Double-click test nodes to navigate to source");
+		
+		try {
+			// Checking if ModuleType.EMPTY is available
+			// com.intellij.openapi.module.EmptyModuleType is not available during unit tests
+			ModuleType.EMPTY.getDescription();
+			moduleIconProvider = new ModuleTypeIconProvider();
+		} catch (ExceptionInInitializerError | NoClassDefFoundError e) {
+			LOGGER.debug("Error initializing ModuleTypeIconProvider", e);
+			moduleIconProvider = ModuleIconProvider.NULL_MODULE_ICON_PROVIDER;
+		}
 	}
 
 	@Override
@@ -62,7 +78,7 @@ class FailureCellRenderer extends DefaultTreeCellRenderer {
 		
 		if (node instanceof Module) {
 			Module module = (Module) node;
-			return ModuleType.get(module).getIcon();
+			return moduleIconProvider.getIcon(module);
 		}
 		
 		return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/failure.png"));
