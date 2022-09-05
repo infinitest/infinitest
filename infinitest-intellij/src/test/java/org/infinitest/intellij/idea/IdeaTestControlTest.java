@@ -39,11 +39,22 @@ import org.junit.Test;
 
 public class IdeaTestControlTest extends IntellijMockBase {
 	@Test
-	public void testControlTest() {
+	public void projectControlTest() {
 		ProjectTestControl testControl = new ProjectTestControl(project);
+		
+		when(module.getService(TestControl.class)).thenReturn(moduleControl);
+		checkTestControl(testControl);
+	}
+	
+	@Test
+	public void moduleControlTest() {
+		TestControl testControl = new ModuleTestControl(module);
+		checkTestControl(testControl);
+	}
+	
+	private void checkTestControl(TestControl testControl) {
 		InfinitestCore core = mock(InfinitestCore.class);
 		
-		when(module.getService(TestControl.class)).thenReturn(testControl);
 		when(launcher.getCore()).thenReturn(core);
 		
 		testControl.setRunTests(false);
@@ -52,6 +63,6 @@ public class IdeaTestControlTest extends IntellijMockBase {
 		
 		testControl.setRunTests(true);
 		
-		verify(core).reload();
+		verify(core).update();
 	}
 }

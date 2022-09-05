@@ -69,6 +69,7 @@ public class IntellijMockBase {
 	
 	protected InfinitestLauncher launcher;
 	protected TestControl control;
+	protected TestControl moduleControl;
 	protected InfinitestAnnotator annotator;
 	
 	@Before
@@ -80,6 +81,7 @@ public class IntellijMockBase {
 		messageBusConnection = mock(MessageBusConnection.class);
 		launcher = mock(InfinitestLauncher.class);
 		control = mock(TestControl.class);
+		moduleControl = mock(TestControl.class);
 		annotator = mock(InfinitestAnnotator.class);
 		
 		when(project.getComponent(ModuleManager.class)).thenReturn(moduleManager);
@@ -89,6 +91,10 @@ public class IntellijMockBase {
 		
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
+		when(module.getService(TestControl.class)).thenReturn(moduleControl);
+		
+		when(control.shouldRunTests()).thenReturn(true);
+		when(moduleControl.shouldRunTests()).thenReturn(true);
 		
 		when(moduleManager.getModules()).thenReturn(new Module[] {module});
 		
@@ -100,6 +106,9 @@ public class IntellijMockBase {
 		when(messageBus.syncPublisher(InfinitestTopics.STATUS_CHANGE_TOPIC)).thenReturn(mock(StatusChangeListener.class));
 		when(messageBus.syncPublisher(InfinitestTopics.TEST_QUEUE_TOPIC)).thenReturn(mock(TestQueueListener.class));
 		when(messageBus.syncPublisher(InfinitestTopics.TEST_RESULTS_TOPIC)).thenReturn(mock(TestResultsListener.class));
+		
+		TestControl cp = project.getService(TestControl.class);
+		TestControl cm = module.getService(TestControl.class);
 	}
 	
 	/**

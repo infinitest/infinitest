@@ -30,14 +30,10 @@ package org.infinitest.intellij.plugin.swingui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.awt.Component;
 import java.awt.event.WindowEvent;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.infinitest.intellij.IntellijMockBase;
@@ -45,13 +41,7 @@ import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.intellij.execution.filters.TextConsoleBuilder;
-import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
+import com.intellij.icons.AllIcons;
 
 import junit.framework.AssertionFailedError;
 
@@ -94,7 +84,7 @@ public class WhenShowingMainFrame extends IntellijMockBase {
     Object node = "PointOfFailure.java:32";
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("error"));
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
   }
 
   @Test
@@ -102,12 +92,7 @@ public class WhenShowingMainFrame extends IntellijMockBase {
     Object node = eventWithError();
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("failure"));
-  }
-
-  private String expectedIcon(String iconName) {
-    ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
-    return expectedIcon.toString();
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.Nodes.Method);
   }
 
   private static TestEvent eventWithError() {

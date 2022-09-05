@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.infinitest.CoreStatus;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.IntellijMockBase;
 import org.junit.Test;
@@ -53,6 +54,8 @@ public class InfinitestToolWindowFactoryTest extends IntellijMockBase {
 		ResultCollector resultCollector = mock(ResultCollector.class);
 		
 		when(launcher.getResultCollector()).thenReturn(resultCollector);
+		
+		when(resultCollector.getStatus()).thenReturn(CoreStatus.SCANNING);
 		
 		factory.createToolWindowContent(project, toolWindow);
 		
