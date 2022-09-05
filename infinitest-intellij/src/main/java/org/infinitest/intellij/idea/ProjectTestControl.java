@@ -27,31 +27,43 @@
  */
 package org.infinitest.intellij.idea;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.infinitest.InfinitestCore;
 import org.infinitest.TestControl;
-import org.infinitest.intellij.IntellijMockBase;
-import org.junit.Test;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
-public class IdeaTestControlTest extends IntellijMockBase {
-	@Test
-	public void testControlTest() {
-		ProjectTestControl testControl = new ProjectTestControl(project);
-		InfinitestCore core = mock(InfinitestCore.class);
-		
-		when(module.getService(TestControl.class)).thenReturn(testControl);
-		when(launcher.getCore()).thenReturn(core);
-		
-		testControl.setRunTests(false);
-		
-		verify(core, never()).reload();
-		
-		testControl.setRunTests(true);
-		
-		verify(core).reload();
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+
+public class ProjectTestControl implements TestControl {
+	private Project project;
+	private boolean shouldRunTests = true;
+	
+	/**
+	 * @param project Injected by the platform
+	 */
+	public ProjectTestControl(Project project) {
+		this.project = project;
+	}
+
+	@Override
+	public void setRunTests(boolean shouldRunTests) {
+		if (shouldRunTests && !shouldRunTests()) {
+			for (Module module : ModuleManager.getInstance(project).getModules()) {
+				TestControl moduleTestControl = module.getService(TestControl.class);
+				
+				if (moduleTestControl.shouldRunTests()) {
+					InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+					InfinitestCore core = launcher.getCore();
+					core.update();
+				}
+			}
+		}
+		this.shouldRunTests = shouldRunTests;
+	}
+
+	@Override
+	public boolean shouldRunTests() {
+		return shouldRunTests;
 	}
 }

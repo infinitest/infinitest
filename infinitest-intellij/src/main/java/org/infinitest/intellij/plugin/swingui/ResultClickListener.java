@@ -32,8 +32,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.*;
 import org.infinitest.testrunner.*;
+
+import com.intellij.openapi.module.Module;
 
 public class ResultClickListener extends MouseAdapter {
 	private final SourceNavigator navigator;
@@ -44,16 +47,36 @@ public class ResultClickListener extends MouseAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() != 2) {
-			return;
-		}
-
 		JTree tree = (JTree) e.getSource();
+		if (e.getClickCount() == 2) {
+			mouseDoubleClicked(tree, e);
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
+			mouseRightClicked(tree, e);
+		}
+	}
+
+	private void mouseDoubleClicked(JTree tree, MouseEvent e) {
 		TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
 		Object treeNode = path.getLastPathComponent();
 		if (treeNode instanceof TestEvent) {
 			TestEvent event = (TestEvent) treeNode;
 			navigator.open(classFor(event)).line(lineFor(event));
+		}
+	}
+	
+	private void mouseRightClicked(JTree tree, MouseEvent e) {
+		TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+		if (path != null && path.getLastPathComponent() instanceof Module) {
+			Module module = (Module) path.getLastPathComponent();
+			
+			TestControl testControl = module.getService(TestControl.class);
+			
+			JPopupMenu popupMenu = new JPopupMenu();
+			JCheckBoxMenuItem testControlMenuItem = new JCheckBoxMenuItem("Enable/disable tests", testControl.shouldRunTests());
+			testControlMenuItem.addActionListener(x -> testControl.setRunTests(testControlMenuItem.isSelected()));
+			popupMenu.add(testControlMenuItem);
+			
+			popupMenu.show(tree, e.getX(), e.getY());
 		}
 	}
 

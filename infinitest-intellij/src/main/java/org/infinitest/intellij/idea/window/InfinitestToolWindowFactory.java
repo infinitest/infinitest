@@ -29,11 +29,11 @@ package org.infinitest.intellij.idea.window;
 
 import java.awt.BorderLayout;
 
-import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import org.infinitest.CoreStatus;
 import org.infinitest.StatusChangeListener;
+import org.infinitest.intellij.InfinitestIcons;
 import org.infinitest.intellij.InfinitestLoggingListener;
 import org.infinitest.intellij.InfinitestTopics;
 import org.infinitest.intellij.idea.IdeaSourceNavigator;
@@ -108,24 +108,7 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 		
 		@Override
 		public void coreStatusChanged(CoreStatus oldStatus, CoreStatus newStatus) {
-			String iconPath = getIconPath(newStatus);
-			Icon icon = IconLoader.getIcon(iconPath, getClass());
-			toolWindow.setIcon(icon);
-		}
-
-		private String getIconPath(CoreStatus status) {
-			switch (status) {
-			case FAILING:
-				return FAILURE_ICON_PATH;
-			case INDEXING:
-			case SCANNING:
-			case RUNNING:
-				return RUNNING_ICON_PATH;
-			case PASSING:
-				return SUCCESS_ICON_PATH;
-			default:
-				return FAILURE_ICON_PATH;
-			}
+			toolWindow.setIcon(InfinitestIcons.getIcon(newStatus));
 		}
 	}
 }

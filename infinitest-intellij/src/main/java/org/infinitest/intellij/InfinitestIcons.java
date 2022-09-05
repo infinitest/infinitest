@@ -25,33 +25,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea;
+package org.infinitest.intellij;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import javax.swing.Icon;
 
-import org.infinitest.InfinitestCore;
-import org.infinitest.TestControl;
-import org.infinitest.intellij.IntellijMockBase;
-import org.junit.Test;
+import org.infinitest.CoreStatus;
 
-public class IdeaTestControlTest extends IntellijMockBase {
-	@Test
-	public void testControlTest() {
-		ProjectTestControl testControl = new ProjectTestControl(project);
-		InfinitestCore core = mock(InfinitestCore.class);
-		
-		when(module.getService(TestControl.class)).thenReturn(testControl);
-		when(launcher.getCore()).thenReturn(core);
-		
-		testControl.setRunTests(false);
-		
-		verify(core, never()).reload();
-		
-		testControl.setRunTests(true);
-		
-		verify(core).reload();
+import com.intellij.openapi.util.IconLoader;
+
+public class InfinitestIcons {
+
+	public static final Icon WAITING = IconLoader.getIcon("/infinitest-waiting.png", InfinitestIcons.class);
+	public static final Icon RUNNING = IconLoader.getIcon("/infinitest.png", InfinitestIcons.class);
+	public static final Icon SUCCESS = IconLoader.getIcon("/infinitest-success.png", InfinitestIcons.class);
+	public static final Icon FAILURE = IconLoader.getIcon("/infinitest-failure.png", InfinitestIcons.class);
+
+	public static Icon getIcon(CoreStatus status) {
+		switch (status) {
+		case FAILING:
+			return FAILURE;
+		case INDEXING:
+		case SCANNING:
+		case RUNNING:
+			return RUNNING;
+		case PASSING:
+			return SUCCESS;
+		default:
+			return FAILURE;
+		}
 	}
 }

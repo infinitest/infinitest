@@ -32,27 +32,27 @@ import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
 
-public class IdeaTestControl implements TestControl {
-	private Project project;
+public class ModuleTestControl implements TestControl {
+	private Module module;
 	private boolean shouldRunTests = true;
 	
 	/**
-	 * @param project Injected by the platform
+	 * @param module Injected by the platform
 	 */
-	public IdeaTestControl(Project project) {
-		this.project = project;
+	public ModuleTestControl(Module module) {
+		this.module = module;
 	}
 
 	@Override
 	public void setRunTests(boolean shouldRunTests) {
 		if (shouldRunTests && !shouldRunTests()) {
-			for (Module module : ModuleManager.getInstance(project).getModules()) {
+			TestControl projectTestControl = module.getProject().getService(TestControl.class);
+			
+			if (projectTestControl.shouldRunTests()) {
 				InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
 				InfinitestCore core = launcher.getCore();
-				core.reload();
+				core.update();
 			}
 		}
 		this.shouldRunTests = shouldRunTests;

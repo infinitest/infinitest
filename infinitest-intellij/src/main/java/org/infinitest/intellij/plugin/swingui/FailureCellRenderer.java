@@ -30,16 +30,24 @@ package org.infinitest.intellij.plugin.swingui;
 import java.awt.Component;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.infinitest.ResultCollector;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.InfinitestIcons;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestEvent.TestState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.ui.RowIcon;
+import com.intellij.util.ui.EmptyIcon;
 
 /**
  * @author <a href="mailto:benrady@gmail.com".Ben Rady</a>
@@ -72,16 +80,31 @@ class FailureCellRenderer extends DefaultTreeCellRenderer {
 	}
 
 	private Icon loadIcon(Object node) {
-		if (node instanceof String) {
-			return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/error.png"));
+		if (node instanceof TestEvent) {
+			TestEvent testEvent = (TestEvent) node;
+			if (testEvent.getType() == TestState.METHOD_FAILURE) {
+				return AllIcons.Nodes.Method;
+			}
 		}
 		
 		if (node instanceof Module) {
 			Module module = (Module) node;
-			return moduleIconProvider.getIcon(module);
+			TestControl testControl = module.getService(TestControl.class);
+			
+			Icon moduleTypeIcon = moduleIconProvider.getIcon(module);
+			Icon moduleStateIcon;
+			
+			if (testControl.shouldRunTests()) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				moduleStateIcon = InfinitestIcons.getIcon(collector.getStatus());
+			} else {
+				moduleStateIcon = InfinitestIcons.WAITING;
+			}
+			
+			return new RowIcon(moduleStateIcon, EmptyIcon.create(2, 16), moduleTypeIcon);
 		}
 		
-		return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/failure.png"));
+		return AllIcons.General.Warning;
 	}
 
 }
