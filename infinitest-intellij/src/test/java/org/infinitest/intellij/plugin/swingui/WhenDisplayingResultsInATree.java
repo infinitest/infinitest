@@ -121,36 +121,6 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 		assertEquals(0, model.getChildCount(testNode));
 		assertTrue(model.isLeaf(testNode));
 	}
-	
-	@Test
-	public void shouldUpdateTreeWhenModuleRenamed() throws InvocationTargetException, InterruptedException {
-		TreeModelListener listener = mock(TreeModelListener.class);
-		model.modulesRenamed(project, null, null);
-		model.addTreeModelListener(listener);
-		SwingUtilities.invokeAndWait(() -> {});
-		
-		verify(listener).treeStructureChanged(any());
-	}
-	
-	@Test
-	public void shouldUpdateTreeWhenModuleAdded() throws InvocationTargetException, InterruptedException {
-		TreeModelListener listener = mock(TreeModelListener.class);
-		model.moduleAdded(project, module);
-		model.addTreeModelListener(listener);
-		SwingUtilities.invokeAndWait(() -> {});
-		
-		verify(listener).treeStructureChanged(any());
-	}
-	
-	@Test
-	public void shouldUpdateTreeWhenModuleRemoved() throws InvocationTargetException, InterruptedException {
-		TreeModelListener listener = mock(TreeModelListener.class);
-		model.moduleRemoved(project, module);
-		model.addTreeModelListener(listener);
-		SwingUtilities.invokeAndWait(() -> {});
-		
-		verify(listener).treeStructureChanged(any());
-	}
 
 	private void assertNodeReferenceIntegrity(Object parent, int nodeIndex) {
 		assertEquals(nodeIndex, model.getIndexOfChild(parent, model.getChild(parent, nodeIndex)));
