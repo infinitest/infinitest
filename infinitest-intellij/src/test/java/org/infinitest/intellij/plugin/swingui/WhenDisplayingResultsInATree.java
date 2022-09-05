@@ -33,10 +33,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.swing.tree.TreeModel;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeModelListener;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
@@ -52,7 +57,7 @@ import junit.framework.AssertionFailedError;
 public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	private static final String DEFAULT_TEST_NAME = "testName";
 
-	private TreeModel model;
+	private TreeModelAdapter model;
 	private ResultCollector collector;
 
 	@Before
@@ -115,6 +120,36 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 		Object testNode = model.getChild(failureNode, 0);
 		assertEquals(0, model.getChildCount(testNode));
 		assertTrue(model.isLeaf(testNode));
+	}
+	
+	@Test
+	public void shouldUpdateTreeWhenModuleRenamed() throws InvocationTargetException, InterruptedException {
+		TreeModelListener listener = mock(TreeModelListener.class);
+		model.modulesRenamed(project, null, null);
+		model.addTreeModelListener(listener);
+		SwingUtilities.invokeAndWait(() -> {});
+		
+		verify(listener).treeStructureChanged(any());
+	}
+	
+	@Test
+	public void shouldUpdateTreeWhenModuleAdded() throws InvocationTargetException, InterruptedException {
+		TreeModelListener listener = mock(TreeModelListener.class);
+		model.moduleAdded(project, module);
+		model.addTreeModelListener(listener);
+		SwingUtilities.invokeAndWait(() -> {});
+		
+		verify(listener).treeStructureChanged(any());
+	}
+	
+	@Test
+	public void shouldUpdateTreeWhenModuleRemoved() throws InvocationTargetException, InterruptedException {
+		TreeModelListener listener = mock(TreeModelListener.class);
+		model.moduleRemoved(project, module);
+		model.addTreeModelListener(listener);
+		SwingUtilities.invokeAndWait(() -> {});
+		
+		verify(listener).treeStructureChanged(any());
 	}
 
 	private void assertNodeReferenceIntegrity(Object parent, int nodeIndex) {

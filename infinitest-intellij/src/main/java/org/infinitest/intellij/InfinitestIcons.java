@@ -33,13 +33,16 @@ import org.infinitest.CoreStatus;
 
 import com.intellij.openapi.util.IconLoader;
 
-public class InfinitestIcons {
+public final class InfinitestIcons {
 
 	public static final Icon WAITING = IconLoader.getIcon("/infinitest-waiting.png", InfinitestIcons.class);
 	public static final Icon RUNNING = IconLoader.getIcon("/infinitest.png", InfinitestIcons.class);
 	public static final Icon SUCCESS = IconLoader.getIcon("/infinitest-success.png", InfinitestIcons.class);
 	public static final Icon FAILURE = IconLoader.getIcon("/infinitest-failure.png", InfinitestIcons.class);
 
+	private InfinitestIcons() {
+	}
+	
 	public static Icon getIcon(CoreStatus status) {
 		switch (status) {
 		case FAILING:

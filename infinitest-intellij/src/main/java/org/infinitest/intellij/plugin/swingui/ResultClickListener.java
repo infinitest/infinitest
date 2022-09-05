@@ -76,7 +76,9 @@ public class ResultClickListener extends MouseAdapter {
 			testControlMenuItem.addActionListener(x -> testControl.setRunTests(testControlMenuItem.isSelected()));
 			popupMenu.add(testControlMenuItem);
 			
-			popupMenu.show(tree, e.getX(), e.getY());
+			if (tree.isShowing()) {
+				popupMenu.show(tree, e.getX(), e.getY());
+			}
 		}
 	}
 

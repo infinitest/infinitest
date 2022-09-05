@@ -29,6 +29,8 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.awt.event.*;
 import java.util.*;
@@ -38,12 +40,15 @@ import javax.swing.tree.*;
 
 import junit.framework.*;
 
+import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.plugin.*;
 import org.infinitest.testrunner.*;
 import org.junit.*;
 import org.junit.Test;
 
-public class WhenUserClicksOnResultTree {
+import com.intellij.ide.ui.PublicMethodBasedOptionDescription;
+
+public class WhenUserClicksOnResultTree extends IntellijMockBase {
 	private ResultClickListener clickListener;
 	private List<TestEvent> paneEvents;
 	private KeyListener keyListener;
@@ -78,12 +83,20 @@ public class WhenUserClicksOnResultTree {
 	@Test
 	public void shouldNotPopUpOnSingleClick() {
 		JTree tree = createFakeTree(eventWithError());
-		simulateClickEvent(tree, 1);
+		simulateClickEvent(tree, 1, MouseEvent.BUTTON1);
 		assertTrue(paneEvents.isEmpty());
 	}
+	
+	@Test
+	public void checkRightClick() {
+		JTree tree = createFakeTree(module);
+		simulateClickEvent(tree, 1, MouseEvent.BUTTON3);
+		
+		verify(moduleControl).shouldRunTests();
+	}
 
-	private void simulateClickEvent(JTree tree, int clickCount) {
-		clickListener.mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, clickCount, false));
+	private void simulateClickEvent(JTree tree, int clickCount, int button) {
+		clickListener.mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, clickCount, false, button));
 	}
 
 	private void simulateEnterKeyEvent(JTree tree, int keyCode) {
@@ -118,6 +131,11 @@ public class WhenUserClicksOnResultTree {
 
 			@Override
 			public TreePath getClosestPathForLocation(int x, int y) {
+				return new TreePath(new Object[] { "root", "parent", treeNode });
+			}
+			
+			@Override
+			public TreePath getPathForLocation(int x, int y) {
 				return new TreePath(new Object[] { "root", "parent", treeNode });
 			}
 

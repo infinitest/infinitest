@@ -36,7 +36,7 @@ import org.infinitest.testrunner.TestResultsListener;
 
 import com.intellij.util.messages.Topic;
 
-public interface InfinitestTopics {
+public final class InfinitestTopics {
 
 	public static final Topic<ConsoleOutputListener> CONSOLE_TOPIC = Topic.create("Infinitest console output", ConsoleOutputListener.class);
 	public static final Topic<DisabledTestListener> DISABLED_TEST_TOPIC = Topic.create("Infinitest disabled tests", DisabledTestListener.class);
@@ -44,4 +44,7 @@ public interface InfinitestTopics {
 	public static final Topic<StatusChangeListener> STATUS_CHANGE_TOPIC = Topic.create("Infinitest core status", StatusChangeListener.class);
 	public static final Topic<TestQueueListener> TEST_QUEUE_TOPIC  = Topic.create("Infinitest test queue", TestQueueListener.class);
 	public static final Topic<TestResultsListener> TEST_RESULTS_TOPIC = Topic.create("Infinitest test queue results", TestResultsListener.class);
+	
+	private InfinitestTopics() {
+	}
 }
