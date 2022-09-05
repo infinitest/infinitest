@@ -35,6 +35,8 @@ import static org.infinitest.intellij.plugin.launcher.StatusMessages.getMessage;
 import java.awt.Color;
 import java.util.Collection;
 
+import javax.swing.JComponent;
+
 import org.infinitest.CoreStatus;
 import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
@@ -63,11 +65,14 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 	public static final Color FAILING_COLOR = RED;
 	public static final Color UNKNOWN_COLOR = YELLOW;
 
+	private final Project project;
 	private final InfinitestView view;
 	private final StateMonitor monitor;
 	private final InfinitestAnnotator annotator;
 
 	public InfinitestPresenter(Project project, InfinitestView infinitestView) {
+		this.project = project;
+		
 		MessageBusConnection connection = project.getMessageBus().connect();
 		TestControl control = project.getService(TestControl.class);
 		
@@ -145,11 +150,12 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		try {
 			String html = "<html><body><strong>Infinitest:</strong> " + message + "</body></html>";
 
+			JComponent component = WindowManager.getInstance().getIdeFrame(project).getComponent();
 			JBPopupFactory.getInstance()
 				.createHtmlTextBalloonBuilder(html, type, null)
 				.setFadeoutTime(fadeoutTime)
 				.createBalloon()
-				.show(RelativePoint.getNorthEastOf(WindowManager.getInstance().getAllProjectFrames()[0].getComponent()), Balloon.Position.above);
+				.show(RelativePoint.getNorthEastOf(component), Balloon.Position.above);
 		} catch (Exception e) {
 			// Ignore error. It's just a balloon
 		}
