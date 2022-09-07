@@ -41,7 +41,7 @@
 		<surefire.version>3.0.0-M7</surefire.version>
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.organization>infinitest</sonar.organization>
+		<sonar.organization>infinitest-github</sonar.organization>
 	</properties>
 
 	<profiles>
