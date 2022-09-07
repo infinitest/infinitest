@@ -32,7 +32,12 @@ import javax.swing.Icon;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 
+/**
+ * Gets the icon from the {@link ModuleType}
+ */
 public class ModuleTypeIconProvider implements ModuleIconProvider {
+	private static final long serialVersionUID = -4915885933022775960L;
+
 	@Override
 	public Icon getIcon(Module module) {
 		return ModuleType.get(module).getIcon();

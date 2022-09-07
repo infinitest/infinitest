@@ -40,6 +40,8 @@ public class TestHaltTestAction {
 	@Test
 	public void shouldDisableAndEnableTests() {
 		TestControl control = new TestControl() {
+			private static final long serialVersionUID = -3132849149965562669L;
+
 			@Override
 			public void setRunTests(boolean shouldRunTests) {
 				runTests = shouldRunTests;

@@ -27,12 +27,15 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
+import java.io.Serializable;
+
 import javax.swing.Icon;
 
 import com.intellij.openapi.module.Module;
 
-public interface ModuleIconProvider {
+public interface ModuleIconProvider extends Serializable {
 	public static final ModuleIconProvider NULL_MODULE_ICON_PROVIDER = new ModuleIconProvider() {
+		private static final long serialVersionUID = -1440734754505336260L;
 	};
 	
 	default Icon getIcon(Module module) {

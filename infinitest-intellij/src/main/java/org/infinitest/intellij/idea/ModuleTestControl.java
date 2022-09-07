@@ -34,6 +34,8 @@ import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import com.intellij.openapi.module.Module;
 
 public class ModuleTestControl implements TestControl {
+	private static final long serialVersionUID = 7055308263165987253L;
+	
 	private Module module;
 	private boolean shouldRunTests = true;
 	

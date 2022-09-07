@@ -27,7 +27,9 @@
  */
 package org.infinitest;
 
-public interface TestControl {
+import java.io.Serializable;
+
+public interface TestControl extends Serializable {
 	void setRunTests(boolean shouldRunTests);
 
 	boolean shouldRunTests();

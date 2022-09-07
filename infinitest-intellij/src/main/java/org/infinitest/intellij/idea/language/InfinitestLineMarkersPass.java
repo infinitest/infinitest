@@ -55,6 +55,7 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 
 	@Override
 	public void doCollectInformation(ProgressIndicator progressIndicator) {
+		// Nothing to do here
 	}
 
 	@Override
