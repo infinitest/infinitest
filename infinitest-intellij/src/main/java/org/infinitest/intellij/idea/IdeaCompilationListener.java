@@ -60,20 +60,24 @@ public class IdeaCompilationListener implements ProjectTaskListener {
 	private void doRunTests() {
 		TestControl testControl = project.getService(TestControl.class);
 		
-		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			if (testControl.shouldRunTests()) {
-				InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
-				ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+		if (testControl.shouldRunTests()) {
+			for (Module module : ModuleManager.getInstance(project).getModules()) {
+				TestControl moduleTestControl = module.getService(TestControl.class);
 
-				RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
-				if (runtimeEnvironment == null) {
-					return;
+				if (moduleTestControl.shouldRunTests()) {
+					InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+					ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+
+					RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
+					if (runtimeEnvironment == null) {
+						return;
+					}
+
+					InfinitestCore core = launcher.getCore();
+
+					core.setRuntimeEnvironment(runtimeEnvironment);
+					core.update();
 				}
-
-				InfinitestCore core = launcher.getCore();
-
-				core.setRuntimeEnvironment(runtimeEnvironment);
-				core.update();
 			}
 		}
 	}

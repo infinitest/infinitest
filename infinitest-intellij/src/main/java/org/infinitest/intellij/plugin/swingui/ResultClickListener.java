@@ -73,12 +73,20 @@ public class ResultClickListener extends MouseAdapter {
 			
 			JPopupMenu popupMenu = new JPopupMenu();
 			JCheckBoxMenuItem testControlMenuItem = new JCheckBoxMenuItem("Enable/disable tests", testControl.shouldRunTests());
-			testControlMenuItem.addActionListener(x -> testControl.setRunTests(testControlMenuItem.isSelected()));
+			testControlMenuItem.addActionListener(x -> toggleTestControl(testControl, testControlMenuItem, tree));
 			popupMenu.add(testControlMenuItem);
 			
 			if (tree.isShowing()) {
 				popupMenu.show(tree, e.getX(), e.getY());
 			}
+		}
+	}
+
+	private void toggleTestControl(TestControl testControl, JCheckBoxMenuItem testControlMenuItem, JTree tree) {
+		testControl.setRunTests(testControlMenuItem.isSelected());
+		
+		if (!testControl.shouldRunTests()) {
+			((TreeModelAdapter) tree.getModel()).fireTreeStructureChanged();
 		}
 	}
 

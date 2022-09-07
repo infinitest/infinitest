@@ -40,6 +40,7 @@ import javax.swing.tree.TreePath;
 
 import org.infinitest.FailureListListener;
 import org.infinitest.ResultCollector;
+import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestEvent;
@@ -96,8 +97,12 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 			return ModuleManager.getInstance(project).getModules().length;
 		} else if (parent instanceof Module) {
 			Module module = (Module) parent;
-			ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
-			return collector.getPointOfFailureCount();
+			TestControl moduleTestControl = module.getService(TestControl.class);
+			
+			if (moduleTestControl.shouldRunTests()) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				return collector.getPointOfFailureCount();
+			}
 		} else if (parent instanceof PointOfFailure) {
 			PointOfFailure pointOfFailure = (PointOfFailure) parent;
 			
