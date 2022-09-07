@@ -36,8 +36,6 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 
 public class ProjectTestControl implements TestControl {
-	private static final long serialVersionUID = -252505511188012209L;
-	
 	private Project project;
 	private boolean shouldRunTests = true;
 	
