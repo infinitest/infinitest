@@ -64,14 +64,14 @@ class JUnit5EventTranslator implements TestExecutionListener {
 	@Override
 	public void executionStarted(TestIdentifier testIdentifier) {
 		if (testIdentifier.isTest()) {
-			getMethodStats(testIdentifier).startTime = clock.currentTimeMillis();
+			getMethodStats(testIdentifier).start(clock.currentTimeMillis());
 		}
 	}
 
 	@Override
 	public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
 		if (testIdentifier.isTest()) {
-			getMethodStats(testIdentifier).stopTime = clock.currentTimeMillis();
+			getMethodStats(testIdentifier).stop(clock.currentTimeMillis());
 			switch (testExecutionResult.getStatus()) {
 
 			case SUCCESSFUL:

@@ -66,8 +66,8 @@ public class WhenWatchingForSlowTests {
 
 	@Test
 	public void shouldAddMarkersForSlowTests() {
-		methodStats.startTime = 1000;
-		methodStats.stopTime = 5000;
+		methodStats.start(1000);
+		methodStats.stop(5000);
 
 		observer.testCaseComplete(event);
 
@@ -76,8 +76,8 @@ public class WhenWatchingForSlowTests {
 
 	@Test
 	public void shouldRemoveMarkersForFastTests() {
-		methodStats.startTime = 1000;
-		methodStats.stopTime = 1001;
+		methodStats.start(1000);
+		methodStats.stop(1001);
 
 		observer.testCaseComplete(event);
 
@@ -86,8 +86,8 @@ public class WhenWatchingForSlowTests {
 
 	@Test
 	public void shouldRemoveMarkersWhenTestsAreDisabled() {
-		methodStats.startTime = 1000;
-		methodStats.stopTime = 5000;
+		methodStats.start(1000);
+		methodStats.stop(5000);
 
 		observer.testCaseComplete(event);
 		observer.testsDisabled(Arrays.asList("MyTest"));

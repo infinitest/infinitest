@@ -59,12 +59,12 @@ class JUnitEventTranslator extends RunListener {
 
 	@Override
 	public void testStarted(Description description) {
-		getMethodStats(description).startTime = clock.currentTimeMillis();
+		getMethodStats(description).start(clock.currentTimeMillis());
 	}
 
 	@Override
 	public void testFinished(Description description) {
-		getMethodStats(description).stopTime = clock.currentTimeMillis();
+		getMethodStats(description).stop(clock.currentTimeMillis());
 	}
 
 	@Override

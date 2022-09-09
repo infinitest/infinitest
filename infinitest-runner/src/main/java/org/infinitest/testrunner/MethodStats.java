@@ -35,14 +35,28 @@ import java.io.*;
 public class MethodStats implements Serializable {
 	private static final long serialVersionUID = -8853619641593524214L;
 
-  // TODO: we could encapsulate write access to startTime/stopTime
-  // with something like start(timestamp) and stop(timestamp) methods.
-	public long startTime;
-	public long stopTime;
+	private long startTime;
+	private long stopTime;
 	public final String methodName;
 
 	public MethodStats(String methodName) {
 		this.methodName = methodName;
+	}
+	
+	public void start(long timestamp) {
+		this.startTime = timestamp;
+	}
+	
+	public long startTime() {
+		return startTime;
+	}
+	
+	public void stop(long timestamp) {
+		this.stopTime = timestamp;
+	}
+	
+	public long stopTime() {
+		return stopTime;
 	}
 
 	public long duration() {
