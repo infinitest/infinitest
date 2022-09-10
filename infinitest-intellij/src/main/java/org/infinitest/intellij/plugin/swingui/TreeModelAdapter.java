@@ -85,7 +85,9 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 			for (Module module : ModuleManager.getInstance(project).getModules()) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				if (collector.isPointOfFailure(parent)) {
-					return collector.getTestsFor(pointOfFailure).get(index);
+					// When a  @ParameterizedTest fails inside the @BeforeEach method, multiple test events will be in the collector
+					// These events will show as empty now, except for the last one, so we only want distinct elements here
+					return collector.getTestsFor(pointOfFailure).stream().distinct().skip(index).findFirst().orElse(null);
 				}
 			}
 		}
@@ -110,7 +112,8 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 			for (Module module : ModuleManager.getInstance(project).getModules()) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				if (collector.isPointOfFailure(parent)) {
-					return collector.getTestsFor(pointOfFailure).size();
+					// Only show distinct test events
+					return (int) collector.getTestsFor(pointOfFailure).stream().distinct().count();
 				}
 			}
 		}
