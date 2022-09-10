@@ -58,13 +58,11 @@ public class IdeaCompilationListener implements ProjectTaskListener {
 	}
 
 	private void doRunTests() {
-		TestControl testControl = project.getService(TestControl.class);
+		TestControl testControl = project.getService(ProjectTestControl.class);
 		
 		if (testControl.shouldRunTests()) {
 			for (Module module : ModuleManager.getInstance(project).getModules()) {
-				TestControl moduleTestControl = module.getService(TestControl.class);
-
-				if (moduleTestControl.shouldRunTests()) {
+				if (testControl.shouldRunTests(module)) {
 					InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
 					ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
 

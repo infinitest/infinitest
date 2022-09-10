@@ -52,7 +52,6 @@ public class WhenCompilationCompletes extends IntellijMockBase {
 		core = mock(InfinitestCore.class);
 		result = mock(Result.class);
 		
-		when(control.shouldRunTests()).thenReturn(true);
 		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
 		when(launcher.getCore()).thenReturn(core);
 	}

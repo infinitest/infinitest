@@ -45,6 +45,7 @@ import org.infinitest.TestQueueEvent;
 import org.infinitest.TestQueueListener;
 import org.infinitest.intellij.InfinitestAnnotator;
 import org.infinitest.intellij.InfinitestTopics;
+import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.swingui.HaltTestAction;
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.infinitest.intellij.plugin.swingui.ReloadIndexAction;
@@ -74,7 +75,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		this.project = project;
 		
 		MessageBusConnection connection = project.getMessageBus().connect();
-		TestControl control = project.getService(TestControl.class);
+		TestControl control = project.getService(ProjectTestControl.class);
 		
 		this.annotator = project.getService(InfinitestAnnotator.class);
 		view = infinitestView;

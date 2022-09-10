@@ -25,16 +25,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.idea;
 
-import org.infinitest.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("all")
-public class FakeTestControl implements TestControl {
-	public void setRunTests(boolean shouldRunTests) {
+/**
+ * This class needs to be a java bean to be persisted by IntelliJ
+ */
+public final class ProjectTestControlState {
+	private boolean runTests = true;
+	private List<String> disabledModulesNames = new ArrayList<>();
+
+	public boolean isRunTests() {
+		return runTests;
 	}
 
-	public boolean shouldRunTests() {
-		return false;
+	public void setRunTests(boolean shouldRunTests) {
+		this.runTests = shouldRunTests;
+	}
+
+	public List<String> getDisabledModulesNames() {
+		return disabledModulesNames;
+	}
+
+	public void setDisabledModulesNames(List<String> disabledModulesNames) {
+		this.disabledModulesNames = disabledModulesNames;
 	}
 }

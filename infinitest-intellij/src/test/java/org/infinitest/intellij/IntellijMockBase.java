@@ -35,8 +35,8 @@ import org.infinitest.ConsoleOutputListener;
 import org.infinitest.DisabledTestListener;
 import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
-import org.infinitest.TestControl;
 import org.infinitest.TestQueueListener;
+import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.TestResultsListener;
 import org.junit.Before;
@@ -68,8 +68,7 @@ public class IntellijMockBase {
 	protected MessageBusConnection messageBusConnection;
 	
 	protected InfinitestLauncher launcher;
-	protected TestControl control;
-	protected TestControl moduleControl;
+	protected ProjectTestControl control;
 	protected InfinitestAnnotator annotator;
 	
 	@Before
@@ -80,21 +79,17 @@ public class IntellijMockBase {
 		messageBus = mock(MessageBus.class);
 		messageBusConnection = mock(MessageBusConnection.class);
 		launcher = mock(InfinitestLauncher.class);
-		control = mock(TestControl.class);
-		moduleControl = mock(TestControl.class);
+		control = new ProjectTestControl(project);
 		annotator = mock(InfinitestAnnotator.class);
 		
 		when(project.getComponent(ModuleManager.class)).thenReturn(moduleManager);
 		when(project.getMessageBus()).thenReturn(messageBus);
-		when(project.getService(TestControl.class)).thenReturn(control);
+		when(project.getService(ProjectTestControl.class)).thenReturn(control);
 		when(project.getService(InfinitestAnnotator.class)).thenReturn(annotator);
 		
+		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
-		when(module.getService(TestControl.class)).thenReturn(moduleControl);
-		
-		when(control.shouldRunTests()).thenReturn(true);
-		when(moduleControl.shouldRunTests()).thenReturn(true);
 		
 		when(moduleManager.getModules()).thenReturn(new Module[] {module});
 		

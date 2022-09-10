@@ -31,11 +31,9 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.Before;
@@ -50,8 +48,6 @@ public class WhenTestFailuresReported extends IntellijMockBase {
 
 	@Before
 	public void setUp() {
-		when(project.getService(TestControl.class)).thenReturn(new FakeTestControl());
-		
 		presenter = new InfinitestPresenter(project, new FakeInfinitestView());
 	}
 

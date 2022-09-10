@@ -27,8 +27,28 @@
  */
 package org.infinitest;
 
-public interface TestControl {
-	void setRunTests(boolean shouldRunTests);
+import com.intellij.openapi.module.Module;
 
+public interface TestControl {
+	/**
+	 * @param shouldRunTests The global switch to enable/disable tests for this project
+	 */
+	void setRunTests(boolean shouldRunTests);
+	
+	/**
+	 * @param shouldRunTests the switch to run tests for this module
+	 * @param module the {@link Module} we want to enable/disable tests for
+	 */
+	void setRunTests(boolean shouldRunTests, Module module);
+
+	/**
+	 * @param module the module we want to check
+	 * @return <code>true</code> if tests are enabled for this module, also call the project-level method
+	 */
+	boolean shouldRunTests(Module module);
+
+	/**
+	 * @return <code>true</code> if the global switch is enabled
+	 */
 	boolean shouldRunTests();
 }

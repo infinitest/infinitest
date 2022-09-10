@@ -27,13 +27,14 @@
  */
 package org.infinitest.intellij.idea;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.infinitest.InfinitestCore;
-import org.infinitest.TestControl;
 import org.infinitest.intellij.IntellijMockBase;
 import org.junit.Test;
 
@@ -42,17 +43,8 @@ public class IdeaTestControlTest extends IntellijMockBase {
 	public void projectControlTest() {
 		ProjectTestControl testControl = new ProjectTestControl(project);
 		
-		when(module.getService(TestControl.class)).thenReturn(moduleControl);
-		checkTestControl(testControl);
-	}
-	
-	@Test
-	public void moduleControlTest() {
-		TestControl testControl = new ModuleTestControl(module);
-		checkTestControl(testControl);
-	}
-	
-	private void checkTestControl(TestControl testControl) {
+		when(module.getProject().getService(ProjectTestControl.class)).thenReturn(testControl);
+		
 		InfinitestCore core = mock(InfinitestCore.class);
 		
 		when(launcher.getCore()).thenReturn(core);
@@ -64,5 +56,28 @@ public class IdeaTestControlTest extends IntellijMockBase {
 		testControl.setRunTests(true);
 		
 		verify(core).update();
+	}
+	
+	@Test
+	public void updateModuleState() {
+		ProjectTestControl testControl = new ProjectTestControl(project);
+		ProjectTestControlState state = new ProjectTestControlState();
+		
+		InfinitestCore core = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(core);
+		
+		// Load an empty state and disable tests on a module
+		testControl.loadState(state);
+		testControl.setRunTests(false, module);
+		
+		assertFalse(testControl.shouldRunTests(module));
+		assertThat(testControl.getState().getDisabledModulesNames()).contains(module.getName());
+
+		// Now enable the tests on the module
+		testControl.setRunTests(true, module);
+		
+		verify(core).update();
+		assertThat(testControl.getState().getDisabledModulesNames()).isEmpty();
 	}
 }

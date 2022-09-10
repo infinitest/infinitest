@@ -27,26 +27,28 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
-import javax.swing.tree.*;
-
-import junit.framework.*;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 import org.infinitest.intellij.IntellijMockBase;
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.intellij.plugin.SourceNavigatorStub;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.intellij.ide.ui.PublicMethodBasedOptionDescription;
+import junit.framework.AssertionFailedError;
 
 public class WhenUserClicksOnResultTree extends IntellijMockBase {
 	private ResultClickListener clickListener;
@@ -92,7 +94,7 @@ public class WhenUserClicksOnResultTree extends IntellijMockBase {
 		JTree tree = createFakeTree(module);
 		simulateClickEvent(tree, 1, MouseEvent.BUTTON3);
 		
-		verify(moduleControl).shouldRunTests();
+		verify(module).getName();
 	}
 
 	private void simulateClickEvent(JTree tree, int clickCount, int button) {

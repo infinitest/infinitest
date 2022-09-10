@@ -27,14 +27,18 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 import org.infinitest.TestControl;
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.intellij.idea.ProjectTestControl;
+import org.infinitest.intellij.plugin.SourceNavigator;
+import org.infinitest.testrunner.TestEvent;
 
 import com.intellij.openapi.module.Module;
 
@@ -69,11 +73,11 @@ public class ResultClickListener extends MouseAdapter {
 		if (path != null && path.getLastPathComponent() instanceof Module) {
 			Module module = (Module) path.getLastPathComponent();
 			
-			TestControl testControl = module.getService(TestControl.class);
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
 			
 			JPopupMenu popupMenu = new JPopupMenu();
-			JCheckBoxMenuItem testControlMenuItem = new JCheckBoxMenuItem("Enable/disable tests", testControl.shouldRunTests());
-			testControlMenuItem.addActionListener(x -> toggleTestControl(testControl, testControlMenuItem, tree));
+			JCheckBoxMenuItem testControlMenuItem = new JCheckBoxMenuItem("Enable/disable tests", testControl.shouldRunTests(module));
+			testControlMenuItem.addActionListener(x -> toggleTestControl(testControl, module, testControlMenuItem, tree));
 			popupMenu.add(testControlMenuItem);
 			
 			if (tree.isShowing()) {
@@ -82,10 +86,10 @@ public class ResultClickListener extends MouseAdapter {
 		}
 	}
 
-	private void toggleTestControl(TestControl testControl, JCheckBoxMenuItem testControlMenuItem, JTree tree) {
-		testControl.setRunTests(testControlMenuItem.isSelected());
+	private void toggleTestControl(TestControl testControl, Module module, JCheckBoxMenuItem testControlMenuItem, JTree tree) {
+		testControl.setRunTests(testControlMenuItem.isSelected(), module);
 		
-		if (!testControl.shouldRunTests()) {
+		if (!testControl.shouldRunTests(module)) {
 			((TreeModelAdapter) tree.getModel()).fireTreeStructureChanged();
 		}
 	}

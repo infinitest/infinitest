@@ -66,8 +66,6 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 		
 		when(launcher.getCore()).thenReturn(mockCore);
 
-		when(control.shouldRunTests()).thenReturn(true);
-
 		presenter = new InfinitestPresenter(project, mockView);
 	}
 

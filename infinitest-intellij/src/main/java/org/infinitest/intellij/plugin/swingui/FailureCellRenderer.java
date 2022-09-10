@@ -37,6 +37,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.infinitest.ResultCollector;
 import org.infinitest.TestControl;
 import org.infinitest.intellij.InfinitestIcons;
+import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestEvent.TestState;
@@ -89,12 +90,12 @@ class FailureCellRenderer extends DefaultTreeCellRenderer {
 		
 		if (node instanceof Module) {
 			Module module = (Module) node;
-			TestControl testControl = module.getService(TestControl.class);
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
 			
 			Icon moduleTypeIcon = moduleIconProvider.getIcon(module);
 			Icon moduleStateIcon;
 			
-			if (testControl.shouldRunTests()) {
+			if (testControl.shouldRunTests(module)) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				moduleStateIcon = InfinitestIcons.getIcon(collector.getStatus());
 			} else {

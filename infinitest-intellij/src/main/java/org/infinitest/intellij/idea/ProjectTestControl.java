@@ -31,13 +31,28 @@ import org.infinitest.InfinitestCore;
 import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.RoamingType;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.components.Service.Level;
+import com.intellij.openapi.components.SettingsCategory;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 
-public class ProjectTestControl implements TestControl {
+/**
+ * A lightweight/project-level service to enable/disable tests globally or at module level
+ */
+@Service(Level.PROJECT)
+@State(category = SettingsCategory.PLUGINS, name = "org.infinitest.intellij.idea.ProjectTestControl.shouldRunTests", storages =  {
+		@Storage(value = StoragePathMacros.WORKSPACE_FILE, roamingType = RoamingType.DISABLED)
+})
+public final class ProjectTestControl implements TestControl, PersistentStateComponent<ProjectTestControlState> {
 	private Project project;
-	private boolean shouldRunTests = true;
+	private ProjectTestControlState state = new ProjectTestControlState();
 	
 	/**
 	 * @param project Injected by the platform
@@ -48,22 +63,53 @@ public class ProjectTestControl implements TestControl {
 
 	@Override
 	public void setRunTests(boolean shouldRunTests) {
-		if (shouldRunTests && !shouldRunTests()) {
+		boolean previousStateRunTests = state.isRunTests();
+		state.setRunTests(shouldRunTests);
+		
+		if (shouldRunTests && !previousStateRunTests) {
 			for (Module module : ModuleManager.getInstance(project).getModules()) {
-				TestControl moduleTestControl = module.getService(TestControl.class);
-				
-				if (moduleTestControl.shouldRunTests()) {
-					InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
-					InfinitestCore core = launcher.getCore();
-					core.update();
+				if (shouldRunTests(module)) {
+					runModuleTests(module);
 				}
 			}
 		}
-		this.shouldRunTests = shouldRunTests;
+	}
+	
+	@Override
+	public void setRunTests(boolean shouldRunTests, Module module) {
+		if (state.isRunTests() && state.getDisabledModulesNames().contains(module.getName())) {
+			runModuleTests(module);
+		}
+		
+		if (shouldRunTests) {
+			state.getDisabledModulesNames().remove(module.getName());
+		} else {
+			state.getDisabledModulesNames().add(module.getName());
+		}
+	}
+
+	private void runModuleTests(Module module) {
+		InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+		InfinitestCore core = launcher.getCore();
+		core.update();
 	}
 
 	@Override
+	public boolean shouldRunTests(Module module) {
+		return !state.getDisabledModulesNames().contains(module.getName());
+	}
+	
+	@Override
 	public boolean shouldRunTests() {
-		return shouldRunTests;
+		return state.isRunTests();
+	}
+	
+	public void loadState(ProjectTestControlState state) {
+		this.state = state;
+	}
+	
+	@Override
+	public ProjectTestControlState getState() {
+		return state;
 	}
 }

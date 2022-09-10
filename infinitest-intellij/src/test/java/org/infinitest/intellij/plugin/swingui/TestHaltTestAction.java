@@ -34,6 +34,8 @@ import javax.swing.*;
 import org.infinitest.*;
 import org.junit.*;
 
+import com.intellij.openapi.module.Module;
+
 public class TestHaltTestAction {
 	private boolean runTests;
 
@@ -44,7 +46,17 @@ public class TestHaltTestAction {
 			public void setRunTests(boolean shouldRunTests) {
 				runTests = shouldRunTests;
 			}
+			
+			@Override
+			public void setRunTests(boolean shouldRunTests, Module module) {
+				runTests = shouldRunTests;
+			}
 
+			@Override
+			public boolean shouldRunTests(Module module) {
+				return runTests;
+			}
+			
 			@Override
 			public boolean shouldRunTests() {
 				return runTests;

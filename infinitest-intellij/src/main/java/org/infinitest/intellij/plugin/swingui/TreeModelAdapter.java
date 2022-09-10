@@ -41,16 +41,17 @@ import javax.swing.tree.TreePath;
 import org.infinitest.FailureListListener;
 import org.infinitest.ResultCollector;
 import org.infinitest.TestControl;
+import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestEvent;
 import org.jetbrains.annotations.NotNull;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.Function;
-import com.intellij.openapi.module.Module;
 
 /**
  * The structure of the tree is:<br>
@@ -97,9 +98,9 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 			return ModuleManager.getInstance(project).getModules().length;
 		} else if (parent instanceof Module) {
 			Module module = (Module) parent;
-			TestControl moduleTestControl = module.getService(TestControl.class);
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
 			
-			if (moduleTestControl.shouldRunTests()) {
+			if (testControl.shouldRunTests(module)) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				return collector.getPointOfFailureCount();
 			}

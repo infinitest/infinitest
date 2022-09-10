@@ -28,10 +28,8 @@
 	<extensions defaultExtensionNs="com.intellij">
     	<toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
     	
-    	<projectService serviceInterface="org.infinitest.TestControl" serviceImplementation="org.infinitest.intellij.idea.ProjectTestControl"/>
     	<projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
     	
-    	<moduleService serviceInterface="org.infinitest.TestControl" serviceImplementation="org.infinitest.intellij.idea.ModuleTestControl"/>
 	    <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
     	<moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
 	</extensions>
