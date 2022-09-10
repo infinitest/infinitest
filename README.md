@@ -1,7 +1,7 @@
 # Infinitest
 
-[![Build Status](https://travis-ci.org/infinitest/infinitest.svg?branch=master)](https://travis-ci.org/infinitest/infinitest)
-[![codecov](https://codecov.io/gh/infinitest/infinitest/branch/master/graph/badge.svg)](https://codecov.io/gh/sarod/infinitest)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=org.infinitest%3Ainfinitest-parent&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=org.infinitest%3Ainfinitest-parent)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.infinitest%3Ainfinitest-parent&metric=coverage)](https://sonarcloud.io/summary/new_code?id=org.infinitest%3Ainfinitest-parent)
 
 ## Description
 Infinitest is a Continuous Test Runner plugin for Eclipse and IntelliJ. 
