@@ -61,7 +61,7 @@ public class IdeaSourceNavigator implements SourceNavigator {
 
 	@Nullable
 	private VirtualFile fileForClass() {
-		PsiClass clazz = JavaPsiFacade.getInstance(project).findClass(className, projectScope(project));
+		PsiClass clazz = JavaPsiFacade.getInstance(project).findClass(className, allScope(project));
 		if ((clazz != null) && (clazz.getContainingFile() != null)) {
 			return clazz.getContainingFile().getVirtualFile();
 		}
