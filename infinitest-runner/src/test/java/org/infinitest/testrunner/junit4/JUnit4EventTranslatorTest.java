@@ -73,8 +73,8 @@ public class JUnit4EventTranslatorTest {
 		eventTranslator.testFinished(description);
 		TestResults results = eventTranslator.getTestResults();
 		MethodStats methodStats = getOnlyElement(results.getMethodStats());
-		assertEquals(10, methodStats.startTime);
-		assertEquals(20, methodStats.stopTime);
+		assertEquals(10, methodStats.startTime());
+		assertEquals(20, methodStats.stopTime());
 	}
 
 	@Test

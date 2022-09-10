@@ -76,6 +76,13 @@ public class InfinitestLineMarkersPass extends TextEditorHighlightingPass implem
 			String name = psiClass.getQualifiedName();
 			if ((name != null) && name.equals(each.getPointOfFailureClassName())) {
 				int line = each.getPointOfFailureLineNumber() - 1;
+				
+				// Since the failure might be a in a dependency and the sources might be unavailable
+				// we might be showing a decompiled .class file with different line numbers, so
+				// we need to adjust the line number of the point of failure
+				line = Math.max(line, 0);
+				line = Math.min(line, document.getLineCount() - 1);
+				
 				RangeHighlighter rangeHighlighter = model.addLineHighlighter(line, FIRST, null);
 				rangeHighlighter.setGutterIconRenderer(new InfinitestGutterIconRenderer(each));
 				rangeHighlighter.putUserData(KEY, each);
