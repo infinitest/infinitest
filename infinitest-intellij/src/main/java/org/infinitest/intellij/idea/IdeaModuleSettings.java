@@ -39,7 +39,6 @@ import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
 import org.jetbrains.annotations.Nullable;
-import org.testng.collections.Lists;
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
@@ -161,7 +160,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 */
 	List<File> listClasspathElements() {
 		// Classpath order is significant
-		List<File> classpathElements = Lists.newArrayList();
+		List<File> classpathElements = new ArrayList<>();
 
 		// all our dependencies (recursively where needed)
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {

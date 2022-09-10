@@ -139,6 +139,6 @@ public class JUnit5RunnerTest {
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingParameterizedTest.class.getName());
 		Set<String> failedMethodNames = failedMethodNames(events);
 
-		assertThat(failedMethodNames).doesNotContain("nullEmptyAndBlankStrings");
+		assertThat(failedMethodNames).isEmpty();
 	}
 }

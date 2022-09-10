@@ -35,10 +35,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.infinitest.environment.ClasspathArgumentBuilder;
@@ -79,8 +80,7 @@ public class WhenCreatingRunnerProcessConnection {
 	}
 
 	private List<TestEvent> sendMessageWithServerSocket(String... messages) throws UnknownHostException, IOException, ClassNotFoundException {
-		ServerSocket serverSocket = new ServerSocket(0);
-		try {
+		try (ServerSocket serverSocket = new ServerSocket(0)) {
 			RuntimeEnvironment fakeEnvironment = fakeEnvironment();
 			File file = fakeEnvironment.createClasspathArgumentFile();
 			
@@ -89,24 +89,22 @@ public class WhenCreatingRunnerProcessConnection {
 			serverSocket.setSoTimeout(2500);
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-			ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, StandardCharsets.UTF_8);
 			List<TestEvent> results = Lists.newArrayList();
 			TestResults result = null;
 			int i = 0;
 			do {
-				outStream.writeObject(messages[i++]);
+				outStream.println(messages[i++]);
 				result = (TestResults) inStream.readObject();
 				if (result != null) {
 					addAll(results, result);
 				}
 			} while (i < messages.length);
-			outStream.writeObject(null);
+			
 			inStream.close();
 			outStream.close();
 			socket.close();
 			return results;
-		} finally {
-			serverSocket.close();
 		}
 	}
 

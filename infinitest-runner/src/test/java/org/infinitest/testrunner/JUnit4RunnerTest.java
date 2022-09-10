@@ -132,7 +132,7 @@ public class JUnit4RunnerTest {
 		TestResults results = runner.runTest(Junit4MultiTest.class.getName());
 		assertEquals(2, size(results.getMethodStats()));
 		MethodStats methodStats = get(results.getMethodStats(), 0);
-		assertTrue(methodStats.startTime <= methodStats.stopTime);
+		assertTrue(methodStats.startTime() <= methodStats.stopTime());
 	}
 
 	@Test(expected = MissingClassException.class)

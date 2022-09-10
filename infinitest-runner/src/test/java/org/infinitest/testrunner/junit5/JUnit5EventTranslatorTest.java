@@ -80,8 +80,8 @@ public class JUnit5EventTranslatorTest {
 				TestExecutionResult.failed(assertionError));
 		TestResults results = eventTranslator.getTestResults();
 		MethodStats methodStats = getOnlyElement(results.getMethodStats());
-		assertEquals(10, methodStats.startTime);
-		assertEquals(20, methodStats.stopTime);
+		assertEquals(10, methodStats.startTime());
+		assertEquals(20, methodStats.stopTime());
 	}
 
 	@Test
@@ -110,8 +110,8 @@ public class JUnit5EventTranslatorTest {
 				TestExecutionResult.successful());
 		TestResults results = eventTranslator.getTestResults();
 		MethodStats methodStats = getOnlyElement(results.getMethodStats());
-		assertEquals(10, methodStats.startTime);
-		assertEquals(20, methodStats.stopTime);
+		assertEquals(10, methodStats.startTime());
+		assertEquals(20, methodStats.stopTime());
 	}
 
 	@Test

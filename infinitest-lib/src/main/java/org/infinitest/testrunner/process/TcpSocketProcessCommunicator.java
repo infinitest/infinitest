@@ -31,6 +31,7 @@ import static org.infinitest.util.InfinitestUtils.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.*;
 
 import org.infinitest.*;
@@ -39,7 +40,7 @@ import org.infinitest.testrunner.*;
 public class TcpSocketProcessCommunicator {
 	private ServerSocket serverSocket;
 	private ObjectInputStream inStream;
-	private ObjectOutputStream outStream;
+	private PrintStream writer;
 	private Socket socket;
 	private final int timeout;
 
@@ -70,7 +71,7 @@ public class TcpSocketProcessCommunicator {
 			socket = serverSocket.accept();
 			log(Level.CONFIG, "Socket opened");
 			inStream = new ObjectInputStream(socket.getInputStream());
-			outStream = new ObjectOutputStream(socket.getOutputStream());
+			writer = new PrintStream(socket.getOutputStream(), true, StandardCharsets.UTF_8);
 		} catch (SocketTimeoutException e) {
 			log("Test runner process failed to start in a timely manner", e);
 			throw new RuntimeException(e);
@@ -85,13 +86,12 @@ public class TcpSocketProcessCommunicator {
 	 */
 	public synchronized void closeSocket() {
 		try {
-			if (outStream != null) {
-				outStream.writeObject(null);
+			if (writer != null) {
 				if (!socket.isClosed()) {
 					inStream.close();
 					inStream = null;
-					outStream.close();
-					outStream = null;
+					writer.close();
+					writer = null;
 					socket.close();
 					socket = null;
 					log(Level.CONFIG, "Socket closed");
@@ -106,7 +106,7 @@ public class TcpSocketProcessCommunicator {
 	// closed
 	public synchronized TestResults sendMessage(String testName) {
 		try {
-			outStream.writeObject(testName);
+			writer.println(testName);
 			return (TestResults) inStream.readObject();
 		} catch (IOException e) {
 			throw new TestRunAborted(testName, e);

@@ -33,6 +33,7 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 import org.infinitest.testrunner.process.*;
 import org.junit.*;
@@ -67,27 +68,20 @@ public class WhenCommunicatingWithTestRunnerProcess {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					Socket clientSocket = new Socket("127.0.0.1", portNum);
+				try (Socket clientSocket = new Socket("127.0.0.1", portNum);
 					ObjectOutputStream ooStream = new ObjectOutputStream(clientSocket.getOutputStream());
-					ObjectInputStream inStream = new ObjectInputStream(clientSocket.getInputStream());
-					assertEquals("hello", inStream.readObject());
+					BufferedReader inStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8))) {
+					assertEquals("hello", inStream.readLine());
 					ooStream.writeObject(new TestResults(testCaseStarting("hello")));
-					assertNull(inStream.readObject());
-					ooStream.writeObject(new TestResults());
-					clientSocket.close();
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
+					assertNull(inStream.readLine());
 				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
 		communicator.openSocket();
 		assertEquals(1, size(communicator.sendMessage("hello")));
-		assertTrue(isEmpty(communicator.sendMessage(null)));
+		communicator.closeSocket();
 	}
 
 	@Test(timeout = 1000)
