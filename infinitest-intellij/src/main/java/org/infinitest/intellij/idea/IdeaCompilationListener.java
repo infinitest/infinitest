@@ -67,14 +67,12 @@ public class IdeaCompilationListener implements ProjectTaskListener {
 					ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
 
 					RuntimeEnvironment runtimeEnvironment = moduleSettings.getRuntimeEnvironment();
-					if (runtimeEnvironment == null) {
-						return;
+					if (runtimeEnvironment != null) {
+						InfinitestCore core = launcher.getCore();
+
+						core.setRuntimeEnvironment(runtimeEnvironment);
+						core.update();
 					}
-
-					InfinitestCore core = launcher.getCore();
-
-					core.setRuntimeEnvironment(runtimeEnvironment);
-					core.update();
 				}
 			}
 		}
