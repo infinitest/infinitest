@@ -57,15 +57,12 @@ public class PreferenceChangeHandler {
 	public void propertyChange(PropertyChangeEvent event) {
 		String preference = findChangedPreference(event);
 		Object newValue = event.getNewValue();
+		
 		if (AUTO_TEST.equals(preference)) {
 			updateAutoTest((Boolean) newValue);
-		}
-
-		if (SLOW_TEST_WARNING.equals(preference)) {
+		} else if (SLOW_TEST_WARNING.equals(preference)) {
 			updateSlowTestWarning((String) newValue);
-		}
-
-		if (PARALLEL_CORES.equals(preference)) {
+		} else if (PARALLEL_CORES.equals(preference)) {
 			updateConcurrency((String) newValue);
 		}
 	}
