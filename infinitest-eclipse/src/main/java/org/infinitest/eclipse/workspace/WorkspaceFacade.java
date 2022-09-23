@@ -27,8 +27,13 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import org.eclipse.core.runtime.*;
+import java.util.Set;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 
 public interface WorkspaceFacade {
-	void updateProjects() throws CoreException;
+	void updateProjects(Set<IResource> modifiedResources) throws CoreException;
+	
+	void remove(Set<IResource> removedResources);
 }

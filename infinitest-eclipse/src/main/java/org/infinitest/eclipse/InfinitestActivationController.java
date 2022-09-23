@@ -84,7 +84,7 @@ public class InfinitestActivationController implements PluginActivationControlle
 
 	private void attachListener() {
 		pluginEnabled = true;
-		workspace.addResourceChangeListener(updateNotifier);
+		workspace.addResourceChangeListener(updateNotifier, IResourceChangeEvent.POST_BUILD);
 	}
 
 	@Override

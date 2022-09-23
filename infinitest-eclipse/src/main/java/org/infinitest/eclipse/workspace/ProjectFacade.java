@@ -37,6 +37,7 @@ import static org.infinitest.util.InfinitestUtils.*;
 import java.io.*;
 import java.net.*;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.launching.*;
@@ -166,5 +167,9 @@ class ProjectFacade implements EclipseProject {
 		} catch (JavaModelException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public boolean isOnClasspath(IResource resource) {
+		return project.isOnClasspath(resource);
 	}
 }

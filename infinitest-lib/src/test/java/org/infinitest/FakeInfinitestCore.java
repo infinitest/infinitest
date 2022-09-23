@@ -88,4 +88,9 @@ public class FakeInfinitestCore implements InfinitestCore {
 	public int update(Collection<File> changedFiles) {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public void remove(Collection<File> removedFiles) {
+		throw new UnsupportedOperationException();
+	}
 }

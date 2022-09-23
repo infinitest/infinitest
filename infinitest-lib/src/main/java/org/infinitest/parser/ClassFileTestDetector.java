@@ -55,6 +55,13 @@ public class ClassFileTestDetector implements TestDetector {
 	public void clear() {
 		index.clear();
 	}
+	
+	@Override
+	public Set<JavaClass> removeClasses(Collection<File> removedFiles) {
+		Set<JavaClass> removeClasses = index.removeClasses(removedFiles);
+		
+		return filterTests(removeClasses);
+	}
 
 	/**
 	 * Runs through the classpath looking for changed files and returns the set

@@ -27,13 +27,20 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
+import static org.eclipse.core.resources.IResourceChangeEvent.POST_BUILD;
+import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.infinitest.eclipse.workspace.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.infinitest.eclipse.workspace.WorkspaceFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 class ClassFileChangeProcessor extends EclipseEventProcessor {
@@ -52,22 +59,43 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 
 	@Override
 	public void processEvent(IResourceChangeEvent event) throws CoreException {
-		if (containsClassFileChanges(getDeltas(event))) {
-			workspace.updateProjects();
+		ClassFileChangeProcessorVisitor visitor = new ClassFileChangeProcessorVisitor();
+		
+		findModifiedResources(visitor, getDeltas(event));
+		
+		if (!visitor.removedResources.isEmpty()) {
+			workspace.remove(visitor.removedResources);
+		}
+		
+		if (!visitor.modifiedResources.isEmpty()) {
+			workspace.updateProjects(visitor.modifiedResources);
 		}
 	}
 
-	private boolean containsClassFileChanges(IResourceDelta... deltas) {
-		// DEBT SHould use IResourceDeltaVisitor instead
+	private void findModifiedResources(ClassFileChangeProcessorVisitor visitor, IResourceDelta... deltas) throws CoreException {
 		for (IResourceDelta delta : deltas) {
-			if (isClassFile(delta) || containsClassFileChanges(delta.getAffectedChildren())) {
-				return true;
-			}
+			delta.accept(visitor);
 		}
-		return false;
 	}
+	
+	public static class ClassFileChangeProcessorVisitor implements IResourceDeltaVisitor {
 
-	private boolean isClassFile(IResourceDelta delta) {
-		return delta.getFullPath().toPortableString().endsWith(".class");
+		private Set<IResource> modifiedResources = new HashSet<IResource>();
+		private Set<IResource> removedResources = new HashSet<IResource>();
+		
+		@Override
+		public boolean visit(IResourceDelta d) throws CoreException {
+			if (isClassFile(d)) {
+				if (d.getKind() == IResourceDelta.REMOVED) {
+					removedResources.add(d.getResource());
+				} else {
+					modifiedResources.add(d.getResource());
+				}
+			}
+			return true;
+		}
+		private boolean isClassFile(IResourceDelta delta) {
+			return delta.getFullPath().toPortableString().endsWith(".class");
+		}
 	}
 }

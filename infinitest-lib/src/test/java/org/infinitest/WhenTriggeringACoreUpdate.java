@@ -27,27 +27,39 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.changedetect.ChangeDetector;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenTriggeringACoreUpdate {
-	private List<File> updatedFiles;
+	private Set<File> updatedFiles;
 	private DefaultInfinitestCore core;
+	private ChangeDetector changeDetector;
 	private TestDetector testDetector;
 
 	@Before
-	public void inContext() {
-		updatedFiles = newArrayList();
+	public void inContext() throws IOException {
+		updatedFiles = new HashSet<>();
 		core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
+		
+		changeDetector = mock(ChangeDetector.class);
+		when(changeDetector.findChangedFiles()).thenReturn(updatedFiles);
+		core.setChangeDetector(changeDetector);
+		
 		testDetector = mock(TestDetector.class);
 		when(testDetector.getCurrentTests()).thenReturn(Collections.<String> emptySet());
 		core.setTestDetector(testDetector);

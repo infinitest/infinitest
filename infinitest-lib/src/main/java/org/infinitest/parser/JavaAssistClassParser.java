@@ -27,21 +27,28 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.base.Splitter.*;
-import static com.google.common.collect.Lists.*;
-import static java.io.File.*;
+import static com.google.common.base.Splitter.on;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.io.File.pathSeparator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
-import javassist.*;
+import org.infinitest.MissingClassException;
 
-import org.infinitest.*;
-
-import com.google.common.collect.*;
 import com.google.common.hash.Hashing;
-import com.google.common.io.*;
+import com.google.common.io.Files;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 
 public class JavaAssistClassParser {
 	private final String classpath;
@@ -90,7 +97,7 @@ public class JavaAssistClassParser {
 		return !new File(iter.next()).exists();
 	}
 
-	private final static Map<String, JavaClass> CLASSES_BY_NAME = Maps.newHashMap();
+	private final Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
 
 	public JavaClass getClass(String className) {
 		JavaClass clazz = CLASSES_BY_NAME.get(className);
@@ -118,7 +125,7 @@ public class JavaAssistClassParser {
 		return clazz;
 	}
 
-	private final static Map<String, CacheEntry> BY_PATH = Maps.newHashMap();
+	private final static Map<String, CacheEntry> BY_PATH = new HashMap<>();
 
 	public static class CacheEntry {
 		final String sha1;
@@ -128,6 +135,18 @@ public class JavaAssistClassParser {
 			this.sha1 = sha1;
 			this.classname = classname;
 		}
+	}
+	
+	public JavaClass classFileRemoved(File file) {
+		CacheEntry entry = BY_PATH.remove(file.getAbsolutePath());
+		
+		if (entry != null) {
+			String classname = entry.classname;
+			
+			return CLASSES_BY_NAME.remove(classname);
+		}
+		
+		return null;
 	}
 
 	public String classFileChanged(File file) throws IOException {

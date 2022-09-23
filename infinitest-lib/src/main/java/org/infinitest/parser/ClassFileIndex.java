@@ -61,6 +61,20 @@ public class ClassFileIndex {
 		graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		classesByName = new HashMap<>();
 	}
+	
+	public Set<JavaClass> removeClasses(Collection<File> removedFiles) {
+		Set<JavaClass> removedClasses = newHashSet();
+		
+		for (File removedFile : removedFiles) {
+			JavaClass removedClass = builder.classFileRemoved(removedFile);
+			if (removedClass != null) {
+				graph.removeVertex(removedClass);
+				removedClasses.add(removedClass);
+			}
+		}
+		
+		return removedClasses;
+	}
 
 	public Set<JavaClass> findClasses(Collection<File> changedFiles) {
 		// First update class index

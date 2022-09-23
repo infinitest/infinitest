@@ -27,15 +27,13 @@
  */
 package org.infinitest.changedetect;
 
-import java.io.*;
+import java.nio.file.Path;
+import java.util.regex.Pattern;
 
-class ClassFileFilter implements FileFilter {
-	@Override
-	public boolean accept(File pathname) {
-		return isClassFile(pathname) || pathname.isDirectory();
-	}
+class ClassFileFilter {
+	private static final Pattern PATTERN = Pattern.compile(".*\\.[Cc][Ll][Aa][Ss][Ss]\\z");
 
-	public static boolean isClassFile(File pathname) {
-		return pathname.getAbsolutePath().matches(".*\\.[Cc][Ll][Aa][Ss][Ss]\\z");
+	public static boolean isClassFile(Path pathname) {
+		return PATTERN.matcher(pathname.toString()).matches();
 	}
 }
