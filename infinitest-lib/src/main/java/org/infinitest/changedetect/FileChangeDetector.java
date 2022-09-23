@@ -59,7 +59,7 @@ public class FileChangeDetector implements ChangeDetector {
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		clear();
 		List<File> classDirs = classpath.classDirectoriesInClasspath();
-		classDirectories = classDirs.stream().map(File::toPath).toList();
+		classDirectories = classDirs.stream().map(File::toPath).collect(Collectors.toList());
 	}
 
 	@Override
