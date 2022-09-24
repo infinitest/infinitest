@@ -1,2 +1,2 @@
 # ignore classes that are executed by test runner
-*.exampletests.*
+.*exampletests.*
