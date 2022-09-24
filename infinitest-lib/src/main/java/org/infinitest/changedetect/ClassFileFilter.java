@@ -30,8 +30,11 @@ package org.infinitest.changedetect;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-class ClassFileFilter {
+final class ClassFileFilter {
 	private static final Pattern PATTERN = Pattern.compile(".*\\.[Cc][Ll][Aa][Ss][Ss]\\z");
+	
+	private ClassFileFilter() {
+	}
 
 	public static boolean isClassFile(Path pathname) {
 		return PATTERN.matcher(pathname.toString()).matches();

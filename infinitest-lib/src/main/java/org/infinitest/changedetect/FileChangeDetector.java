@@ -64,7 +64,7 @@ public class FileChangeDetector implements ChangeDetector {
 
 	@Override
 	public synchronized Set<File> findChangedFiles() throws IOException {
-		Set<Path> changedFiles = new HashSet<Path>();
+		Set<Path> changedFiles = new HashSet<>();
 		
 		for (Path root : classDirectories) {
 			try (Stream<Path> stream = Files.walk(root, Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS)) {
@@ -90,7 +90,7 @@ public class FileChangeDetector implements ChangeDetector {
 				}
 			}
 		} catch (IOException e) {
-
+			throw new IllegalArgumentException("Could not read file attributes of " + classFile, e);
 		}
 	}
 

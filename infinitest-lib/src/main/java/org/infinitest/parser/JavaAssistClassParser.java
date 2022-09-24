@@ -53,6 +53,8 @@ import javassist.NotFoundException;
 public class JavaAssistClassParser {
 	private final String classpath;
 	private ClassPool classPool;
+	// Unrelated projects might have classes with the same name so this can't be shared
+	private final Map<String, JavaClass> classesByName = new HashMap<>();
 
 	public JavaAssistClassParser(String classpath) {
 		this.classpath = classpath;
@@ -97,10 +99,8 @@ public class JavaAssistClassParser {
 		return !new File(iter.next()).exists();
 	}
 
-	private final Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
-
 	public JavaClass getClass(String className) {
-		JavaClass clazz = CLASSES_BY_NAME.get(className);
+		JavaClass clazz = classesByName.get(className);
 		if (clazz == null) {
 			CtClass ctClass = getCachedClass(className);
 
@@ -119,7 +119,7 @@ public class JavaAssistClassParser {
 				}
 			}
 
-			CLASSES_BY_NAME.put(className, clazz);
+			classesByName.put(className, clazz);
 		}
 
 		return clazz;
@@ -143,7 +143,7 @@ public class JavaAssistClassParser {
 		if (entry != null) {
 			String classname = entry.classname;
 			
-			return CLASSES_BY_NAME.remove(classname);
+			return classesByName.remove(classname);
 		}
 		
 		return null;
@@ -156,21 +156,14 @@ public class JavaAssistClassParser {
 			return entry.classname;
 		}
 
-		FileInputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(file);
-
+		try (FileInputStream inputStream = new FileInputStream(file)) {
 			CtClass ctClass = getClassPool().makeClass(inputStream);
 			String classname = ctClass.getName();
 
-			CLASSES_BY_NAME.remove(classname);
+			classesByName.remove(classname);
 			BY_PATH.put(file.getAbsolutePath(), new CacheEntry(sha1, classname));
 
 			return classname;
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
 		}
 	}
 

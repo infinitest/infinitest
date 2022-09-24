@@ -80,8 +80,8 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 	
 	public static class ClassFileChangeProcessorVisitor implements IResourceDeltaVisitor {
 
-		private Set<IResource> modifiedResources = new HashSet<IResource>();
-		private Set<IResource> removedResources = new HashSet<IResource>();
+		private Set<IResource> modifiedResources = new HashSet<>();
+		private Set<IResource> removedResources = new HashSet<>();
 		
 		@Override
 		public boolean visit(IResourceDelta d) throws CoreException {
