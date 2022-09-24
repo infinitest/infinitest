@@ -25,41 +25,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.process;
+package org.infinitest.environment;
 
-import org.infinitest.environment.ClasspathArgumentBuilder;
-import org.infinitest.testrunner.TestResults;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
-public class NativeProcessConnection implements ProcessConnection {
-	private final TcpSocketProcessCommunicator communicator;
-	private final Process process;
-	private final ClasspathArgumentBuilder classpathArgumentBuilder;
+public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
 
-	public NativeProcessConnection(TcpSocketProcessCommunicator communicator, Process process, ClasspathArgumentBuilder classpathArgumentBuilder) {
-		this.communicator = communicator;
-		this.process = process;
-		this.classpathArgumentBuilder = classpathArgumentBuilder;
+	private File classpathFile;
+
+	public FileClasspathArgumentBuilder(File classpathFile) {
+		this.classpathFile = classpathFile;
 	}
 
 	@Override
-	public boolean abort() {
-		classpathArgumentBuilder.cleanup();
-		process.destroy();
-		try {
-			process.waitFor();
-		} catch (InterruptedException e) {
-			return false;
-		}
-		return true;
+	public List<String> buildArguments() {
+		return Arrays.asList("-cp", "@" + classpathFile.getAbsolutePath());
 	}
-
+	
 	@Override
-	public void close() {
-		communicator.closeSocket();
-	}
-
-	@Override
-	public TestResults runTest(String testName) {
-		return communicator.sendMessage(testName);
+	public void cleanup() {
+		classpathFile.delete();
 	}
 }

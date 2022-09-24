@@ -42,6 +42,8 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.infinitest.environment.ClasspathArgumentBuilder;
+import org.infinitest.environment.FileClasspathArgumentBuilder;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.CrashingTestRunner;
 import org.infinitest.testrunner.FakeRunner;
@@ -80,8 +82,10 @@ public class WhenCreatingRunnerProcessConnection {
 	private List<TestEvent> sendMessageWithServerSocket(String... messages) throws UnknownHostException, IOException, ClassNotFoundException {
 		try (ServerSocket serverSocket = new ServerSocket(0)) {
 			RuntimeEnvironment fakeEnvironment = fakeEnvironment();
-			File file = fakeEnvironment.createClasspathFile();
-			factory.startProcess(serverSocket.getLocalPort(), fakeEnvironment, file);
+			File file = fakeEnvironment.createClasspathArgumentFile();
+			
+			ClasspathArgumentBuilder classpathArgumentBuilder = new FileClasspathArgumentBuilder(file);
+			factory.startProcess(serverSocket.getLocalPort(), fakeEnvironment, classpathArgumentBuilder);
 			serverSocket.setSoTimeout(2500);
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
