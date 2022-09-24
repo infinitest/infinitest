@@ -28,8 +28,12 @@
 package org.infinitest.environment;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+
+import org.infinitest.util.InfinitestUtils;
 
 public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
 
@@ -46,6 +50,10 @@ public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
 	
 	@Override
 	public void cleanup() {
-		classpathFile.delete();
+		try {
+			Files.delete(classpathFile.toPath());
+		} catch (IOException e) {
+			InfinitestUtils.log("Error deleting: " + classpathFile, e);
+		}
 	}
 }

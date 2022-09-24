@@ -39,6 +39,7 @@ import static org.infinitest.util.InfinitestUtils.log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,6 @@ import org.infinitest.classloader.ClassPathFileClassLoader;
 import org.infinitest.testrunner.TestRunnerProcess;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 
 /**
  * Defines the runtime environment for test execution.
@@ -326,7 +326,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		try {
 			File classpathFile = File.createTempFile("infinitest-", ".classpath");
 			classpathFile.deleteOnExit();
-			Files.write(classpathFile.toPath(), getRunnerFullClassPathEntries(), Charsets.UTF_8);
+			Files.write(classpathFile.toPath(), getRunnerFullClassPathEntries(), StandardCharsets.UTF_8);
 			return classpathFile;
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing classpath file", e);
@@ -337,7 +337,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		try {
 			File argumentFile = File.createTempFile("infinitest-", ".cp-argument");
 			argumentFile.deleteOnExit();
-			Files.writeString(argumentFile.toPath(), getRunnerFullClassPath(), Charsets.UTF_8);
+			Files.writeString(argumentFile.toPath(), getRunnerFullClassPath(), StandardCharsets.UTF_8);
 			return argumentFile;
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing argument file", e);
