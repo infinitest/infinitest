@@ -48,6 +48,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.util.Arrays;
@@ -113,7 +114,8 @@ public class RuntimeEnvironmentTest {
 				"runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(),
 				FakeEnvironments.systemClasspath());
 		try {
-			environment.createProcessArguments(new File("file.classpath"));
+			ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
+			environment.createProcessArguments(classpathArgumentBuilder);
 			fail("Should have thrown exception");
 		} catch (JavaHomeException e) {
 			assertThat(convertFromWindowsClassPath(e.getMessage()))
@@ -128,12 +130,13 @@ public class RuntimeEnvironmentTest {
 				FakeEnvironments.systemClasspath());
 
 		touch(new File(fakeJavaHomeRule.getRoot(), "bin/java.exe"));
-		List<String> arguments = environment.createProcessArguments(new File("file.classpath"));
+		ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
+		List<String> arguments = environment.createProcessArguments(classpathArgumentBuilder);
 		assertEquals(convertFromWindowsClassPath(fakeJavaHomeRule.getRoot().getAbsolutePath()) + "/bin/java.exe",
 				convertFromWindowsClassPath(get(arguments, 0)));
 
 		touch(new File(fakeJavaHomeRule.getRoot(), "bin/java"));
-		arguments = environment.createProcessArguments(new File("file.classpath"));
+		arguments = environment.createProcessArguments(classpathArgumentBuilder);
 		assertEquals(convertFromWindowsClassPath(fakeJavaHomeRule.getRoot().getAbsolutePath()) + "/bin/java",
 				convertFromWindowsClassPath(get(arguments, 0)));
 	}
@@ -195,7 +198,9 @@ public class RuntimeEnvironmentTest {
 		List<String> additionalArgs = asList("-Xdebug", "-Xnoagent",
 				"-Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=y");
 		environment.addVMArgs(additionalArgs);
-		List<String> actualArgs = environment.createProcessArguments(new File("file.classpath"));
+
+		ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
+		List<String> actualArgs = environment.createProcessArguments(classpathArgumentBuilder);
 		assertTrue(actualArgs.toString(), actualArgs.containsAll(additionalArgs));
 	}
 
