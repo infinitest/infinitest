@@ -25,41 +25,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner.process;
+package org.infinitest.environment;
 
-import org.infinitest.environment.ClasspathArgumentBuilder;
-import org.infinitest.testrunner.TestResults;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 
-public class NativeProcessConnection implements ProcessConnection {
-	private final TcpSocketProcessCommunicator communicator;
-	private final Process process;
-	private final ClasspathArgumentBuilder classpathArgumentBuilder;
+import org.infinitest.util.InfinitestUtils;
 
-	public NativeProcessConnection(TcpSocketProcessCommunicator communicator, Process process, ClasspathArgumentBuilder classpathArgumentBuilder) {
-		this.communicator = communicator;
-		this.process = process;
-		this.classpathArgumentBuilder = classpathArgumentBuilder;
+public class FileClasspathArgumentBuilder implements ClasspathArgumentBuilder {
+
+	private File classpathFile;
+
+	public FileClasspathArgumentBuilder(File classpathFile) {
+		this.classpathFile = classpathFile;
 	}
 
 	@Override
-	public boolean abort() {
-		classpathArgumentBuilder.cleanup();
-		process.destroy();
+	public List<String> buildArguments() {
+		return Arrays.asList("-cp", "@" + classpathFile.getAbsolutePath());
+	}
+	
+	@Override
+	public void cleanup() {
 		try {
-			process.waitFor();
-		} catch (InterruptedException e) {
-			return false;
+			Files.delete(classpathFile.toPath());
+		} catch (IOException e) {
+			InfinitestUtils.log("Error deleting: " + classpathFile, e);
 		}
-		return true;
-	}
-
-	@Override
-	public void close() {
-		communicator.closeSocket();
-	}
-
-	@Override
-	public TestResults runTest(String testName) {
-		return communicator.sendMessage(testName);
 	}
 }

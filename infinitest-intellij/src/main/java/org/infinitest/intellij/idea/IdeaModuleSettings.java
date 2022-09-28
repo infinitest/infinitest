@@ -41,6 +41,8 @@ import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
 import org.jetbrains.annotations.Nullable;
 
+import com.intellij.execution.CommonProgramRunConfigurationParameters;
+import com.intellij.execution.util.ProgramParametersConfigurator;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.diagnostic.Logger;
@@ -151,7 +153,12 @@ public class IdeaModuleSettings implements ModuleSettings {
 	}
 
 	private File getWorkingDirectory() {
-		return new File(module.getModuleFilePath()).getParentFile();
+		CommonProgramRunConfigurationParameters configuration = new InfinitestRunConfigurationParameters();
+		
+		ProgramParametersConfigurator configurator = new ProgramParametersConfigurator();
+		String workingDir = configurator.getWorkingDir(configuration, module.getProject(), module);
+		
+		return new File(workingDir);
 	}
 
 	/**

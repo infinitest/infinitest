@@ -31,13 +31,13 @@ import static java.util.Arrays.asList;
 import static java.util.logging.Level.INFO;
 import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
+import org.infinitest.environment.ClasspathArgumentBuilder;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.NativeRunner;
 import org.infinitest.testrunner.OutputStreamHandler;
@@ -54,13 +54,13 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 	public ProcessConnection getConnection(RuntimeEnvironment environment, OutputStreamHandler outputListener) throws IOException {
 		TcpSocketProcessCommunicator communicator = createCommunicator();
 				
-		File classpathFile = environment.createClasspathFile();
+		ClasspathArgumentBuilder classpathArgumentBuilder = environment.createClasspathArgumentBuilder();
 		
-		Process process = startProcess(communicator.createSocket(), environment, classpathFile);
+		Process process = startProcess(communicator.createSocket(), environment, classpathArgumentBuilder);
 		outputListener.processStream(process.getErrorStream(), OutputType.STDERR);
 		outputListener.processStream(process.getInputStream(), OutputType.STDOUT);
 		communicator.openSocket();
-		return new NativeProcessConnection(communicator, process, classpathFile);
+		return new NativeProcessConnection(communicator, process, classpathArgumentBuilder);
 	}
 
 
@@ -69,9 +69,9 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 		return new TcpSocketProcessCommunicator();
 	}
 
-	Process startProcess(int port, RuntimeEnvironment environment, File classPathFile) throws IOException {
+	Process startProcess(int port, RuntimeEnvironment environment, ClasspathArgumentBuilder classpathArgumentBuilder) throws IOException {
 		
-		ProcessBuilder builder = buildProcess(port, environment, classPathFile);
+		ProcessBuilder builder = buildProcess(port, environment, classpathArgumentBuilder);
 		log(INFO, "Starting TestRunner with configuration:\n"+buildTestProcessConfigurationMessage(builder));
 		try {
 			return builder.start();
@@ -81,13 +81,13 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 		}
 	}
 
-	ProcessBuilder buildProcess(int port, RuntimeEnvironment environment, File classPathFile) {
+	ProcessBuilder buildProcess(int port, RuntimeEnvironment environment, ClasspathArgumentBuilder classpathArgumentBuilder) {
 		// Could extract this to a class. Could then replace with:
 		// http://wiki.eclipse.org/FAQ_How_do_I_launch_a_Java_program%3F
 		ProcessBuilder builder = new ProcessBuilder();
 		builder.directory(environment.getWorkingDirectory());
 
-		List<String> arguments = environment.createProcessArguments(classPathFile);
+		List<String> arguments = environment.createProcessArguments(classpathArgumentBuilder);
 		arguments.addAll(buildRunnerArgs(port));
 		builder.command(arguments);
 
