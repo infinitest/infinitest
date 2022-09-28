@@ -92,7 +92,7 @@ public class WhenShowingMainFrame extends IntellijMockBase {
     Object node = eventWithError();
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.Nodes.Method);
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
   }
 
   private static TestEvent eventWithError() {
