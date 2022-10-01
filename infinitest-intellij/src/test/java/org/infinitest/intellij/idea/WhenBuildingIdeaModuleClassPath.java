@@ -37,6 +37,7 @@ import java.util.*;
 import org.junit.*;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.*;
 
@@ -94,5 +95,19 @@ public class WhenBuildingIdeaModuleClassPath {
 		VirtualFile virtualFile = mock(VirtualFile.class);
 		doReturn(path).when(virtualFile).getPath();
 		return virtualFile;
+	}
+	
+	@Test
+	public void moduleSdk() {
+		IdeaModuleSettings settings = new IdeaModuleSettings(module);
+		
+		ModuleRootManager moduleRootManager = mock(ModuleRootManager.class);
+		Sdk sdk = mock(Sdk.class);
+		
+		when(module.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManager);
+		when(moduleRootManager.getSdk()).thenReturn(sdk);
+		when(sdk.getHomePath()).thenReturn("jdk");
+		
+		assertThat(settings.getSdkHomePath(), equalTo(new File("jdk")));
 	}
 }

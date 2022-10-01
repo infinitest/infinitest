@@ -25,35 +25,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin;
+package org.infinitest.intellij.idea;
 
-import static java.awt.Color.BLACK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.infinitest.InfinitestCore;
 import org.infinitest.intellij.IntellijMockBase;
-import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
-import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.junit.Test;
 
-public class WhenInitializingProgressBar extends IntellijMockBase {
-
+public class IdeaTestControlTest extends IntellijMockBase {
 	@Test
-	public void shouldSetBackgroundColorToBlack() {
-		InfinitestView view = mock(InfinitestView.class);
-		createPresenterWith(view);
-		verify(view).setProgressBarColor(BLACK);
+	public void projectControlTest() {
+		ProjectTestControl testControl = new ProjectTestControl(project);
+		
+		when(module.getProject().getService(ProjectTestControl.class)).thenReturn(testControl);
+		
+		InfinitestCore core = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(core);
+		
+		testControl.setRunTests(false);
+		
+		verify(core, never()).reload();
+		
+		testControl.setRunTests(true);
+		
+		verify(core).update();
 	}
-
+	
 	@Test
-	public void shouldSetMaximumProgress() {
-		InfinitestView view = mock(InfinitestView.class);
-		createPresenterWith(view);
-		verify(view).setMaximumProgress(1);
-		verify(view).setProgress(1);
-	}
+	public void updateModuleState() {
+		ProjectTestControl testControl = new ProjectTestControl(project);
+		ProjectTestControlState state = new ProjectTestControlState();
+		
+		InfinitestCore core = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(core);
+		
+		// Load an empty state and disable tests on a module
+		testControl.loadState(state);
+		testControl.setRunTests(false, module);
+		
+		assertFalse(testControl.shouldRunTests(module));
+		assertThat(testControl.getState().getDisabledModulesNames()).contains(module.getName());
 
-	private void createPresenterWith(InfinitestView view) {
-		new InfinitestPresenter(project, view);
+		// Now enable the tests on the module
+		testControl.setRunTests(true, module);
+		
+		verify(core).update();
+		assertThat(testControl.getState().getDisabledModulesNames()).isEmpty();
 	}
 }

@@ -25,16 +25,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.plugin.swingui;
 
-import org.infinitest.*;
+import javax.swing.Icon;
 
-@SuppressWarnings("all")
-public class FakeTestControl implements TestControl {
-	public void setRunTests(boolean shouldRunTests) {
-	}
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
 
-	public boolean shouldRunTests() {
-		return false;
+/**
+ * Gets the icon from the {@link ModuleType}
+ */
+public class ModuleTypeIconProvider implements ModuleIconProvider {
+	private static final long serialVersionUID = -4915885933022775960L;
+
+	@Override
+	public Icon getIcon(Module module) {
+		return ModuleType.get(module).getIcon();
 	}
 }

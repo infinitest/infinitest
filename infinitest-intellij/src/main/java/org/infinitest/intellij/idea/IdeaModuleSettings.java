@@ -31,6 +31,7 @@ import static java.io.File.pathSeparator;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,11 +43,10 @@ import org.jetbrains.annotations.Nullable;
 
 import com.intellij.execution.CommonProgramRunConfigurationParameters;
 import com.intellij.execution.util.ProgramParametersConfigurator;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.CompilerModuleExtension;
@@ -57,7 +57,6 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
@@ -67,6 +66,9 @@ public class IdeaModuleSettings implements ModuleSettings {
 	private static final Boolean TEST_CLASSES = true;
 	private static final Boolean MAIN_CLASSES = false;
 
+	/**
+	 * @param module Injected by the platform
+	 */
 	public IdeaModuleSettings(Module module) {
 		this.module = module;
 	}
@@ -171,7 +173,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 		// all our dependencies (recursively where needed)
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			List<VirtualFile> files = new ArrayList<VirtualFile>();
+			List<VirtualFile> files = new ArrayList<>();
 
 			if (entry instanceof ModuleOrderEntry) {
 				/*
@@ -220,21 +222,20 @@ public class IdeaModuleSettings implements ModuleSettings {
 	}
 
 	private String infinitestJarPath(String jarName) {
-		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
-		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
-		File pluginPath = descriptor.getPath();
+		PluginDescriptor descriptor = PluginManager.getPluginByClass(getClass());
+		Path pluginPath = descriptor.getPluginPath();
 
-		File jar = new File(pluginPath, "lib/" + jarName);
-		return jar.getAbsolutePath();		
+		Path jar = pluginPath.resolve("lib/" + jarName);
+		return jar.toString();		
 	}
 	
 	@Nullable
-	private File getSdkHomePath() {
-		Sdk projectSdk = ProjectRootManager.getInstance(module.getProject()).getProjectSdk();
-		if (projectSdk == null) {
+	protected File getSdkHomePath() {
+		Sdk moduleSdk = ModuleRootManager.getInstance(module).getSdk();
+		if (moduleSdk == null) {
 			return null;
 		}
 
-		return new File(projectSdk.getHomePath());
+		return new File(moduleSdk.getHomePath());
 	}
 }

@@ -27,14 +27,17 @@
  */
 package org.infinitest.intellij.idea.language;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
-import com.intellij.codeHighlighting.*;
-import com.intellij.openapi.editor.*;
-import com.intellij.openapi.module.*;
+import com.intellij.codeHighlighting.Pass;
+import com.intellij.codeHighlighting.TextEditorHighlightingPass;
+import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
+import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiFile;
 
 public class InfinitestHighlightingPassFactory implements TextEditorHighlightingPassFactory {
 	/**
@@ -48,7 +51,7 @@ public class InfinitestHighlightingPassFactory implements TextEditorHighlighting
 
 	@Override
 	public TextEditorHighlightingPass createHighlightingPass(@NotNull PsiFile psiFile, @NotNull Editor editor) {
-		Module module = ModuleUtil.findModuleForPsiElement(psiFile);
+		Module module = ModuleUtilCore.findModuleForPsiElement(psiFile);
 		if (module == null) {
 			return null;
 		}

@@ -25,25 +25,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea.window;
+package org.infinitest.intellij.idea;
 
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.intellij.openapi.util.*;
-import com.intellij.openapi.wm.*;
-import com.intellij.ui.content.*;
+/**
+ * This class needs to be a java bean to be persisted by IntelliJ
+ */
+public final class ProjectTestControlState {
+	private boolean runTests = true;
+	private List<String> disabledModulesNames = new ArrayList<>();
 
-public class IdeaWindowHelper {
-	public static final String WAITING_ICON_PATH = "/infinitest-waiting.png";
-	public static final String RUNNING_ICON_PATH = "/infinitest.png";
-	public static final String SUCCESS_ICON_PATH = "/infinitest-success.png";
-	public static final String FAILURE_ICON_PATH = "/infinitest-failure.png";
+	public boolean isRunTests() {
+		return runTests;
+	}
 
-	@SuppressWarnings("deprecation")
-	public void addPanelToWindow(JPanel rootPanel, ToolWindow window) {
-		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-		Content content = contentFactory.createContent(rootPanel, "Infinitest", false);
-		window.getContentManager().addContent(content);
-		window.setIcon(IconLoader.getIcon(WAITING_ICON_PATH));
+	public void setRunTests(boolean shouldRunTests) {
+		this.runTests = shouldRunTests;
+	}
+
+	public List<String> getDisabledModulesNames() {
+		return disabledModulesNames;
+	}
+
+	public void setDisabledModulesNames(List<String> disabledModulesNames) {
+		this.disabledModulesNames = disabledModulesNames;
 	}
 }

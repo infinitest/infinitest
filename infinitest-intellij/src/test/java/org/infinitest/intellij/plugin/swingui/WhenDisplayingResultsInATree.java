@@ -27,41 +27,53 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static java.util.Arrays.*;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.event.*;
-import javax.swing.tree.*;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeModelListener;
 
-import junit.framework.*;
-
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.ResultCollector;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.Before;
 import org.junit.Test;
 
-public class WhenDisplayingResultsInATree implements TreeModelListener {
+import junit.framework.AssertionFailedError;
+
+public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	private static final String DEFAULT_TEST_NAME = "testName";
 
-	private TreeModel model;
-	private List<TreeModelEvent> treeEvents;
+	private TreeModelAdapter model;
 	private ResultCollector collector;
 
 	@Before
 	public void inContext() {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		collector = new ResultCollector(mockCore);
-		model = new TreeModelAdapter(collector);
-		treeEvents = new ArrayList<TreeModelEvent>();
+		
+		when(launcher.getResultCollector()).thenReturn(collector);
+		
+		model = new TreeModelAdapter(project);
 	}
 
 	@Test
 	public void shouldHaveRootNode() {
 		assertNotNull(model.getRoot());
+		assertEquals(0, model.getIndexOfChild(project, module));
 	}
 
 	@Test
@@ -69,20 +81,20 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
 		assertEquals(1, model.getChildCount(model.getRoot()));
-		assertEquals(event.getPointOfFailure(), model.getChild(model.getRoot(), 0));
+		assertEquals(event.getPointOfFailure(), model.getChild(module, 0));
 	}
 
 	@Test
 	public void shouldCreateNodesForEachEvent() {
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
-		assertEquals(2, model.getChildCount(model.getRoot()));
+		assertEquals(2, model.getChildCount(module));
 	}
 
 	@Test
 	public void shouldHaveSubNodesForIndividualTests() {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
-		Object pointOfFailureNode = model.getChild(model.getRoot(), 0);
+		Object pointOfFailureNode = model.getChild(module, 0);
 		assertEquals(1, model.getChildCount(pointOfFailureNode));
 		assertEquals(event, model.getChild(pointOfFailureNode, 0));
 	}
@@ -90,18 +102,18 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 	@Test
 	public void shouldProvideIndexOfNodes() {
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
-		assertNodeReferenceIntegrity(model.getRoot(), 0);
-		assertNodeReferenceIntegrity(model.getRoot(), 1);
+		assertNodeReferenceIntegrity(module, 0);
+		assertNodeReferenceIntegrity(module, 1);
 	}
 
 	@Test
 	public void shouldIdentifyOnlyTestNodesAsLeaves() {
-		assertTrue(model.isLeaf(model.getRoot()));
+		assertTrue(model.isLeaf(module));
 
 		testRun(eventWithError(new AssertionFailedError()));
-		assertFalse(model.isLeaf(model.getRoot()));
+		assertFalse(model.isLeaf(module));
 
-		Object failureNode = model.getChild(model.getRoot(), 0);
+		Object failureNode = model.getChild(module, 0);
 		assertEquals(1, model.getChildCount(failureNode));
 		assertFalse(model.isLeaf(failureNode));
 
@@ -112,26 +124,6 @@ public class WhenDisplayingResultsInATree implements TreeModelListener {
 
 	private void assertNodeReferenceIntegrity(Object parent, int nodeIndex) {
 		assertEquals(nodeIndex, model.getIndexOfChild(parent, model.getChild(parent, nodeIndex)));
-	}
-
-	@Override
-	public void treeNodesChanged(TreeModelEvent e) {
-		throw new UnsupportedOperationException("should never be called");
-	}
-
-	@Override
-	public void treeNodesInserted(TreeModelEvent e) {
-		throw new UnsupportedOperationException("should never be called");
-	}
-
-	@Override
-	public void treeNodesRemoved(TreeModelEvent e) {
-		throw new UnsupportedOperationException("should never be called");
-	}
-
-	@Override
-	public void treeStructureChanged(TreeModelEvent e) {
-		treeEvents.add(e);
 	}
 
 	private static TestEvent eventWithError(Throwable error) {

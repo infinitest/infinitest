@@ -27,23 +27,30 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
-import junit.framework.*;
-
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.plugin.SourceNavigatorStub;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
 import org.junit.Test;
 
-public class WhenUserClicksOnResultTree {
+import junit.framework.AssertionFailedError;
+
+public class WhenUserClicksOnResultTree extends IntellijMockBase {
 	private ResultClickListener clickListener;
 	private List<TestEvent> paneEvents;
 	private KeyListener keyListener;
@@ -78,12 +85,20 @@ public class WhenUserClicksOnResultTree {
 	@Test
 	public void shouldNotPopUpOnSingleClick() {
 		JTree tree = createFakeTree(eventWithError());
-		simulateClickEvent(tree, 1);
+		simulateClickEvent(tree, 1, MouseEvent.BUTTON1);
 		assertTrue(paneEvents.isEmpty());
 	}
+	
+	@Test
+	public void checkRightClick() {
+		JTree tree = createFakeTree(module);
+		simulateClickEvent(tree, 1, MouseEvent.BUTTON3);
+		
+		verify(module).getName();
+	}
 
-	private void simulateClickEvent(JTree tree, int clickCount) {
-		clickListener.mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, clickCount, false));
+	private void simulateClickEvent(JTree tree, int clickCount, int button) {
+		clickListener.mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, clickCount, false, button));
 	}
 
 	private void simulateEnterKeyEvent(JTree tree, int keyCode) {
@@ -118,6 +133,11 @@ public class WhenUserClicksOnResultTree {
 
 			@Override
 			public TreePath getClosestPathForLocation(int x, int y) {
+				return new TreePath(new Object[] { "root", "parent", treeNode });
+			}
+			
+			@Override
+			public TreePath getPathForLocation(int x, int y) {
 				return new TreePath(new Object[] { "root", "parent", treeNode });
 			}
 

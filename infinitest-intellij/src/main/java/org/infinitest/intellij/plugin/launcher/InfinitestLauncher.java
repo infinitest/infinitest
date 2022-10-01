@@ -27,8 +27,11 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-public interface InfinitestLauncher {
-	void launchInfinitest();
+import org.infinitest.InfinitestCore;
+import org.infinitest.ResultCollector;
 
-	void stop();
+public interface InfinitestLauncher {
+	InfinitestCore getCore();
+
+	ResultCollector getResultCollector();
 }

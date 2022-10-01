@@ -27,24 +27,42 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.FailureListListener;
+import org.infinitest.ResultCollector;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.idea.ProjectTestControl;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.infinitest.testrunner.PointOfFailure;
+import org.infinitest.testrunner.TestEvent;
+import org.jetbrains.annotations.NotNull;
 
-class TreeModelAdapter implements TreeModel, FailureListListener {
-	private final ResultCollector collector;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.ModuleListener;
+import com.intellij.openapi.project.Project;
+import com.intellij.util.Function;
+
+/**
+ * The structure of the tree is:<br>
+ * {@link Project} / {@link Module} / {@link PointOfFailure} / {@link TestEvent}
+ */
+public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleListener {
+	private final Project project;
 	private final List<TreeModelListener> listeners;
 
-	public TreeModelAdapter(ResultCollector resultCollector) {
-		collector = resultCollector;
-		collector.addChangeListener(this);
+	public TreeModelAdapter(Project project) {
+		this.project = project;
 		listeners = newArrayList();
 	}
 
@@ -55,11 +73,23 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 
 	@Override
 	public Object getChild(Object parent, int index) {
-		if (parent == getRoot()) {
+		if (parent.equals(getRoot())) {
+			return ModuleManager.getInstance(project).getModules()[index];
+		} else if (parent instanceof Module) {
+			Module module = (Module) parent;
+			ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 			return collector.getPointOfFailure(index);
-		}
-		if (collector.isPointOfFailure(parent)) {
-			return collector.getTestsFor((PointOfFailure) parent).get(index);
+		} else {
+			PointOfFailure pointOfFailure = (PointOfFailure) parent;
+			
+			for (Module module : ModuleManager.getInstance(project).getModules()) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				if (collector.isPointOfFailure(parent)) {
+					// When a  @ParameterizedTest fails inside the @BeforeEach method, multiple test events will be in the collector
+					// These events will show as empty now, except for the last one, so we only want distinct elements here
+					return collector.getTestsFor(pointOfFailure).stream().distinct().skip(index).findFirst().orElse(null);
+				}
+			}
 		}
 		return null;
 	}
@@ -67,17 +97,41 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 	@Override
 	public int getChildCount(Object parent) {
 		if (parent.equals(getRoot())) {
-			return collector.getPointOfFailureCount();
-		}
-		if (collector.isPointOfFailure(parent)) {
-			return collector.getTestsFor((PointOfFailure) parent).size();
+			return ModuleManager.getInstance(project).getModules().length;
+		} else if (parent instanceof Module) {
+			Module module = (Module) parent;
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
+			
+			if (testControl.shouldRunTests(module)) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				return collector.getPointOfFailureCount();
+			}
+		} else if (parent instanceof PointOfFailure) {
+			PointOfFailure pointOfFailure = (PointOfFailure) parent;
+			
+			for (Module module : ModuleManager.getInstance(project).getModules()) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				if (collector.isPointOfFailure(parent)) {
+					// Only show distinct test events
+					return (int) collector.getTestsFor(pointOfFailure).stream().distinct().count();
+				}
+			}
 		}
 		return 0;
 	}
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
-		if (getRoot().equals(parent)) {
+		if (parent.equals(getRoot())) {
+			Module[] modules = ModuleManager.getInstance(project).getModules();
+			for (int i=0; i<modules.length; i++) {
+				if (child.equals(modules[i])) {
+					return i;
+				}
+			}
+		} else if (parent instanceof Module) {
+			Module module = (Module) parent;
+			ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 			return collector.getPointOfFailureIndex((PointOfFailure) child);
 		}
 		return 0;
@@ -85,7 +139,7 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 
 	@Override
 	public Object getRoot() {
-		return "";
+		return project;
 	}
 
 	@Override
@@ -123,6 +177,21 @@ class TreeModelAdapter implements TreeModel, FailureListListener {
 
 	@Override
 	public void failuresUpdated(Collection<TestEvent> updatedFailures) {
+		fireTreeStructureChanged();
+	}
+	
+	@Override
+	public void moduleAdded(@NotNull Project project, @NotNull Module module) {
+		fireTreeStructureChanged();
+	}
+	
+	@Override
+	public void moduleRemoved(@NotNull Project project, @NotNull Module module) {
+		fireTreeStructureChanged();
+	}
+	
+	@Override
+	public void modulesRenamed(@NotNull Project project, @NotNull List<? extends Module> modules, @NotNull Function<? super Module, String> oldNameProvider) {
 		fireTreeStructureChanged();
 	}
 }

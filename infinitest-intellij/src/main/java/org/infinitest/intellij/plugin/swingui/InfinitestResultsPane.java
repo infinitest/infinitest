@@ -45,7 +45,7 @@ public class InfinitestResultsPane extends JPanel {
 	private final JTree tree;
 	private Color color;
 
-	InfinitestResultsPane() {
+	public InfinitestResultsPane() {
 		setLayout(new BorderLayout());
 		toolbar = createToolBar();
 		animator = new ColorAnimator();

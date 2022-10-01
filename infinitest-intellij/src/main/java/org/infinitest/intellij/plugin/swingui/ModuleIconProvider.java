@@ -25,16 +25,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.launcher;
+package org.infinitest.intellij.plugin.swingui;
 
-public interface PresenterListener extends java.util.EventListener {
-	void testRunCompleted();
+import java.io.Serializable;
 
-	void testRunSucceed();
+import javax.swing.Icon;
 
-	void testRunFailed();
+import com.intellij.openapi.module.Module;
 
-	void testRunStarted();
-
-	void testRunWaiting();
+public interface ModuleIconProvider extends Serializable {
+	public static final ModuleIconProvider NULL_MODULE_ICON_PROVIDER = new ModuleIconProvider() {
+		private static final long serialVersionUID = -1440734754505336260L;
+	};
+	
+	default Icon getIcon(Module module) {
+			return null;
+	}
 }

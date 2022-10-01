@@ -25,10 +25,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea.facet;
+package org.infinitest.intellij.plugin.launcher;
 
-public interface FacetListener {
-	void facetInitialized();
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-	void facetDisposed();
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.ModuleSettings;
+import org.junit.Test;
+
+public class InfinitestLauncherImplTest extends IntellijMockBase {
+	@Test
+	public void launcherInitiatilization() {
+		ModuleSettings moduleSettings = mock(ModuleSettings.class);
+		RuntimeEnvironment runtimeEnvironment = mock(RuntimeEnvironment.class);
+		
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
+		
+		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(module);
+		
+		assertThat(launcher.getCore()).isNotNull();
+		assertThat(launcher.getResultCollector()).isNotNull();
+	}
 }

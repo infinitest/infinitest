@@ -27,6 +27,8 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
+import org.infinitest.TestQueueEvent;
+import org.infinitest.TestQueueListener;
 import org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory;
 import org.infinitest.intellij.idea.language.InfinitestLineMarkersPass;
 
@@ -35,15 +37,15 @@ import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 
-public class FileEditorListener implements PresenterListener {
+public class FileEditorListener implements TestQueueListener {
 	FileEditorManager fileEditorManager;
 
 	public FileEditorListener(FileEditorManager fileEditorManager) {
 		this.fileEditorManager = fileEditorManager;
 	}
-
+	
 	@Override
-	public void testRunCompleted() {
+	public void testRunComplete() {
 		for (FileEditor fileEditor : fileEditorManager.getSelectedEditors()) {
 			if (fileEditor instanceof TextEditor) {
 				TextEditor textEditor = (TextEditor) fileEditor;
@@ -57,24 +59,14 @@ public class FileEditorListener implements PresenterListener {
 			}
 		}
 	}
-
+	
 	@Override
-	public void testRunSucceed() {
+	public void testQueueUpdated(TestQueueEvent event) {
 		// nothing to do here
 	}
 
 	@Override
-	public void testRunFailed() {
-		// nothing to do here
-	}
-
-	@Override
-	public void testRunStarted() {
-		// nothing to do here
-	}
-
-	@Override
-	public void testRunWaiting() {
+	public void reloading() {
 		// nothing to do here
 	}
 }

@@ -4,24 +4,27 @@
     <description>Infinitest is a continuous test runner for Java, and is valuable to developers using a unit testing tool called JUnit. Continuous testing is the practice of constantly running unit tests while developers make changes to source code. Kind of like a spellchecker, except that instead of looking for spelling errors like a regular spellchecker, or looking for syntax errors like many IDE's do, Infinitest constantly looks for logical errors and immediately identifies them. It does this by running an optimized set of unit tests every time a developer makes a change to source code.</description>
     <version>${project.parent.version}</version>
     <vendor url="http://infinitest.github.io/">Infinitest</vendor>
-    <idea-version since-build="183"/>
+    <idea-version since-build="193"/>
     
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     
-    <application-components>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.facet.InfinitestFacetLoader</implementation-class>
-        </component>
-    </application-components>
     <project-components>
         <component>
             <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory</implementation-class>
         </component>
     </project-components>
-    <module-components>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.window.InfinitestToolWindow</implementation-class>
-        </component>
-    </module-components>
+    
+    <projectListeners>
+    	<listener class="org.infinitest.intellij.idea.IdeaCompilationListener" topic="com.intellij.task.ProjectTaskListener"/>
+    </projectListeners>
+    
+	<extensions defaultExtensionNs="com.intellij">
+    	<toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
+    	
+    	<projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
+    	
+	    <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
+    	<moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
+	</extensions>
 </idea-plugin>

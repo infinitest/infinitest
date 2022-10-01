@@ -28,23 +28,24 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.event.WindowEvent;
 
-import javax.swing.*;
-import junit.framework.*;
+import javax.swing.JLabel;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.intellij.openapi.project.Project;
+import com.intellij.icons.AllIcons;
 
-public class WhenShowingMainFrame {
+import junit.framework.AssertionFailedError;
+
+public class WhenShowingMainFrame extends IntellijMockBase {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
@@ -52,7 +53,8 @@ public class WhenShowingMainFrame {
 
   @Before
   public void inContext() {
-    Project project = mock(Project.class);
+    IntellijMockBase.setupApplication();
+    
     InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
     
     resultsPane = new InfinitestResultsPane();
@@ -82,7 +84,7 @@ public class WhenShowingMainFrame {
     Object node = "PointOfFailure.java:32";
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("error"));
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
   }
 
   @Test
@@ -90,12 +92,7 @@ public class WhenShowingMainFrame {
     Object node = eventWithError();
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("failure"));
-  }
-
-  private String expectedIcon(String iconName) {
-    ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
-    return expectedIcon.toString();
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
   }
 
   private static TestEvent eventWithError() {

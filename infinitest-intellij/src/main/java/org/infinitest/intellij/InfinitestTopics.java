@@ -25,37 +25,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.idea.window;
+package org.infinitest.intellij;
 
-import javax.swing.*;
+import org.infinitest.ConsoleOutputListener;
+import org.infinitest.DisabledTestListener;
+import org.infinitest.FailureListListener;
+import org.infinitest.StatusChangeListener;
+import org.infinitest.TestQueueListener;
+import org.infinitest.testrunner.TestResultsListener;
 
-import org.infinitest.intellij.*;
+import com.intellij.util.messages.Topic;
 
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.wm.*;
-import com.intellij.util.ui.*;
+public final class InfinitestTopics {
 
-public class IdeaToolWindowRegistry implements ToolWindowRegistry {
-	private final Project project;
-
-	public IdeaToolWindowRegistry(Project project) {
-		this.project = project;
-	}
-
-	@Override
-	public void registerToolWindow(JPanel panel, String windowId) {
-		panel.setBackground(UIUtil.getTreeTextBackground());
-
-		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-		ToolWindow window = toolWindowManager.registerToolWindow(windowId, false, ToolWindowAnchor.BOTTOM);
-
-		IdeaWindowHelper windowHelper = new IdeaWindowHelper();
-		windowHelper.addPanelToWindow(panel, window);
-	}
-
-	@Override
-	public void unregisterToolWindow(String windowId) {
-		ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-		toolWindowManager.unregisterToolWindow(windowId);
+	public static final Topic<ConsoleOutputListener> CONSOLE_TOPIC = Topic.create("Infinitest console output", ConsoleOutputListener.class);
+	public static final Topic<DisabledTestListener> DISABLED_TEST_TOPIC = Topic.create("Infinitest disabled tests", DisabledTestListener.class);
+	public static final Topic<FailureListListener> FAILURE_LIST_TOPIC = Topic.create("Infinitest disabled tests", FailureListListener.class);
+	public static final Topic<StatusChangeListener> STATUS_CHANGE_TOPIC = Topic.create("Infinitest core status", StatusChangeListener.class);
+	public static final Topic<TestQueueListener> TEST_QUEUE_TOPIC  = Topic.create("Infinitest test queue", TestQueueListener.class);
+	public static final Topic<TestResultsListener> TEST_RESULTS_TOPIC = Topic.create("Infinitest test queue results", TestResultsListener.class);
+	
+	private InfinitestTopics() {
 	}
 }
