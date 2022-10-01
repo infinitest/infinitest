@@ -65,7 +65,7 @@ public class ReloadIndexAction extends AbstractAction {
 	}
 
 	private static URL packageRelativeResource(String resourceName, Class<?> clazz) {
-		String directoryPrefix = '/' + clazz.getPackage().getName().replaceAll("\\.", "/") + '/';
+		String directoryPrefix = '/' + clazz.getPackage().getName().replace(".", "/") + '/';
 		return clazz.getResource(directoryPrefix + resourceName);
 	}
 }
