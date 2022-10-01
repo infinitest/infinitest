@@ -173,7 +173,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 		// all our dependencies (recursively where needed)
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			List<VirtualFile> files = new ArrayList<VirtualFile>();
+			List<VirtualFile> files = new ArrayList<>();
 
 			if (entry instanceof ModuleOrderEntry) {
 				/*
@@ -230,7 +230,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 	}
 	
 	@Nullable
-	private File getSdkHomePath() {
+	protected File getSdkHomePath() {
 		Sdk moduleSdk = ModuleRootManager.getInstance(module).getSdk();
 		if (moduleSdk == null) {
 			return null;
