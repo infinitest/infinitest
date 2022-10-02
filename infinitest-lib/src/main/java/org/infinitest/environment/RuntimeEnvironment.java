@@ -337,10 +337,17 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		try {
 			File argumentFile = File.createTempFile("infinitest-", ".cp-argument");
 			argumentFile.deleteOnExit();
-			Files.writeString(argumentFile.toPath(), getRunnerFullClassPath(), StandardCharsets.UTF_8);
+			String escapedRunnerFullClassPath = escapeClassPathFileContent(getRunnerFullClassPath());
+			Files.writeString(argumentFile.toPath(), escapedRunnerFullClassPath, StandardCharsets.UTF_8);
 			return argumentFile;
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing argument file", e);
 		}
+	}
+
+	protected String escapeClassPathFileContent(String classPath) {
+		classPath = classPath.replace("\\", "\\\\");
+		
+		return "\"" + classPath + "\"";
 	}
 }

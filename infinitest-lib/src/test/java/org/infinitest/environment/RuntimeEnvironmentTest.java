@@ -51,7 +51,10 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -89,7 +92,6 @@ public class RuntimeEnvironmentTest {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "notTheSameClasspath", "javahome");
 		assertThat(createEqualInstance(), not(equalTo(env)));
 	}
-
 	@Test
 	public void shouldCompareJavaHome() {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "classpath", "notTheSameJavahome");
@@ -219,4 +221,27 @@ public class RuntimeEnvironmentTest {
 	private RuntimeEnvironment createEqualInstance() {
 		return createEnv("outputDir", "workingDir", "classpath", "javahome");
 	}
+	
+	@Test
+	public void escapeClassPathArgumentfile() throws IOException {
+		String classpath = "c:\\Program Files (x86)\\Java\\jre\\lib\\ext;c:\\Program Files\\Java\\jre9\\lib\\ext";
+		RuntimeEnvironment env = new RuntimeEnvironment(new File("javahome"),
+				new File("workingDir"),
+				"runnerClassLoaderClassPath",
+				"runnerProcessClassPath",
+				Collections.singletonList(new File("outputDir")),
+				classpath) {
+			@Override
+			String findInfinitestRunnerJar() {
+				return "c:/test path/runner.jar";
+			}
+		};
+		
+		File file = env.createClasspathArgumentFile();
+		
+		String content = Files.readString(file.toPath());
+		
+		assertThat(content).isEqualTo("\"c:\\\\Program Files (x86)\\\\Java\\\\jre\\\\lib\\\\ext;c:\\\\Program Files\\\\Java\\\\jre9\\\\lib\\\\ext;c:/test path/runner.jar\"");
+	}
 }
+
