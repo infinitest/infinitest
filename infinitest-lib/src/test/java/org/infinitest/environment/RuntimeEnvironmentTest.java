@@ -92,6 +92,7 @@ public class RuntimeEnvironmentTest {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "notTheSameClasspath", "javahome");
 		assertThat(createEqualInstance(), not(equalTo(env)));
 	}
+	
 	@Test
 	public void shouldCompareJavaHome() {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "classpath", "notTheSameJavahome");
@@ -241,7 +242,9 @@ public class RuntimeEnvironmentTest {
 		
 		String content = Files.readString(file.toPath());
 		
-		assertThat(content).isEqualTo("\"c:\\\\Program Files (x86)\\\\Java\\\\jre\\\\lib\\\\ext;c:\\\\Program Files\\\\Java\\\\jre9\\\\lib\\\\ext;c:/test path/runner.jar\"");
+		assertThat(content).isEqualTo("\"c:\\\\Program Files (x86)\\\\Java\\\\jre\\\\lib\\\\ext;c:\\\\Program Files\\\\Java\\\\jre9\\\\lib\\\\ext"
+				+ File.pathSeparator
+				+ "c:/test path/runner.jar\"");
 	}
 }
 
