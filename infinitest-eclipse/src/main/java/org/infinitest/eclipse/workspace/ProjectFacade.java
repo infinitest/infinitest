@@ -169,7 +169,11 @@ class ProjectFacade implements EclipseProject {
 		}
 	}
 
+	/**
+	 * @return <code>true</code> if this class is on the project's classpath or part of the project
+	 */
 	public boolean isOnClasspath(IResource resource) {
-		return project.isOnClasspath(resource);
+		// isOnClasspath() does not seem to return true for a class in its own project
+		return project.isOnClasspath(resource) || resource.getProject().equals(project.getProject());
 	}
 }

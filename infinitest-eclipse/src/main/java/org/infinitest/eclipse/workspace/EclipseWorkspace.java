@@ -51,6 +51,7 @@ import org.infinitest.eclipse.UpdateListener;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.infinitest.eclipse.status.WorkspaceStatusListener;
 import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.parser.JavaClass;
 import org.infinitest.util.Events;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -96,14 +97,15 @@ class EclipseWorkspace implements WorkspaceFacade {
 	@Override
 	public void remove(Set<IResource> removedResources) {
 		Map<ProjectFacade, Set<File>> removedFilesByProject = groupResourcesByProject(removedResources);
-		
+		Set<JavaClass> removedClasses = new HashSet<JavaClass>();
+
 		for (Map.Entry<ProjectFacade, Set<File>> entry : removedFilesByProject.entrySet()) {
 			ProjectFacade project = entry.getKey();
 			Set<File> removedFiles = entry.getValue();
 			
 			InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
 			if (core != null) {
-				core.remove(removedFiles);
+				core.remove(removedFiles, removedClasses);
 			}
 		}
 	}

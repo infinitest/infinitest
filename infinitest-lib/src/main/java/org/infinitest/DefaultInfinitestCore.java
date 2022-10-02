@@ -94,8 +94,9 @@ class DefaultInfinitestCore implements InfinitestCore {
 	}
 	
 	@Override
-	public void remove(Collection<File> removedFiles) {
-		Set<JavaClass> removedClasses = testDetector.removeClasses(removedFiles);
+	public void remove(Collection<File> removedFiles, Set<JavaClass> removedClasses) {
+		Set<JavaClass> coreRemovedClasses = testDetector.removeClasses(removedFiles);
+		removedClasses.addAll(coreRemovedClasses);
 		
 		fireDisabledTestEvents(classesToNames(removedClasses));
 	}

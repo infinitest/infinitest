@@ -27,13 +27,12 @@
  */
 package org.infinitest.parser;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
-import org.infinitest.MissingClassException;
+import javassist.*;
+
+import org.infinitest.*;
 import org.infinitest.environment.ClasspathProvider;
-
-import javassist.NotFoundException;
 
 /**
  * @author Ben Rady
@@ -65,8 +64,11 @@ class JavaClassBuilder {
 		}
 	}
 	
-	public JavaClass classFileRemoved(File file) {
-		return parser.classFileRemoved(file);
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		return parser.getClass(file);
 	}
 
 	public String classFileChanged(File file) {

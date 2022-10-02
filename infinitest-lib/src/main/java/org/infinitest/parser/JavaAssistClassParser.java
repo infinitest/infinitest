@@ -27,34 +27,25 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.base.Splitter.on;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.io.File.pathSeparator;
+import static com.google.common.base.Splitter.*;
+import static com.google.common.collect.Lists.*;
+import static java.io.File.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import org.infinitest.MissingClassException;
+import javassist.*;
 
+import org.infinitest.*;
+
+import com.google.common.collect.*;
 import com.google.common.hash.Hashing;
-import com.google.common.io.Files;
-
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
+import com.google.common.io.*;
 
 public class JavaAssistClassParser {
 	private final String classpath;
 	private ClassPool classPool;
-	// Unrelated projects might have classes with the same name so this can't be shared
-	private final Map<String, JavaClass> classesByName = new HashMap<>();
 
 	public JavaAssistClassParser(String classpath) {
 		this.classpath = classpath;
@@ -99,8 +90,10 @@ public class JavaAssistClassParser {
 		return !new File(iter.next()).exists();
 	}
 
+	private final static Map<String, JavaClass> CLASSES_BY_NAME = Maps.newHashMap();
+
 	public JavaClass getClass(String className) {
-		JavaClass clazz = classesByName.get(className);
+		JavaClass clazz = CLASSES_BY_NAME.get(className);
 		if (clazz == null) {
 			CtClass ctClass = getCachedClass(className);
 
@@ -119,13 +112,13 @@ public class JavaAssistClassParser {
 				}
 			}
 
-			classesByName.put(className, clazz);
+			CLASSES_BY_NAME.put(className, clazz);
 		}
 
 		return clazz;
 	}
 
-	private final static Map<String, CacheEntry> BY_PATH = new HashMap<>();
+	private final static Map<String, CacheEntry> BY_PATH = Maps.newHashMap();
 
 	public static class CacheEntry {
 		final String sha1;
@@ -137,13 +130,16 @@ public class JavaAssistClassParser {
 		}
 	}
 	
-	public JavaClass classFileRemoved(File file) {
-		CacheEntry entry = BY_PATH.remove(file.getAbsolutePath());
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		CacheEntry entry = BY_PATH.get(file.getAbsolutePath());
 		
 		if (entry != null) {
 			String classname = entry.classname;
 			
-			return classesByName.remove(classname);
+			return CLASSES_BY_NAME.get(classname);
 		}
 		
 		return null;
@@ -160,7 +156,7 @@ public class JavaAssistClassParser {
 			CtClass ctClass = getClassPool().makeClass(inputStream);
 			String classname = ctClass.getName();
 
-			classesByName.remove(classname);
+			CLASSES_BY_NAME.remove(classname);
 			BY_PATH.put(file.getAbsolutePath(), new CacheEntry(sha1, classname));
 
 			return classname;

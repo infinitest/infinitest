@@ -28,7 +28,6 @@
 package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceChangeEvent.POST_BUILD;
-import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -54,7 +53,7 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 
 	@Override
 	public boolean canProcessEvent(IResourceChangeEvent event) {
-		return (event.getType() & (POST_BUILD | POST_CHANGE)) > 0;
+		return (event.getType() & POST_BUILD) > 0;
 	}
 
 	@Override

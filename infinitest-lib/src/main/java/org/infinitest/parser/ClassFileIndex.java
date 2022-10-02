@@ -66,7 +66,7 @@ public class ClassFileIndex {
 		Set<JavaClass> removedClasses = newHashSet();
 		
 		for (File removedFile : removedFiles) {
-			JavaClass removedClass = builder.classFileRemoved(removedFile);
+			JavaClass removedClass = builder.getClass(removedFile);
 			if (removedClass != null) {
 				graph.removeVertex(removedClass);
 				removedClasses.add(removedClass);

@@ -31,6 +31,7 @@ import java.io.*;
 import java.util.*;
 
 import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.parser.JavaClass;
 import org.infinitest.testrunner.*;
 
 @SuppressWarnings("all")
@@ -90,7 +91,7 @@ public class FakeInfinitestCore implements InfinitestCore {
 	}
 	
 	@Override
-	public void remove(Collection<File> removedFiles) {
+	public void remove(Collection<File> removedFiles, Set<JavaClass> removedClasses) {
 		throw new UnsupportedOperationException();
 	}
 }

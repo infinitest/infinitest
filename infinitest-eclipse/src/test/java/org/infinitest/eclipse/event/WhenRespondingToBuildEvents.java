@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.infinitest.eclipse.ResourceEventSupport;
 import org.infinitest.eclipse.workspace.WorkspaceFacade;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -88,9 +87,10 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldRespondToPostChangeEvents() {
+	public void shouldNotRespondToPostChangeEvents() {
+		// Not sure why we wanted to respond to change events, seems better to respond to the post build event, once the build is finished
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
-		assertTrue(processor.canProcessEvent(event));
+		assertFalse(processor.canProcessEvent(event));
 
 		verifyNoInteractions(workspace);
 	}

@@ -74,7 +74,7 @@ public class ClassFileIndexTest {
 	@Test
 	public void removeFiles() {
 		JavaClass javaClass = mock(JavaClass.class);
-		when(builder.classFileRemoved(any())).thenReturn(javaClass);
+		when(builder.getClass(any(File.class))).thenReturn(javaClass);
 		
 		Set<JavaClass> removedClasses = index.removeClasses(Collections.singleton(new File("")));
 		
