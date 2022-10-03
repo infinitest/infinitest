@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '11', '17', '18' ]
+        java: [ '11', '17', '19' ]
     name: Unit tests Java ${{ matrix.Java }}
     steps:
       - uses: actions/checkout@v2
