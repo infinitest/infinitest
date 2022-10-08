@@ -52,7 +52,7 @@ import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +62,8 @@ import org.infinitest.environment.RuntimeEnvironment.JavaHomeException;
 import org.infinitest.util.LoggingAdapter;
 import org.junit.Rule;
 import org.junit.Test;
+
+import com.google.common.io.Files;
 
 public class RuntimeEnvironmentTest {
 
@@ -240,11 +242,12 @@ public class RuntimeEnvironmentTest {
 		
 		File file = env.createClasspathArgumentFile();
 		
-		String content = Files.readString(file.toPath());
+		String content = Files.toString(file, StandardCharsets.UTF_8);
 		
 		assertThat(content).isEqualTo("\"c:\\\\Program Files (x86)\\\\Java\\\\jre\\\\lib\\\\ext;c:\\\\Program Files\\\\Java\\\\jre9\\\\lib\\\\ext"
 				+ File.pathSeparator
-				+ "c:/test path/runner.jar\"");
+				// not sure why we get the \r\n with Guava but not with java.nio
+				+ "c:/test path/runner.jar\"\r\n");
 	}
 }
 
