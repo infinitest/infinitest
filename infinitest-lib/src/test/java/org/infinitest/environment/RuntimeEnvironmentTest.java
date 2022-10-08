@@ -242,12 +242,11 @@ public class RuntimeEnvironmentTest {
 		
 		File file = env.createClasspathArgumentFile();
 		
-		String content = Files.toString(file, StandardCharsets.UTF_8);
+		String content = Files.toString(file, StandardCharsets.UTF_8).trim();
 		
 		assertThat(content).isEqualTo("\"c:\\\\Program Files (x86)\\\\Java\\\\jre\\\\lib\\\\ext;c:\\\\Program Files\\\\Java\\\\jre9\\\\lib\\\\ext"
 				+ File.pathSeparator
-				// not sure why we get the \r\n with Guava but not with java.nio
-				+ "c:/test path/runner.jar\"\r\n");
+				+ "c:/test path/runner.jar\"");
 	}
 }
 
