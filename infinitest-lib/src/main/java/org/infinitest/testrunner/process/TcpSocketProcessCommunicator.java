@@ -75,7 +75,7 @@ public class TcpSocketProcessCommunicator {
 			socket = serverSocket.accept();
 			log(Level.CONFIG, "Socket opened");
 			inStream = new ObjectInputStream(socket.getInputStream());
-			writer = new PrintStream(socket.getOutputStream(), true, "UTF_8");
+			writer = new PrintStream(socket.getOutputStream(), true, "UTF-8");
 		} catch (SocketTimeoutException e) {
 			log("Test runner process failed to start in a timely manner", e);
 			throw new RuntimeException(e);

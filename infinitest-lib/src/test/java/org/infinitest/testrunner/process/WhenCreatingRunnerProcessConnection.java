@@ -88,7 +88,7 @@ public class WhenCreatingRunnerProcessConnection {
 			serverSocket.setSoTimeout(2500);
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, "UTF_8");
+			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, "UTF-8");
 			List<TestEvent> results = Lists.newArrayList();
 			TestResults result = null;
 			int i = 0;
