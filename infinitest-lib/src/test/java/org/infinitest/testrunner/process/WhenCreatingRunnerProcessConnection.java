@@ -39,7 +39,6 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.infinitest.environment.ClasspathArgumentBuilder;
@@ -89,7 +88,7 @@ public class WhenCreatingRunnerProcessConnection {
 			serverSocket.setSoTimeout(2500);
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, StandardCharsets.UTF_8);
+			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, "UTF_8");
 			List<TestEvent> results = Lists.newArrayList();
 			TestResults result = null;
 			int i = 0;

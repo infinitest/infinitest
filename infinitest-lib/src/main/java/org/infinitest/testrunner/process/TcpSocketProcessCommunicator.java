@@ -27,15 +27,19 @@
  */
 package org.infinitest.testrunner.process;
 
-import static org.infinitest.util.InfinitestUtils.*;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.logging.Level;
 
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.MissingClassException;
+import org.infinitest.TestRunAborted;
+import org.infinitest.testrunner.TestResults;
 
 public class TcpSocketProcessCommunicator {
 	private ServerSocket serverSocket;
@@ -71,7 +75,7 @@ public class TcpSocketProcessCommunicator {
 			socket = serverSocket.accept();
 			log(Level.CONFIG, "Socket opened");
 			inStream = new ObjectInputStream(socket.getInputStream());
-			writer = new PrintStream(socket.getOutputStream(), true, StandardCharsets.UTF_8);
+			writer = new PrintStream(socket.getOutputStream(), true, "UTF_8");
 		} catch (SocketTimeoutException e) {
 			log("Test runner process failed to start in a timely manner", e);
 			throw new RuntimeException(e);
