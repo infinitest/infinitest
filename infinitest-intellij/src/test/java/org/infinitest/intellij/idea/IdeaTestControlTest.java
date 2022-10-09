@@ -41,6 +41,8 @@ import org.junit.Test;
 public class IdeaTestControlTest extends IntellijMockBase {
 	@Test
 	public void projectControlTest() {
+		setupApplication();
+		
 		ProjectTestControl testControl = new ProjectTestControl(project);
 		
 		when(module.getProject().getService(ProjectTestControl.class)).thenReturn(testControl);
@@ -79,5 +81,22 @@ public class IdeaTestControlTest extends IntellijMockBase {
 		
 		verify(core).update();
 		assertThat(testControl.getState().getDisabledModulesNames()).isEmpty();
+	}
+	
+	@Test
+	public void enablePowerSaveMode() {
+		setupApplication(true);
+		
+		ProjectTestControl testControl = new ProjectTestControl(project);
+		
+		when(module.getProject().getService(ProjectTestControl.class)).thenReturn(testControl);
+		
+		InfinitestCore core = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(core);
+		
+		testControl.setRunTests(true);
+		
+		verify(core, never()).reload();
 	}
 }

@@ -53,6 +53,7 @@ import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.util.InfinitestUtils;
 
+import com.intellij.ide.PowerSaveMode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.popup.Balloon;
@@ -61,7 +62,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.messages.MessageBusConnection;
 
-public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener {
+public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener, PowerSaveMode.Listener {
 	public static final Color PASSING_COLOR = new Color(0x359b35);
 	public static final Color FAILING_COLOR = RED;
 	public static final Color UNKNOWN_COLOR = YELLOW;
@@ -89,6 +90,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		connection.subscribe(InfinitestTopics.TEST_QUEUE_TOPIC, this);
 		connection.subscribe(InfinitestTopics.FAILURE_LIST_TOPIC, this);
 		connection.subscribe(InfinitestTopics.STATUS_CHANGE_TOPIC, monitor);
+		connection.subscribe(PowerSaveMode.TOPIC, this);
 	}
 
 	private void indicateWaitingForChanges() {
@@ -196,5 +198,19 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 			annotator.clearAnnotation(updated);
 			annotator.annotate(updated);
 		}
+	}
+	
+	@Override
+	public void powerSaveStateChanged() {
+		indicateWaitingForChanges();
+		
+		String message;
+		if (PowerSaveMode.isEnabled()) {
+			message = "Infinitst disabled when power save mode is enabled";
+		} else {
+			message = "Waiting for changes";
+		}
+		
+		view.setStatusMessage(message);
 	}
 }

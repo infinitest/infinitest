@@ -44,6 +44,7 @@ import org.junit.Before;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -107,6 +108,10 @@ public class IntellijMockBase {
 	 * Not executed automatically since most tests don't need it, this needs to be called explicitly
 	 */
 	public static void setupApplication() {
+		setupApplication(false);
+	}
+	
+	public static void setupApplication(boolean powerSaveModeEnabled) {
 		Application application = mock(Application.class);
 		Disposable parent = mock(Disposable.class);
 		
@@ -124,6 +129,12 @@ public class IntellijMockBase {
 		ContentFactory contentFactory = mock(ContentFactory.class);
 
 		when(application.getService(ContentFactory.class)).thenReturn(contentFactory);
+		
+		// Setup the properties component
+		PropertiesComponent propertiesComponent = mock(PropertiesComponent.class);
+		when(propertiesComponent.getValue("power.save.mode")).thenReturn(Boolean.toString(powerSaveModeEnabled));
+		
+		when(application.getService(PropertiesComponent.class)).thenReturn(propertiesComponent);
 		
 		ApplicationManager.setApplication(application, parent);
 	}
