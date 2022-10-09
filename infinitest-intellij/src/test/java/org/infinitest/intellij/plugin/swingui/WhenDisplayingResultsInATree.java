@@ -86,6 +86,8 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 
 	@Test
 	public void shouldCreateNodesForEachEvent() {
+		IntellijMockBase.setupApplication();
+		
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
 		assertEquals(2, model.getChildCount(module));
 	}
@@ -108,6 +110,8 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 
 	@Test
 	public void shouldIdentifyOnlyTestNodesAsLeaves() {
+		IntellijMockBase.setupApplication();
+		
 		assertTrue(model.isLeaf(module));
 
 		testRun(eventWithError(new AssertionFailedError()));

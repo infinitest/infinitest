@@ -206,7 +206,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		
 		String message;
 		if (PowerSaveMode.isEnabled()) {
-			message = "Infinitst disabled when power save mode is enabled";
+			message = "Infinitest disabled when power save mode is enabled";
 		} else {
 			message = "Waiting for changes";
 		}
