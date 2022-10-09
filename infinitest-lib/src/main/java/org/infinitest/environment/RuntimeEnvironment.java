@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -338,7 +339,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 			File argumentFile = File.createTempFile("infinitest-", ".cp-argument");
 			argumentFile.deleteOnExit();
 			String escapedRunnerFullClassPath = escapeClassPathFileContent(getRunnerFullClassPath());
-			Files.writeString(argumentFile.toPath(), escapedRunnerFullClassPath, StandardCharsets.UTF_8);
+			Files.write(argumentFile.toPath(), Collections.singleton(escapedRunnerFullClassPath), StandardCharsets.UTF_8);
 			return argumentFile;
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing argument file", e);
