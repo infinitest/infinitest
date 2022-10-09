@@ -136,4 +136,23 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 		verify(mockView).setStatusMessage(getMessage(INDEXING));
 		verify(mockView).setProgressBarColor(UNKNOWN_COLOR);
 	}
+	
+	@Test
+	public void enablePowerSaveMode() {
+		setupApplication(false);
+		
+		presenter.powerSaveStateChanged();
+		
+		verify(mockView).setStatusMessage("Waiting for changes");
+	}
+
+	
+	@Test
+	public void disablePowerSaveMode() {
+		setupApplication(true);
+		
+		presenter.powerSaveStateChanged();
+		
+		verify(mockView).setStatusMessage("Infinitest disabled when power save mode is enabled");
+	}
 }
