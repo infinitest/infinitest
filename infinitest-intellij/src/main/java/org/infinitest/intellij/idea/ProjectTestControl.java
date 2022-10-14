@@ -31,6 +31,7 @@ import org.infinitest.InfinitestCore;
 import org.infinitest.TestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
+import com.intellij.ide.PowerSaveMode;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.RoamingType;
 import com.intellij.openapi.components.Service;
@@ -96,7 +97,7 @@ public final class ProjectTestControl implements TestControl, PersistentStateCom
 
 	@Override
 	public boolean shouldRunTests(Module module) {
-		return !state.getDisabledModulesNames().contains(module.getName());
+		return !state.getDisabledModulesNames().contains(module.getName()) && !PowerSaveMode.isEnabled();
 	}
 	
 	@Override
