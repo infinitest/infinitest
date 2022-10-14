@@ -14,6 +14,7 @@ You can pull only a shallow clone by specifying the number of commits you want w
 
 ## Build
 
+Infinitest is on Java 8, except for the `infinitest-intellij` module which is on Java 11, so a JDK >= 11 is required for building.
 You need [Maven](http://maven.apache.org/download.html). To run a reactor build in the repository root: 
 
 	mvn clean install
