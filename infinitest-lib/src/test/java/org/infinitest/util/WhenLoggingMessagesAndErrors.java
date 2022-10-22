@@ -42,14 +42,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-public class WhenLoggingMessagesAndErrors implements LoggingListener {
+class WhenLoggingMessagesAndErrors implements LoggingListener {
 	private Map<String, Throwable> errors;
 	private Map<String, Level> messages;
 	private Level oldLevel;
 
 	@BeforeEach
-	public void inContext() {
+	void inContext() {
 		errors = newHashMap();
 		messages = newHashMap();
 		addLoggingListener(this);
@@ -57,12 +56,12 @@ public class WhenLoggingMessagesAndErrors implements LoggingListener {
 	}
 
 	@AfterEach
-	public void cleanup() {
+	void cleanup() {
 		setLogLevel(oldLevel);
 	}
 
 	@Test
-	public void shouldFireErrorEventToAllowForAlternateLoggingMethods() {
+	void shouldFireErrorEventToAllowForAlternateLoggingMethods() {
 		String message = "an error occured";
 		RuntimeException error = new RuntimeException();
 		log(message, error);
@@ -70,21 +69,21 @@ public class WhenLoggingMessagesAndErrors implements LoggingListener {
 	}
 
 	@Test
-	public void shouldFireErrorEventWithoutThrowable() {
+	void shouldFireErrorEventWithoutThrowable() {
 		String message = "an error occured";
 		log(Level.SEVERE, message);
 		assertEquals(Level.SEVERE, messages.get(message));
 	}
 
 	@Test
-	public void shouldFireInfoEvent() {
+	void shouldFireInfoEvent() {
 		String message = "an error occured";
 		log(message);
 		assertEquals(Level.INFO, messages.get(message));
 	}
 
 	@Test
-	public void canControlLogLevel() {
+	void canControlLogLevel() {
 		setLogLevel(Level.OFF);
 		String message = "an error occured";
 		log(Level.SEVERE, message);
