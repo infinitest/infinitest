@@ -29,19 +29,19 @@ package org.infinitest.eclipse.util;
 
 import static com.google.common.collect.Lists.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenStoringObjectsAsStrings {
+class WhenStoringObjectsAsStrings {
 	@Test
-	public void canPickleAnyOldObject() {
+	void canPickleAnyOldObject() {
 		String stringForm = pickle(new String("BB"));
 		assertEquals(new String("BB"), unpickle(stringForm));
 	}
 
 	@Test
-	public void canPickleListsOfObjects() {
+	void canPickleListsOfObjects() {
 		String stringForm = pickle(newArrayList("Hello", "There").toString());
 		assertEquals(newArrayList("Hello", "There").toString(), unpickle(stringForm));
 	}

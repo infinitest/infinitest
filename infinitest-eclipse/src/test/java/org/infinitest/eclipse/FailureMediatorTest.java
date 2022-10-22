@@ -40,11 +40,11 @@ import org.infinitest.eclipse.markers.ProblemMarkerInfo;
 import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
 import org.infinitest.eclipse.workspace.FakeResourceFinder;
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class FailureMediatorTest {
+class FailureMediatorTest {
 	private FailureMediator mediator;
 	private ProblemMarkerRegistry registry;
 	private TestEvent event1;
@@ -52,8 +52,8 @@ public class FailureMediatorTest {
 	private TestEvent event3;
 	private FakeResourceFinder finder;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		registry = Mockito.mock(ProblemMarkerRegistry.class);
 		finder = new FakeResourceFinder();
 		mediator = new FailureMediator(registry, finder);
@@ -63,7 +63,7 @@ public class FailureMediatorTest {
 	}
 
 	@Test
-	public void shouldRelayAddRemoveEvents() {
+	void shouldRelayAddRemoveEvents() {
 		Collection<TestEvent> failuresAdded = newArrayList(event1, event2);
 		Collection<TestEvent> failuresRemoved = newArrayList(event3);
 
@@ -75,7 +75,7 @@ public class FailureMediatorTest {
 	}
 
 	@Test
-	public void shouldRelayUpdateEvents() {
+	void shouldRelayUpdateEvents() {
 		Collection<TestEvent> updatedFailures = newArrayList(event1, event2);
 
 		mediator.failuresUpdated(updatedFailures);

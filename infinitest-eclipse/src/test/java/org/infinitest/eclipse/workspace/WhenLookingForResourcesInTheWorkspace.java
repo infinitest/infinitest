@@ -27,17 +27,17 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.sourcelookup.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenLookingForResourcesInTheWorkspace {
+class WhenLookingForResourcesInTheWorkspace {
 	@Test
-	public void shouldHandleMissingResources() {
+	void shouldHandleMissingResources() {
 		ISourceContainer sourceContainer = mock(ISourceContainer.class);
 		IWorkspace workspace = mock(IWorkspace.class);
 		WorkspaceResourceFinder finder = new WorkspaceResourceFinder(sourceContainer);

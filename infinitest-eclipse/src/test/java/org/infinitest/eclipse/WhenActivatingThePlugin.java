@@ -32,9 +32,10 @@ import static org.mockito.Mockito.*;
 import org.eclipse.core.resources.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.trim.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenActivatingThePlugin {
+class WhenActivatingThePlugin {
 	private IWorkspace workspace;
 	private InfinitestActivationController controller;
 	private IResourceChangeListener coreUpdateNotifier;
@@ -42,8 +43,8 @@ public class WhenActivatingThePlugin {
 	private EventQueue eventQueue;
 	private NamedRunnable markerClearingRunnable;
 
-	@Before
-	public final void inContext() {
+	@BeforeEach
+	final void inContext() {
 		workspace = mock(IWorkspace.class);
 		coreUpdateNotifier = mock(IResourceChangeListener.class);
 		visualStatusRegistry = mock(VisualStatusRegistry.class);
@@ -59,7 +60,7 @@ public class WhenActivatingThePlugin {
 	}
 
 	@Test
-	public void shouldNotAddTwoListenerIfPluginIsEnabledTwice() {
+	void shouldNotAddTwoListenerIfPluginIsEnabledTwice() {
 		controller.enable();
 		controller.enable();
 
@@ -67,13 +68,13 @@ public class WhenActivatingThePlugin {
 	}
 
 	@Test
-	public void shouldRemoveListenersWhenDisabled() {
+	void shouldRemoveListenersWhenDisabled() {
 		controller.disable();
 		verify(workspace).removeResourceChangeListener(coreUpdateNotifier);
 	}
 
 	@Test
-	public void shouldClearMarkersOnEventQueueWhenDisabled() {
+	void shouldClearMarkersOnEventQueueWhenDisabled() {
 		controller.disable();
 		verify(eventQueue).pushNamed(markerClearingRunnable);
 	}

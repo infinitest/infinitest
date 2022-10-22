@@ -49,16 +49,16 @@ import org.infinitest.TestQueueEvent;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenShowingStatusInTheStatusBar {
+class WhenShowingStatusInTheStatusBar {
 	private VisualStatusPresenter presenter;
 	private VisualStatus statusBar;
 	private TestQueueEvent firstEvent;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		statusBar = mock(VisualStatus.class);
 		presenter = new VisualStatusPresenter();
 		presenter.updateVisualStatus(statusBar);
@@ -66,7 +66,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldDisplayTheNumberOfRunningTests() {
+	void shouldDisplayTheNumberOfRunningTests() {
 		WorkspaceStatus expectedStatus = runningTests(1, "ATest");
 
 		presenter.testQueueUpdated(firstEvent);
@@ -76,12 +76,12 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldIgnoreUpdatesWhenStatusBarIsNotAttached() {
+	void shouldIgnoreUpdatesWhenStatusBarIsNotAttached() {
 		presenter.statusChanged(workspaceErrors());
 	}
 
 	@Test
-	public void shouldImmediatelySetStatusToFailingWhenATestFails() {
+	void shouldImmediatelySetStatusToFailingWhenATestFails() {
 		presenter.testCaseComplete(new TestCaseEvent("", null, new TestResults(methodFailed("", "", new AssertionError()))));
 
 		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
@@ -89,7 +89,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldOnlyResetTestCounterWhenUpdateStarts() {
+	void shouldOnlyResetTestCounterWhenUpdateStarts() {
 		presenter.testCaseComplete(testFinished("ATest"));
 		presenter.testQueueUpdated(emptyQueueEvent(2));
 		presenter.testCaseComplete(testFinished("BTest"));
@@ -104,7 +104,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldListTestsRunAsATooltip() {
+	void shouldListTestsRunAsATooltip() {
 		presenter.testCaseComplete(testFinished("ATest"));
 		presenter.testQueueUpdated(emptyQueueEvent(1));
 
@@ -113,7 +113,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldChangeToGreenWhenTestsPass() {
+	void shouldChangeToGreenWhenTestsPass() {
 		presenter.coreStatusChanged(FAILING, PASSING);
 
 		verify(statusBar).setBackgroundColor(COLOR_DARK_GREEN);
@@ -121,7 +121,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldChangeToRedWhenTestsFail() {
+	void shouldChangeToRedWhenTestsFail() {
 		presenter.coreStatusChanged(PASSING, FAILING);
 
 		verify(statusBar).setBackgroundColor(COLOR_DARK_RED);
@@ -129,7 +129,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldChangeToYellowWhenStatusIsAWarning() {
+	void shouldChangeToYellowWhenStatusIsAWarning() {
 		WorkspaceStatus warning = workspaceErrors();
 		presenter.statusChanged(warning);
 
@@ -140,7 +140,7 @@ public class WhenShowingStatusInTheStatusBar {
 	}
 
 	@Test
-	public void shouldReportWhenAllTestsAreComplete() {
+	void shouldReportWhenAllTestsAreComplete() {
 		presenter.testCaseComplete(testFinished("Test1"));
 		presenter.testCaseComplete(testFinished("Test2"));
 		presenter.testQueueUpdated(emptyQueueEvent(2));

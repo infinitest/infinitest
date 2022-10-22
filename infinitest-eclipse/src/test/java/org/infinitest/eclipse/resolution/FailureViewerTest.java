@@ -31,8 +31,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.swt.SWT.Deactivate;
 import static org.eclipse.swt.SWT.KeyDown;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -42,17 +42,17 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.infinitest.eclipse.workspace.FakeResourceFinder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FailureViewerTest {
+class FailureViewerTest {
 	private List list;
 	private StackTraceElement element;
 	private FailureViewer view;
 	private FakeShell dialog;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		element = new StackTraceElement("class1", "method1", "file1", 0);
 		view = new FailureViewer(null, "message", newArrayList(element), null);
 		dialog = new FakeShell();
@@ -61,7 +61,7 @@ public class FailureViewerTest {
 	}
 		
 	@Test
-	public void computeCenteredLocation() {
+	void computeCenteredLocation() {
 		Point viewerShellSize = new Point(400, 200);
 		Rectangle parentShellBounds = new Rectangle(100, 10, 2000, 600);
 		
@@ -72,29 +72,29 @@ public class FailureViewerTest {
 		
 
 	@Test
-	public void shouldBuildListItemsFromStackTrace() {
+	void shouldBuildListItemsFromStackTrace() {
 		assertEquals(1, list.getItemCount());
 		assertEquals(element.toString(), list.getItem(0));
 	}
 
 	@Test
-	public void shouldUseSingleSelection() {
+	void shouldUseSingleSelection() {
 		assertTrue((list.getStyle() & SWT.MULTI) == 0);
 	}
 
 	@Test
-	public void shouldDisposeTheDialogWhenTheUserClicksOffTheViewer() {
+	void shouldDisposeTheDialogWhenTheUserClicksOffTheViewer() {
 		Listener[] listeners = dialog.getListeners(Deactivate);
 		assertEquals(1, listeners.length);
 	}
 
 	@Test
-	public void shouldRespondToKeyEvents() {
+	void shouldRespondToKeyEvents() {
 		assertEquals(1, list.getListeners(KeyDown).length);
 	}
 
 	@Test
-	public void shouldShowTheNavigatorAndTakeFocus() {
+	void shouldShowTheNavigatorAndTakeFocus() {
 		assertTrue(dialog.opened);
 		assertTrue(dialog.active);
 		assertTrue(dialog.packed);
@@ -104,7 +104,7 @@ public class FailureViewerTest {
 	/**
 	 * Presentation test harness
 	 */
-	public static void main(String... args) {
+	static void main(String... args) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		shell.setText("Fake Eclipse");

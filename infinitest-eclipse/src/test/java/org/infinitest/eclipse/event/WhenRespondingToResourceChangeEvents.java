@@ -34,13 +34,13 @@ import static org.mockito.Mockito.verify;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.infinitest.EventQueue;
 import org.infinitest.NamedRunnable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WhenRespondingToResourceChangeEvents {
+class WhenRespondingToResourceChangeEvents {
 	private CoreUpdateNotifier chain;
 
 	@Test
-	public void shouldProcessEventsOnEventQueue() {
+	void shouldProcessEventsOnEventQueue() {
 		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
 		EventQueue queue = mock(EventQueue.class);
 

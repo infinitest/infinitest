@@ -32,21 +32,22 @@ import static com.google.common.collect.Lists.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
 
 import org.eclipse.core.resources.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenDisplayingTestFailureDetails {
+class WhenDisplayingTestFailureDetails {
 	protected Collection<StackTraceElement> actualStackTrace;
 	private ErrorViewerResolution resolution;
 	protected String actualMessage;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		actualStackTrace = newArrayList();
 		resolution = new ErrorViewerResolution("TestName.methodName") {
 			@Override
@@ -58,12 +59,12 @@ public class WhenDisplayingTestFailureDetails {
 	}
 
 	@Test
-	public void shouldUseTestAndMethodNameInLabel() {
+	void shouldUseTestAndMethodNameInLabel() {
 		assertEquals("TestName.methodName failing (see details)", resolution.getLabel());
 	}
 
 	@Test
-	public void printStackTraceWithSourceFileLinksUsingInternalJavaStackTraceConsole() throws Exception {
+	void printStackTraceWithSourceFileLinksUsingInternalJavaStackTraceConsole() throws Exception {
 		IMarker marker = mock(IMarker.class);
 		StackTraceElement element = new StackTraceElement("", "", "", 0);
 		Object pickledStackTrace = pickle(new StackTraceElement[] { element });

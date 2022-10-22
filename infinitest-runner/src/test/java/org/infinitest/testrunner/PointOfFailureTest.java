@@ -40,8 +40,7 @@ class PointOfFailureTest extends EqualityTestSupport {
 		PointOfFailure first = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 		PointOfFailure second = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 
-		assertThat(first).hasSameHashCodeAs(second);
-		assertThat(first).isEqualTo(second);
+		assertThat(first).hasSameHashCodeAs(second).isEqualTo(second);
 	}
 
 	@Test

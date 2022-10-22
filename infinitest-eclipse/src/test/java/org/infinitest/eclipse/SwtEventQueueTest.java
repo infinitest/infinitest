@@ -29,6 +29,7 @@ package org.infinitest.eclipse;
 
 import static java.lang.Thread.*;
 import static java.util.concurrent.TimeUnit.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.core.runtime.jobs.Job.*;
 import static org.junit.Assert.*;
 
@@ -36,31 +37,33 @@ import java.util.concurrent.*;
 
 import org.infinitest.*;
 import org.infinitest.eclipse.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class SwtEventQueueTest {
+class SwtEventQueueTest {
 	private SwtEventQueue queue;
 	protected boolean failingRunnableExecuted;
 	protected boolean started;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		queue = new SwtEventQueue();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		// Clear interrupted state
 		Thread.interrupted();
 	}
 
 	@Test
-	public void shouldUseBuildPriorty() {
+	void shouldUseBuildPriorty() {
 		assertEquals(BUILD, queue.createJob().getPriority());
 	}
 
 	@Test
-	public void shouldExecuteEvents() throws Exception {
+	void shouldExecuteEvents() throws Exception {
 		final ThreadSafeFlag ran = new ThreadSafeFlag();
 		queue.push(new Runnable() {
 			@Override
@@ -71,18 +74,15 @@ public class SwtEventQueueTest {
 		ran.assertTripped();
 	}
 
-	@Test(expected = QueueDispatchException.class)
-	public void shouldThrowExceptionWhenPushIsInterrupted() {
+	@Test
+	void shouldThrowExceptionWhenPushIsInterrupted() {
 		currentThread().interrupt();
-		queue.push(new Runnable() {
-			@Override
-			public void run() {
-			}
-		});
+		
+		assertThatThrownBy(() -> queue.push(() -> {})).isInstanceOf(QueueDispatchException.class);
 	}
 
 	@Test
-	public void shouldExecuteSuccessiveEvents() throws Exception {
+	void shouldExecuteSuccessiveEvents() throws Exception {
 		final Semaphore semaphore = new Semaphore(3);
 		semaphore.acquire(3);
 		Runnable semaphoreReleasingTask = new Runnable() {
@@ -98,7 +98,7 @@ public class SwtEventQueueTest {
 	}
 
 	@Test
-	public void shouldLogFailingEvents() throws Exception {
+	void shouldLogFailingEvents() throws Exception {
 		final ThreadSafeFlag flag = new ThreadSafeFlag();
 		queue.push(new Runnable() {
 			@Override

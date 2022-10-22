@@ -29,7 +29,8 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.internal.events.*;
@@ -37,42 +38,44 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenRespondingToBuildEvents extends ResourceEventSupport {
+class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	private ClassFileChangeProcessor processor;
 	private WorkspaceFacade workspace;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		workspace = mock(WorkspaceFacade.class);
 		processor = new ClassFileChangeProcessor(workspace);
 	}
 
-	@After
-	public void verifyWorkspace() {
+	@AfterEach
+	void verifyWorkspace() {
 		verifyNoInteractions(workspace);
 	}
 
 	@Test
-	public void shouldNotRespondToPreBuildEvents() {
+	void shouldNotRespondToPreBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
 	}
 
 	@Test
-	public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
+	void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
 		processor.processEvent(emptyEvent());
 	}
 
 	@Test
-	public void shouldRespondToPostBuildEvents() {
+	void shouldRespondToPostBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
 		assertTrue(processor.canProcessEvent(event));
 	}
 
 	@Test
-	public void shouldRespondToPostChangeEvents() {
+	void shouldRespondToPostChangeEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
 		assertTrue(processor.canProcessEvent(event));
 	}

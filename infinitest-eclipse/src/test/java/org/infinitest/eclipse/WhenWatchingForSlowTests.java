@@ -36,17 +36,19 @@ import java.util.*;
 import org.infinitest.eclipse.markers.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenWatchingForSlowTests {
+class WhenWatchingForSlowTests {
 	private SlowMarkerRegistry mockMarkerRegistry;
 	private MethodStats methodStats;
 	private MarkerInfo expectedMarker;
 	private SlowTestObserver observer;
 	private TestCaseEvent event;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		mockMarkerRegistry = mock(SlowMarkerRegistry.class);
 		methodStats = new MethodStats("shouldRunSlowly");
 		ResourceLookup resourceLookup = mock(ResourceLookup.class);
@@ -59,13 +61,13 @@ public class WhenWatchingForSlowTests {
 		event = new TestCaseEvent("MyTest", this, results);
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		resetToDefaults();
 	}
 
 	@Test
-	public void shouldAddMarkersForSlowTests() {
+	void shouldAddMarkersForSlowTests() {
 		methodStats.start(1000);
 		methodStats.stop(5000);
 
@@ -75,7 +77,7 @@ public class WhenWatchingForSlowTests {
 	}
 
 	@Test
-	public void shouldRemoveMarkersForFastTests() {
+	void shouldRemoveMarkersForFastTests() {
 		methodStats.start(1000);
 		methodStats.stop(1001);
 
@@ -85,7 +87,7 @@ public class WhenWatchingForSlowTests {
 	}
 
 	@Test
-	public void shouldRemoveMarkersWhenTestsAreDisabled() {
+	void shouldRemoveMarkersWhenTestsAreDisabled() {
 		methodStats.start(1000);
 		methodStats.stop(5000);
 
@@ -97,7 +99,7 @@ public class WhenWatchingForSlowTests {
 	}
 
 	@Test
-	public void canRemoveAllMarkers() {
+	void canRemoveAllMarkers() {
 		observer.clearMarkers();
 
 		verify(mockMarkerRegistry).clear();

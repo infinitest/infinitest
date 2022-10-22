@@ -29,22 +29,25 @@ package org.infinitest.eclipse.markers;
 
 import static java.util.Arrays.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPlacingMarkersUsingAStackTrace {
+class WhenPlacingMarkersUsingAStackTrace {
 	private static final int SECOND_ELEMENT_LINE_NUMBER = 25;
 	private StackTracePlacementStrategy strategy;
 	private Throwable error;
 	private IResource mockResource;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		ResourceLookup lookup = mock(ResourceLookup.class);
 		mockResource = mock(IResource.class);
 		when(lookup.findResourcesForClassName("com.myco.Foo")).thenReturn(asList(mockResource));
@@ -53,7 +56,7 @@ public class WhenPlacingMarkersUsingAStackTrace {
 	}
 
 	@Test
-	public void shouldFindTheFirstClassInTheWorkspace() {
+	void shouldFindTheFirstClassInTheWorkspace() {
 		expectStackTraceWithClass("com.myco.Foo");
 
 		MarkerPlacement placement = strategy.getPlacement(eventWithError(error));
@@ -63,7 +66,7 @@ public class WhenPlacingMarkersUsingAStackTrace {
 	}
 
 	@Test
-	public void shouldReturnNullIfNoClassesAreInTheWorkspace() {
+	void shouldReturnNullIfNoClassesAreInTheWorkspace() {
 		expectStackTraceWithClass("com.myco.Baz");
 
 		assertNull(strategy.getPlacement(eventWithError(error)));

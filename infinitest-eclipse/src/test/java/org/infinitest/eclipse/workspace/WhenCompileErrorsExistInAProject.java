@@ -39,17 +39,18 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.status.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 // DEBT Duplication with WhenUpdatingTheProjectsInTheWorkspace
-public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
+class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 	private List<ProjectFacade> projects;
 	private CoreRegistry coreRegistry;
 	private ProjectSet projectSet;
 	private EclipseWorkspace workspace;
 
-	@Before
-	public void inContext() throws CoreException {
+	@BeforeEach
+	void inContext() throws CoreException {
 		projects = newArrayList();
 		projectSet = mock(ProjectSet.class);
 		projects.add(new ProjectFacade(project));
@@ -62,7 +63,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldNotUpdateIt() throws CoreException {
+	void shouldNotUpdateIt() throws CoreException {
 		IJavaProject project = mock(IJavaProject.class);
 		projects.clear();
 		projects.add(new ProjectFacade(project));
