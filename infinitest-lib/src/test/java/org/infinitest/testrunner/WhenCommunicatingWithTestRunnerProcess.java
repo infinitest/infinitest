@@ -60,7 +60,7 @@ class WhenCommunicatingWithTestRunnerProcess {
 
 	@Test
 	void shouldOpenAPort() {
-		assertThat(communicator.createSocket()).as("Port cannot be zero").isNotEqualTo(0);
+		assertThat(communicator.createSocket()).as("Port cannot be zero").isNotZero();
 	}
 
 	@Test

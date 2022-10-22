@@ -170,8 +170,9 @@ class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTestBase {
   void testInheritFromFilteredTest() {
     addFilter(TestFakeProduct.class.getName());
     Set<JavaClass> tests = getGraph().findTestsToRun(setify(InfinitestTestUtils.getFileForClass(TestThatInherits.class)));
-    assertThat(tests).as("Filtered test found").doesNotContain(new FakeJavaClass(TestFakeProduct.class.getName()));
-    assertThat(tests).as("Required test not found").contains(new FakeJavaClass(TestThatInherits.class.getName()));
+    assertThat(tests)
+    .as("Filtered test found").doesNotContain(new FakeJavaClass(TestFakeProduct.class.getName()))
+    .as("Required test not found").contains(new FakeJavaClass(TestThatInherits.class.getName()));
   }
 
   @Test
@@ -202,8 +203,9 @@ class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTestBase {
     
     fileSet = setify(InfinitestTestUtils.getFileForClass(FakeProduct.class));
     Set<JavaClass> tests = getGraph().findTestsToRun(fileSet);
-    assertThat(tests).as("Parents not found?").hasSize(2);
-    assertThat(tests).as("Required test not found").contains(new FakeJavaClass(TestFakeProduct.class.getName()));
-    assertThat(tests).as("Required test not found").contains(new FakeJavaClass(TestFakeTree.class.getName()));
+    assertThat(tests)
+    .as("Parents not found?").hasSize(2)
+    .as("Required test not found").contains(new FakeJavaClass(TestFakeProduct.class.getName()))
+    .as("Required test not found").contains(new FakeJavaClass(TestFakeTree.class.getName()));
   }
 }

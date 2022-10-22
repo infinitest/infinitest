@@ -40,7 +40,7 @@ class PointOfFailureTest extends EqualityTestSupport {
 		PointOfFailure first = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 		PointOfFailure second = createPointOfFailure("SomeTest", 1, NullPointerException.class.getName(), "");
 
-		assertThat(first.hashCode()).isEqualTo(second.hashCode());
+		assertThat(first).hasSameHashCodeAs(second);
 		assertThat(first).isEqualTo(second);
 	}
 
@@ -66,7 +66,7 @@ class PointOfFailureTest extends EqualityTestSupport {
 		PointOfFailure pointOfFailure = createPointOfFailure(TEST_CLASS_NAME, 1, NullPointerException.class.getSimpleName(), "message");
 
 		String expected = "org.infinitest.SomeTest:1 - NullPointerException(message)";
-		assertThat(pointOfFailure.toString()).isEqualTo(expected);
+		assertThat(pointOfFailure).hasToString(expected);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ class PointOfFailureTest extends EqualityTestSupport {
 		PointOfFailure pointOfFailure = createPointOfFailure(TEST_CLASS_NAME, 1, NullPointerException.class.getSimpleName(), null);
 
 		String expected = "org.infinitest.SomeTest:1 - NullPointerException";
-		assertThat(pointOfFailure.toString()).isEqualTo(expected);
+		assertThat(pointOfFailure).hasToString(expected);
 	}
 
 	private PointOfFailure createPointOfFailure(String className, int lineNumber, String errorClassName, String message) {
