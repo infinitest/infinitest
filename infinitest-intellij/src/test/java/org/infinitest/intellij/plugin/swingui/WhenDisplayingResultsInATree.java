@@ -47,14 +47,14 @@ import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenDisplayingResultsInATree extends IntellijMockBase {
+class WhenDisplayingResultsInATree extends IntellijMockBase {
 	private static final String DEFAULT_TEST_NAME = "testName";
 
 	private TreeModelAdapter model;
 	private ResultCollector collector;
 
 	@BeforeEach
-	public void inContext() {
+	void inContext() {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		collector = new ResultCollector(mockCore);
 		
@@ -64,13 +64,13 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldHaveRootNode() {
+	void shouldHaveRootNode() {
 		assertNotNull(model.getRoot());
 		assertEquals(0, model.getIndexOfChild(project, module));
 	}
 
 	@Test
-	public void shouldHaveChildNodesForPointsOfFailure() {
+	void shouldHaveChildNodesForPointsOfFailure() {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
 		assertEquals(1, model.getChildCount(model.getRoot()));
@@ -78,7 +78,7 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldCreateNodesForEachEvent() {
+	void shouldCreateNodesForEachEvent() {
 		IntellijMockBase.setupApplication();
 		
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
@@ -86,7 +86,7 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldHaveSubNodesForIndividualTests() {
+	void shouldHaveSubNodesForIndividualTests() {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
 		Object pointOfFailureNode = model.getChild(module, 0);
@@ -95,14 +95,14 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldProvideIndexOfNodes() {
+	void shouldProvideIndexOfNodes() {
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
 		assertNodeReferenceIntegrity(module, 0);
 		assertNodeReferenceIntegrity(module, 1);
 	}
 
 	@Test
-	public void shouldIdentifyOnlyTestNodesAsLeaves() {
+	void shouldIdentifyOnlyTestNodesAsLeaves() {
 		IntellijMockBase.setupApplication();
 		
 		assertTrue(model.isLeaf(module));

@@ -119,7 +119,8 @@ class TestColorAnimator {
 
 	@Test
 	void shouldThrowExceptionIfAngerIsTooHigh() {
-		assertThatThrownBy(() -> animator.setAngerLevel(ColorAnimator.getMaxAngerLevel() + 1)).isInstanceOf(IllegalArgumentException.class);
+		int maxAngerLevel = ColorAnimator.getMaxAngerLevel();
+		assertThatThrownBy(() -> animator.setAngerLevel(maxAngerLevel + 1)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
