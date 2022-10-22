@@ -27,19 +27,24 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.eclipse.util.StatusMatchers.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.status.*;
-import org.junit.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.infinitest.eclipse.ResourceEventSupport;
+import org.infinitest.eclipse.SystemClassPathJarLocator;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.junit.Before;
+import org.junit.Test;
 
 // DEBT Duplication with WhenUpdatingTheProjectsInTheWorkspace
 public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
@@ -50,7 +55,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 
 	@Before
 	public void inContext() throws CoreException {
-		projects = newArrayList();
+		projects = new ArrayList<>();
 		projectSet = mock(ProjectSet.class);
 		projects.add(new ProjectFacade(project));
 		coreRegistry = mock(CoreRegistry.class);
@@ -67,7 +72,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 		projects.clear();
 		projects.add(new ProjectFacade(project));
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.emptySet());
 
 		assertStatusIs(workspaceErrors());
 

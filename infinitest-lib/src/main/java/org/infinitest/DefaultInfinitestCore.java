@@ -55,6 +55,10 @@ class DefaultInfinitestCore implements InfinitestCore {
 	private final List<ReloadListener> reloadListeners;
 	private final List<DisabledTestListener> disabledTestListeners;
 	private final RunStatistics stats;
+	/**
+	 * For the first run we need to run every test (and index every class), not just the modified classes
+	 */
+	private boolean firstRunSinceReload = true;
 
 	DefaultInfinitestCore(TestRunner testRunner, EventQueue eventQueue) {
 		normalizer = new EventNormalizer(eventQueue);
@@ -79,9 +83,22 @@ class DefaultInfinitestCore implements InfinitestCore {
 	@Override
 	public synchronized int update(Collection<File> changedFiles) {
 		log(CONFIG, "Core Update " + name);
-		int testsRun = runOptimizedTestSet(changedFiles);
-		caughtExceptions.clear();
-		return testsRun;
+		if (firstRunSinceReload) {
+			firstRunSinceReload = false;
+			return update();
+		} else {
+			int testsRun = runOptimizedTestSet(changedFiles);
+			caughtExceptions.clear();
+			return testsRun;
+		}
+	}
+	
+	@Override
+	public void remove(Collection<File> removedFiles, Set<JavaClass> removedClasses) {
+		Set<JavaClass> coreRemovedClasses = testDetector.removeClasses(removedFiles);
+		removedClasses.addAll(coreRemovedClasses);
+		
+		fireDisabledTestEvents(classesToNames(removedClasses));
 	}
 
 	// If this returned the number of tests that were scheduled to be run, we
@@ -89,7 +106,11 @@ class DefaultInfinitestCore implements InfinitestCore {
 	@Override
 	public synchronized int update() {
 		try {
-			return update(findChangedClassFiles());
+			boolean lookForRemovedFiles = !firstRunSinceReload;
+			firstRunSinceReload = false;
+			int testsRun = runOptimizedTestSet(findChangedClassFiles(lookForRemovedFiles));
+			caughtExceptions.clear();
+			return testsRun;
 		} catch (IOException e) {
 			checkForFatalError(e);
 		}
@@ -101,7 +122,8 @@ class DefaultInfinitestCore implements InfinitestCore {
 		log("Reloading core " + name);
 		testDetector.clear();
 		changeDetector.clear();
-
+		firstRunSinceReload = true;
+		
 		fireReload();
 	}
 
@@ -116,7 +138,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		}
 	}
 
-	private int runOptimizedTestSet(Collection<File> changedFiles) {
+	protected int runOptimizedTestSet(Collection<File> changedFiles) {
 		Set<String> oldTests = testDetector.getCurrentTests();
 		Collection<JavaClass> testsToRun = testDetector.findTestsToRun(changedFiles);
 		Set<String> newTests = testDetector.getCurrentTests();
@@ -128,8 +150,8 @@ class DefaultInfinitestCore implements InfinitestCore {
 		return testsToRun.size();
 	}
 
-	private Collection<File> findChangedClassFiles() throws IOException {
-		if (changeDetector.filesWereRemoved()) {
+	private Collection<File> findChangedClassFiles(boolean lookForRemovedFiles) throws IOException {
+		if (lookForRemovedFiles && changeDetector.filesWereRemoved()) {
 			// Instead of reloading the core when a file is removed,
 			// we should ask the test detector to remove it from the dependency
 			// graph
@@ -212,7 +234,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 		return runner;
 	}
 
-	private void fireDisabledTestEvents(Set<String> disabledTests) {
+	private void fireDisabledTestEvents(Collection<String> disabledTests) {
 		for (DisabledTestListener each : disabledTestListeners) {
 			each.testsDisabled(disabledTests);
 		}

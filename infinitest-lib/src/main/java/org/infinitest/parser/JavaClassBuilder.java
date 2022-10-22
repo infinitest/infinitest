@@ -63,6 +63,13 @@ class JavaClassBuilder {
 			return new UnparsableClass(classname);
 		}
 	}
+	
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		return parser.getClass(file);
+	}
 
 	public String classFileChanged(File file) {
 		try {

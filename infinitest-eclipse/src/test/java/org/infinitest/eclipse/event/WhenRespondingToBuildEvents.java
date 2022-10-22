@@ -27,17 +27,31 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
-import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.eclipse.core.resources.IResourceChangeEvent.POST_BUILD;
+import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
+import static org.eclipse.core.resources.IResourceChangeEvent.PRE_BUILD;
+import static org.eclipse.core.resources.IncrementalProjectBuilder.AUTO_BUILD;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.internal.events.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.eclipse.core.internal.events.ResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.infinitest.eclipse.ResourceEventSupport;
+import org.infinitest.eclipse.workspace.WorkspaceFacade;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	private ClassFileChangeProcessor processor;
@@ -49,31 +63,58 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 		processor = new ClassFileChangeProcessor(workspace);
 	}
 
-	@After
-	public void verifyWorkspace() {
-		verifyNoInteractions(workspace);
-	}
-
 	@Test
 	public void shouldNotRespondToPreBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
+
+		verifyNoInteractions(workspace);		
 	}
 
 	@Test
 	public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
 		processor.processEvent(emptyEvent());
+
+		verifyNoInteractions(workspace);
 	}
 
 	@Test
 	public void shouldRespondToPostBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
 		assertTrue(processor.canProcessEvent(event));
+
+		verifyNoInteractions(workspace);
 	}
 
 	@Test
-	public void shouldRespondToPostChangeEvents() {
+	public void shouldNotRespondToPostChangeEvents() {
+		// Not sure why we wanted to respond to change events, seems better to respond to the post build event, once the build is finished
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
-		assertTrue(processor.canProcessEvent(event));
+		assertFalse(processor.canProcessEvent(event));
+
+		verifyNoInteractions(workspace);
+	}
+	
+	@Test
+	public void shouldHandleRemovedTestClasses() throws CoreException {
+		IResourceDelta delta = mock(IResourceDelta.class);
+		IPath path = mock(IPath.class);
+		
+		when(delta.getKind()).thenReturn(IResourceDelta.REMOVED);
+		when(delta.getAffectedChildren()).thenReturn(new IResourceDelta[] {delta});
+		doAnswer(i -> {
+			IResourceDeltaVisitor v = i.getArgument(0, IResourceDeltaVisitor.class);
+			v.visit(delta);
+			
+			return null;
+		}).when(delta).accept(any());
+		when(delta.getFullPath()).thenReturn(path);
+		when(path.toPortableString()).thenReturn("/target/test.class");
+		
+		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, delta);
+		
+		processor.processEvent(event);
+		
+		verify(workspace, times(1)).remove(anySet());
 	}
 }

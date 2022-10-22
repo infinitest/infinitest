@@ -42,6 +42,7 @@ public class WhenTestFileIsRemoved {
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);
 		core.update();
+		core.update();
 		eventSupport.assertReloadOccured();
 	}
 

@@ -27,13 +27,15 @@
  */
 package org.infinitest;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptySet;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
 import org.infinitest.environment.ClasspathProvider;
-import org.infinitest.parser.*;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
 
 class StubTestDetector implements TestDetector {
 	private boolean cleared;
@@ -45,6 +47,11 @@ class StubTestDetector implements TestDetector {
 
 	public boolean isCleared() {
 		return cleared;
+	}
+	
+	@Override
+	public Set<JavaClass> removeClasses(Collection<File> removedFiles) {
+		return emptySet();
 	}
 
 	@Override
