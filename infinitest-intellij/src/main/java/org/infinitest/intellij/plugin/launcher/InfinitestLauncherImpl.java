@@ -46,6 +46,7 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	public InfinitestLauncherImpl(Module module) {
 		ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
 		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(), new SwingEventQueue());
+		coreBuilder.setName(moduleSettings.getName());
 		core = coreBuilder.createCore();
 		resultCollector = new ResultCollector(core);
 		
