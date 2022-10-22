@@ -30,6 +30,7 @@ package org.infinitest.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -60,7 +61,7 @@ class WhenParsingClassFiles {
 
 	@Test
 	void shouldLazilyCreateClassPool() {
-		new JavaAssistClassParser("doesNotExist.jar");
+		assertDoesNotThrow(() -> new JavaAssistClassParser("doesNotExist.jar"));
 	}
 
 	@Test
@@ -104,6 +105,6 @@ class WhenParsingClassFiles {
 
 	@Test
 	void shouldHandleMissingClassDirs() {
-		parser = new JavaAssistClassParser("notADirYet");
+		assertDoesNotThrow(() -> new JavaAssistClassParser("notADirYet"));
 	}
 }

@@ -30,6 +30,7 @@ package org.infinitest.testrunner;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.infinitest.testrunner.TestEvent.testCaseStarting;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -85,7 +86,7 @@ public class TestEventTest extends EqualityTestSupport {
 	void shouldHandleUnserializeableExceptions() throws Exception {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-		objStream.writeObject(event);
+		assertDoesNotThrow(() -> objStream.writeObject(event));
 	}
 
 	@Test
@@ -153,12 +154,12 @@ public class TestEventTest extends EqualityTestSupport {
 
 	@Test
 	void shouldSupportExceptionsWithoutStackTrace() {
-		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
+		assertDoesNotThrow(() -> methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure());
 	}
 	
 	@Test
 	void shouldSupportExceptionsWithNullStackTrace() {
-		methodFailed("", "", new ExceptionWithNullStackTrace()).getPointOfFailure();
+		assertDoesNotThrow(() -> methodFailed("", "", new ExceptionWithNullStackTrace()).getPointOfFailure());
 	}
 
 	private void verifyPointOfFailureMessage(int lineNumber) {
