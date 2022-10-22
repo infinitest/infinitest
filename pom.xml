@@ -228,13 +228,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>${surefire.version}</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<includes>
 						<include>**/When*.java</include>
