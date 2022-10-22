@@ -27,19 +27,19 @@
  */
 package org.infinitest;
 
-import static java.io.File.*;
-import static java.util.Arrays.*;
-import static org.assertj.core.api.Assertions.*;
+import static java.io.File.pathSeparator;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
 import org.infinitest.environment.RuntimeEnvironment;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenSearchingForClassFilesToIndex {
+class WhenSearchingForClassFilesToIndex {
   @Test
-  public void shouldSearchClassDirectoriesOnTheClasspath() {
+  void shouldSearchClassDirectoriesOnTheClasspath() {
     File outputDir = new File("target/classes");
     List<File> outputDirs = asList(outputDir);
     String classpath = "target/classes" + pathSeparator + "target/test-classes";

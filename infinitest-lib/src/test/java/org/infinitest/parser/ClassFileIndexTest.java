@@ -27,32 +27,35 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
-import static org.infinitest.environment.FakeEnvironments.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.FakeProduct;
 
-public class ClassFileIndexTest {
+class ClassFileIndexTest {
 	private ClassFileIndex index;
 	private JavaClassBuilder builder;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		builder = mock(JavaClassBuilder.class);
 		index = new ClassFileIndex(builder);
 	}
 
 	@Test
-	public void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint() {
+	void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint() {
 		when(builder.getClass("")).thenReturn(new FakeJavaClass(""));
 
 		index.findClasses(asList(getFileForClass(FakeProduct.class)));
@@ -61,7 +64,7 @@ public class ClassFileIndexTest {
 	}
 
 	@Test
-	public void shouldIgnoreClassFilesThatCannotBeParsed() {
+	void shouldIgnoreClassFilesThatCannotBeParsed() {
 		ClassFileIndex index = new ClassFileIndex(fakeClasspath());
 		assertEquals(Collections.emptySet(), index.findClasses(newArrayList(new File("notAClassFile"))));
 	}

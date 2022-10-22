@@ -27,22 +27,24 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import java.io.IOException;
 
-import org.infinitest.changedetect.*;
-import org.junit.*;
+import org.infinitest.changedetect.ChangeDetector;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenCoreFailsWhileUpdating {
+class WhenCoreFailsWhileUpdating {
 	private InfinitestCore core;
 	private StubTestDetector testDetector;
 	private ChangeDetector changeDetector;
 
-	@Before
-	public void inContext() throws IOException {
+	@BeforeEach
+	void inContext() throws IOException {
 		changeDetector = mock(ChangeDetector.class);
 		when(changeDetector.findChangedFiles()).thenThrow(new IOException());
 
@@ -53,7 +55,7 @@ public class WhenCoreFailsWhileUpdating {
 	}
 
 	@Test
-	public void shouldIgnoreFailureAndReloadIndex() {
+	void shouldIgnoreFailureAndReloadIndex() {
 		core.update();
 		assertTrue(testDetector.isCleared());
 	}

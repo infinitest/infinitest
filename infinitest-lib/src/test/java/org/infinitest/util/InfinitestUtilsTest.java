@@ -29,51 +29,56 @@ package org.infinitest.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.environment.FakeEnvironments.systemClasspath;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.util.InfinitestUtils.findClasspathEntryFor;
+import static org.infinitest.util.InfinitestUtils.formatTime;
+import static org.infinitest.util.InfinitestUtils.getExceptionMessage;
+import static org.infinitest.util.InfinitestUtils.getResourceName;
+import static org.infinitest.util.InfinitestUtils.stripPackageName;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.infinitest.InfinitestCore;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Iterables;
 
-public class InfinitestUtilsTest {
+class InfinitestUtilsTest {
 	@Test
-	public void shouldFormatTimeAsHHMMSS() {
+	void shouldFormatTimeAsHHMMSS() {
 		assertEquals("00:00:20", formatTime(20 * 1000));
 	}
 
 	@Test
-	public void shouldAddLineFeedsToErrorMessagesWithAPath() {
+	void shouldAddLineFeedsToErrorMessagesWithAPath() {
 		String actualMessage = getExceptionMessage(new IllegalArgumentException("path:path2:path3"));
 		assertEquals("path:\npath2:\npath3", actualMessage);
 	}
 
 	@Test
-	public void shouldProvideShortClassNameForTest() {
+	void shouldProvideShortClassNameForTest() {
 		assertEquals("TestFoo", stripPackageName("com.foobar.TestFoo"));
 	}
 
 	@Test
-	public void shouldTruncateLongErrorMessages() {
+	void shouldTruncateLongErrorMessages() {
 		String actualMessage = getExceptionMessage(new IllegalArgumentException(
 				"This is a really long error message that needs to be truncated to a reasonable length."));
 		assertEquals("This is a really long error message that needs to ...", actualMessage);
 	}
 
 	@Test
-	public void shouldUseClassNameWhenMessageIsNull() {
+	void shouldUseClassNameWhenMessageIsNull() {
 		String actualMessage = getExceptionMessage(new NullPointerException());
 		assertEquals(NullPointerException.class.getName(), actualMessage);
 	}
 
 	@Test
-	public void shouldAlwaysUseForwardSlashForResourcePath() {
+	void shouldAlwaysUseForwardSlashForResourcePath() {
 		assertFalse(getResourceName(InfinitestUtilsTest.class.getName()).contains("\\"));
 	}
 
 	@Test
-	public void shouldFindJarsThatContainAClass() {
+	void shouldFindJarsThatContainAClass() {
 		String systemClasspath = systemClasspath();
 
 		String entry = findClasspathEntryFor(systemClasspath, Iterables.class);
@@ -82,7 +87,7 @@ public class InfinitestUtilsTest {
 	}
 
 	@Test
-	public void shouldFindClassDirectoriesThatContainAClass() {
+	void shouldFindClassDirectoriesThatContainAClass() {
 		String systemClasspath = systemClasspath();
 		String entry = findClasspathEntryFor(systemClasspath, InfinitestCore.class);
 

@@ -27,43 +27,50 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Iterables.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.infinitest.testrunner.TestEvent.testCaseStarting;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
-import org.infinitest.testrunner.process.*;
-import org.junit.*;
+import org.infinitest.testrunner.process.TcpSocketProcessCommunicator;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-public class WhenCommunicatingWithTestRunnerProcess {
+class WhenCommunicatingWithTestRunnerProcess {
 	private TcpSocketProcessCommunicator communicator;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		communicator = new TcpSocketProcessCommunicator();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		communicator.closeSocket();
 	}
 
 	@Test
-	public void shouldOpenAPort() {
-		assertFalse("Port cannot be zero", communicator.createSocket() == 0);
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void shouldThrowExceptionIfTwoSocketsAreCreated() {
-		communicator.createSocket();
-		communicator.createSocket();
+	void shouldOpenAPort() {
+		assertThat(communicator.createSocket()).as("Port cannot be zero").isNotEqualTo(0);
 	}
 
 	@Test
-	public void shouldReadResults() {
+	void shouldThrowExceptionIfTwoSocketsAreCreated() {
+		communicator.createSocket();
+		assertThatThrownBy(() -> communicator.createSocket()).isInstanceOf(IllegalStateException.class);
+	}
+
+	@Test
+	void shouldReadResults() {
 		final int portNum = communicator.createSocket();
 		new Thread(new Runnable() {
 			@Override
@@ -71,27 +78,28 @@ public class WhenCommunicatingWithTestRunnerProcess {
 				try (Socket clientSocket = new Socket("127.0.0.1", portNum);
 					ObjectOutputStream ooStream = new ObjectOutputStream(clientSocket.getOutputStream());
 					BufferedReader inStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8))) {
-					assertEquals("hello", inStream.readLine());
+					assertThat(inStream.readLine()).isEqualTo("hello");
 					ooStream.writeObject(new TestResults(testCaseStarting("hello")));
-					assertNull(inStream.readLine());
+					assertThat(inStream.readLine()).isNull();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
 		communicator.openSocket();
-		assertEquals(1, size(communicator.sendMessage("hello")));
+		assertThat(communicator.sendMessage("hello")).hasSize(1);
 		communicator.closeSocket();
 	}
 
-	@Test(timeout = 1000)
-	public void shouldTimeOutIfRunnerProcessFailsToStart() {
+	@Timeout(1)
+	@Test
+	void shouldTimeOutIfRunnerProcessFailsToStart() {
 		communicator = new TcpSocketProcessCommunicator(250);
 		communicator.createSocket();
 		try {
 			communicator.openSocket();
 		} catch (RuntimeException e) {
-			assertTrue(e.getCause().toString(), e.getCause() instanceof SocketTimeoutException);
+			assertThat(e.getCause()).isInstanceOf(SocketTimeoutException.class);
 		}
 	}
 }

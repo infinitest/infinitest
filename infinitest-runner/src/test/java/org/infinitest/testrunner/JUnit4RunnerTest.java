@@ -32,15 +32,14 @@ import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.size;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.emptyIterable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.infinitest.MissingClassException;
 import org.infinitest.config.InfinitestConfiguration;
@@ -57,36 +56,36 @@ import org.infinitest.testrunner.exampletests.junit4.Junit4MultiTest;
 import org.infinitest.testrunner.exampletests.junit4.Junit4PassingTestCase;
 import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionInConstructor;
 import org.infinitest.testrunner.exampletests.junit4.Junit4TestThatThrowsExceptionWithNullStack;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class JUnit4RunnerTest {
+class JUnit4RunnerTest {
 	private static final String[] EMPTY = new String[0];
 	private DefaultRunner runner;
 	private static final Class<?> TEST_CLASS = Junit4TestThatThrowsExceptionInConstructor.class;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		Junit4TestThatThrowsExceptionInConstructor.fail = true;
 		JUnit4FailingTest.fail = true;
 		runner = new DefaultRunner();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		Junit4TestThatThrowsExceptionInConstructor.fail = false;
 		JUnit4FailingTest.fail = false;
 	}
 
 	@Test
-	public void shouldFireNoEventsIfAllMethodsPass() {
+	void shouldFireNoEventsIfAllMethodsPass() {
 		TestResults results = runner.runTest(Junit4PassingTestCase.class.getName());
 		assertTrue(isEmpty(results));
 	}
 
 	@Test
-	public void shouldFireEventsToReportFailingResults() {
+	void shouldFireEventsToReportFailingResults() {
 		TestResults results = runner.runTest(JUnit4FailingTest.class.getName());
 		TestEvent expectedEvent = methodFailed("", JUnit4FailingTest.class.getName(), "shouldFail", new AssertionError());
 		assertEventsEquals(expectedEvent, getOnlyElement(results));
@@ -95,7 +94,7 @@ public class JUnit4RunnerTest {
 	
 
 	@Test
-	public void shouldReportFailureEvenIfTestThrowsNullStackTrace() {
+	void shouldReportFailureEvenIfTestThrowsNullStackTrace() {
 		// Test https://github.com/infinitest/infinitest/issues/134
 		TestResults results = runner.runTest(Junit4TestThatThrowsExceptionWithNullStack.class.getName());
 		TestEvent expectedEvent = methodFailed("", Junit4TestThatThrowsExceptionWithNullStack.class.getName(), "shouldFail", Junit4TestThatThrowsExceptionWithNullStack.THROWABLE_WITH_NULL_STACK);
@@ -103,86 +102,86 @@ public class JUnit4RunnerTest {
 	}
 
 	@Test
-	public void shouldIgnoreSuiteMethods() {
+	void shouldIgnoreSuiteMethods() {
 		TestResults results = runner.runTest(JUnit3TestWithASuiteMethod.class.getName());
 		assertTrue(isEmpty(results));
 	}
 
 	@Test
-	public void shouldDetectFailureInBeforeMethod() {
+	void shouldDetectFailureInBeforeMethod() {
 		TestResults results = runner.runTest(JUnit4FailingTestWithBefore.class.getName());
 		assertFalse(isEmpty(results));
 	}
 
 	@Test
-	public void shouldDetectFailureInBeforeClassMethod() {
+	void shouldDetectFailureInBeforeClassMethod() {
 		TestResults results = runner.runTest(JUnit4FailingTestWithBeforeClass.class.getName());
 		assertFalse(isEmpty(results));
 	}
 
 	@Test
-	public void shouldTreatUninstantiableTestsAsFailures() {
+	void shouldTreatUninstantiableTestsAsFailures() {
 		Iterable<TestEvent> events = runner.runTest(TEST_CLASS.getName());
 		TestEvent expectedEvent = methodFailed(null, TEST_CLASS.getName(), "shouldPass", new IllegalStateException());
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
 	}
 
 	@Test
-	public void shouldIncludeTimingsForMethodRuns() {
+	void shouldIncludeTimingsForMethodRuns() {
 		TestResults results = runner.runTest(Junit4MultiTest.class.getName());
 		assertEquals(2, size(results.getMethodStats()));
 		MethodStats methodStats = get(results.getMethodStats(), 0);
 		assertTrue(methodStats.startTime() <= methodStats.stopTime());
 	}
 
-	@Test(expected = MissingClassException.class)
-	public void shouldThrowExceptionIfTestDoesNotExist() {
-		runner.runTest("test");
+	@Test
+	void shouldThrowExceptionIfTestDoesNotExist() {
+		assertThatThrownBy(() -> runner.runTest("test")).isInstanceOf(MissingClassException.class);
 	}
 
 
 	@Test
-	public void shouldExecuteAllTestsIfNoExcludedCategories() {
+	void shouldExecuteAllTestsIfNoExcludedCategories() {
 		runner.setTestConfigurationSource(withExcludedGroups(EMPTY));
 
 		TestResults results = runner.runTest(Junit4FailingTestsWithCategories.class.getName());
 
-		assertThat(size(results), is(3));
+		assertThat(results).hasSize(3);
 	}
 
 	@Test
-	public void shouldNotExecuteTestInOneExcludedCategory() {
+	void shouldNotExecuteTestInOneExcludedCategory() {
 		runner.setTestConfigurationSource(withExcludedGroups(IgnoreMe.class.getName()));
 
 		TestResults results = runner.runTest(Junit4FailingTestsWithCategories.class.getName());
 
-		assertThat(size(results), is(2));
+		assertThat(results).hasSize(2);
 	}
 
 	@Test
-	public void shouldNotExecuteTestInAnyExcludedCategories() {
+	void shouldNotExecuteTestInAnyExcludedCategories() {
 		runner.setTestConfigurationSource(withExcludedGroups(IgnoreMe.class.getName(), IgnoreMeToo.class.getName()));
 
 		TestResults results = runner.runTest(Junit4FailingTestsWithCategories.class.getName());
 
-		assertThat(size(results), is(1));
+		assertThat(results).hasSize(1);
 	}
 
 	@Test
-	public void shouldNotRunAnyTestsIfAllAreExcluded() throws Exception {
+	void shouldNotRunAnyTestsIfAllAreExcluded() throws Exception {
 		String[] allCategories = { IgnoreMe.class.getName(), IgnoreMeToo.class.getName(), UsuallyRunMe.class.getName() };
 		runner.setTestConfigurationSource(withExcludedGroups(allCategories));
 
 		TestResults results = runner.runTest(Junit4FailingTestsWithCategories.class.getName());
 
-		assertThat(results, is(emptyIterable()));
+		assertThat(results).isEmpty();
 	}
 
 	
 
 
 	@Test
-	public void shouldIgnoreNonPublicJUnit4Tests() {
+	void shouldIgnoreNonPublicJUnit4Tests() {
 		final String testClass = "org.infinitest.testrunner.exampletests.junit4.JUnit4NonPublicTest";
 		final Iterable<TestEvent> events = runner.runTest(testClass);
 		final TestEvent expectedEvent =
@@ -193,7 +192,7 @@ public class JUnit4RunnerTest {
 		TestResultTestUtils.assertEventsEquals(expectedEvent, getFirst(events, null));
 	}
 
-	public void testCaseStarting(TestEvent event) {
+	void testCaseStarting(TestEvent event) {
 		fail("Native runner should never fire this");
 	}
 

@@ -27,50 +27,50 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import java.io.IOException;
 
 import org.infinitest.config.InfinitestConfiguration;
-import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfigurationParser;
+import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.config.MemoryInfinitestConfigurationSource;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
-import org.junit.rules.*;
+import org.infinitest.filter.RegexFileFilter;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.JavaClass;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.io.CharSource;
 
 public class TestFilterList {
 	private final static String TEST_FILTER_LIST_REGEX = "org\\.infinitest\\.TestFilterList";
 
-	@ClassRule public static TemporaryFolder temporaryFolder = new TemporaryFolder();
-
 	@Test
-	public void testFilterList() throws IOException {
+	void testFilterList() throws IOException {
 		TestFilter filter = new RegexFileFilter(createConfigSource(TEST_FILTER_LIST_REGEX + "\n!foo.bar\n#foo.bar"));
 
 		assertTrue(filter.match(mockClass(TestFilterList.class)));
 	}
 
 	@Test
-	public void shouldIgnoreAllBlankLines() {
+	void shouldIgnoreAllBlankLines() {
 		TestFilter filter = new RegexFileFilter(createConfigSource("\n\n"));
 
 		assertFalse(filter.match(javaClass("MyClassName")));
 	}
 
 	@Test
-	public void testJMockClasses() {
+	void testJMockClasses() {
 		TestFilter filter = new RegexFileFilter(createConfigSource("org.jmock.test.acceptance.junit4.testdata.JUnit4TestWithNonPublicBeforeMethod"));
 
 		assertTrue(filter.match(javaClass("org.jmock.test.acceptance.junit4.testdata.JUnit4TestWithNonPublicBeforeMethod")));
 	}
 
 	@Test
-	public void testFiltering() {
+	void testFiltering() {
 		TestFilter filter = new RegexFileFilter(createConfigSource("org\\.infinitest\\..*"));
 
 		assertFalse(filter.match(mockClass(com.fakeco.fakeproduct.TestFakeProduct.class)));
@@ -79,22 +79,22 @@ public class TestFilterList {
 	}
 
 	@Test
-	public void testSingleTest() {
+	void testSingleTest() {
 		TestFilter filter = new RegexFileFilter(createConfigSource(TEST_FILTER_LIST_REGEX));
 
 		assertFalse(filter.match(mockClass(RegexFileFilter.class)));
-		assertTrue("Single test should match regex", filter.match(mockClass(TestFilterList.class)));
+		assertTrue(filter.match(mockClass(TestFilterList.class)), "Single test should match regex");
 	}
 
 	@Test
-	public void testLeadingWildcard() {
+	void testLeadingWildcard() {
 		TestFilter filter = new RegexFileFilter(createConfigSource(".*TestFilterList"));
 
 		assertTrue(filter.match(mockClass(TestFilterList.class)));
 	}
 
 	@Test
-	public void testTrailingWildcard() {
+	void testTrailingWildcard() {
 		TestFilter filter = new RegexFileFilter(createConfigSource("org\\..*"));
 
 		assertTrue(filter.match(mockClass(TestFilterList.class)));

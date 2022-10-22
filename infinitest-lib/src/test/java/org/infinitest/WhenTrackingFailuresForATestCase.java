@@ -27,35 +27,37 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static java.util.Arrays.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.util.*;
+import java.util.Collection;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTrackingFailuresForATestCase {
+class WhenTrackingFailuresForATestCase {
   private TestCaseFailures failures;
   private TestEvent newEvent;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     TestEvent method1Event = eventFor("method1");
     failures = new TestCaseFailures(asList(method1Event, eventFor("method2")));
     failures.addNewFailure(method1Event);
   }
 
   @Test
-  public void shouldIgnoreStrictlyEqualUpdates() {
-    assertTrue(failures.updatedFailures().isEmpty());
+  void shouldIgnoreStrictlyEqualUpdates() {
+    assertThat(failures.updatedFailures()).isEmpty();
   }
 
   @Test
-  public void shouldOnlyUpdateFailuresIfNotStrictlyEqual() {
+  void shouldOnlyUpdateFailuresIfNotStrictlyEqual() {
     newEvent = failedWithMessage("method2", "anotherMessage");
     failures.addNewFailure(newEvent);
     Collection<TestEvent> updatedFailures = failures.updatedFailures();
@@ -63,7 +65,7 @@ public class WhenTrackingFailuresForATestCase {
   }
 
   @Test
-  public void shouldDetermineWhichFailuresAreNew() {
+  void shouldDetermineWhichFailuresAreNew() {
     failures.addNewFailure(eventFor("method3"));
     Collection<TestEvent> newFailures = failures.newFailures();
 
@@ -71,7 +73,7 @@ public class WhenTrackingFailuresForATestCase {
   }
 
   @Test
-  public void shouldDetermineWhichFailuresHaveBeenRemoved() {
+  void shouldDetermineWhichFailuresHaveBeenRemoved() {
     Collection<TestEvent> removedFailures = failures.removedFailures();
     assertEquals(eventFor("method2"), getOnlyElement(removedFailures));
   }

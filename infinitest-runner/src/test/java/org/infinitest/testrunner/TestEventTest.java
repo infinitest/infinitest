@@ -27,31 +27,39 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestEvent.testCaseStarting;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.*;
-import java.util.*;
-
-import jdave.test.*;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.infinitest.util.*;
-import org.junit.*;
-import org.junit.rules.*;
+import org.infinitest.util.EqualityTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import com.google.common.base.*;
+import com.google.common.base.Strings;
+
+import jdave.test.JDaveUtils;
 
 public class TestEventTest extends EqualityTestSupport {
 	private TestEvent event;
 	private Throwable error;
 
-	@Rule
-	public TestName testName = new TestName();
+	public TestInfo testInfo;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext(TestInfo testInfo) {
+		this.testInfo = testInfo;
+		
 		try {
 			throw new UnserializableException("Exception Message");
 		} catch (UnserializableException e) {
@@ -74,19 +82,19 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldHandleUnserializeableExceptions() throws Exception {
+	void shouldHandleUnserializeableExceptions() throws Exception {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
 		objStream.writeObject(event);
 	}
 
 	@Test
-	public void shouldStoreExceptionClassesAsStrings() {
+	void shouldStoreExceptionClassesAsStrings() {
 		assertEquals(UnserializableException.class.getSimpleName(), event.getErrorClassName());
 	}
 
 	@Test
-	public void shouldFilterJunitElementsFromPointOfFailure() {
+	void shouldFilterJunitElementsFromPointOfFailure() {
 		try {
 			fail();
 		} catch (AssertionError e) {
@@ -97,7 +105,7 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldSupportAssertJAssertions() {
+	void shouldSupportAssertJAssertions() {
 		try {
 			Assertions.assertThat(true).isFalse();
 		} catch (AssertionError e) {
@@ -127,29 +135,29 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldFilterJdaveElementsFromPointOfFailure() {
+	void shouldFilterJdaveElementsFromPointOfFailure() {
 		error = JDaveUtils.createException();
 		event = eventWithError(error);
 		verifyPointOfFailureMessage(error.getStackTrace()[1].getLineNumber());
 	}
 
 	@Test
-	public void shouldHaveUserPresentableToString() {
+	void shouldHaveUserPresentableToString() {
 		assertEquals(event.getTestName() + "." + event.getTestMethod(), event.toString());
 	}
 
 	@Test
-	public void shouldProvideFullErrorClassName() {
+	void shouldProvideFullErrorClassName() {
 		assertEquals("java.lang.RuntimeException", methodFailed("", "", new RuntimeException()).getFullErrorClassName());
 	}
 
 	@Test
-	public void shouldSupportExceptionsWithoutStackTrace() {
+	void shouldSupportExceptionsWithoutStackTrace() {
 		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
 	}
 	
 	@Test
-	public void shouldSupportExceptionsWithNullStackTrace() {
+	void shouldSupportExceptionsWithNullStackTrace() {
 		methodFailed("", "", new ExceptionWithNullStackTrace()).getPointOfFailure();
 	}
 
@@ -178,7 +186,8 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	private TestEvent eventWithError(Throwable error) {
-		return new TestEvent(METHOD_FAILURE, error.getMessage(), TestEventTest.class.getName(), testName.getMethodName(), error);
+		String methodName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
+		return new TestEvent(METHOD_FAILURE, error.getMessage(), TestEventTest.class.getName(), methodName, error);
 	}
 
 	@SuppressWarnings("serial")

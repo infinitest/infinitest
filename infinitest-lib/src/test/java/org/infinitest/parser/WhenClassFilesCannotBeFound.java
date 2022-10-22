@@ -27,18 +27,21 @@
  */
 package org.infinitest.parser;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
-import javassist.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.*;
+import javassist.NotFoundException;
 
-public class WhenClassFilesCannotBeFound {
+
+class WhenClassFilesCannotBeFound {
 	@Test
-	public void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException {
+	void shouldReturnNullIfClassDissapearsWhileParsing() throws IOException {
 		JavaAssistClassParser mockParser = mock(JavaAssistClassParser.class);
 		JavaClassBuilder builder = new JavaClassBuilder(mockParser);
 		NotFoundException cause = new NotFoundException("");

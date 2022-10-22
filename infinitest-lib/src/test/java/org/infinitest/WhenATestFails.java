@@ -27,29 +27,39 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.CoreDependencySupport.FAILING_TEST;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withChangedFiles;
+import static org.infinitest.CoreDependencySupport.withTests;
+import static org.infinitest.CoreStatus.FAILING;
+import static org.infinitest.CoreStatus.SCANNING;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.util.InfinitestTestUtils.emptyStringList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.infinitest.testrunner.TestResultsListener;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenATestFails extends ResultCollectorTestSupport {
+class WhenATestFails extends ResultCollectorTestSupport {
 	private DefaultInfinitestCore core;
 	private ControlledEventQueue eventQueue;
 	private TestCaseEvent testCaseEvent;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		eventQueue = new ControlledEventQueue();
 		core = createCore(withChangedFiles(), withTests(FAILING_TEST), eventQueue);
 		collector = new ResultCollector(core);
 	}
 
 	@Test
-	public void shouldChangeStatusToFailing() {
+	void shouldChangeStatusToFailing() {
 		testRun(methodFailed("", "", "", null));
 		collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
 		collector.testRunComplete();
@@ -57,7 +67,7 @@ public class WhenATestFails extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldBeAbleToLocateTheSourceOfAnEvent() {
+	void shouldBeAbleToLocateTheSourceOfAnEvent() {
 		core.addTestResultsListener(new TestResultsListener() {
 			@Override
 			public void testCaseStarting(TestEvent event) {
@@ -78,7 +88,7 @@ public class WhenATestFails extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldFireFailureEvents() {
+	void shouldFireFailureEvents() {
 		EventSupport eventSupport = new EventSupport();
 		core.addTestResultsListener(eventSupport);
 		core.update();
@@ -89,7 +99,7 @@ public class WhenATestFails extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldRemoveAllFailuresOnReload() {
+	void shouldRemoveAllFailuresOnReload() {
 		shouldChangeStatusToFailing();
 		collector.reloading();
 		assertEquals(SCANNING, collector.getStatus());

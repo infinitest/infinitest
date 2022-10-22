@@ -32,7 +32,7 @@ import static org.infinitest.CoreDependencySupport.withNoChangedFiles;
 import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
 import static org.infinitest.environment.FakeEnvironments.emptyRuntimeEnvironment;
 import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,11 +44,11 @@ import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.TestResultsListener;
 import org.infinitest.testrunner.TestRunner;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WhenTheRuntimeEnvironmentChanges {
+class WhenTheRuntimeEnvironmentChanges {
 	@Test
-	public void shouldTriggerACompleteReloadInTheCore() throws Exception {
+	void shouldTriggerACompleteReloadInTheCore() throws Exception {
 		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);
@@ -57,7 +57,7 @@ public class WhenTheRuntimeEnvironmentChanges {
 	}
 
 	@Test
-	public void shouldUpdateSupportingClassesInTheCore() {
+	void shouldUpdateSupportingClassesInTheCore() {
 		RuntimeEnvironment environment = fakeEnvironment();
 		TestRunner testRunner = mock(TestRunner.class);
 		TestDetector testDetector = mock(TestDetector.class);
@@ -78,7 +78,7 @@ public class WhenTheRuntimeEnvironmentChanges {
 	}
 
 	@Test
-	public void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception {
+	void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception {
 		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);

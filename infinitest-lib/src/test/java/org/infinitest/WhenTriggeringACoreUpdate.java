@@ -27,25 +27,29 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTriggeringACoreUpdate {
+class WhenTriggeringACoreUpdate {
 	private List<File> updatedFiles;
 	private DefaultInfinitestCore core;
 	private TestDetector testDetector;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		updatedFiles = newArrayList();
 		core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
 		testDetector = mock(TestDetector.class);
@@ -58,13 +62,13 @@ public class WhenTriggeringACoreUpdate {
 	}
 
 	@Test
-	public void canUseAKnownListOfChangedFilesToReduceFileSystemAccess() {
+	void canUseAKnownListOfChangedFilesToReduceFileSystemAccess() {
 		testsToExpect();
 		core.update(updatedFiles);
 	}
 
 	@Test
-	public void shouldReturnTheNumberOfTestsRun() {
+	void shouldReturnTheNumberOfTestsRun() {
 		JavaClass javaClass = mock(JavaClass.class);
 
 		testsToExpect(javaClass);

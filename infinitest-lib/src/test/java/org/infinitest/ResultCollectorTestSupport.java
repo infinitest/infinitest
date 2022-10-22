@@ -27,17 +27,19 @@
  */
 package org.infinitest;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestResults;
+import org.junit.jupiter.api.BeforeEach;
 
 public class ResultCollectorTestSupport {
 	protected static final String DEFAULT_TEST_NAME = "testName";
 	protected ResultCollector collector;
 	protected FailureListenerSupport listener;
 
-	@Before
+	@BeforeEach
 	public final void processingEventsFromCore() {
 		collector = new ResultCollector();
 		listener = new FailureListenerSupport();

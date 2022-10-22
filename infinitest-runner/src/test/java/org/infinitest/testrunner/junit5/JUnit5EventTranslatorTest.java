@@ -28,10 +28,8 @@
 package org.infinitest.testrunner.junit5;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.collect.Iterables.isEmpty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infinitest.testrunner.MethodStats;
 import org.infinitest.testrunner.StubClock;
@@ -39,8 +37,8 @@ import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.testrunner.TestResults;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5Test;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.engine.config.DefaultJupiterConfiguration;
 import org.junit.jupiter.engine.config.JupiterConfiguration;
 import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
@@ -51,18 +49,17 @@ import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.opentest4j.AssertionFailedError;
 
-public class JUnit5EventTranslatorTest {
+class JUnit5EventTranslatorTest {
 
 	private StubClock stubClock;
 	private JUnit5EventTranslator eventTranslator;
 	private TestMethodTestDescriptor shouldFailMethodTestDescriptor;
 
-	@Before
-	public void before() throws NoSuchMethodException, SecurityException {
+	@BeforeEach
+	void before() throws NoSuchMethodException, SecurityException {
 		stubClock = new StubClock();
 		eventTranslator = new JUnit5EventTranslator(stubClock);
-		
-		ConfigurationParameters parameters = LauncherDiscoveryRequestBuilder.request().build().getConfigurationParameters();
+		ConfigurationParameters parameters = LauncherDiscoveryRequestBuilder.request().build().getConfigurationParameters(); 
 		JupiterConfiguration configuration = new DefaultJupiterConfiguration(parameters);
 
 		UniqueId id = UniqueId.parse(
@@ -72,13 +69,13 @@ public class JUnit5EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldReturnEmptyTestResultsWhenNoExecutedTests() {
+	void shouldReturnEmptyTestResultsWhenNoExecutedTests() {
 		TestResults results = eventTranslator.getTestResults();
-		assertTrue(isEmpty(results));
+		assertThat(results).isEmpty();
 	}
 
 	@Test
-	public void shouldCollectMethodStatisticsForFailedTests() {
+	void shouldCollectMethodStatisticsForFailedTests() {
 		stubClock.time = 10;
 		eventTranslator.executionStarted(TestIdentifier.from(shouldFailMethodTestDescriptor));
 		stubClock.time = 20;
@@ -92,7 +89,7 @@ public class JUnit5EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldCollectEventsForFailedTests() {
+	void shouldCollectEventsForFailedTests() {
 		eventTranslator.executionStarted(TestIdentifier.from(shouldFailMethodTestDescriptor));
 
 		Throwable assertionError = new AssertionFailedError("failure");
@@ -109,7 +106,7 @@ public class JUnit5EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldCollectMethodStatisticsForSuccessfulTests() {
+	void shouldCollectMethodStatisticsForSuccessfulTests() {
 		stubClock.time = 10;
 		eventTranslator.executionStarted(TestIdentifier.from(shouldFailMethodTestDescriptor));
 		stubClock.time = 20;
@@ -122,7 +119,7 @@ public class JUnit5EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldNotCollectEventForSucessfulTests() {
+	void shouldNotCollectEventForSucessfulTests() {
 		eventTranslator.executionStarted(TestIdentifier.from(shouldFailMethodTestDescriptor));
 
 		eventTranslator.executionFinished(TestIdentifier.from(shouldFailMethodTestDescriptor),

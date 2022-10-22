@@ -28,30 +28,29 @@
 package org.infinitest.testrunner.junit4;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.collect.Iterables.isEmpty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.runner.Description.createTestDescription;
 
 import org.infinitest.testrunner.MethodStats;
 import org.infinitest.testrunner.StubClock;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-public class JUnit4EventTranslatorTest {
+class JUnit4EventTranslatorTest {
 	private JUnitEventTranslator eventTranslator;
 	private Result result;
 	private Description description;
 	private StubClock stubClock;
 
-	@Before
-	public void inContext() throws Exception {
+	@BeforeEach
+	void inContext() throws Exception {
 		stubClock = new StubClock();
 		eventTranslator = new JUnitEventTranslator(stubClock);
 		description = createTestDescription(getClass(), "methodName");
@@ -60,13 +59,13 @@ public class JUnit4EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldCollectEventsInTestResults() {
+	void shouldCollectEventsInTestResults() {
 		TestResults results = eventTranslator.getTestResults();
-		assertTrue(isEmpty(results));
+		assertThat(results).isEmpty();
 	}
 
 	@Test
-	public void shouldCollectMethodStatistics() {
+	void shouldCollectMethodStatistics() {
 		stubClock.time = 10;
 		eventTranslator.testStarted(description);
 		stubClock.time = 20;
@@ -78,7 +77,7 @@ public class JUnit4EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldCollectFailureEvents() throws Exception {
+	void shouldCollectFailureEvents() throws Exception {
 		AssertionError error = new AssertionError();
 		result.createListener().testFailure(new Failure(description, error));
 		eventTranslator.testRunFinished(result);
@@ -87,7 +86,7 @@ public class JUnit4EventTranslatorTest {
 	}
 
 	@Test
-	public void shouldCollectErrorEvents() throws Exception {
+	void shouldCollectErrorEvents() throws Exception {
 		Exception error = new NullPointerException();
 		result.createListener().testFailure(new Failure(description, error));
 		eventTranslator.testRunFinished(result);

@@ -27,18 +27,23 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
+import static org.infinitest.CoreDependencySupport.FAILING_TEST;
+import static org.infinitest.CoreDependencySupport.PASSING_TEST;
+import static org.infinitest.CoreDependencySupport.createAsyncCore;
+import static org.infinitest.CoreDependencySupport.withChangedFiles;
+import static org.infinitest.CoreDependencySupport.withTests;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.TestJUnit4TestCase;
 
-public class WhenTestsAreRunAsynchronously {
+class WhenTestsAreRunAsynchronously {
 	private DefaultInfinitestCore core;
 	private EventSupport eventSupport;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		core = createAsyncCore(withChangedFiles(), withTests(FAILING_TEST, PASSING_TEST, TestJUnit4TestCase.class));
 		eventSupport = new EventSupport(5000);
 		core.addTestQueueListener(eventSupport);
@@ -49,7 +54,7 @@ public class WhenTestsAreRunAsynchronously {
 	}
 
 	@Test
-	public void canUpdateWhileTestsAreRunning() throws Exception {
+	void canUpdateWhileTestsAreRunning() throws Exception {
 		core.update();
 		eventSupport.assertQueueChanges(1);
 		// There are three tests in the queue, we're updating before they're all

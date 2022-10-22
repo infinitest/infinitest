@@ -29,13 +29,13 @@ package org.infinitest;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.CoreStatus.PASSING;
 import static org.infinitest.CoreStatus.RUNNING;
 import static org.infinitest.CoreStatus.SCANNING;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.infinitest.util.InfinitestTestUtils.emptyStringList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -43,21 +43,21 @@ import static org.mockito.Mockito.verify;
 import java.util.Collection;
 
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
-public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
+class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	private EventSupport statusListener;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		statusListener = new EventSupport();
 	}
 
 	@Test
-	public void canAttachToCore() {
+	void canAttachToCore() {
 		InfinitestCore core = mock(InfinitestCore.class);
 
 		new ResultCollector(core);
@@ -68,12 +68,12 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldListenToCoreForResults() {
+	void shouldListenToCoreForResults() {
 		assertEquals(SCANNING, collector.getStatus());
 	}
 
 	@Test
-	public void shouldChangeStatusToRunning() {
+	void shouldChangeStatusToRunning() {
 		collector.addStatusChangeListener(statusListener);
 		collector.testQueueUpdated(new TestQueueEvent(asList("aTest"), 1));
 		collector.testQueueUpdated(new TestQueueEvent(emptyStringList(), 1));
@@ -85,7 +85,7 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldNotifyTestCollectorOfTestEvents() {
+	void shouldNotifyTestCollectorOfTestEvents() {
 		FailureListenerSupport listener = new FailureListenerSupport();
 		collector.addChangeListener(listener);
 		TestEvent failureEvent = methodFailed("message", DEFAULT_TEST_NAME, "methodName", new AssertionError());
@@ -93,25 +93,25 @@ public class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 		testRun(failureEvent);
 		assertEquals(failureEvent, getOnlyElement(collector.getFailures()));
 		assertEquals(failureEvent, getOnlyElement(listener.added));
-		assertTrue(listener.removed.isEmpty());
+		assertThat(listener.removed).isEmpty();
 
 		testRunWith("testName2");
-		assertTrue(listener.removed.isEmpty());
+		assertThat(listener.removed).isEmpty();
 
 		listener.added.clear();
 		testRun();
 		// collector.testCaseFinished(testCaseFinished("testName"));
 		assertEquals(failureEvent, getOnlyElement(listener.removed));
-		assertTrue(listener.added.isEmpty());
+		assertThat(listener.added).isEmpty();
 	}
 
 	@Test
-	public void shouldIgnoreDisabledTestsThatArentFailing() {
+	void shouldIgnoreDisabledTestsThatArentFailing() {
 		collector.testsDisabled(asList("NotAFailingTest"));
 	}
 
 	@Test
-	public void shouldClearFailuresForDisabledTests() {
+	void shouldClearFailuresForDisabledTests() {
 		String testName = "MyClass";
 		testRunWith(testName, methodFailed(testName, "someMethod", new NullPointerException()));
 		assertEquals(1, collector.getFailures().size());

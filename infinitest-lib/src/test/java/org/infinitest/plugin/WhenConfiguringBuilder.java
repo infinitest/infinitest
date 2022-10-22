@@ -32,8 +32,8 @@ import static org.infinitest.environment.FakeEnvironments.fakeBuildPaths;
 import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
 import static org.infinitest.environment.FakeEnvironments.fakeWorkingDirectory;
 import static org.infinitest.environment.FakeEnvironments.systemClasspath;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 import org.infinitest.FakeEventQueue;
@@ -42,21 +42,21 @@ import org.infinitest.InfinitestCoreBuilder;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.filter.TestFilter;
 import org.infinitest.parser.TestDetector;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenConfiguringBuilder {
+class WhenConfiguringBuilder {
 	protected InfinitestCoreBuilder builder;
 	private TestFilter filterUsedToCreateCore;
 
-	@Before
-	public final void mustProvideRuntimeEnvironmentAndEventQueue() {
+	@BeforeEach
+	final void mustProvideRuntimeEnvironmentAndEventQueue() {
 		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
 		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue());
 	}
 
 	@Test
-	public void canUseCustomFilterToRemoveTestsFromTestRun() {
+	void canUseCustomFilterToRemoveTestsFromTestRun() {
 		TestFilter testFilter = mock(TestFilter.class);
 		builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue()) {
 			@Override
@@ -71,20 +71,20 @@ public class WhenConfiguringBuilder {
 	}
 
 	@Test
-	public void canSetCoreName() {
+	void canSetCoreName() {
 		builder.setName("myCoreName");
 		InfinitestCore core = builder.createCore();
 		assertEquals("myCoreName", core.getName());
 	}
 
 	@Test
-	public void shouldUseBlankCoreNameByDefault() {
+	void shouldUseBlankCoreNameByDefault() {
 		InfinitestCore core = builder.createCore();
 		assertEquals("", core.getName());
 	}
 
 	@Test
-	public void shouldSetRuntimeEnvironment() {
+	void shouldSetRuntimeEnvironment() {
 		InfinitestCore core = builder.createCore();
 		assertEquals(fakeEnvironment(), core.getRuntimeEnvironment());
 	}

@@ -30,7 +30,7 @@ package org.infinitest.testrunner.process;
 import static com.google.common.collect.Iterables.addAll;
 import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,26 +46,26 @@ import org.infinitest.testrunner.CrashingTestRunner;
 import org.infinitest.testrunner.FakeRunner;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
-public class WhenCreatingRunnerProcessConnection {
+class WhenCreatingRunnerProcessConnection {
 	private NativeConnectionFactory factory;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		factory = new NativeConnectionFactory(FakeRunner.class);
 	}
 
 	@Test
-	public void canCommunicateWithProcess() throws Exception {
+	void canCommunicateWithProcess() throws Exception {
 		assertEquals("Hello World", sendMessageWithServerSocket("Hello World").get(0).getTestName());
 	}
 
 	@Test
-	public void shouldPassMultipleArguments() throws Exception {
+	void shouldPassMultipleArguments() throws Exception {
 		List<TestEvent> events = sendMessageWithServerSocket("Hello", "World");
 		assertEquals("Hello", events.get(0).getTestName());
 		assertEquals(2, events.size());
@@ -105,7 +105,7 @@ public class WhenCreatingRunnerProcessConnection {
 	}
 
 	@Test
-	public void shouldGracefullyHandleErrors() throws Exception {
+	void shouldGracefullyHandleErrors() throws Exception {
 		factory = new NativeConnectionFactory(CrashingTestRunner.class);
 		TestEvent testEvent = sendMessageWithServerSocket("Hello").get(0);
 		assertEquals(METHOD_FAILURE, testEvent.getType());

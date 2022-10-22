@@ -27,22 +27,28 @@
  */
 package org.infinitest.util;
 
-import static com.google.common.collect.Maps.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Maps.newHashMap;
+import static org.infinitest.util.InfinitestGlobalSettings.getLogLevel;
+import static org.infinitest.util.InfinitestGlobalSettings.setLogLevel;
+import static org.infinitest.util.InfinitestUtils.addLoggingListener;
+import static org.infinitest.util.InfinitestUtils.log;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Map;
+import java.util.logging.Level;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 
 public class WhenLoggingMessagesAndErrors implements LoggingListener {
 	private Map<String, Throwable> errors;
 	private Map<String, Level> messages;
 	private Level oldLevel;
 
-	@Before
+	@BeforeEach
 	public void inContext() {
 		errors = newHashMap();
 		messages = newHashMap();
@@ -50,7 +56,7 @@ public class WhenLoggingMessagesAndErrors implements LoggingListener {
 		oldLevel = getLogLevel();
 	}
 
-	@After
+	@AfterEach
 	public void cleanup() {
 		setLogLevel(oldLevel);
 	}

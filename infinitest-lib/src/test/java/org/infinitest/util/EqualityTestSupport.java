@@ -27,11 +27,14 @@
  */
 package org.infinitest.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 public abstract class EqualityTestSupport {
 	protected abstract Object createEqualInstance();
@@ -45,20 +48,20 @@ public abstract class EqualityTestSupport {
 	}
 
 	@Test
-	public void identicalObjectsShouldBeEqual() {
+	void identicalObjectsShouldBeEqual() {
 		Object reference = createEqualInstance();
 		assertEquals(reference, reference);
 	}
 
 	@Test
-	public void unequalInstancesAreUnique() {
+	void unequalInstancesAreUnique() {
 		List<Object> unequalInstances = createUnequalInstances();
 		HashSet<Object> set = new HashSet<Object>(unequalInstances);
 		assertEquals(set.size(), unequalInstances.size());
 	}
 
 	@Test
-	public void differentObjectsShouldBeUnequal() {
+	void differentObjectsShouldBeUnequal() {
 		Object equal = createEqualInstance();
 		for (Object other : createUnequalInstances()) {
 			assertFalse(equal.equals(other));
@@ -66,12 +69,12 @@ public abstract class EqualityTestSupport {
 	}
 
 	@Test
-	public void equalObjectsShouldHaveSameHashcode() {
+	void equalObjectsShouldHaveSameHashcode() {
 		assertEquals(createEqualInstance().hashCode(), createEqualInstance().hashCode());
 	}
 
 	@Test
-	public void shouldDifferentTypesShouldNotBeEqual() {
+	void shouldDifferentTypesShouldNotBeEqual() {
 		assertFalse(createEqualInstance().equals(new Object()));
 	}
 }
