@@ -37,11 +37,11 @@ import javax.swing.tree.*;
 
 import org.infinitest.intellij.plugin.swingui.*;
 import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenDoubleClickingTestEvent {
+class WhenDoubleClickingTestEvent {
   @Test
-  public void shouldNavigateToSource() {
+  void shouldNavigateToSource() {
     FakeSourceNavigator navigator = new FakeSourceNavigator();
 
     ResultClickListener listener = new ResultClickListener(navigator);

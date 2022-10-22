@@ -27,34 +27,34 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.intellij.plugin.swingui.EventInfoFrame.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.infinitest.intellij.plugin.swingui.EventInfoFrame.stackTraceToString;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.Test;
 
-public class WhenInfoFrameIsShowing {
+class WhenInfoFrameIsShowing {
 	@Test
-	public void shouldCloseWithEscapeKey() {
+	void shouldCloseWithEscapeKey() {
 		EventInfoFrame frame = new EventInfoFrame(withATest());
 		assertEquals(frame.getRootPane().getActionMap().keys()[0], "ESCAPE");
 	}
 
 	@Test
-	public void shouldReturnEmptyStringForNullStackTrace() {
+	void shouldReturnEmptyStringForNullStackTrace() {
 		assertEquals("", stackTraceToString(null));
 	}
 
 	@Test
-	public void shouldLimitStackTraceStringsTo50Lines() {
-		List<StackTraceElement> elements = newArrayList();
+	void shouldLimitStackTraceStringsTo50Lines() {
+		List<StackTraceElement> elements = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			elements.add(new StackTraceElement("class", "method", "file", 0));
 		}
@@ -64,7 +64,7 @@ public class WhenInfoFrameIsShowing {
 		assertEquals("50 more...", lines[50]);
 	}
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		AssertionError assertionError = new AssertionError("This is a very long error message. Who would type such a message? It's crazy. This is much too long. This must be stopped. It cannot be allowed to continue.");
 		EventInfoFrame frame = new EventInfoFrame(methodFailed("message", "", assertionError));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

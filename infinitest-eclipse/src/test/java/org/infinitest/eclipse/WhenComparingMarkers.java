@@ -36,7 +36,7 @@ import org.infinitest.eclipse.workspace.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class WhenComparingMarkers {
+class WhenComparingMarkers {
 	private Throwable error;
 	private ProblemMarkerInfo methodError;
 	private ProblemMarkerInfo methodFailure;
@@ -44,7 +44,7 @@ public class WhenComparingMarkers {
 	private AssertionError failure;
 
 	@BeforeEach
-	public void inContext() {
+	void inContext() {
 		error = new Throwable();
 		failure = new AssertionError();
 		failure.fillInStackTrace();
@@ -54,7 +54,7 @@ public class WhenComparingMarkers {
 	}
 
 	@Test
-	public void shouldBeEqualIfTestNameAndMethodNameAreEqual() {
+	void shouldBeEqualIfTestNameAndMethodNameAreEqual() {
 		assertEquals(methodError, new ProblemMarkerInfo(methodFailed("testClass", "", error), finder));
 		assertThat(methodError).isNotEqualTo(new ProblemMarkerInfo(methodFailed("testClass2", "", error), finder));
 

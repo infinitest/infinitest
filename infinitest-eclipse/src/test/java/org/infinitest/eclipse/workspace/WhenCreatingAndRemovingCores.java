@@ -27,6 +27,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -49,7 +50,7 @@ class WhenCreatingAndRemovingCores implements CoreLifecycleListener {
 
 	@Test
 	void shouldTolerateRemovingACoreThatsNotThere() throws URISyntaxException {
-		registry.removeCore(new URI("//thisIsNotAProject"));
+		assertDoesNotThrow(() -> registry.removeCore(new URI("//thisIsNotAProject")));
 	}
 
 	@Test

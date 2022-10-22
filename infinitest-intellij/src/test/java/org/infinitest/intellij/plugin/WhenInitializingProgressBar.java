@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WhenInitializingProgressBar extends IntellijMockBase {
 

@@ -35,14 +35,14 @@ import static org.mockito.Mockito.when;
 import org.infinitest.CoreStatus;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.IntellijMockBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.ContentManager;
 
-public class InfinitestToolWindowFactoryTest extends IntellijMockBase {
+class InfinitestToolWindowFactoryTest extends IntellijMockBase {
 	@Test
-	public void windowInitialization() {
+	void windowInitialization() {
 		IntellijMockBase.setupApplication();
 		InfinitestToolWindowFactory factory = new InfinitestToolWindowFactory();
 		

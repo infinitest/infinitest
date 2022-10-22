@@ -30,6 +30,7 @@ package org.infinitest.eclipse.prefs;
 import static org.eclipse.jface.preference.FieldEditor.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -108,7 +109,7 @@ class WhenPreferencesAreChanged {
 	@Test
 	void shouldIgnoreBlankValues() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
-		changeProperty(VALUE, "", "");
+		assertDoesNotThrow(() -> changeProperty(VALUE, "", ""));
 	}
 
 	private void changeProperty(String type, Object oldValue, Object newValue) {

@@ -39,7 +39,7 @@ import org.infinitest.TestQueueListener;
 import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.TestResultsListener;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -72,7 +72,7 @@ public class IntellijMockBase {
 	protected ProjectTestControl control;
 	protected InfinitestAnnotator annotator;
 	
-	@Before
+	@BeforeEach
 	public void setupIntellijMockBase() {
 		project = mock(Project.class);
 		module = mock(Module.class);

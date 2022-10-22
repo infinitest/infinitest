@@ -34,11 +34,11 @@ import static org.mockito.Mockito.when;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.ModuleSettings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class InfinitestLauncherImplTest extends IntellijMockBase {
+class InfinitestLauncherImplTest extends IntellijMockBase {
 	@Test
-	public void launcherInitiatilization() {
+	void launcherInitiatilization() {
 		ModuleSettings moduleSettings = mock(ModuleSettings.class);
 		RuntimeEnvironment runtimeEnvironment = mock(RuntimeEnvironment.class);
 		

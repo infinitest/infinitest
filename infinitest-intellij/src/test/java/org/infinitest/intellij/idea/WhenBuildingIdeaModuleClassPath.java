@@ -27,21 +27,21 @@
  */
 package org.infinitest.intellij.idea;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsEqual.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
 import java.util.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.*;
 
-public class WhenBuildingIdeaModuleClassPath {
+class WhenBuildingIdeaModuleClassPath {
 	private static final String PATH_A = "a";
 	private static final String PATH_B = "b";
 	private static final String PATH_C = "c";
@@ -53,7 +53,7 @@ public class WhenBuildingIdeaModuleClassPath {
 	private final IdeaModuleSettings ideaModuleSettingsSpy = spy(new IdeaModuleSettings(module));
 
 	@Test
-	public void shouldIncludeAllCompilationClassesToClasspathElementsList() {
+	void shouldIncludeAllCompilationClassesToClasspathElementsList() {
 		OrderEntry orderEntry1 = orderEntry();
 		OrderEntry orderEntry2 = orderEntry();
 		doReturn(new OrderEntry[] { orderEntry1, orderEntry2 }).when(moduleRootManagerMock).getOrderEntries();
@@ -65,15 +65,15 @@ public class WhenBuildingIdeaModuleClassPath {
 
 		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
 
-		assertThat(classPathElementsList.get(0).getPath(), equalTo(PATH_A));
-		assertThat(classPathElementsList.get(1).getPath(), equalTo(PATH_B));
-		assertThat(classPathElementsList.get(2).getPath(), equalTo(PATH_C));
-		assertThat(classPathElementsList.get(3).getPath(), equalTo(PATH_D));
-		assertThat(classPathElementsList.size(), equalTo(4));
+		assertThat(classPathElementsList.get(0).getPath()).isEqualTo(PATH_A);
+		assertThat(classPathElementsList.get(1).getPath()).isEqualTo(PATH_B);
+		assertThat(classPathElementsList.get(2).getPath()).isEqualTo(PATH_C);
+		assertThat(classPathElementsList.get(3).getPath()).isEqualTo(PATH_D);
+		assertThat(classPathElementsList).hasSize(4);
 	}
 	
 	@Test
-	public void shouldExcludeJdkModules() {
+	void shouldExcludeJdkModules() {
 		OrderEntry jdkOrderEntry = mock(JdkOrderEntry.class);
 		doReturn(new OrderEntry[] { jdkOrderEntry }).when(moduleRootManagerMock).getOrderEntries();
 		doReturn(new VirtualFile[] { fileWith(PATH_D) }).when(compilerModuleExtension).getOutputRoots(true);
@@ -84,7 +84,7 @@ public class WhenBuildingIdeaModuleClassPath {
 		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
 		
 		verifyNoInteractions(jdkOrderEntry);
-		assertThat(classPathElementsList.size(), equalTo(1));
+		assertThat(classPathElementsList).hasSize(1);
 	}
 
 	private static OrderEntry orderEntry() {
@@ -98,7 +98,7 @@ public class WhenBuildingIdeaModuleClassPath {
 	}
 	
 	@Test
-	public void moduleSdk() {
+	void moduleSdk() {
 		IdeaModuleSettings settings = new IdeaModuleSettings(module);
 		
 		ModuleRootManager moduleRootManager = mock(ModuleRootManager.class);
@@ -108,6 +108,6 @@ public class WhenBuildingIdeaModuleClassPath {
 		when(moduleRootManager.getSdk()).thenReturn(sdk);
 		when(sdk.getHomePath()).thenReturn("jdk");
 		
-		assertThat(settings.getSdkHomePath(), equalTo(new File("jdk")));
+		assertThat(settings.getSdkHomePath()).isEqualTo(new File("jdk"));
 	}
 }

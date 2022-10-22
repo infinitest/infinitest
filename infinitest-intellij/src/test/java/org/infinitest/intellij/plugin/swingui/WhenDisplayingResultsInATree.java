@@ -29,19 +29,12 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static java.util.Arrays.asList;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.SwingUtilities;
-import javax.swing.event.TreeModelListener;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
@@ -49,8 +42,8 @@ import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
@@ -60,7 +53,7 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	private TreeModelAdapter model;
 	private ResultCollector collector;
 
-	@Before
+	@BeforeEach
 	public void inContext() {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		collector = new ResultCollector(mockCore);

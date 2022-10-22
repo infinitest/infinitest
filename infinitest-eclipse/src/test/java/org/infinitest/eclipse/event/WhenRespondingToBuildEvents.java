@@ -29,6 +29,7 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -65,7 +66,7 @@ class WhenRespondingToBuildEvents extends ResourceEventSupport {
 
 	@Test
 	void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
-		processor.processEvent(emptyEvent());
+		assertDoesNotThrow(() -> processor.processEvent(emptyEvent()));
 	}
 
 	@Test

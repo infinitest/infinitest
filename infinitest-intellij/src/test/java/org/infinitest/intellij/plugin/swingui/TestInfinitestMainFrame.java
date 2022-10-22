@@ -30,7 +30,7 @@ package org.infinitest.intellij.plugin.swingui;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -42,33 +42,27 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import org.infinitest.intellij.IntellijMockBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestInfinitestMainFrame {
+class TestInfinitestMainFrame {
 	private InfinitestMainFrame frame;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		IntellijMockBase.setupApplication();
 		frame = new InfinitestMainFrame(null);
 	}
 
-	@After
-	public void cleanup() {
-		frame = null;
-	}
-
 	@Test
-	public void shouldDisplayProgress() {
+	void shouldDisplayProgress() {
 		frame.setMaximumProgress(100);
 		assertEquals(100, frame.getMaximumProgress());
 		frame.setProgress(75);
 	}
 
 	@Test
-	public void shouldUseUnknownColorToStart() {
+	void shouldUseUnknownColorToStart() {
 		assertEquals(UNKNOWN_COLOR, frame.getProgressBarColor());
 	}
 

@@ -31,20 +31,21 @@ import static org.infinitest.CoreStatus.*;
 import static org.junit.Assert.*;
 
 import org.infinitest.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTestStateChanges {
+class WhenTestStateChanges {
 	protected long mockTime;
 	private StateMonitor monitor;
 	private CoreStatus lastStatus = null;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		mockTime = 0;
 	}
 
 	@Test
-	public void shouldTrackTimeSinceLastGreenBar() {
+	void shouldTrackTimeSinceLastGreenBar() {
 		monitor = new StateMonitor() {
 			@Override
 			protected long getCurrentTime() {

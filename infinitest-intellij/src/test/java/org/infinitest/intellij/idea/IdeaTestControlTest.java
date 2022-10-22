@@ -36,11 +36,11 @@ import static org.mockito.Mockito.when;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.intellij.IntellijMockBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class IdeaTestControlTest extends IntellijMockBase {
+class IdeaTestControlTest extends IntellijMockBase {
 	@Test
-	public void projectControlTest() {
+	void projectControlTest() {
 		setupApplication();
 		
 		ProjectTestControl testControl = new ProjectTestControl(project);
@@ -61,7 +61,7 @@ public class IdeaTestControlTest extends IntellijMockBase {
 	}
 	
 	@Test
-	public void updateModuleState() {
+	void updateModuleState() {
 		ProjectTestControl testControl = new ProjectTestControl(project);
 		ProjectTestControlState state = new ProjectTestControlState();
 		
@@ -84,7 +84,7 @@ public class IdeaTestControlTest extends IntellijMockBase {
 	}
 	
 	@Test
-	public void enablePowerSaveMode() {
+	void enablePowerSaveMode() {
 		setupApplication(true);
 		
 		ProjectTestControl testControl = new ProjectTestControl(project);

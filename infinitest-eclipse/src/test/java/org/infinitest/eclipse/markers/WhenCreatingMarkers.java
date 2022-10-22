@@ -34,6 +34,7 @@ import static org.eclipse.core.resources.IMarker.SEVERITY;
 import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
 import static org.infinitest.eclipse.PluginConstants.PROBLEM_MARKER_ID;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -118,7 +119,7 @@ class WhenCreatingMarkers {
 
 	@Test
 	void shouldIgnoredRemovedMarkersThatDontExist() {
-		registry.removeMarker(mock(MarkerInfo.class));
+		assertDoesNotThrow(() -> registry.removeMarker(mock(MarkerInfo.class)));
 	}
 
 	@Test
