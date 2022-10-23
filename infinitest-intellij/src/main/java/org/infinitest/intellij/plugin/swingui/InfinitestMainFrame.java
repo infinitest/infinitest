@@ -30,6 +30,7 @@ package org.infinitest.intellij.plugin.swingui;
 import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -133,13 +134,13 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	}
 
 	@Override
-	public void writeLogMessage(String message) {
-		logPane.writeMessage(message);
+	public void writeLogMessage(Level level, String message) {
+		logPane.writeMessage(level, message);
 	}
 
 	@Override
-	public void writeError(String message) {
-		// nothing to do here
+	public void writeError(String message, Throwable throwable) {
+		logPane.writeError(message, throwable);
 	}
 
 	@Override

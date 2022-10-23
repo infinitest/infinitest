@@ -28,6 +28,7 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import java.awt.Color;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.tree.TreeModel;
@@ -60,9 +61,9 @@ public interface InfinitestView extends ConsoleOutputListener {
 
 	void setStatusMessage(String string);
 
-	void writeLogMessage(String message);
+	void writeLogMessage(Level level, String message);
 
-	void writeError(String message);
+	void writeError(String message, Throwable throwable);
 
 	void addResultClickListener(ResultClickListener listener);
 }

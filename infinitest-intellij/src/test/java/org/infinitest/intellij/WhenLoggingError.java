@@ -28,6 +28,7 @@
 package org.infinitest.intellij;
 
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -44,6 +45,6 @@ class WhenLoggingError {
 		InfinitestLoggingListener listener = new InfinitestLoggingListener(view);
 		listener.logError("test message", ERROR);
 
-		verify(view).writeError(contains("test message"));
+		verify(view).writeError(contains("test message"), same(ERROR));
 	}
 }

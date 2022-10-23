@@ -29,6 +29,8 @@ package org.infinitest.intellij.plugin.swingui.harness;
 
 import static org.infinitest.intellij.plugin.swingui.harness.SwingPanelHarness.*;
 
+import java.util.logging.Level;
+
 import javax.swing.*;
 
 import org.infinitest.intellij.plugin.swingui.*;
@@ -42,8 +44,8 @@ public class LogPaneHarness extends JFrame {
 
 		displayPanel(logPane);
 
-		logPane.writeMessage("Something interesting happened");
-		logPane.writeMessage("Something else interesting happened");
+		logPane.writeMessage(Level.INFO, "Something interesting happened");
+		logPane.writeMessage(Level.INFO, "Something else interesting happened");
 		logPane.writeError("Oops!", EXCEPTION);
 	}
 }

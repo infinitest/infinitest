@@ -28,9 +28,11 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static java.awt.BorderLayout.*;
+import static java.lang.String.format;
 
 import java.awt.*;
 import java.io.*;
+import java.util.logging.Level;
 
 import javax.swing.*;
 
@@ -39,35 +41,55 @@ public class InfinitestLogPane extends JPanel {
 	private static final String CRLF = System.getProperty("line.separator");
 
 	private final JTextArea textArea;
-
+	private final JComboBox<Level> levelComboBox;
+	
 	public InfinitestLogPane() {
+		super(new BorderLayout());
+		
 		textArea = new JTextArea();
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		setLayout(new BorderLayout());
 		add(new JScrollPane(textArea), CENTER);
+		
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+	
+		levelComboBox = new JComboBox<>(logLevels());
+		toolBar.add(levelComboBox);
+		
+		add(toolBar, BorderLayout.SOUTH);
 	}
 
-	public void writeMessage(final String message) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				textArea.append(message);
+	private Level[] logLevels() {
+		return new Level[] {Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINEST, Level.ALL};
+	}
+
+	public void writeMessage(final Level level, final String message) {
+		Level currentLevel = (Level) levelComboBox.getSelectedItem();
+
+		if (level.intValue() >= currentLevel.intValue()) {
+			SwingUtilities.invokeLater(() -> {
+				textArea.append(leftAlign(level) + " " + message);
 				textArea.append(CRLF);
-			}
-		});
+			});
+		}
 	}
 
-	public void writeError(String message, Exception error) {
-		writeMessage(message);
-		writeMessage(stackTraceFor(error));
+	public void writeError(String message, Throwable error) {
+		writeMessage(Level.SEVERE, message);
+		writeMessage(Level.SEVERE, stackTraceFor(error));
 	}
 
-	private String stackTraceFor(Exception error) {
+	private String stackTraceFor(Throwable error) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		PrintWriter writer = new PrintWriter(output);
 		error.printStackTrace(writer);
 		writer.close();
 
 		return output.toString();
+	}
+
+	private String leftAlign(Level info) {
+		return format("%-10s", info.getName());
 	}
 }
