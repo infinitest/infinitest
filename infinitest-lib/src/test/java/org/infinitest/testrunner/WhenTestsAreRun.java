@@ -166,7 +166,7 @@ class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener 
 	}
 
 	@Test
-	public void shouldFireEventsForFailingTestsOnly() throws IOException, InterruptedException {
+	void shouldFireEventsForFailingTestsOnly() throws IOException, InterruptedException {
 		setTestSuccess("testNumber1", TEST_SUCCEEDED, true);
 		runTests(TestFakeProduct.class);
 		assertNotNull("Test was not set up", getCallCount("setUp"));

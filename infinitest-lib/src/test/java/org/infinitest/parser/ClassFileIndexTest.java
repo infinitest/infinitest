@@ -72,7 +72,7 @@ class ClassFileIndexTest {
 	}
 	
 	@Test
-	public void removeFiles() {
+	void removeFiles() {
 		JavaClass javaClass = mock(JavaClass.class);
 		when(builder.getClass(any(File.class))).thenReturn(javaClass);
 		

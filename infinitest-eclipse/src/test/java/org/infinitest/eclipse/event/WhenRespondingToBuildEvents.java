@@ -97,7 +97,7 @@ class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	}
 	
 	@Test
-	public void shouldHandleRemovedTestClasses() throws CoreException {
+	void shouldHandleRemovedTestClasses() throws CoreException {
 		IResourceDelta delta = mock(IResourceDelta.class);
 		IPath path = mock(IPath.class);
 		
