@@ -28,7 +28,7 @@
 package org.infinitest.testrunner;
 
 import static com.fakeco.fakeproduct.TestFakeProduct.*;
-import static org.junit.Assume.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.*;
 import java.util.*;
@@ -38,12 +38,14 @@ import junit.framework.*;
 import org.infinitest.*;
 import org.infinitest.util.*;
 import org.junit.*;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fakeco.fakeproduct.*;
 
 @SuppressWarnings("unused")
-public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener {
+class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener {
 	private static final String TEST_SUCCEEDED = "Test Succeeded";
 	private static final String FAILURE_MSG = "Test failed as expected";
 
@@ -52,8 +54,8 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	private List<TestEvent> startedEvents;
 	private EventSupport support;
 
-	@Before
-	public void inContext() throws IOException {
+	@BeforeEach
+	void inContext() throws IOException {
 		runner = new InProcessRunner();
 		methodEvents = new ArrayList<TestEvent>();
 		startedEvents = new ArrayList<TestEvent>();
@@ -64,8 +66,8 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 		TestJUnit4TestCase.enable();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		runner = null;
 		methodEvents = null;
 		startedEvents = null;
@@ -75,14 +77,14 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void shouldStartAndFinishIgnoredTests() throws InterruptedException {
+	void shouldStartAndFinishIgnoredTests() throws InterruptedException {
 		runTests(IgnoredTest.class);
 		support.assertTestsStarted(IgnoredTest.class);
 		support.assertTestPassed(IgnoredTest.class);
 	}
 
 	@Test
-	public void shouldTreatIgnoredMethodsAsSuccesses() throws InterruptedException {
+	void shouldTreatIgnoredMethodsAsSuccesses() throws InterruptedException {
 		runTests(TestWithIgnoredMethod.class);
 		support.assertTestsStarted(TestWithIgnoredMethod.class);
 		support.assertTestPassed(TestWithIgnoredMethod.class);
@@ -90,12 +92,12 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 
 	@SuppressWarnings("all")
 	public static class TestWithIgnoredMethod {
-		@Test
+		@org.junit.Test
 		public void shouldPass() {
 		}
 
 		@Ignore
-		@Test
+		@org.junit.Test
 		public void shouldBeIgnored() {
 			fail();
 		}
@@ -104,18 +106,18 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	@SuppressWarnings("all")
 	@Ignore
 	public static class IgnoredTest {
-		@Test
+		@org.junit.Test
 		public void shouldPass() {
 		}
 
-		@Test
+		@org.junit.Test
 		public void shouldFail() {
 			fail();
 		}
 	}
 
 	public static class TestThatChecksForHelloWorldProperty {
-		@Test
+		@org.junit.Test
 		public void shouldFailIfPropertyNotSet() {
 			assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
 			assertNotNull(System.getProperty("hello.world"));
@@ -123,13 +125,13 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void exploreJUnit4TestAdapterBehavior() {
+	void exploreJUnit4TestAdapterBehavior() {
 		JUnit4TestAdapter adapter = new JUnit4TestAdapter(TestJUnit4TestCase.class);
 		assertEquals(2, adapter.countTestCases());
 	}
 
 	@Test
-	public void shouldHandleJUnit3TestsWithExceptionsInConstructor() throws InterruptedException {
+	void shouldHandleJUnit3TestsWithExceptionsInConstructor() throws InterruptedException {
 		runTests(JUnit3TestWithExceptionInConstructor.class);
 		support.assertTestFailed(JUnit3TestWithExceptionInConstructor.class.getName());
 
@@ -139,13 +141,13 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void shouldFireTestCaseCompleteWhenFinished() throws InterruptedException {
+	void shouldFireTestCaseCompleteWhenFinished() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
 		support.assertTestRun(TestJUnit4TestCase.class);
 	}
 
 	@Test
-	public void shouldHandleAnnotatedTests() throws InterruptedException {
+	void shouldHandleAnnotatedTests() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
 		assertEquals(methodEvents.toString(), 1, methodEvents.size());
 
@@ -158,13 +160,13 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void shouldFireEventWhenTestIsStarted() throws InterruptedException {
+	void shouldFireEventWhenTestIsStarted() throws InterruptedException {
 		runTests(TestJUnit4TestCase.class);
 		assertEquals("One passing and one failing test", 1, startedEvents.size());
 	}
 
 	@Test
-	public void shouldFireEventsForFailingTestsOnly() throws IOException, InterruptedException {
+	void shouldFireEventsForFailingTestsOnly() throws IOException, InterruptedException {
 		setTestSuccess("testNumber1", TEST_SUCCEEDED, true);
 		runTests(TestFakeProduct.class);
 		assertNotNull("Test was not set up", getCallCount("setUp"));
@@ -196,7 +198,7 @@ public class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsLi
 	}
 
 	@Test
-	public void shouldReportTestsInErrorAsFailures() throws Exception {
+	void shouldReportTestsInErrorAsFailures() throws Exception {
 		TestFakeProduct.setTestError("testNumber1", IllegalArgumentException.class);
 		runTests(TestFakeProduct.class);
 		assertEquals("Error event count", 1, methodEvents.size());

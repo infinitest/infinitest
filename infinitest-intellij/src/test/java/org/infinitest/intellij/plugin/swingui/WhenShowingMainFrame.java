@@ -29,7 +29,7 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.Component;
 import java.awt.event.WindowEvent;
@@ -38,21 +38,21 @@ import javax.swing.JLabel;
 
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.intellij.icons.AllIcons;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenShowingMainFrame extends IntellijMockBase {
+class WhenShowingMainFrame extends IntellijMockBase {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
   private Component focusedComponent;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     IntellijMockBase.setupApplication();
     
     InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
@@ -62,13 +62,13 @@ public class WhenShowingMainFrame extends IntellijMockBase {
     cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
   }
 
-  @Test
-  public void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+  @org.junit.jupiter.api.Test
+  void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
     assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
   }
 
   @Test
-  public void shouldStartWithTreeFocused() {
+  void shouldStartWithTreeFocused() {
     TreeFocusListener listener = new TreeFocusListener() {
       @Override
       protected void setFocus(Component c) {
@@ -80,7 +80,7 @@ public class WhenShowingMainFrame extends IntellijMockBase {
   }
 
   @Test
-  public void shouldHaveIconToIndicatePoFNodes() {
+  void shouldHaveIconToIndicatePoFNodes() {
     Object node = "PointOfFailure.java:32";
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
@@ -88,7 +88,7 @@ public class WhenShowingMainFrame extends IntellijMockBase {
   }
 
   @Test
-  public void shouldHaveIconToIndicateFailingTest() {
+  void shouldHaveIconToIndicateFailingTest() {
     Object node = eventWithError();
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 

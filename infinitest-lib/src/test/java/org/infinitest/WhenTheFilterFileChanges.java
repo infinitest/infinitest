@@ -28,8 +28,8 @@
 package org.infinitest;
 
 import static org.infinitest.environment.FakeEnvironments.emptyClasspath;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,15 +44,15 @@ import org.infinitest.filter.TestFilter;
 import org.infinitest.parser.ClassFileTestDetector;
 import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 
-public class WhenTheFilterFileChanges {
+class WhenTheFilterFileChanges {
 	@Test
-	public void shouldUpdateTheFilterList() throws IOException {
+	void shouldUpdateTheFilterList() throws IOException {
 		File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
 		file.deleteOnExit();
 
@@ -67,7 +67,7 @@ public class WhenTheFilterFileChanges {
 	}
 
 	@Test
-	public void shouldRecognizeChangesBeforeLookingForTests() {
+	void shouldRecognizeChangesBeforeLookingForTests() {
 		TestFilter testFilter = mock(TestFilter.class);
 		TestDetector detector = new ClassFileTestDetector(testFilter);
 

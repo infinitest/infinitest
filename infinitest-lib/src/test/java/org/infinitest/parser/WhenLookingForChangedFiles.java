@@ -30,8 +30,7 @@ package org.infinitest.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.environment.FakeEnvironments.fakeBuildPaths;
 import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,25 +50,26 @@ import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.changedetect.FileChangeDetector;
 import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.util.InfinitestTestUtils;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.fakeco.fakeproduct.FakeProduct;
 import com.fakeco.fakeproduct.TestFakeProduct;
 
-public class WhenLookingForChangedFiles {
+class WhenLookingForChangedFiles {
 	private File altClassDir;
 	private ChangeDetector detector;
 	private ClasspathProvider classpath;
 
-	@Rule
-	public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+	private File temporaryFolder;
 
-	@Before
-	public void inContext() throws IOException {
-		altClassDir = temporaryFolder.newFolder("altClasses");
+	@BeforeEach
+	void inContext() throws IOException {
+		altClassDir = new File(temporaryFolder, "altClasses");
+		altClassDir.mkdir();
+		
 		List<File> buildPaths = new ArrayList<File>();
 		buildPaths.addAll(fakeBuildPaths());
 		buildPaths.add(altClassDir);
@@ -79,7 +79,7 @@ public class WhenLookingForChangedFiles {
 	}
 
 	@Test
-	public void shouldLookInClasspathForFiles() {
+	void shouldLookInClasspathForFiles() {
 		ClasspathProvider mockClasspath = mock(ClasspathProvider.class);
 
 		new FileChangeDetector().setClasspathProvider(mockClasspath);
@@ -88,14 +88,14 @@ public class WhenLookingForChangedFiles {
 	}
 
 	@Test
-	public void shouldHandleStrangeClasspaths() throws Exception {
+	void shouldHandleStrangeClasspaths() throws Exception {
 		ChangeDetector changeDetector = new FileChangeDetector();
 		changeDetector.setClasspathProvider(new StandaloneClasspath(new ArrayList<File>(), ""));
 		assertTrue(changeDetector.findChangedFiles().isEmpty());
 	}
 
 	@Test
-	public void shouldFindChangedFiles() throws IOException {
+	void shouldFindChangedFiles() throws IOException {
 		Set<File> files = detector.findChangedFiles();
 
 		assertThat(files).contains(getFileForClass(TestFakeProduct.class));
@@ -104,7 +104,7 @@ public class WhenLookingForChangedFiles {
 	}
 
 	@Test
-	public void canLookInMultipleClassDirectories() throws Exception {
+	void canLookInMultipleClassDirectories() throws Exception {
 		File newFile = createFileForClass(TestFakeProduct.class);
 		File thisFile = InfinitestTestUtils.getFileForClass(getClass());
 		Set<File> changedFiles = detector.findChangedFiles();
@@ -113,7 +113,7 @@ public class WhenLookingForChangedFiles {
 	}
 
 	@Test
-	public void shouldFindRemovedFiles() throws Exception {
+	void shouldFindRemovedFiles() throws Exception {
 		File newFile = createFileForClass(TestFakeProduct.class);
 		assertThat(detector.findChangedFiles()).contains(newFile);
 
@@ -124,7 +124,7 @@ public class WhenLookingForChangedFiles {
 	}
 
 	@Test
-	public void shouldDetectChangedFilesByTimeStamp() throws Exception {
+	void shouldDetectChangedFilesByTimeStamp() throws Exception {
 		BasicFileAttributes directoryAttributes = mock(BasicFileAttributes.class);
 		BasicFileAttributes classFileAttributes = mock(BasicFileAttributes.class);
 
@@ -143,13 +143,13 @@ public class WhenLookingForChangedFiles {
 		};
 		
 		detector.setClasspathProvider(classpath);
-		assertFalse("Should have found changed files on first run", detector.findChangedFiles().isEmpty());
-		assertTrue("Timestamp is unchanged", detector.findChangedFiles().isEmpty());
+	    assertThat(detector.findChangedFiles()).as("Should have found changed files on first run").isNotEmpty();
+	    assertThat(detector.findChangedFiles()).as("Timestamp is unchanged").isEmpty();
 
 		// Update the timestamp of the file from 1000 to 1100
 		when(classFileAttributes.lastModifiedTime()).thenReturn(FileTime.fromMillis(1100L));
 
-		assertFalse("Timestamp changed", detector.findChangedFiles().isEmpty());
+	    assertThat(detector.findChangedFiles()).as("Timestamp changed").isNotEmpty();
 	}
 
 	private File createFileForClass(Class<TestFakeProduct> clazz) throws IOException {

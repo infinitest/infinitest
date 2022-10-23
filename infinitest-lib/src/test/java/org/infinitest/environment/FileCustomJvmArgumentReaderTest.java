@@ -27,43 +27,49 @@
  */
 package org.infinitest.environment;
 
-import static com.google.common.base.Charsets.*;
-import static com.google.common.collect.Lists.*;
-import static com.google.common.io.Files.*;
-import static org.infinitest.environment.FileCustomJvmArgumentReader.*;
-import static org.junit.Assert.*;
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.io.Files.write;
+import static org.infinitest.environment.FileCustomJvmArgumentReader.FILE_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 
-import org.infinitest.environment.FileCustomJvmArgumentReader;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FileCustomJvmArgumentReaderTest {
+
+class FileCustomJvmArgumentReaderTest {
 	private File tempDirectory;
 	private File file;
 	private FileCustomJvmArgumentReader reader;
 
-	@Before
-	public void setUp() throws IOException {
+	@BeforeEach
+	void setUp() throws IOException {
 		tempDirectory = new File(System.getProperty("java.io.tmpdir"));
 		assertTrue(tempDirectory.exists());
 		assertTrue(tempDirectory.exists());
 		file = new File(tempDirectory, FILE_NAME);
 		file.createNewFile();
-		assertTrue("Failed to create arguments file.", file.exists());
+		assertTrue(file.exists(), "Failed to create arguments file.");
 
 		reader = new FileCustomJvmArgumentReader(tempDirectory);
 	}
 
-	@After
-	public void tearDown() {
+	@AfterEach
+	void tearDown() {
 		// assertTrue("Failed to delete arguments file.", file.delete());
 		file.delete();
 	}
 
 	@Test
-	public void shouldReturnEmptyListIfDirectoryDoesNotExists() {
+	void shouldReturnEmptyListIfDirectoryDoesNotExists() {
 		FileCustomJvmArgumentReader argReader = new FileCustomJvmArgumentReader(new File("fileThatDoesNotExist"));
 
 		List<String> arguments = argReader.readCustomArguments();
@@ -73,7 +79,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 
 	@Test
-	public void shouldReturnEmptyListIfFileIsEmpty() {
+	void shouldReturnEmptyListIfFileIsEmpty() {
 		List<String> arguments = reader.readCustomArguments();
 
 		assertNotNull(arguments);
@@ -81,7 +87,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 
 	@Test
-	public void shouldReturnArgumentsAsListIfFileHasContents() throws IOException {
+	void shouldReturnArgumentsAsListIfFileHasContents() throws IOException {
 		String singleArgument = writeArguments("-DsomeArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
@@ -90,7 +96,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 	
 	@Test
-	public void withoutSplitOnConfigShouldSplitArgumentsOnSpaces() throws IOException {
+	void withoutSplitOnConfigShouldSplitArgumentsOnSpaces() throws IOException {
 		writeArguments("-DsomeArg=foo -DanotherArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
@@ -99,7 +105,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 	
 	@Test
-	public void withoutSplitOnConfigShouldNotSplitArgumentsOnSpacesBetweenQuotes() throws IOException {
+	void withoutSplitOnConfigShouldNotSplitArgumentsOnSpacesBetweenQuotes() throws IOException {
 		writeArguments("-DsomeArg=\"hello world\" -DanotherArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
@@ -108,7 +114,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 	
 	@Test
-	public void withoutSplitOnConfigShouldSplitArgumentsOnLines() throws IOException {
+	void withoutSplitOnConfigShouldSplitArgumentsOnLines() throws IOException {
 		writeArguments("-DsomeArg=foo\n-DanotherArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
@@ -118,7 +124,7 @@ public class FileCustomJvmArgumentReaderTest {
 
 	
 	@Test
-	public void withSplitOnLinesOnlyConfigShouldSplitArgumentsOnLines() throws IOException {
+	void withSplitOnLinesOnlyConfigShouldSplitArgumentsOnLines() throws IOException {
 		writeArguments("# SplitOn=LINES_ONLY\n-DsomeArg=foo\n-DanotherArg=foo");
 
 		List<String> arguments = reader.readCustomArguments();
@@ -127,7 +133,7 @@ public class FileCustomJvmArgumentReaderTest {
 	}
 	
 	@Test
-	public void withSplitOnLinesOnlyConfigShouldNotSplitArgumentsOnSpace() throws IOException {
+	void withSplitOnLinesOnlyConfigShouldNotSplitArgumentsOnSpace() throws IOException {
 		writeArguments("# SplitOn=LINES_ONLY\n-DsomeArg=foo not another Arg");
 
 		List<String> arguments = reader.readCustomArguments();

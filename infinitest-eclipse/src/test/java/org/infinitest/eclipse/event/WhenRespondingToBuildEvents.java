@@ -31,8 +31,9 @@ import static org.eclipse.core.resources.IResourceChangeEvent.POST_BUILD;
 import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
 import static org.eclipse.core.resources.IResourceChangeEvent.PRE_BUILD;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.AUTO_BUILD;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doAnswer;
@@ -50,21 +51,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.infinitest.eclipse.ResourceEventSupport;
 import org.infinitest.eclipse.workspace.WorkspaceFacade;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenRespondingToBuildEvents extends ResourceEventSupport {
+class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	private ClassFileChangeProcessor processor;
 	private WorkspaceFacade workspace;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		workspace = mock(WorkspaceFacade.class);
 		processor = new ClassFileChangeProcessor(workspace);
 	}
 
 	@Test
-	public void shouldNotRespondToPreBuildEvents() {
+	void shouldNotRespondToPreBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
 
@@ -72,14 +73,14 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
-		processor.processEvent(emptyEvent());
+	void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
+		assertDoesNotThrow(() -> processor.processEvent(emptyEvent()));
 
 		verifyNoInteractions(workspace);
 	}
 
 	@Test
-	public void shouldRespondToPostBuildEvents() {
+	void shouldRespondToPostBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, null);
 		assertTrue(processor.canProcessEvent(event));
 
@@ -87,7 +88,7 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldNotRespondToPostChangeEvents() {
+	void shouldRespondToPostChangeEvents() {
 		// Not sure why we wanted to respond to change events, seems better to respond to the post build event, once the build is finished
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
@@ -96,7 +97,7 @@ public class WhenRespondingToBuildEvents extends ResourceEventSupport {
 	}
 	
 	@Test
-	public void shouldHandleRemovedTestClasses() throws CoreException {
+	void shouldHandleRemovedTestClasses() throws CoreException {
 		IResourceDelta delta = mock(IResourceDelta.class);
 		IPath path = mock(IPath.class);
 		

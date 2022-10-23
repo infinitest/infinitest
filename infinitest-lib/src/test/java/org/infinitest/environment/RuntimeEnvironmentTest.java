@@ -33,8 +33,7 @@ import static com.google.common.io.Files.touch;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.infinitest.environment.FakeEnvironments.currentJavaHome;
 import static org.infinitest.environment.FakeEnvironments.emptyRuntimeEnvironment;
 import static org.infinitest.environment.FakeEnvironments.fakeBuildPaths;
@@ -43,11 +42,10 @@ import static org.infinitest.environment.FakeEnvironments.fakeWorkingDirectory;
 import static org.infinitest.environment.FakeEnvironments.systemClasspath;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 import static org.infinitest.util.InfinitestUtils.convertFromWindowsClassPath;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
@@ -60,62 +58,68 @@ import java.util.Map;
 
 import org.infinitest.environment.RuntimeEnvironment.JavaHomeException;
 import org.infinitest.util.LoggingAdapter;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.google.common.io.Files;
 
-public class RuntimeEnvironmentTest {
+class RuntimeEnvironmentTest {
 
-	@Rule
-	public FakeJavaHomeRule fakeJavaHomeRule = new FakeJavaHomeRule();
+	@TempDir
+	private File javaHome;
+	
+	@BeforeEach
+	void setup() {
+		new File(javaHome, "bin").mkdirs();
+	}
 
 	@Test
-	public void shouldCompareEqualEnvironments() {
+	void shouldCompareEqualEnvironments() {
 		assertEquals(createEqualInstance(), createEqualInstance());
 		assertEquals(createEqualInstance().hashCode(), createEqualInstance().hashCode());
 	}
 
 	@Test
-	public void shouldCompareOutputDirectories() {
+	void shouldCompareOutputDirectories() {
 		RuntimeEnvironment env = createEnv("notTheSameOutputDir", "workingDir", "classpath", "javahome");
-		assertThat(createEqualInstance(), not(equalTo(env)));
-		assertThat(createEqualInstance().hashCode(), not(equalTo(env.hashCode())));
+		assertThat(createEqualInstance()).isNotEqualTo(env);
+		assertThat(createEqualInstance().hashCode()).isNotEqualTo(env.hashCode());
 	}
 
 	@Test
-	public void shouldCompareWorkingDirectory() {
+	void shouldCompareWorkingDirectory() {
 		RuntimeEnvironment env = createEnv("outputDir", "notTheSameWorkingDir", "classpath", "javahome");
-		assertThat(createEqualInstance(), not(equalTo(env)));
+		assertThat(createEqualInstance()).isNotEqualTo(env);
 	}
 
 	@Test
-	public void shouldCompareClasspath() {
+	void shouldCompareClasspath() {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "notTheSameClasspath", "javahome");
-		assertThat(createEqualInstance(), not(equalTo(env)));
+		assertThat(createEqualInstance()).isNotEqualTo(env);
 	}
 	
 	@Test
-	public void shouldCompareJavaHome() {
+	void shouldCompareJavaHome() {
 		RuntimeEnvironment env = createEnv("outputDir", "workingDir", "classpath", "notTheSameJavahome");
-		assertThat(createEqualInstance(), not(equalTo(env)));
+		assertThat(createEqualInstance()).isNotEqualTo(env);
 	}
 
 	@Test
-	public void shouldCompareAdditionalArgs() {
+	void shouldCompareAdditionalArgs() {
 		RuntimeEnvironment env = createEqualInstance();
 		env.addVMArgs(Arrays.asList("additionalArg"));
-		assertThat(createEqualInstance(), not(equalTo(env)));
+		assertThat(createEqualInstance()).isNotEqualTo(env);
 	}
 
 	@Test
-	public void shouldNotBeEqualToNull() {
+	void shouldNotBeEqualToNull() {
 		assertFalse(createEqualInstance().equals(null));
 	}
 
 	@Test
-	public void shouldThrowExceptionOnInvalidJavaHome() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHomeRule.getRoot(), fakeWorkingDirectory(),
+	void shouldThrowExceptionOnInvalidJavaHome() {
+		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome, fakeWorkingDirectory(),
 				"runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(),
 				FakeEnvironments.systemClasspath());
 		try {
@@ -124,39 +128,39 @@ public class RuntimeEnvironmentTest {
 			fail("Should have thrown exception");
 		} catch (JavaHomeException e) {
 			assertThat(convertFromWindowsClassPath(e.getMessage()))
-					.contains(convertFromWindowsClassPath(fakeJavaHomeRule.getRoot().getAbsolutePath()) + "/bin/java");
+					.contains(convertFromWindowsClassPath(javaHome.getAbsolutePath()) + "/bin/java");
 		}
 	}
 
 	@Test
-	public void shouldAllowAlternateJavaHomesOnUnixAndWindows() throws Exception {
-		RuntimeEnvironment environment = new RuntimeEnvironment(fakeJavaHomeRule.getRoot(), fakeWorkingDirectory(),
+	void shouldAllowAlternateJavaHomesOnUnixAndWindows() throws Exception {
+		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome, fakeWorkingDirectory(),
 				"runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(),
 				FakeEnvironments.systemClasspath());
 
-		touch(new File(fakeJavaHomeRule.getRoot(), "bin/java.exe"));
+		touch(new File(javaHome, "bin/java.exe"));
 		ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
 		List<String> arguments = environment.createProcessArguments(classpathArgumentBuilder);
-		assertEquals(convertFromWindowsClassPath(fakeJavaHomeRule.getRoot().getAbsolutePath()) + "/bin/java.exe",
+		assertEquals(convertFromWindowsClassPath(javaHome.getAbsolutePath()) + "/bin/java.exe",
 				convertFromWindowsClassPath(get(arguments, 0)));
 
-		touch(new File(fakeJavaHomeRule.getRoot(), "bin/java"));
+		touch(new File(javaHome, "bin/java"));
 		arguments = environment.createProcessArguments(classpathArgumentBuilder);
-		assertEquals(convertFromWindowsClassPath(fakeJavaHomeRule.getRoot().getAbsolutePath()) + "/bin/java",
+		assertEquals(convertFromWindowsClassPath(javaHome.getAbsolutePath()) + "/bin/java",
 				convertFromWindowsClassPath(get(arguments, 0)));
 	}
 
 	@Test
-	public void shouldAddInfinitestJarOrClassDirToClasspath() {
+	void shouldAddInfinitestJarOrClassDirToClasspath() {
 		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(),
 				systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
 		String classpath = environment.getRunnerFullClassPath();
-		assertTrue(classpath, classpath.contains("infinitest"));
-		assertTrue(classpath, classpath.endsWith(environment.findInfinitestRunnerJar()));
+		assertTrue(classpath.contains("infinitest"));
+		assertTrue(classpath.endsWith(environment.findInfinitestRunnerJar()), classpath);
 	}
 
 	@Test
-	public void shouldUseInfinitestClassLoaderForProcessClassPath() {
+	void shouldUseInfinitestClassLoaderForProcessClassPath() {
 		LoggingAdapter listener = new LoggingAdapter();
 		addLoggingListener(listener);
 
@@ -166,26 +170,26 @@ public class RuntimeEnvironmentTest {
 		assertThat(env).containsEntry("CLASSPATH", environment.getRunnerBootstrapClassPath());
 	}
 
-	@Test(expected = RuntimeEnvironment.MissingInfinitestClassLoaderException.class)
-	public void shouldThrowIfInfinitestClassLoaderJarCannotBeFound() {
+	@Test
+	void shouldThrowIfInfinitestClassLoaderJarCannotBeFound() {
 		LoggingAdapter listener = new LoggingAdapter();
 		addLoggingListener(listener);
 
 		RuntimeEnvironment environment = emptyRuntimeEnvironment();
-		environment.createProcessEnvironment();
-	}
-
-	@Test(expected = RuntimeEnvironment.MissingInfinitestRunnerException.class)
-	public void shouldThrowIfInfinitestRunnerJarCannotBeFound() {
-		LoggingAdapter listener = new LoggingAdapter();
-		addLoggingListener(listener);
-
-		RuntimeEnvironment environment = emptyRuntimeEnvironment();
-		environment.getRunnerFullClassPath();
+		assertThatThrownBy(() -> environment.createProcessEnvironment()).isInstanceOf(RuntimeEnvironment.MissingInfinitestClassLoaderException.class);
 	}
 
 	@Test
-	public void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
+	void shouldThrowIfInfinitestRunnerJarCannotBeFound() {
+		LoggingAdapter listener = new LoggingAdapter();
+		addLoggingListener(listener);
+
+		RuntimeEnvironment environment = emptyRuntimeEnvironment();
+		assertThatThrownBy(() -> environment.getRunnerFullClassPath()).isInstanceOf(RuntimeEnvironment.MissingInfinitestRunnerException.class);
+	}
+
+	@Test
+	void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
 		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), 
 				fakeWorkingDirectory(),
 				systemClasspath(), systemClasspath(), fakeBuildPaths(), "classpath");
@@ -194,11 +198,11 @@ public class RuntimeEnvironmentTest {
 		environment.getRunnerFullClassPath();
 		String expectedMessage = "Could not find classpath entry [classpath] at file system root or relative to working "
 				+ "directory [.].";
-		assertTrue(adapter.toString(), adapter.hasMessage(expectedMessage, WARNING));
+		assertTrue(adapter.hasMessage(expectedMessage, WARNING), adapter.toString());
 	}
 
 	@Test
-	public void canSetAdditionalVMArguments() {
+	void canSetAdditionalVMArguments() {
 		RuntimeEnvironment environment = fakeEnvironment();
 		List<String> additionalArgs = asList("-Xdebug", "-Xnoagent",
 				"-Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=y");
@@ -206,11 +210,11 @@ public class RuntimeEnvironmentTest {
 
 		ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
 		List<String> actualArgs = environment.createProcessArguments(classpathArgumentBuilder);
-		assertTrue(actualArgs.toString(), actualArgs.containsAll(additionalArgs));
+		assertTrue(actualArgs.containsAll(additionalArgs), actualArgs.toString());
 	}
 
 	@Test
-	public void shouldCreateClasspathFile() {
+	void shouldCreateClasspathFile() {
 		File classpathFile = fakeEnvironment().createClasspathFile();
 		assertThat(classpathFile).exists();
 	}
@@ -226,7 +230,7 @@ public class RuntimeEnvironmentTest {
 	}
 	
 	@Test
-	public void escapeClassPathArgumentfile() throws IOException {
+	void escapeClassPathArgumentfile() throws IOException {
 		String classpath = "c:\\Program Files (x86)\\Java\\jre\\lib\\ext;c:\\Program Files\\Java\\jre9\\lib\\ext";
 		RuntimeEnvironment env = new RuntimeEnvironment(new File("javahome"),
 				new File("workingDir"),

@@ -28,29 +28,31 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Iterables.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.infinitest.eclipse.markers.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenLookingForResources {
+class WhenLookingForResources {
 	private ResourceLookupAdapter adapter;
 	private IResource mockResource;
 	private ResourceFinder finder;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		mockResource = mock(IResource.class);
 		finder = mock(ResourceFinder.class);
 		adapter = new ResourceLookupAdapter(finder);
 	}
 
 	@Test
-	public void shouldFindAllMatchingResourcesBasedOnClassName() {
+	void shouldFindAllMatchingResourcesBasedOnClassName() {
 		when(finder.findResourceForSourceFile("com/foo/Bar.java")).thenReturn(mockResource);
 
 		List<IResource> resources = adapter.findResourcesForClassName("com.foo.Bar");
@@ -59,7 +61,7 @@ public class WhenLookingForResources {
 	}
 
 	@Test
-	public void shouldReturnEmptyListIfNoResourcesMatch() {
+	void shouldReturnEmptyListIfNoResourcesMatch() {
 		assertTrue(adapter.findResourcesForClassName("com.foo.Bar").isEmpty());
 	}
 }

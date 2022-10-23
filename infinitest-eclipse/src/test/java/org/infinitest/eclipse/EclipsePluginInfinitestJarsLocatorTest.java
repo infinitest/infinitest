@@ -37,30 +37,30 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.infinitest.testrunner.TestRunnerProcess;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 
-@RunWith(MockitoJUnitRunner.class)
-public class EclipsePluginInfinitestJarsLocatorTest {
+@ExtendWith(MockitoExtension.class)
+class EclipsePluginInfinitestJarsLocatorTest {
   @Mock
   Bundle bundle;
   
 
   private EclipsePluginInfinitestJarsLocator jarLocator;
   
-  @Before
-  public void setup() {
+  @BeforeEach
+  void setup() {
 	  jarLocator = new EclipsePluginInfinitestJarsLocator(() -> bundle);
 	  List<URL> testRunnerProcessUrls = Arrays.asList(TestRunnerProcess.class.getResource("TestRunnerProcess.class"));
 	  when(bundle.findEntries("", "*infinitest-runner*.jar", true)).thenReturn(enumeration(testRunnerProcessUrls), enumeration(testRunnerProcessUrls));
   }
 
   @Test
-  public void shouldWriteInfinitestRunnerJarToTempDirectory() {
+  void shouldWriteInfinitestRunnerJarToTempDirectory() {
     File runnerJarLocation = jarLocator.getRunnerJarFile();
 
     assertThat(runnerJarLocation).exists();
@@ -69,7 +69,7 @@ public class EclipsePluginInfinitestJarsLocatorTest {
   
   
   @Test
-  public void shouldRecreateJarIfItIsDeleted() {
+  void shouldRecreateJarIfItIsDeleted() {
     
     File runnerJarLocation = jarLocator.getRunnerJarFile();
 
@@ -82,7 +82,7 @@ public class EclipsePluginInfinitestJarsLocatorTest {
   }
   
   @Test
-  public void shouldCacheFileIfNotDeleted() {
+  void shouldCacheFileIfNotDeleted() {
     File runnerJarLocation = jarLocator.getRunnerJarFile();
     long lastModified = runnerJarLocation.lastModified();
     

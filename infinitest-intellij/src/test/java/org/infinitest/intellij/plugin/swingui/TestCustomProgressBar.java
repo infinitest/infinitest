@@ -31,32 +31,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.awt.*;
 import java.awt.image.*;
 
 import org.infinitest.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestCustomProgressBar {
+class TestCustomProgressBar {
   private CustomProgressBar progressBar;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     progressBar = new CustomProgressBar();
     progressBar.setForeground(FAILING_COLOR);
     progressBar.setMaximum(100);
     progressBar.setValue(50);
   }
 
-  @After
-  public void cleanupContext() {
-    progressBar = null;
-  }
-
   @Test
-  public void shouldUseACustomPainter() {
+  void shouldUseACustomPainter() {
     progressBar.setValue(40);
     Dimension size = new Dimension(1000, 30);
     progressBar.setSize(size);
@@ -75,7 +72,7 @@ public class TestCustomProgressBar {
   }
 
   @Test
-  public void shouldUseVariableReplacementToPopulateStatusMessage() {
+  void shouldUseVariableReplacementToPopulateStatusMessage() {
     assertEquals(getMessage(INDEXING), progressBar.getStatusMessage());
 
     progressBar.setStatusMessage("Scanning for tests");
@@ -93,7 +90,7 @@ public class TestCustomProgressBar {
   }
 
   @Test
-  public void shouldReplaceAllVariablesInCurrentStatusMessages() {
+  void shouldReplaceAllVariablesInCurrentStatusMessages() {
     CoreStatus[] statuses = new CoreStatus[]{SCANNING, INDEXING, RUNNING, PASSING, FAILING};
     for (CoreStatus status : statuses) {
       progressBar.setStatusMessage(getMessage(status));

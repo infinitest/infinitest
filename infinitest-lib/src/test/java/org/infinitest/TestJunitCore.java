@@ -27,13 +27,22 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
 
-import java.util.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runner.notification.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.Description;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
 
 /**
  * Exploratory test for JunitCore
@@ -41,13 +50,13 @@ import org.junit.runner.notification.*;
  * @author bjrady
  * 
  */
-public class TestJunitCore {
+class TestJunitCore {
 	private List<Description> finishedList;
 	private JUnitCore core;
 	private ArrayList<Failure> failingList;
 
-	@Before
-	public void whenCoreHasListeners() {
+	@BeforeEach
+	void whenCoreHasListeners() {
 		core = new JUnitCore();
 		finishedList = new ArrayList<Description>();
 		failingList = new ArrayList<Failure>();
@@ -66,26 +75,26 @@ public class TestJunitCore {
 		core.run(new Class[] { StubTest.class });
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		core = null;
 		finishedList = null;
 		StubTest.disable();
 	}
 
 	@Test
-	public void shouldRunTestsAndReportResults() {
+	void shouldRunTestsAndReportResults() {
 		Description desc = findDescription("shouldBeSucessful", finishedList);
-		assertEquals("Display name", "shouldBeSucessful(org.infinitest.TestJunitCore$StubTest)", desc.getDisplayName());
-		assertTrue("Result should have no children", desc.getChildren().isEmpty());
-		assertTrue("Test result, not suite result", desc.isTest());
-		assertEquals("Test Count", 1, desc.testCount());
+		assertEquals("shouldBeSucessful(org.infinitest.TestJunitCore$StubTest)", desc.getDisplayName(), "Display name");
+		assertThat(desc.getChildren()).as("Result should have no children").isEmpty();
+		assertThat(desc.isTest()).as("Test result, not suite result").isTrue();
+		assertEquals(1, desc.testCount(), "Test Count");
 
 		desc = findDescription("shouldFailIfPropertyIsSet", finishedList);
-		assertEquals("Display name", "shouldFailIfPropertyIsSet(org.infinitest.TestJunitCore$StubTest)", desc.getDisplayName());
-		assertTrue("Result should have no children", desc.getChildren().isEmpty());
-		assertTrue("Test result, not suite result", desc.isTest());
-		assertEquals("Test Count", 1, desc.testCount());
+		assertEquals("shouldFailIfPropertyIsSet(org.infinitest.TestJunitCore$StubTest)", desc.getDisplayName(), "Display name");
+		assertThat(desc.getChildren()).as("Result should have no children").isEmpty();
+		assertThat(desc.isTest()).as("Test result, not suite result").isTrue();
+		assertEquals(1, desc.testCount(), "Test Count");
 
 		assertEquals(2, finishedList.size());
 	}
@@ -100,7 +109,7 @@ public class TestJunitCore {
 	}
 
 	@Test
-	public void shouldNotifyListenersAboutFailingTests() {
+	void shouldNotifyListenersAboutFailingTests() {
 		assertEquals(1, failingList.size());
 		Failure failure = failingList.get(0);
 		assertEquals("shouldFailIfPropertyIsSet(org.infinitest.TestJunitCore$StubTest)", failure.getTestHeader());
@@ -108,12 +117,12 @@ public class TestJunitCore {
 	}
 
 	public static class StubTest {
-		@Test
+		@org.junit.Test
 		@SuppressWarnings("all")
 		public void shouldBeSucessful() {
 		}
 
-		@Test
+		@org.junit.Test
 		public void shouldFailIfPropertyIsSet() {
 			// This is done so Eclipse doesn't get confused and fail because of
 			// this test.

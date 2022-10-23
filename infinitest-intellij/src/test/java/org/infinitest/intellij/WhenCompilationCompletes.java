@@ -36,19 +36,19 @@ import static org.mockito.Mockito.when;
 import org.infinitest.InfinitestCore;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.idea.IdeaCompilationListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.intellij.task.ProjectTaskListener;
 import com.intellij.task.ProjectTaskManager.Result;
 
-public class WhenCompilationCompletes extends IntellijMockBase {
+class WhenCompilationCompletes extends IntellijMockBase {
 	private final ModuleSettings moduleSettings = new FakeModuleSettings("test");
 	private InfinitestCore core;
 	private Result result;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		core = mock(InfinitestCore.class);
 		result = mock(Result.class);
 		
@@ -57,7 +57,7 @@ public class WhenCompilationCompletes extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldInvokeUpdateOnCore() {
+	void shouldInvokeUpdateOnCore() {
 		ProjectTaskListener listener = new IdeaCompilationListener(project);
 		when(result.isAborted()).thenReturn(false);
 		listener.finished(result);
@@ -67,7 +67,7 @@ public class WhenCompilationCompletes extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldNotUpdateIfCompilationAborted() {
+	void shouldNotUpdateIfCompilationAborted() {
 		ProjectTaskListener listener = new IdeaCompilationListener(project);
 		when(result.isAborted()).thenReturn(true);
 		listener.finished(result);
@@ -77,7 +77,7 @@ public class WhenCompilationCompletes extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldNotUpdateIfCompileErrorsOccurred() {
+	void shouldNotUpdateIfCompileErrorsOccurred() {
 		ProjectTaskListener listener = new IdeaCompilationListener(project);
 		when(result.isAborted()).thenReturn(false);
 		when(result.hasErrors()).thenReturn(true);

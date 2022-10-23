@@ -29,7 +29,8 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.net.*;
@@ -39,20 +40,21 @@ import org.eclipse.core.resources.*;
 import org.eclipse.jdt.core.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenRespondingToCleanEvents extends ResourceEventSupport {
+class WhenRespondingToCleanEvents extends ResourceEventSupport {
 	private CleanEventProcessor processor;
 	private CoreRegistry coreRegistry;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		coreRegistry = mock(CoreRegistry.class);
 		processor = new CleanEventProcessor(coreRegistry, mock(ProjectSet.class));
 	}
 
 	@Test
-	public void shouldRemoveCoreOnACleanBuild() throws JavaModelException {
+	void shouldRemoveCoreOnACleanBuild() throws JavaModelException {
 		processor = new CleanEventProcessor(coreRegistry, new FakeProjectSet(project));
 		processEvent(cleanBuildEvent());
 
@@ -61,13 +63,13 @@ public class WhenRespondingToCleanEvents extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldHandleACleanBuildOnAnUnIndexedProject() throws JavaModelException {
+	void shouldHandleACleanBuildOnAnUnIndexedProject() throws JavaModelException {
 		processEvent(cleanBuildEvent());
 		verifyNoInteractions(coreRegistry);
 	}
 
 	@Test
-	public void shouldOnlyRespondToPostBuildEvents() {
+	void shouldOnlyRespondToPostBuildEvents() {
 		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, CLEAN_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
 	}

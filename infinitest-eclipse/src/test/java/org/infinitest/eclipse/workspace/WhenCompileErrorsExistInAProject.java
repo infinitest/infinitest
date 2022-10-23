@@ -43,18 +43,18 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.infinitest.eclipse.ResourceEventSupport;
 import org.infinitest.eclipse.SystemClassPathJarLocator;
 import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 // DEBT Duplication with WhenUpdatingTheProjectsInTheWorkspace
-public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
+class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 	private List<ProjectFacade> projects;
 	private CoreRegistry coreRegistry;
 	private ProjectSet projectSet;
 	private EclipseWorkspace workspace;
 
-	@Before
-	public void inContext() throws CoreException {
+	@BeforeEach
+	void inContext() throws CoreException {
 		projects = new ArrayList<>();
 		projectSet = mock(ProjectSet.class);
 		projects.add(new ProjectFacade(project));
@@ -67,7 +67,7 @@ public class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 	}
 
 	@Test
-	public void shouldNotUpdateIt() throws CoreException {
+	void shouldNotUpdateIt() throws CoreException {
 		IJavaProject project = mock(IJavaProject.class);
 		projects.clear();
 		projects.add(new ProjectFacade(project));

@@ -29,11 +29,11 @@ package org.infinitest.eclipse.markers;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenProjectsAreUpdated {
+class WhenProjectsAreUpdated {
 	@Test
-	public void canClearMarkersInTheMarkerRegistry() {
+	void canClearMarkersInTheMarkerRegistry() {
 		SlowMarkerRegistry markerRegistry = mock(SlowMarkerRegistry.class);
 		MarkerClearingObserver observer = new MarkerClearingObserver(markerRegistry);
 

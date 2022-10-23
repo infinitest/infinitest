@@ -27,23 +27,28 @@
  */
 package org.infinitest;
 
-import static org.infinitest.InfinitestSettings.*;
-import static org.junit.Assert.*;
+import static org.infinitest.InfinitestSettings.IS_ENABLED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenConfiguringInfinitest {
+
+class WhenConfiguringInfinitest {
 	@Test
-	public void shouldProvideDefaultValues() {
+	void shouldProvideDefaultValues() {
 		InfinitestSettings settings = new InfinitestSettings();
 		assertTrue(settings.isInfinitestEnabled());
 	}
 
 	@Test
-	public void canLoadSettingsFromAStream() throws IOException {
+	void canLoadSettingsFromAStream() throws IOException {
 		Properties properties = new Properties();
 		properties.setProperty(IS_ENABLED, "true");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -53,14 +58,14 @@ public class WhenConfiguringInfinitest {
 	}
 
 	@Test
-	public void canUpdateSettingsInPlace() {
+	void canUpdateSettingsInPlace() {
 		InfinitestSettings settings = new InfinitestSettings();
 		settings.setIsInfinitestEnabled(false);
 		assertFalse(settings.isInfinitestEnabled());
 	}
 
 	@Test
-	public void canSavePropertiesToAStream() throws IOException {
+	void canSavePropertiesToAStream() throws IOException {
 		InfinitestSettings settings = new InfinitestSettings();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		settings.saveTo(outputStream);

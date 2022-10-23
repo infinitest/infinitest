@@ -38,14 +38,14 @@ import org.infinitest.TestQueueListener;
 import org.infinitest.eclipse.CoreLifecycleObserver;
 import org.infinitest.eclipse.SlowTestObserver;
 import org.infinitest.eclipse.console.ConsolePopulatingListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WhenCoresAreAddedOrRemoved {
+class WhenCoresAreAddedOrRemoved {
 	private InfinitestCore core;
 	private CoreLifecycleObserver observer;
 
 	@Test
-	public void shouldAttachAndDetachListenersFromCore() {
+	void shouldAttachAndDetachListenersFromCore() {
 		ResultCollector resultCollector = new ResultCollector();
 		SlowTestObserver slowTestObserver = mock(SlowTestObserver.class);
 		core = mock(InfinitestCore.class);

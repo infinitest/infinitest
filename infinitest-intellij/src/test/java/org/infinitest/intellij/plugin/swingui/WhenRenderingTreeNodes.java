@@ -28,40 +28,40 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.JLabel;
 
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.intellij.icons.AllIcons;
 
-public class WhenRenderingTreeNodes {
+class WhenRenderingTreeNodes {
 	private FailureCellRenderer cellRenderer;
 	private InfinitestResultsPane resultsPane;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		resultsPane = new InfinitestResultsPane();
 		cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
 	}
 
 	@Test
-	public void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+	void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
 		assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
 	}
 
 	@Test
-	public void shouldHaveIconToIndicatePointOfFailureNodes() {
+	void shouldHaveIconToIndicatePointOfFailureNodes() {
 		Object node = "PointOfFailure.java:32";
 		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 		assertEquals(AllIcons.General.Warning, treeCell.getIcon());
 	}
 
 	@Test
-	public void shouldHaveIconToIndicateTestNodes() {
+	void shouldHaveIconToIndicateTestNodes() {
 		Object node = withATest();
 		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 		assertEquals(AllIcons.General.Warning, treeCell.getIcon());

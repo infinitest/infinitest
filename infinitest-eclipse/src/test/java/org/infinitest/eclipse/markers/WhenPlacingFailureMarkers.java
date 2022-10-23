@@ -27,44 +27,44 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-import java.util.*;
+import java.util.List;
 
-import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPlacingFailureMarkers {
+class WhenPlacingFailureMarkers {
 	private ResourceLookup lookup;
 	private MarkerPlacer markerPlacer;
 	private List<MarkerPlacementStrategy> links;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		lookup = mock(ResourceLookup.class);
 		markerPlacer = new MarkerPlacer(lookup);
 		links = markerPlacer.getLinks();
 	}
 
 	@Test
-	public void shouldFirstTryToPlaceMarkersAtThePointOfFailure() {
-		assertThat(links.get(0), instanceOf(PointOfFailurePlacementStrategy.class));
+	void shouldFirstTryToPlaceMarkersAtThePointOfFailure() {
+		assertThat(links.get(0)).isInstanceOf(PointOfFailurePlacementStrategy.class);
 	}
 
 	@Test
-	public void shouldThenTryToPlaceMarkersUsingStackTraceInfo() {
-		assertThat(links.get(1), instanceOf(StackTracePlacementStrategy.class));
+	void shouldThenTryToPlaceMarkersUsingStackTraceInfo() {
+		assertThat(links.get(1)).isInstanceOf(StackTracePlacementStrategy.class);
 	}
 
 	@Test
-	public void shouldThenTryToPlaceMarkersInTheOriginatingTest() {
-		assertThat(links.get(2), instanceOf(TestNamePlacementStrategy.class));
+	void shouldThenTryToPlaceMarkersInTheOriginatingTest() {
+		assertThat(links.get(2)).isInstanceOf(TestNamePlacementStrategy.class);
 	}
 
 	@Test
-	public void shouldDefaultToWorkspaceRootIfNoStrategiesMatch() {
-		assertThat(links.get(3), instanceOf(WorkspaceFallbackPlacementStrategy.class));
+	void shouldDefaultToWorkspaceRootIfNoStrategiesMatch() {
+		assertThat(links.get(3)).isInstanceOf(WorkspaceFallbackPlacementStrategy.class);
 	}
 }

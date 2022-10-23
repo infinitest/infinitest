@@ -29,7 +29,7 @@ package org.infinitest;
 
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assume.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.*;
 
 import java.io.*;

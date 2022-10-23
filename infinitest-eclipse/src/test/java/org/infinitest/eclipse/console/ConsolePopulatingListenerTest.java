@@ -27,30 +27,35 @@
  */
 package org.infinitest.eclipse.console;
 
-import static org.infinitest.ConsoleOutputListener.OutputType.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.ConsoleOutputListener.OutputType.STDERR;
+import static org.infinitest.ConsoleOutputListener.OutputType.STDOUT;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConsolePopulatingListenerTest {
+
+class ConsolePopulatingListenerTest {
 	private TextOutputWriter writer;
 	private ConsolePopulatingListener listener;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		writer = mock(TextOutputWriter.class);
 		listener = new ConsolePopulatingListener(writer);
 	}
 
 	@Test
-	public void shouldWriteTestConsoleOutputToTheEclipseConsole() {
+	void shouldWriteTestConsoleOutputToTheEclipseConsole() {
 		listener.consoleOutputUpdate("some new text", STDOUT);
 
 		verify(writer).appendText("some new text");
 	}
 
 	@Test
-	public void shouldActivateTheConsoleWhenStdErrorOutputIsWritten() {
+	void shouldActivateTheConsoleWhenStdErrorOutputIsWritten() {
 		listener.consoleOutputUpdate("some new text", STDERR);
 
 		verify(writer).appendText("some new text");

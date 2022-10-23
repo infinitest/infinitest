@@ -32,13 +32,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WhenLoggingError {
+class WhenLoggingError {
 	private static final Exception ERROR = new Exception("test");
 
 	@Test
-	public void shouldDisplayErrorInView() {
+	void shouldDisplayErrorInView() {
 		InfinitestView view = mock(InfinitestView.class);
 
 		InfinitestLoggingListener listener = new InfinitestLoggingListener(view);

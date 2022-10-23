@@ -27,39 +27,49 @@
  */
 package org.infinitest.parser;
 
-import static java.io.File.*;
-import static java.util.Arrays.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.infinitest.environment.FakeEnvironments.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.io.File.pathSeparator;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
-import javassist.*;
-
-import org.assertj.core.api.*;
-import org.infinitest.*;
+import org.assertj.core.api.Assertions;
+import org.infinitest.StandaloneClasspath;
 import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.environment.FakeEnvironments;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.FakeDependency;
+import com.fakeco.fakeproduct.FakeTree;
 
-public class WhenCreatingJavaClassNodesInDependencyGraph {
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
+
+class WhenCreatingJavaClassNodesInDependencyGraph {
 	private JavaClassBuilder builder;
 	private File newDir;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		ClasspathProvider classpath = fakeClasspath();
 		builder = new JavaClassBuilder(classpath);
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		if (newDir != null) {
 			delete(newDir);
 		}
@@ -77,7 +87,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	}
 
 	@Test
-	public void shouldReturnUnparsableClassIfClassCannotBeFound() {
+	void shouldReturnUnparsableClassIfClassCannotBeFound() {
 		JavaClass javaClass = builder.getClass("foo.bar.com");
 
 		assertThat(javaClass).isInstanceOf(UnparsableClass.class);
@@ -86,7 +96,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	}
 
 	@Test
-	public void shouldReturnUnparsableClassIfErrorOccursWhileParsing() {
+	void shouldReturnUnparsableClassIfErrorOccursWhileParsing() {
 		JavaAssistClassParser parser = mock(JavaAssistClassParser.class);
 		when(parser.getClass("MyClassName")).thenThrow(new RuntimeException(new NotFoundException("")));
 
@@ -96,7 +106,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	}
 
 	@Test
-	public void shouldLookForClassesInTargetDirectories() throws Exception {
+	void shouldLookForClassesInTargetDirectories() throws Exception {
 		newDir = new File("tempClassDir");
 		List<File> buildPaths = asList(newDir);
 		ClasspathProvider classpath = new StandaloneClasspath(buildPaths, FakeEnvironments.systemClasspath() + pathSeparator + newDir.getAbsolutePath());
@@ -111,7 +121,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	}
 
 	@Test
-	public void shouldAlsoLookForClassesInClassDirectories() throws Exception {
+	void shouldAlsoLookForClassesInClassDirectories() throws Exception {
 		newDir = new File("tempClassDir");
 		List<File> buildPaths = asList(newDir);
 		ClasspathProvider classpath = new StandaloneClasspath(Collections.<File> emptyList(), buildPaths, FakeEnvironments.systemClasspath() + pathSeparator + newDir.getAbsolutePath());
@@ -132,7 +142,7 @@ public class WhenCreatingJavaClassNodesInDependencyGraph {
 	}
 
 	@Test
-	public void shouldFindDependenciesInSamePackage() {
+	void shouldFindDependenciesInSamePackage() {
 		JavaClass javaClass = builder.getClass(FakeTree.class.getName());
 
 		assertThat(javaClass.getImports()).contains(FakeDependency.class.getName());

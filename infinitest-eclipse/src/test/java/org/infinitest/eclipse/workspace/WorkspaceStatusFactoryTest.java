@@ -30,16 +30,14 @@ package org.infinitest.eclipse.workspace;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.infinitest.eclipse.status.WorkspaceStatus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WorkspaceStatusFactoryTest {
+class WorkspaceStatusFactoryTest {
  
-	
 	@Test
-	public void testFindingTestsMessage() {
+	void testFindingTestsMessage() {
 		WorkspaceStatus status = WorkspaceStatusFactory.findingTests(1, 10, 5);
 		assertThat(status.getMessage()).isEqualTo("Looking for tests: 5 found so far");
 		assertThat(status.getToolTip()).isEqualTo("1 out of 10 projects analyzed");
 	}
-	
 }

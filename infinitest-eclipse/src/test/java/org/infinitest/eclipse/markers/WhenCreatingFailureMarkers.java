@@ -30,14 +30,14 @@ package org.infinitest.eclipse.markers;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenCreatingFailureMarkers {
+class WhenCreatingFailureMarkers {
 	@Test
-	public void shouldStorePickledStackTraces() {
+	void shouldStorePickledStackTraces() {
 		Throwable throwable = new Throwable();
 		throwable.fillInStackTrace();
 		ProblemMarkerInfo info = new ProblemMarkerInfo(methodFailed("testName", "methodName", throwable), new FakeResourceFinder());

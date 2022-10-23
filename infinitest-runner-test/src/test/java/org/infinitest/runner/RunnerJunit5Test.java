@@ -30,14 +30,14 @@ package org.infinitest.runner;
 import static org.junit.Assert.assertTrue;
 
 import org.infinitest.testrunner.junit5.Junit5Runner;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fakeco.fakeproduct.JUnit5ParameterizedTest;
 
-public class RunnerJunit5Test {
+class RunnerJunit5Test {
 
 	@Test
-	public void shouldSupportParameterizedTest() {
+	void shouldSupportParameterizedTest() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5ParameterizedTest.class));
 	}
 }

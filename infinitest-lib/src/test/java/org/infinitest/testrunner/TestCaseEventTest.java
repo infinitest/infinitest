@@ -27,29 +27,31 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.*;
+import java.util.List;
 
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.util.EqualityTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestCaseEventTest extends EqualityTestSupport {
+class TestCaseEventTest extends EqualityTestSupport {
 	private TestCaseEvent event;
 	private List<TestEvent> methodEvents;
 	private Object source;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		methodEvents = newArrayList();
 		source = "";
 		event = new TestCaseEvent("testName", source, new TestResults(methodEvents));
 	}
 
 	@Test
-	public void shouldIgnoreCompilerErrors() {
+	void shouldIgnoreCompilerErrors() {
 		methodEvents.add(methodFailed("TestClass", "", new VerifyError()));
 		methodEvents.add(methodFailed("TestClass", "", new Error("Unresolved compilation problems:")));
 		event = new TestCaseEvent("testName", source, new TestResults(methodEvents));
@@ -57,12 +59,12 @@ public class TestCaseEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldContainMethodEvents() {
+	void shouldContainMethodEvents() {
 		assertFalse(event.failed());
 	}
 
 	@Test
-	public void shouldIndicateSourceOfEvent() {
+	void shouldIndicateSourceOfEvent() {
 		assertEquals(source, event.getSource());
 	}
 

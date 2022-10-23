@@ -27,36 +27,41 @@
  */
 package org.infinitest.util;
 
-import static com.google.common.collect.Maps.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Maps.newHashMap;
+import static org.infinitest.util.InfinitestGlobalSettings.getLogLevel;
+import static org.infinitest.util.InfinitestGlobalSettings.setLogLevel;
+import static org.infinitest.util.InfinitestUtils.addLoggingListener;
+import static org.infinitest.util.InfinitestUtils.log;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Map;
+import java.util.logging.Level;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenLoggingMessagesAndErrors implements LoggingListener {
+class WhenLoggingMessagesAndErrors implements LoggingListener {
 	private Map<String, Throwable> errors;
 	private Map<String, Level> messages;
 	private Level oldLevel;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		errors = newHashMap();
 		messages = newHashMap();
 		addLoggingListener(this);
 		oldLevel = getLogLevel();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		setLogLevel(oldLevel);
 	}
 
 	@Test
-	public void shouldFireErrorEventToAllowForAlternateLoggingMethods() {
+	void shouldFireErrorEventToAllowForAlternateLoggingMethods() {
 		String message = "an error occured";
 		RuntimeException error = new RuntimeException();
 		log(message, error);
@@ -64,21 +69,21 @@ public class WhenLoggingMessagesAndErrors implements LoggingListener {
 	}
 
 	@Test
-	public void shouldFireErrorEventWithoutThrowable() {
+	void shouldFireErrorEventWithoutThrowable() {
 		String message = "an error occured";
 		log(Level.SEVERE, message);
 		assertEquals(Level.SEVERE, messages.get(message));
 	}
 
 	@Test
-	public void shouldFireInfoEvent() {
+	void shouldFireInfoEvent() {
 		String message = "an error occured";
 		log(message);
 		assertEquals(Level.INFO, messages.get(message));
 	}
 
 	@Test
-	public void canControlLogLevel() {
+	void canControlLogLevel() {
 		setLogLevel(Level.OFF);
 		String message = "an error occured";
 		log(Level.SEVERE, message);

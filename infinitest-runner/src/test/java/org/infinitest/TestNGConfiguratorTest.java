@@ -27,50 +27,49 @@
  */
 package org.infinitest;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
-import org.infinitest.config.*;
-import org.junit.*;
-import org.junit.rules.*;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.MemoryInfinitestConfigurationSource;
+import org.junit.jupiter.api.Test;
 
-public class TestNGConfiguratorTest {
-
-	@Rule public TemporaryFolder temp = new TemporaryFolder();
+class TestNGConfiguratorTest {
 
 	@Test
-	public void emptyConfigShouldConvertToEmptyExcludedGroups() {
+	void emptyConfigShouldConvertToEmptyExcludedGroups() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.empty());
 		assertThat(config.getExcludedGroups()).isEqualTo("");
 	}
 
 	@Test
-	public void emptyConfigShouldConvertToEmptyGroups() {
+	void emptyConfigShouldConvertToEmptyGroups() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.empty());
 		assertThat(config.getGroups()).isEqualTo("");
 	}
 
 	@Test
-	public void emptyConfigShouldConvertToEmptyListeners() {
+	void emptyConfigShouldConvertToEmptyListeners() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.empty());
 		assertThat(config.getListeners()).isEqualTo(Collections.emptyList());
 	}
 
 	@Test
-	public void groupsShouldBeJoinedAsACommaSeparatedList() {
+	void groupsShouldBeJoinedAsACommaSeparatedList() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().includedGroups("quick", "smoketests").build());
 		assertThat(config.getGroups()).isEqualTo("quick,smoketests");
 	}
 
 	@Test
-	public void excludedGroupsShouldBeJoinedAsACommaSeparatedList() {
+	void excludedGroupsShouldBeJoinedAsACommaSeparatedList() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().excludedGroups("slow", "broken", "manual").build());
 		assertThat(config.getExcludedGroups()).isEqualTo("slow,broken,manual");
 	}
 
 	@Test
-	public void listenersClassesShouldBeInstantiated() {
+	void listenersClassesShouldBeInstantiated() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().testngListeners("org.testng.internal.annotations.DefaultAnnotationTransformer", "org.testng.reporters.JUnitXMLReporter").build());
 		List<Object> listeners = config.getListeners();
 
@@ -79,7 +78,7 @@ public class TestNGConfiguratorTest {
 	}
 
 	@Test
-	public void unknowListenersClassesShouldBeIgnored() {
+	void unknowListenersClassesShouldBeIgnored() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().testngListeners("org.testng.UnknownReporter", "org.testng.reporters.JUnitXMLReporter").build());
 		List<Object> listeners = config.getListeners();
 

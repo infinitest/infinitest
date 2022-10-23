@@ -28,8 +28,8 @@
 package org.infinitest;
 
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,25 +38,25 @@ import static org.mockito.Mockito.when;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenWatchingMultipleCores {
+class WhenWatchingMultipleCores {
 	private static final String TEST_NAME = "com.fakeco.TestFoo";
 
 	private ResultCollector collector;
 	private InfinitestCore core;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		collector = new ResultCollector();
 		core = mock(InfinitestCore.class);
 	}
 
 	@Test
-	public void canAttachAndDetachFromCores() {
+	void canAttachAndDetachFromCores() {
 		collector.attachCore(core);
 		collector.detachCore(core);
 
@@ -69,7 +69,7 @@ public class WhenWatchingMultipleCores {
 	}
 
 	@Test
-	public void shouldRemoveFailuresForACoreWhenItIsDetached() {
+	void shouldRemoveFailuresForACoreWhenItIsDetached() {
 		TestEvent event = withFailingMethod("method1");
 		TestCaseEvent caseEvent = new TestCaseEvent(TEST_NAME, this, new TestResults(event));
 		when(core.isEventSourceFor(caseEvent)).thenReturn(true);

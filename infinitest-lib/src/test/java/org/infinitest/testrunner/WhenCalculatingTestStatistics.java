@@ -27,35 +27,36 @@
  */
 package org.infinitest.testrunner;
 
-import static java.lang.System.*;
+import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.EventSupport.*;
-import static org.junit.Assert.*;
+import static org.infinitest.EventSupport.testCaseFailing;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenCalculatingTestStatistics {
+class WhenCalculatingTestStatistics {
   private RunStatistics statistics;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     statistics = new RunStatistics();
   }
 
   @Test
-  public void shouldProvideLastFailureTime() {
+  void shouldProvideLastFailureTime() {
     statistics.testCaseComplete(testCaseFailing("test1", "", new Throwable()));
 
     assertThat(currentTimeMillis() - statistics.getLastFailureTime("test1")).isLessThan(10l);
   }
 
   @Test
-  public void shouldReturnZeroForTestsThatHaveNeverFailed() {
+  void shouldReturnZeroForTestsThatHaveNeverFailed() {
     assertEquals(0, statistics.getLastFailureTime("UnknownTest"));
   }
 
   @Test
-  public void shouldTreatErrorsLikeFailures() {
+  void shouldTreatErrorsLikeFailures() {
     statistics.testCaseComplete(testCaseFailing("test1", "", new Exception()));
 
     assertThat(currentTimeMillis() - statistics.getLastFailureTime("test1")).isLessThan(10l);

@@ -37,8 +37,8 @@ import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
 import static org.infinitest.testrunner.TestRunnerMother.createRunner;
 import static org.infinitest.util.InfinitestTestUtils.testIsBeingRunFromInfinitest;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -47,17 +47,17 @@ import org.infinitest.ConsoleListenerAdapter;
 import org.infinitest.ConsoleOutputListener;
 import org.infinitest.EventSupport;
 import org.infinitest.util.InfinitestTestUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
+class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   private EventSupport eventSupport;
   private AbstractTestRunner runner;
-  public boolean outputPrinted;
+  boolean outputPrinted;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     eventSupport = new EventSupport(5000);
     runner = createRunner();
     runner.addTestResultsListener(eventSupport);
@@ -65,13 +65,13 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
     outputPrinted = false;
   }
 
-  @AfterClass
-  public static void resetStatefulCounter() {
+  @AfterAll
+  static void resetStatefulCounter() {
     StubStatefulTest.counter = 0;
   }
 
   @Test
-  public void shouldHandleLargeAmountsOfConsoleOutput() throws Exception {
+  void shouldHandleLargeAmountsOfConsoleOutput() throws Exception {
     final StringBuffer stdOut = new StringBuffer();
     final StringBuffer stdErr = new StringBuffer();
     runner = new MultiProcessRunner();
@@ -103,16 +103,16 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   }
 
   @Test
-  public void shouldHandleVeryLongClasspath() throws Exception {
+  void shouldHandleVeryLongClasspath() throws Exception {
     runner.setRuntimeEnvironment(fakeVeryLongClasspathEnvironment());
     runTest(StubStatefulTest.class.getName());
     eventSupport.assertTestsStarted(StubStatefulTest.class);
     eventSupport.assertTestPassed(StubStatefulTest.class);
   }
 
-  public static class TestWithLotsOfConsoleOutput {
+  static class TestWithLotsOfConsoleOutput {
     @Test
-    public void shouldFail() {
+    void shouldFail() {
       assumeTrue(testIsBeingRunFromInfinitest());
       for (int i = 0; i < 10; i++) {
         System.out.println("Hello");
@@ -122,7 +122,7 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   }
 
   @Test
-  public void individualTestRunsAreIndependent() throws Exception {
+  void individualTestRunsAreIndependent() throws Exception {
     runTest(StubStatefulTest.class.getName());
     eventSupport.assertTestsStarted(StubStatefulTest.class);
     eventSupport.assertTestPassed(StubStatefulTest.class);
@@ -134,7 +134,7 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   }
 
   @Test
-  public void canControlParallelUpdatesOfCores() throws Exception {
+  void canControlParallelUpdatesOfCores() throws Exception {
     ConcurrencyController controller = mock(ConcurrencyController.class);
 
     runner.setConcurrencyController(controller);
@@ -145,13 +145,13 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   }
 
   @Test
-  public void shouldFireStartingEventBeforeTestIsActuallyStarted() throws Exception {
+  void shouldFireStartingEventBeforeTestIsActuallyStarted() throws Exception {
     runTest("thisIsNotATest");
     eventSupport.assertEventsReceived(TEST_CASE_STARTING, METHOD_FAILURE);
   }
 
   @Test
-  public void subsequentTestRunAreIndependent() throws Exception {
+  void subsequentTestRunAreIndependent() throws Exception {
     runTest(PASSING_TEST.getName());
     eventSupport.assertTestsStarted(PASSING_TEST);
     eventSupport.assertTestPassed(PASSING_TEST);
@@ -163,27 +163,27 @@ public class WhenTestsAreRunInAnotherProcess extends AbstractRunnerTest {
   }
 
   @Test
-  public void shouldGroupTestRunsTogether() throws Exception {
+  void shouldGroupTestRunsTogether() throws Exception {
     runTests(StubStatefulTest.class, OtherStubStatefulTest.class);
     eventSupport.assertTestsStarted(StubStatefulTest.class, OtherStubStatefulTest.class);
     eventSupport.assertTestPassed(StubStatefulTest.class);
     eventSupport.assertTestFailed(OtherStubStatefulTest.class);
   }
 
-  public static class OtherStubStatefulTest {
+  static class OtherStubStatefulTest {
     @Test
-    public void incrementStaticVariable() {
+    void incrementStaticVariable() {
       assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
       StubStatefulTest.counter++;
       assertEquals(1, StubStatefulTest.counter);
     }
   }
 
-  public static class StubStatefulTest {
+  static class StubStatefulTest {
     private static int counter = 0;
 
     @Test
-    public void incrementStaticVariable() {
+    void incrementStaticVariable() {
       assumeTrue(testIsBeingRunFromInfinitest());
       counter++;
       assertEquals(1, counter);

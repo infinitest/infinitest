@@ -32,8 +32,8 @@ import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.project;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,7 +42,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,10 +59,10 @@ import org.infinitest.eclipse.UpdateListener;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.infinitest.eclipse.status.WorkspaceStatusListener;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
+class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 	private List<ProjectFacade> projects;
 	private CoreRegistry coreRegistry;
 	private IPath path;
@@ -75,8 +74,8 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	private WorkspaceStatus updatedStatus;
 	private int updates;
 
-	@Before
-	public void inContext() throws CoreException, IOException {
+	@BeforeEach
+	void inContext() throws CoreException {
 		projects = new ArrayList<>();
 		path = mock(IPath.class);
 		projectPath = mock(IPath.class);
@@ -115,7 +114,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException {
+	void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException {
 		URI projectAUri = projectAUri();
 		when(coreRegistry.getCore(projectAUri)).thenReturn(null);
 
@@ -126,7 +125,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldFireAnEvent() throws CoreException {
+	void shouldFireAnEvent() throws CoreException {
 		InfinitestCore core = prepareCore(projectAUri(), 10);
 
 		workspace.addUpdateListeners(new UpdateListener() {
@@ -142,7 +141,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldUpdateCoreOnAutoBuild() throws CoreException {
+	void shouldUpdateCoreOnAutoBuild() throws CoreException {
 		InfinitestCore core = prepareCore(projectAUri(), 10);
 
 		workspace.updateProjects(Collections.singleton(resource));
@@ -161,7 +160,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException {
+	void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException {
 		InfinitestCore core = prepareCore(projectAUri(), 0);
 
 		workspace.updateProjects(Collections.singleton(resource));
@@ -171,7 +170,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException {
+	void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException {
 		projects.clear();
 
 		workspace.updateProjects(Collections.emptySet());
@@ -180,7 +179,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldFireEventIfStatusChanges() throws CoreException {
+	void shouldFireEventIfStatusChanges() throws CoreException {
 		projects.clear();
 		workspace.addStatusListeners(new WorkspaceStatusListener() {
 			@Override
@@ -194,7 +193,7 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldUpdateAllCoresWhenOneChanges() throws CoreException {
+	void shouldUpdateAllCoresWhenOneChanges() throws CoreException {
 		String projectBName = "/projectB";
 		JavaProjectBuilder projectB = project(projectBName);
 		URI projectBUri = projectB.getProject().getLocationURI();

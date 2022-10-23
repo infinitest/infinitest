@@ -28,12 +28,12 @@
 package org.infinitest.testrunner;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.collect.Iterables.size;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,18 +46,18 @@ import org.infinitest.testrunner.exampletests.testng.TestWithTestNGClassAnnotati
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroups;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGGroupsAndSetup;
 import org.infinitest.testrunner.exampletests.testng.TestWithTestNGMixedLevelAnnotations;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testng.ITestResult;
 import org.testng.reporters.JUnitXMLReporter;
 
-public class TestNGRunnerTest {
+class TestNGRunnerTest {
 	private DefaultRunner runner;
 	private static final String CLASS_UNDER_TEST = TestWithTestNGGroups.class.getName();
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		runner = new DefaultRunner();
 		TestNGTest.fail = true;
 		TestWithTestNGGroups.fail = true;
@@ -67,8 +67,8 @@ public class TestNGRunnerTest {
 		MockListener.wasCalled = false;
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		TestNGTest.fail = false;
 		TestWithTestNGGroups.fail = false;
 		TestWithTestNGClassAnnotationOnly.fail = false;
@@ -78,7 +78,7 @@ public class TestNGRunnerTest {
 	
 
 	@Test
-	public void shouldSupportTestNG() {
+	void shouldSupportTestNG() {
 		Iterable<TestEvent> events = runner.runTest(TestNGTest.class.getName());
 		TestEvent expectedEvent = methodFailed(TestNGTest.class.getName(), "shouldFail", new AssertionError("expected [false] but found [true]"));
 		assertEventsEquals(expectedEvent, getOnlyElement(events));
@@ -89,7 +89,7 @@ public class TestNGRunnerTest {
 	 * "shouldNoBeTestedDueToDependencyOnFilteredGroup" is not executed
 	 */
 	@Test
-	public void shouldFailIfBadTestsAreNotFiltered() {
+	void shouldFailIfBadTestsAreNotFiltered() {
 		final Set<String> failingMethods = new HashSet<String>(Arrays.asList("shouldNotBeTestedGroup", "shouldNotBeTestedGroup3", "shouldNotBeTestedGroup2"));
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 		int counter = 0;
@@ -103,7 +103,7 @@ public class TestNGRunnerTest {
 	}
 
 	@Test
-	public void shouldExecuteDependentTestIfMasterGroupWorked() {
+	void shouldExecuteDependentTestIfMasterGroupWorked() {
 		TestWithTestNGGroups.fail = false;
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 		TestEvent testEvent = getOnlyElement(results);
@@ -112,21 +112,21 @@ public class TestNGRunnerTest {
 	}
 
 	@Test
-	public void shouldNotFailWithFilteredGroupsSet() {
+	void shouldNotFailWithFilteredGroupsSet() {
 		runner.setTestConfigurationSource(withExcludedGroups("slow", "manual", "green"));
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
-		assertEquals(0, size(results));
+		assertThat(results).isEmpty();
 	}
 
 	@Test
-	public void shouldExecuteOnlyTheSpecifiedGroup() {
+	void shouldExecuteOnlyTheSpecifiedGroup() {
 		runner.setTestConfigurationSource(withGroups("slow"));
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
-		assertEquals(2, size(results));
+		assertThat(results).hasSize(2);
 
 		runner.setTestConfigurationSource(withGroups("shouldbetested"));
 		results = runner.runTest(CLASS_UNDER_TEST);
-		assertEquals(0, size(results));
+		assertThat(results).isEmpty();
 	}
 
 	/**
@@ -134,18 +134,18 @@ public class TestNGRunnerTest {
 	 * = "mixed", "slow" will not be executed
 	 */
 	@Test
-	public void combineIncludedAndExcludedGroups() {
+	void combineIncludedAndExcludedGroups() {
 		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("slow").excludedGroups("mixed").build();
 
 		runner.setTestConfigurationSource(withConfig(configuration));
 
 		TestResults results = runner.runTest(CLASS_UNDER_TEST);
 
-		assertEquals(1, size(results));
+		assertThat(results).hasSize(1);
 	}
 
 	@Test
-	public void shouldReactToListener() {
+	void shouldReactToListener() {
 		InfinitestConfiguration configuration = InfinitestConfiguration.builder().testngListeners(MockListener.class.getName()).build();
 
 		runner.setTestConfigurationSource(withConfig(configuration));
@@ -156,7 +156,7 @@ public class TestNGRunnerTest {
 	}
 
 	@Test
-	public void should_call_setup_if_one_of_its_group_is_activated() {
+	void should_call_setup_if_one_of_its_group_is_activated() {
 		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
 
 		runner.setTestConfigurationSource(withGroups("automated"));
@@ -164,11 +164,11 @@ public class TestNGRunnerTest {
 		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
 
 		assertTrue(TestWithTestNGGroupsAndSetup.setupWasCalled);
-		assertEquals(1, size(results));
+		assertThat(results).hasSize(1);
 	}
 
 	@Test
-	public void should_NOT_call_setup_if_one_of_its_group_is_excluded() {
+	void should_NOT_call_setup_if_one_of_its_group_is_excluded() {
 		TestWithTestNGGroupsAndSetup.setupWasCalled = false;
 
 		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("automated").excludedGroups("integration").build();
@@ -178,14 +178,14 @@ public class TestNGRunnerTest {
 		TestResults results = runner.runTest(TestWithTestNGGroupsAndSetup.class.getName());
 
 		assertFalse(TestWithTestNGGroupsAndSetup.setupWasCalled);
-		assertEquals(1, size(results));
+		assertThat(results).hasSize(1);
 	}
 
 	@Test
-	public void should_run_tests_with_class_level_test_annotation_only() {
+	void should_run_tests_with_class_level_test_annotation_only() {
 		TestResults results = runner.runTest(TestWithTestNGClassAnnotationOnly.class.getName());
 
-		assertEquals(1, size(results));
+		assertThat(results).hasSize(1);
 		// distinguish AssertionError (on tests failure) and Exception (thrown
 		// on initialization error)
 		TestEvent collectedEvent = results.iterator().next();
@@ -193,25 +193,25 @@ public class TestNGRunnerTest {
 	}
 
 	@Test
-	public void should_execute_only_group_defined_in_class_level_test_annotation() {
+	void should_execute_only_group_defined_in_class_level_test_annotation() {
 		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("manual").build();
 
 		runner.setTestConfigurationSource(withConfig(configuration));
 
 		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
 
-		assertEquals(2, size(results));
+		assertThat(results).hasSize(2);
 	}
 
 	@Test
-	public void should_execute_only_group_overridden_by_method_level_test_annotation() {
+	void should_execute_only_group_overridden_by_method_level_test_annotation() {
 		InfinitestConfiguration configuration = InfinitestConfiguration.builder().includedGroups("slow").build();
 
 		runner.setTestConfigurationSource(withConfig(configuration));
 
 		TestResults results = runner.runTest(TestWithTestNGMixedLevelAnnotations.class.getName());
 
-		assertEquals(1, size(results));
+		assertThat(results).hasSize(1);
 	}
 
 	public static class MockListener extends JUnitXMLReporter {

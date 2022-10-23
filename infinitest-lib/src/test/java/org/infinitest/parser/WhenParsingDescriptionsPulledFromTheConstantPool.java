@@ -27,21 +27,22 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.parser.DescriptorParser.*;
-import static org.junit.Assert.*;
+import static org.infinitest.parser.DescriptorParser.parseClassNameFromConstantPoolDescriptor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.List;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * http://www.murrayc.com/learning/java/java_classfileformat.shtml#
  * TypeDescriptors <br>
  * RISK Do we care about MethodDescriptors?
  */
-public class WhenParsingDescriptionsPulledFromTheConstantPool {
+class WhenParsingDescriptionsPulledFromTheConstantPool {
 	@Test
-	public void shouldConvertFieldDescriptorPrimitiveTypesToObject() {
+	void shouldConvertFieldDescriptorPrimitiveTypesToObject() {
 		assertEquals(Object.class.getName(), parse("B"));
 		assertEquals(Object.class.getName(), parse("C"));
 		assertEquals(Object.class.getName(), parse("D"));
@@ -53,12 +54,12 @@ public class WhenParsingDescriptionsPulledFromTheConstantPool {
 	}
 
 	@Test
-	public void shouldConvertArraysToSimpleClasses() {
+	void shouldConvertArraysToSimpleClasses() {
 		assertEquals("com.fake.Product", parse("[[Lcom/fake/Product"));
 	}
 
 	@Test
-	public void shouldConvertClasses() {
+	void shouldConvertClasses() {
 		assertEquals(List.class.getName(), parse("Ljava/util/List"));
 	}
 

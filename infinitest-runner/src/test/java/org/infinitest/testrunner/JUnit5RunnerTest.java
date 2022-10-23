@@ -32,8 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.infinitest.testrunner.TestResultTestUtils.assertEventsEquals;
 import static org.infinitest.testrunner.TestResultTestUtils.failedMethodNames;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -46,32 +46,27 @@ import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingComposedAnno
 import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingParameterizedTest;
 import org.infinitest.testrunner.exampletests.junit5.JUnit5TestUsingTag;
 import org.infinitest.testrunner.junit5.Junit5Runner;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class JUnit5RunnerTest {
+class JUnit5RunnerTest {
 	private DefaultRunner runner;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		runner = new DefaultRunner();
 	}
 
-	@After
-	public void cleanup() {
-	}
-
 	@Test
-	public void shouldDetectJUnit5Tests() {
+	void shouldDetectJUnit5Tests() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5Test.class));
 		assertFalse(Junit5Runner.isJUnit5Test(Junit4PassingTestCase.class));
 	}
 
 	@Test
-	public void shouldSupportJUnit5() {
+	void shouldSupportJUnit5() {
 		Iterable<TestEvent> events = runner.runTest(JUnit5Test.class.getName());
 		TestEvent expectedEvent = methodFailed(JUnit5Test.class.getName(), "shouldFail",
 				new AssertionFailedError("expected: <true> but was: <false>"));
@@ -79,13 +74,13 @@ public class JUnit5RunnerTest {
 	}
 
 	@Test
-	public void shouldIgnoreDisabledTest() {
+	void shouldIgnoreDisabledTest() {
 		Iterable<TestEvent> events = runner.runTest(JUnit5DisabledTest.class.getName());
 		assertThat(events).isEmpty();
 	}
 
 	@Test
-	public void shouldSupportExcludedTags() {
+	void shouldSupportExcludedTags() {
 		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
 				InfinitestConfiguration.builder().excludedGroups("Tag1").build()));
 
@@ -97,7 +92,7 @@ public class JUnit5RunnerTest {
 	}
 
 	@Test
-	public void shouldSupportIncludeTags() {
+	void shouldSupportIncludeTags() {
 		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
 				InfinitestConfiguration.builder().includedGroups("Tag2").build()));
 
@@ -110,7 +105,7 @@ public class JUnit5RunnerTest {
 	}
 
 	@Test
-	public void shouldSupportIncludeCombinedwithExcludeTags() {
+	void shouldSupportIncludeCombinedwithExcludeTags() {
 		runner.setTestConfigurationSource(new MemoryInfinitestConfigurationSource(
 				InfinitestConfiguration.builder().includedGroups("Tag2").excludedGroups("Tag1").build()));
 
@@ -123,7 +118,7 @@ public class JUnit5RunnerTest {
 	}
 	
 	@Test
-	public void shouldSupportCombinedAnnotation() {
+	void shouldSupportCombinedAnnotation() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5TestUsingComposedAnnotation.class));
 		
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingComposedAnnotation.class.getName());
@@ -133,7 +128,7 @@ public class JUnit5RunnerTest {
 	}
 	
 	@Test
-	public void shouldSupportParameterizedTest() {
+	void shouldSupportParameterizedTest() {
 		assertTrue(Junit5Runner.isJUnit5Test(JUnit5TestUsingComposedAnnotation.class));
 		
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingParameterizedTest.class.getName());

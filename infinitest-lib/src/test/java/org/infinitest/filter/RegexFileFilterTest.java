@@ -28,25 +28,25 @@
 package org.infinitest.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.infinitest.config.InfinitestConfiguration;
-import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfigurationParser;
+import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.config.MemoryInfinitestConfigurationSource;
 import org.infinitest.parser.JavaClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Joiner;
 import com.google.common.io.CharSource;
 
-public class RegexFileFilterTest {
+class RegexFileFilterTest {
 
 	@Test
-	public void testFilterWithoutPatterns() throws Exception {
+	void testFilterWithoutPatterns() throws Exception {
 
 		InfinitestConfigurationSource configSource = configSource(InfinitestConfiguration.builder().build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
@@ -55,7 +55,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void matchShouldReturnTrueWhenClassMatchesAnExcludedPattern() throws Exception {
+	void matchShouldReturnTrueWhenClassMatchesAnExcludedPattern() throws Exception {
 
 		InfinitestConfigurationSource configSource = configSource(excluding("SomeTest"));
 		RegexFileFilter filter = new RegexFileFilter(configSource);
@@ -64,7 +64,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void matchShouldReturnFalseWhenClassDoesntMatchTheExcludedPattern() throws Exception {
+	void matchShouldReturnFalseWhenClassDoesntMatchTheExcludedPattern() throws Exception {
 		InfinitestConfigurationSource configSource = configSource(
 				InfinitestConfiguration.builder().excludedPatterns("SomeTest").build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
@@ -73,7 +73,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void testFilterContentContainsSimpleIncludesEntry() throws Exception {
+	void testFilterContentContainsSimpleIncludesEntry() throws Exception {
 
 		InfinitestConfigurationSource configSource = configSource(
 				InfinitestConfiguration.builder().includedPatterns("SomeTest").build());
@@ -84,7 +84,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void testFilterContentContainsIncludesExcludesEntries() throws Exception {
+	void testFilterContentContainsIncludesExcludesEntries() throws Exception {
 
 		InfinitestConfigurationSource configSource = configSource(
 				InfinitestConfiguration.builder().includedPatterns("SomeTest").excludedPatterns(".*Test").build());
@@ -97,7 +97,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void testFilterContentContainsComplexEntries() throws Exception {
+	void testFilterContentContainsComplexEntries() throws Exception {
 
 		InfinitestConfigurationSource configSource = configSource(
 				InfinitestConfiguration.builder()
@@ -123,14 +123,14 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void testExcludeWithLeadingWildcard() {
+	void testExcludeWithLeadingWildcard() {
 		TestFilter filter = new RegexFileFilter(configSource(excluding(".*TestFilterList")));
 
 		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));
 	}
 
 	@Test
-	public void testExcludeWithTrailingWildcard() {
+	void testExcludeWithTrailingWildcard() {
 		TestFilter filter = new RegexFileFilter(configSource(excluding("org\\..*")));
 
 		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));
@@ -139,7 +139,7 @@ public class RegexFileFilterTest {
 	}
 
 	@Test
-	public void testExcludeSingleTest() {
+	void testExcludeSingleTest() {
 		TestFilter filter = new RegexFileFilter(configSource(excluding("org\\.infinitest\\.TestFilterList")));
 
 		assertTrue(filter.match(mockClass(org.infinitest.TestFilterList.class)));

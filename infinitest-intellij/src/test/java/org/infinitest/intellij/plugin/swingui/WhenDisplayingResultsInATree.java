@@ -29,19 +29,12 @@ package org.infinitest.intellij.plugin.swingui;
 
 import static java.util.Arrays.asList;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.SwingUtilities;
-import javax.swing.event.TreeModelListener;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
@@ -49,19 +42,19 @@ import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenDisplayingResultsInATree extends IntellijMockBase {
+class WhenDisplayingResultsInATree extends IntellijMockBase {
 	private static final String DEFAULT_TEST_NAME = "testName";
 
 	private TreeModelAdapter model;
 	private ResultCollector collector;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		collector = new ResultCollector(mockCore);
 		
@@ -71,13 +64,13 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldHaveRootNode() {
+	void shouldHaveRootNode() {
 		assertNotNull(model.getRoot());
 		assertEquals(0, model.getIndexOfChild(project, module));
 	}
 
 	@Test
-	public void shouldHaveChildNodesForPointsOfFailure() {
+	void shouldHaveChildNodesForPointsOfFailure() {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
 		assertEquals(1, model.getChildCount(model.getRoot()));
@@ -85,7 +78,7 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldCreateNodesForEachEvent() {
+	void shouldCreateNodesForEachEvent() {
 		IntellijMockBase.setupApplication();
 		
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
@@ -93,7 +86,7 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldHaveSubNodesForIndividualTests() {
+	void shouldHaveSubNodesForIndividualTests() {
 		TestEvent event = eventWithError(new AssertionFailedError());
 		testRun(event);
 		Object pointOfFailureNode = model.getChild(module, 0);
@@ -102,14 +95,14 @@ public class WhenDisplayingResultsInATree extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldProvideIndexOfNodes() {
+	void shouldProvideIndexOfNodes() {
 		testRun(eventWithError(new AssertionFailedError()), eventWithError(new NullPointerException()));
 		assertNodeReferenceIntegrity(module, 0);
 		assertNodeReferenceIntegrity(module, 1);
 	}
 
 	@Test
-	public void shouldIdentifyOnlyTestNodesAsLeaves() {
+	void shouldIdentifyOnlyTestNodesAsLeaves() {
 		IntellijMockBase.setupApplication();
 		
 		assertTrue(model.isLeaf(module));

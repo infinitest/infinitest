@@ -29,9 +29,9 @@ package org.infinitest.eclipse.markers;
 
 import static java.util.Arrays.asList;
 import static org.infinitest.eclipse.workspace.FakeResourceFactory.stubResource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,18 +42,18 @@ import org.eclipse.core.resources.IResource;
 import org.infinitest.eclipse.workspace.ResourceLookup;
 import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPlacingMarkersInJavaClasses {
+class WhenPlacingMarkersInJavaClasses {
 	private TestEvent event;
 	private ResourceLookup lookup;
 	private PointOfFailure pof;
 	private IResource resource;
 	private MarkerPlacementStrategy placementStrategy;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		event = mock(TestEvent.class);
 		lookup = mock(ResourceLookup.class);
 		pof = new PointOfFailure("com.myproject.MyClass", 70, "NullPointerException", "");
@@ -62,7 +62,7 @@ public class WhenPlacingMarkersInJavaClasses {
 	}
 
 	@Test
-	public void shouldTryToUseClassNameFromPointOfFailure() {
+	void shouldTryToUseClassNameFromPointOfFailure() {
 		when(lookup.findResourcesForClassName("com.myproject.MyClass")).thenReturn(asList(resource));
 		when(event.getPointOfFailure()).thenReturn(pof);
 
@@ -73,7 +73,7 @@ public class WhenPlacingMarkersInJavaClasses {
 	}
 
 	@Test
-	public void shouldReturnNullIfResourceCannotBeFound() {
+	void shouldReturnNullIfResourceCannotBeFound() {
 		when(event.getPointOfFailure()).thenReturn(pof);
 		when(lookup.findResourcesForClassName(anyString())).thenReturn(Collections.<IResource> emptyList());
 

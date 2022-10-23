@@ -33,11 +33,11 @@ import static org.mockito.Mockito.when;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.intellij.IntellijMockBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestReloadIndexAction extends IntellijMockBase {
+class TestReloadIndexAction extends IntellijMockBase {
 	@Test
-	public void shouldReloadWhenActionPerformed() {
+	void shouldReloadWhenActionPerformed() {
 		final InfinitestCore reloader = mock(InfinitestCore.class);
 		
 		when(launcher.getCore()).thenReturn(reloader);

@@ -29,35 +29,37 @@ package org.infinitest.eclipse.resolution;
 
 import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenFilteringUnnecessaryClassesFromStackTraces {
+class WhenFilteringUnnecessaryClassesFromStackTraces {
 	private StackTraceFilter filter;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		filter = new StackTraceFilter();
 	}
 
 	@Test
-	public void shouldRemoveInfinitestRunnerClasses() {
+	void shouldRemoveInfinitestRunnerClasses() {
 		assertEquals(emptyList(), filter.filterStack(newArrayList(element("org.infinitest.runner.Foobar"))));
 	}
 
 	@Test
-	public void shouldNotRemoveRegularInfinitestClasses() {
-		assertFalse(filter.filterStack(newArrayList(element("org.infinitest.Foobar"))).isEmpty());
+	void shouldNotRemoveRegularInfinitestClasses() {
+		assertThat(filter.filterStack(newArrayList(element("org.infinitest.Foobar")))).isNotEmpty();
 	}
 
 	@Test
-	public void shouldRemoveJUnitClasses() {
+	void shouldRemoveJUnitClasses() {
 		assertEquals(emptyList(), filter.filterStack(newArrayList(element("org.junit.Foobar"), element("junit.framework.Foobar"))));
 	}
 
 	@Test
-	public void shouldRemoveSunReflectionClasses() {
+	void shouldRemoveSunReflectionClasses() {
 		assertEquals(emptyList(), filter.filterStack(newArrayList(element("sun.reflect.Foo"), element("java.lang.reflect.Method"))));
 	}
 

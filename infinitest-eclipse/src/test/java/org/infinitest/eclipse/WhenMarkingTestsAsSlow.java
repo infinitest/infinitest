@@ -29,7 +29,8 @@ package org.infinitest.eclipse;
 
 import static java.util.Arrays.*;
 import static org.eclipse.core.resources.IMarker.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
@@ -40,15 +41,16 @@ import org.infinitest.eclipse.markers.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
 import org.infinitest.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenMarkingTestsAsSlow extends EqualityTestSupport {
+class WhenMarkingTestsAsSlow extends EqualityTestSupport {
 	private static final String TEST_NAME = "com.foo.TestName";
 	private SlowTestMarkerInfo marker;
 	private ResourceLookup resourceLookup;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		resourceLookup = mock(ResourceLookup.class);
 		MethodStats stats = new MethodStats("shouldRunSlowly");
 		stats.stop(5000);
@@ -56,14 +58,14 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldPlaceMarkerInSlowTest() throws CoreException {
+	void shouldPlaceMarkerInSlowTest() throws CoreException {
 		IResource resource = mock(IResource.class);
 		when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(asList(resource));
 		assertSame(resource, marker.associatedResource());
 	}
 
 	@Test
-	public void shouldFallbackToWorkspaceInSlowTest() throws CoreException {
+	void shouldFallbackToWorkspaceInSlowTest() throws CoreException {
 		when(resourceLookup.findResourcesForClassName(TEST_NAME)).thenReturn(new ArrayList<IResource>());
 		IWorkspaceRoot workspaceRootResource = mock(IWorkspaceRoot.class);
 		when(resourceLookup.workspaceRoot()).thenReturn(workspaceRootResource);
@@ -71,12 +73,12 @@ public class WhenMarkingTestsAsSlow extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldUseWarningSeverity() {
+	void shouldUseWarningSeverity() {
 		assertEquals(SEVERITY_WARNING, marker.attributes().get(SEVERITY));
 	}
 
 	@Test
-	public void shouldIndicateTestAndMethodName() {
+	void shouldIndicateTestAndMethodName() {
 		assertEquals("TestName.shouldRunSlowly ran in 5000ms", marker.attributes().get(MESSAGE));
 	}
 

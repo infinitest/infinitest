@@ -27,17 +27,19 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
 
-import org.infinitest.changedetect.*;
-import org.junit.*;
+import org.infinitest.changedetect.ChangeDetector;
+import org.infinitest.changedetect.FakeChangeDetector;
+import org.junit.jupiter.api.Test;
 
-public class WhenTestFileIsRemoved {
+class WhenTestFileIsRemoved {
 	@Test
-	public void shouldReloadIndex() throws Exception {
+	void shouldReloadIndex() throws Exception {
 		InfinitestCore core = createCore(withRemovedFiles(), withNoTestsToRun());
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);

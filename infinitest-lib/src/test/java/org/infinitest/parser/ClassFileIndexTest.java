@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -41,23 +41,23 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fakeco.fakeproduct.FakeProduct;
 
-public class ClassFileIndexTest {
+class ClassFileIndexTest {
 	private ClassFileIndex index;
 	private JavaClassBuilder builder;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		builder = mock(JavaClassBuilder.class);
 		index = new ClassFileIndex(builder);
 	}
 
 	@Test
-	public void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint() {
+	void shouldClearClassBuilderAfterLookingForJavaFilesToReduceMemoryFootprint() {
 		when(builder.getClass("")).thenReturn(new FakeJavaClass(""));
 
 		index.findClasses(asList(getFileForClass(FakeProduct.class)));
@@ -66,13 +66,13 @@ public class ClassFileIndexTest {
 	}
 
 	@Test
-	public void shouldIgnoreClassFilesThatCannotBeParsed() {
+	void shouldIgnoreClassFilesThatCannotBeParsed() {
 		ClassFileIndex index = new ClassFileIndex(fakeClasspath());
 		assertEquals(Collections.emptySet(), index.findClasses(Collections.singleton(new File("notAClassFile"))));
 	}
 	
 	@Test
-	public void removeFiles() {
+	void removeFiles() {
 		JavaClass javaClass = mock(JavaClass.class);
 		when(builder.getClass(any(File.class))).thenReturn(javaClass);
 		

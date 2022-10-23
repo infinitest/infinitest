@@ -34,23 +34,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.io.Files;
 
-public class WhenDiscoveringInfinitestJars {
+class WhenDiscoveringInfinitestJars {
   private static final String MAVEN_VERSION = mavenVersion();
   private static final String INFINITEST_RUNNER_JAR = "infinitest-runner-" + MAVEN_VERSION + ".jar";
 
   @Test
-  public void shouldDetermineFileNamesFromEmbeddedPom() {
+  void shouldDetermineFileNamesFromEmbeddedPom() {
     InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
     assertThat(locator.findInfinitestRunnerJarName()).isEqualTo(INFINITEST_RUNNER_JAR);
   }
 
   @Test
-  public void shouldDetermineInfinitestVersionFromEmbeddedPom() {
+  void shouldDetermineInfinitestVersionFromEmbeddedPom() {
     InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
     assertThat(locator.findInfinitestVersion()).isEqualTo(MAVEN_VERSION);

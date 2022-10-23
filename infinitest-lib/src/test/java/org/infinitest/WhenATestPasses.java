@@ -27,14 +27,18 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
-import static org.junit.Assert.*;
+import static org.infinitest.CoreDependencySupport.PASSING_TEST;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withChangedFiles;
+import static org.infinitest.CoreDependencySupport.withTests;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenATestPasses {
+
+class WhenATestPasses {
 	@Test
-	public void shouldFireSuccessEvents() {
+	void shouldFireSuccessEvents() {
 		ControlledEventQueue eventQueue = new ControlledEventQueue();
 		DefaultInfinitestCore core = createCore(withChangedFiles(), withTests(PASSING_TEST), eventQueue);
 		ResultCollector collector = new ResultCollector(core);

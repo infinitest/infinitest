@@ -27,34 +27,28 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Lists.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.infinitest.environment.FakeEnvironments.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
-import org.infinitest.changedetect.*;
-import org.junit.*;
+import org.infinitest.changedetect.FileChangeDetector;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class LargeWorkspacePerformanceSimulation {
+class LargeWorkspacePerformanceSimulation {
   private static final int PROJECT_COUNT = 25;
   private static final int UPDATE_COUNT = 10;
-  private final boolean showOutput;
+  private boolean showOutput;
   private List<File> files;
   private List<ClassFileIndex> indexes;
 
-  public LargeWorkspacePerformanceSimulation() {
-    // Don't delete this or JUnit will be angry
-    this(false);
-  }
-
-  private LargeWorkspacePerformanceSimulation(boolean showOutput) {
-    this.showOutput = showOutput;
-  }
-
-  @Before
-  public void inContext() throws IOException {
+  @BeforeEach
+  void inContext() throws IOException {
     FileChangeDetector detector = new FileChangeDetector();
     detector.setClasspathProvider(fakeClasspath());
     indexes = newArrayList();
@@ -65,7 +59,8 @@ public class LargeWorkspacePerformanceSimulation {
     // At last count, we could do this in 22 seconds on a 2.4ghz MacBookPro.
     // Although, it looks like when you run it in the test it runs a little
     // slower
-    LargeWorkspacePerformanceSimulation testHarness = new LargeWorkspacePerformanceSimulation(true);
+    LargeWorkspacePerformanceSimulation testHarness = new LargeWorkspacePerformanceSimulation();
+    testHarness.showOutput = true;
     testHarness.inContext();
     System.out.println("File Count: " + testHarness.files.size());
     System.out.println("Max Memory " + humanReadable(Runtime.getRuntime().maxMemory()));
@@ -84,7 +79,7 @@ public class LargeWorkspacePerformanceSimulation {
   }
 
   @Test
-  public void canScaleTo25ProjectsOfAtLeast250ClassesEach() {
+  void canScaleTo25ProjectsOfAtLeast250ClassesEach() {
     assertThat(files.size()).isGreaterThan(250);
 
     long timestamp = System.currentTimeMillis();

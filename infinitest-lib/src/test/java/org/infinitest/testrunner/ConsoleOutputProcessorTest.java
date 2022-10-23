@@ -27,16 +27,16 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.ConsoleOutputListener.OutputType.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.ConsoleOutputListener.OutputType.STDERR;
+import static org.infinitest.util.InfinitestTestUtils.toInputStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infinitest.*;
-import org.junit.*;
+import org.infinitest.ConsoleOutputListener;
+import org.junit.jupiter.api.Test;
 
-public class ConsoleOutputProcessorTest {
+class ConsoleOutputProcessorTest {
 	@Test
-	public void shouldFireEventsToPublishConsoleOutput() {
+	void shouldFireEventsToPublishConsoleOutput() {
 		RunnerEventSupport eventSupport = new RunnerEventSupport(this);
 		final StringBuffer updatedText = new StringBuffer();
 		eventSupport.addConsoleOutputListener(new ConsoleOutputListener() {

@@ -30,8 +30,8 @@ package org.infinitest.parser;
 import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
 import static org.infinitest.util.InfinitestUtils.setify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -40,13 +40,13 @@ import java.util.Set;
 
 import org.infinitest.filter.TestFilter;
 import org.infinitest.util.InfinitestTestUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
-public abstract class DependencyGraphTestBase {
+abstract class DependencyGraphTestBase {
   private final FilterStub filter = new FilterStub();
   private ClassFileTestDetector testDetector;
 
-  @Before
+  @BeforeEach
   public final void setUp() {
     testDetector = new ClassFileTestDetector(filter);
     testDetector.setClasspathProvider(fakeClasspath());
@@ -68,7 +68,7 @@ public abstract class DependencyGraphTestBase {
   protected void assertClassRecognizedAsTest(Class<?> testClass) {
     Set<File> fileSet = setify(InfinitestTestUtils.getFileForClass(testClass));
     Set<JavaClass> testsToRun = getGraph().findTestsToRun(fileSet);
-    assertEquals(testClass.getSimpleName() + " should have been recognized as a test", 1, testsToRun.size());
+    assertEquals(1, testsToRun.size(), testClass.getSimpleName() + " should have been recognized as a test");
     JavaClass testToRun = testsToRun.iterator().next();
     assertEquals(testClass.getName(), testToRun.getName());
     assertTrue(testToRun.isATest());
@@ -76,7 +76,7 @@ public abstract class DependencyGraphTestBase {
 
   protected void verifyDependency(Class<?> changedFile, Class<?> expectedTest) {
     Set<JavaClass> testsToRun = findTestsForChangedFiles(changedFile);
-    assertTrue("Changing " + changedFile + " did not cause " + expectedTest + " to be run", testsToRun.contains(getGraph().findJavaClass(expectedTest.getName())));
+    assertTrue(testsToRun.contains(getGraph().findJavaClass(expectedTest.getName())), "Changing " + changedFile + " did not cause " + expectedTest + " to be run");
   }
 
   protected ClassFileTestDetector getGraph() {

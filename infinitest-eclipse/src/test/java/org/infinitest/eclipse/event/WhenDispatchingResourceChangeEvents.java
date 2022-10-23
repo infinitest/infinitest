@@ -31,20 +31,21 @@ import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;
 import org.infinitest.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenDispatchingResourceChangeEvents {
+class WhenDispatchingResourceChangeEvents {
 	private CoreUpdateNotifier notifier;
 	private EventQueue eventQueue;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		eventQueue = mock(EventQueue.class);
 		notifier = new CoreUpdateNotifier(eventQueue);
 	}
 
 	@Test
-	public void shouldIgnoreUnknownEvents() {
+	void shouldIgnoreUnknownEvents() {
 		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
 		IResourceDelta delta = mock(IResourceDelta.class);
 		when(event.getDelta()).thenReturn(delta);
@@ -54,7 +55,7 @@ public class WhenDispatchingResourceChangeEvents {
 	}
 
 	@Test
-	public void shouldIgnoreEventsWithNoDelta() {
+	void shouldIgnoreEventsWithNoDelta() {
 		notifier.resourceChanged(mock(IResourceChangeEvent.class));
 		verifyNoInteractions(eventQueue);
 	}

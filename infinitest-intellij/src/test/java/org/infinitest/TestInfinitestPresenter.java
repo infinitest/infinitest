@@ -27,7 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.infinitest.CoreStatus.FAILING;
 import static org.infinitest.CoreStatus.INDEXING;
 import static org.infinitest.CoreStatus.PASSING;
@@ -44,6 +43,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Action;
@@ -51,16 +51,16 @@ import javax.swing.Action;
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.intellij.plugin.swingui.InfinitestView;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestInfinitestPresenter extends IntellijMockBase {
+class TestInfinitestPresenter extends IntellijMockBase {
 	private InfinitestView mockView;
 	private InfinitestPresenter presenter;
 	private InfinitestCore mockCore;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		mockView = mock(InfinitestView.class);
 		mockCore = mock(InfinitestCore.class);
 		
@@ -69,7 +69,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 		presenter = new InfinitestPresenter(project, mockView);
 	}
 
-	public void verifyMocks() {
+	void verifyMocks() {
 		verify(mockView, times(2)).addAction(any(Action.class));
 		verify(mockView).setAngerBasedOnTime(anyLong());
 		verify(mockView).setStatusMessage(getMessage(SCANNING));
@@ -77,7 +77,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldUpdateProgressWhenATestIsRun() {
+	void shouldUpdateProgressWhenATestIsRun() {
 		final int testsLeftToRun = 9;
 		final int totalTests = 10;
 
@@ -90,7 +90,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 
 	private List<String> tests(int count) {
-		List<String> list = newArrayList();
+		List<String> list = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			list.add("SomeTest " + i);
 		}
@@ -103,7 +103,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldChangeProgressBarToRedWhenChangedToFailedStatus() {
+	void shouldChangeProgressBarToRedWhenChangedToFailedStatus() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		ensureStatusEventFired(null, FAILING);
@@ -115,7 +115,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldChangeProgressBarToGreenWhenChangedToPassingStatus() {
+	void shouldChangeProgressBarToGreenWhenChangedToPassingStatus() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		ensureStatusEventFired(null, PASSING);
@@ -127,7 +127,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 
 	@Test
-	public void shouldClearResultTreeOnReload() {
+	void shouldClearResultTreeOnReload() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		presenter.coreStatusChanged(null, INDEXING);
@@ -138,7 +138,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 	}
 	
 	@Test
-	public void enablePowerSaveMode() {
+	void enablePowerSaveMode() {
 		setupApplication(false);
 		
 		presenter.powerSaveStateChanged();
@@ -148,7 +148,7 @@ public class TestInfinitestPresenter extends IntellijMockBase {
 
 	
 	@Test
-	public void disablePowerSaveMode() {
+	void disablePowerSaveMode() {
 		setupApplication(true);
 		
 		presenter.powerSaveStateChanged();

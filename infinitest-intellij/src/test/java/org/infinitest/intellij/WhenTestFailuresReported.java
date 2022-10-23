@@ -36,30 +36,30 @@ import java.util.List;
 
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.testrunner.TestEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import junit.framework.AssertionFailedError;
 
-public class WhenTestFailuresReported extends IntellijMockBase {
+class WhenTestFailuresReported extends IntellijMockBase {
 	private InfinitestPresenter presenter;
 	private final TestEvent failure = methodFailed("message", "test", "method", new AssertionFailedError());
 	private static final List<TestEvent> EMPTY_LIST = emptyList();
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		presenter = new InfinitestPresenter(project, new FakeInfinitestView());
 	}
 
 	@Test
-	public void shouldAnnotateFailuresAdded() {
+	void shouldAnnotateFailuresAdded() {
 		presenter.failureListChanged(singletonList(failure), EMPTY_LIST);
 
 		verify(annotator).annotate(failure);
 	}
 
 	@Test
-	public void shouldClearFailuresRemoved() {
+	void shouldClearFailuresRemoved() {
 		presenter.failureListChanged(EMPTY_LIST, singletonList(failure));
 
 		verify(annotator).clearAnnotation(failure);

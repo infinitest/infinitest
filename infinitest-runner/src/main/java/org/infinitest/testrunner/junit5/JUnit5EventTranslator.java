@@ -39,7 +39,7 @@ import org.infinitest.testrunner.MethodStats;
 import org.infinitest.testrunner.SystemClock;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
-import org.junit.platform.commons.util.PreconditionViolationException;
+import org.junit.platform.commons.PreconditionViolationException;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
 import org.junit.platform.engine.support.descriptor.MethodSource;

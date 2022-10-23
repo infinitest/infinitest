@@ -32,9 +32,10 @@ import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Maps.*;
 import static com.google.common.collect.Sets.*;
 import static java.util.Arrays.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.beans.*;
 import java.util.*;
@@ -101,7 +102,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 		for (TestEvent event : testEvents) {
 			actualTypes.add(event.getType());
 		}
-		assertEquals(asList(expectedTypes), actualTypes);
+		assertThat(actualTypes).isEqualTo(asList(expectedTypes));
 	}
 
 	public void reset() {
@@ -118,7 +119,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 		for (PropertyChangeEvent event : propertyEvents) {
 			actualStates.add((CoreStatus) event.getNewValue());
 		}
-		assertEquals(asList(expectedStates), actualStates);
+		assertThat(actualStates).isEqualTo(asList(expectedStates));
 	}
 
 	public void assertTestRun(Class<?> clazz) {
@@ -127,17 +128,17 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 
 	public void assertTestRun(String name) {
 		TestCaseEvent event = testCaseEvents.get(name);
-		assertNotNull(name + " was never run!", event);
+		assertThat(event).as(name + " was never run!").isNotNull();
 	}
 
 	public void assertTestPassed(String name) {
 		assertTestRun(name);
-		assertFalse(name + " failed! Expected to pass", testCaseEvents.get(name).failed());
+		assertThat(testCaseEvents.get(name).failed()).as(name + " failed! Expected to pass").isFalse();
 	}
 
 	public void assertTestFailed(String name) {
 		assertTestRun(name);
-		assertTrue(name + " passed! Expected to fail", testCaseEvents.get(name).failed());
+		assertThat(testCaseEvents.get(name).failed()).as(name + " failed! Expected to pass").isTrue();
 	}
 
 	public void assertRunComplete() throws InterruptedException {

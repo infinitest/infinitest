@@ -28,7 +28,7 @@
 package org.infinitest;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,17 +42,17 @@ import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.TestRunner;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTriggeringACoreUpdate {
+class WhenTriggeringACoreUpdate {
 	private Set<File> updatedFiles;
 	private DefaultInfinitestCore core;
 	private ChangeDetector changeDetector;
 	private TestDetector testDetector;
 
-	@Before
-	public void inContext() throws IOException {
+	@BeforeEach
+	void inContext() throws IOException {
 		updatedFiles = new HashSet<>();
 		core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
 		
@@ -70,13 +70,13 @@ public class WhenTriggeringACoreUpdate {
 	}
 
 	@Test
-	public void canUseAKnownListOfChangedFilesToReduceFileSystemAccess() {
+	void canUseAKnownListOfChangedFilesToReduceFileSystemAccess() {
 		testsToExpect();
 		core.update(updatedFiles);
 	}
 
 	@Test
-	public void shouldReturnTheNumberOfTestsRun() {
+	void shouldReturnTheNumberOfTestsRun() {
 		JavaClass javaClass = mock(JavaClass.class);
 
 		testsToExpect(javaClass);

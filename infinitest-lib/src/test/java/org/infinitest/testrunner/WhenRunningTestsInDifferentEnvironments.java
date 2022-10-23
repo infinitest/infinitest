@@ -27,10 +27,11 @@
  */
 package org.infinitest.testrunner;
 
+import static org.infinitest.environment.FakeEnvironments.currentJavaHome;
+import static org.infinitest.environment.FakeEnvironments.fakeBuildPaths;
 import static org.infinitest.testrunner.TestRunnerMother.createRunner;
-import static org.infinitest.environment.FakeEnvironments.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 
@@ -38,29 +39,25 @@ import org.infinitest.EventSupport;
 import org.infinitest.environment.FakeEnvironments;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.util.InfinitestTestUtils;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest {
+class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest {
   private EventSupport eventAssert;
   private AbstractTestRunner runner;
-  public boolean outputPrinted;
+  boolean outputPrinted;
   protected boolean runComplete;
+  @TempDir
   private File fakeJavaHome;
 
-  @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     eventAssert = new EventSupport();
     runner = createRunner();
     runner.addTestResultsListener(eventAssert);
     runner.addTestQueueListener(eventAssert);
     outputPrinted = false;
-    fakeJavaHome = temporaryFolder.getRoot();
     new File(fakeJavaHome, "bin").mkdirs();
   }
 
@@ -72,15 +69,15 @@ public class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest 
  
 
   @Test
-  public void canUseACustomWorkingDirectory() throws Exception {
+  void canUseACustomWorkingDirectory() throws Exception {
     runner.setRuntimeEnvironment(new RuntimeEnvironment(currentJavaHome(), new File("src"), FakeEnvironments.systemClasspath(), FakeEnvironments.systemClasspath(), fakeBuildPaths(), FakeEnvironments.systemClasspath()));
     runTests(WorkingDirectoryVerifier.class);
     eventAssert.assertTestPassed(WorkingDirectoryVerifier.class);
   }
 
-  public static class WorkingDirectoryVerifier {
+  static class WorkingDirectoryVerifier {
     @Test
-    public void shouldFailIfRunningInADifferentWorkingDirectory() {
+    void shouldFailIfRunningInADifferentWorkingDirectory() {
       assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
       assertTrue(new File("").getAbsoluteFile().getAbsolutePath().endsWith("src"));
     }

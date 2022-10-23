@@ -31,22 +31,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.io.CharSource;
 
-public class InfinitestConfigurationParserTest {
+class InfinitestConfigurationParserTest {
 
 	private InfinitestConfigurationParser parser;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	void before() {
 		parser = new InfinitestConfigurationParser();
 	}
 
 	@Test
-	public void shouldRecognizeIncludeLines() throws IOException {
+	void shouldRecognizeIncludeLines() throws IOException {
 		InfinitestConfiguration actual = parser
 				.parseFileContent(CharSource.wrap("include com\\.y\\.\\.*, com\\.x\\.\\.*"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder()
@@ -56,7 +56,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldRecognizeExcludeLines() throws IOException {
+	void shouldRecognizeExcludeLines() throws IOException {
 		InfinitestConfiguration actual = parser
 				.parseFileContent(CharSource.wrap("exclude com\\.y\\.\\.*, com\\.x\\.\\.*"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder()
@@ -65,7 +65,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldRecognizeIncludeGroupLines() throws IOException {
+	void shouldRecognizeIncludeGroupLines() throws IOException {
 		InfinitestConfiguration actual = parser.parseFileContent(CharSource.wrap("includeGroups g1, g2"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder().includedGroups("g1", "g2").build();
 
@@ -73,7 +73,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldRecognizeExcludeGroupLines() throws IOException {
+	void shouldRecognizeExcludeGroupLines() throws IOException {
 		InfinitestConfiguration actual = parser.parseFileContent(CharSource.wrap("excludeGroups g1, g2"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder().excludedGroups("g1", "g2").build();
 
@@ -81,7 +81,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldRecognizeTestngListenersLines() throws IOException {
+	void shouldRecognizeTestngListenersLines() throws IOException {
 		InfinitestConfiguration actual = parser.parseFileContent(
 				CharSource.wrap("testngListeners com.myproject.MyTestNGListener1, com.myproject.MyTestNGListener2"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder()
@@ -91,7 +91,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldIgnoreCommentedLines() throws IOException {
+	void shouldIgnoreCommentedLines() throws IOException {
 		InfinitestConfiguration actual = parser
 				.parseFileContent(CharSource.wrap("# include x\n! include y\ninclude z"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder().includedPatterns("z").build();
@@ -100,7 +100,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldIgnoreBlankLines() throws IOException {
+	void shouldIgnoreBlankLines() throws IOException {
 		InfinitestConfiguration actual = parser.parseFileContent(CharSource.wrap("\n  \n\t\n"));
 		InfinitestConfiguration expected = InfinitestConfiguration.builder().build();
 
@@ -108,7 +108,7 @@ public class InfinitestConfigurationParserTest {
 	}
 
 	@Test
-	public void shouldParseLegacySyntax() throws IOException {
+	void shouldParseLegacySyntax() throws IOException {
 		InfinitestConfiguration actual = parser.parseFileContent(CharSource.wrap(
 				"#Tests that end in ITest:\n" +
 						".*ITest\n" +
