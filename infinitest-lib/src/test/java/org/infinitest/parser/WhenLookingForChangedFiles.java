@@ -50,10 +50,9 @@ import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.changedetect.FileChangeDetector;
 import org.infinitest.environment.ClasspathProvider;
 import org.infinitest.util.InfinitestTestUtils;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.fakeco.fakeproduct.FakeProduct;
 import com.fakeco.fakeproduct.TestFakeProduct;
@@ -63,12 +62,14 @@ class WhenLookingForChangedFiles {
 	private ChangeDetector detector;
 	private ClasspathProvider classpath;
 
-	@Rule
-	TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+	private File temporaryFolder;
 
-	@Before
+	@BeforeEach
 	void inContext() throws IOException {
-		altClassDir = temporaryFolder.newFolder("altClasses");
+		altClassDir = new File(temporaryFolder, "altClasses");
+		altClassDir.mkdir();
+		
 		List<File> buildPaths = new ArrayList<File>();
 		buildPaths.addAll(fakeBuildPaths());
 		buildPaths.add(altClassDir);
