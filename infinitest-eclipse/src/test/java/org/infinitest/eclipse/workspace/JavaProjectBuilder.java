@@ -385,7 +385,7 @@ public class JavaProjectBuilder implements IJavaProject {
 
 	@Override
 	public boolean isOnClasspath(IResource iResource) {
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 	@Override

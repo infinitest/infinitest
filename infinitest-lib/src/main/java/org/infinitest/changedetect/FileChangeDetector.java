@@ -27,91 +27,84 @@
  */
 package org.infinitest.changedetect;
 
-import static java.lang.Character.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
-
-import org.infinitest.*;
 import org.infinitest.environment.ClasspathProvider;
-import org.infinitest.util.*;
+import org.infinitest.util.InfinitestUtils;
 
 public class FileChangeDetector implements ChangeDetector {
-	private Map<File, Long> timestampIndex;
-	private File[] classDirectories;
+	private Map<Path, Long> timestampIndex;
+	private List<Path> classDirectories;
 
 	public FileChangeDetector() {
-		classDirectories = new File[0];
-		clear();
+		classDirectories = new ArrayList<>();
+		timestampIndex = new HashMap<>();
 	}
 
 	@Override
 	public void setClasspathProvider(ClasspathProvider classpath) {
 		clear();
 		List<File> classDirs = classpath.classDirectoriesInClasspath();
-		classDirectories = classDirs.toArray(new File[classDirs.size()]);
+		classDirectories = classDirs.stream().map(File::toPath).collect(Collectors.toList());
 	}
 
 	@Override
 	public synchronized Set<File> findChangedFiles() throws IOException {
-		return findFiles(classDirectories, false);
+		Set<Path> changedFiles = new HashSet<>();
+		
+		for (Path root : classDirectories) {
+			try (Stream<Path> stream = Files.walk(root, Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS)) {
+				stream.forEach(path -> processFile(path, changedFiles));
+			}
+		}
+		
+		return changedFiles.stream().map(Path::toFile).collect(Collectors.toSet());
 	}
 
-	private Set<File> findFiles(File[] classesOrDirectories, boolean isPackage) throws IOException {
-		Set<File> changedFiles = new HashSet<File>();
-		for (File classFileOrDirectory : classesOrDirectories) {
-			if (classFileOrDirectory.isDirectory() && hasValidName(classFileOrDirectory, isPackage)) {
-				findChildren(changedFiles, classFileOrDirectory);
-			} else if (ClassFileFilter.isClassFile(classFileOrDirectory)) {
-				File classFile = classFileOrDirectory;
+	protected void processFile(Path classFile, Set<Path> changedFiles) {
+		try {
+			BasicFileAttributes attributes = readFileAttributes(classFile);
+
+			if (!attributes.isDirectory() && ClassFileFilter.isClassFile(classFile)) {
 				Long timestamp = timestampIndex.get(classFile);
-				if ((timestamp == null) || (getModificationTimestamp(classFile) != timestamp)) {
-					timestampIndex.put(classFile, getModificationTimestamp(classFile));
+				long lastModifiedTime = attributes.lastModifiedTime().toMillis();
+
+				if ((timestamp == null) || (lastModifiedTime != timestamp)) {
+					timestampIndex.put(classFile, lastModifiedTime);
 					changedFiles.add(classFile);
 					InfinitestUtils.log(Level.FINEST, "Class file added to changelist " + classFile);
 				}
 			}
-		}
-		return changedFiles;
-	}
-
-	private void findChildren(Set<File> changedFiles, File classFileOrDirectory) throws IOException {
-		File[] children = childrenOf(classFileOrDirectory);
-		if (children != null) {
-			changedFiles.addAll(findFiles(children, true));
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Could not read file attributes of " + classFile, e);
 		}
 	}
 
-	protected File[] childrenOf(File directory) {
-		return directory.listFiles(new ClassFileFilter());
-	}
-
-	private boolean hasValidName(File classfileOrDirectory, boolean isPackage) {
-		return !isPackage || isJavaIdentifierStart(classfileOrDirectory.getName().charAt(0));
-	}
-
-	protected long getModificationTimestamp(File classFile) {
-		return classFile.lastModified();
+	protected BasicFileAttributes readFileAttributes(Path path) throws IOException {
+		return Files.readAttributes(path, BasicFileAttributes.class);
 	}
 
 	@Override
 	public synchronized void clear() {
-		timestampIndex = new HashMap<File, Long>();
-	}
-
-	private Set<File> findRemovedFiles() {
-		Set<File> removedFiles = new HashSet<File>();
-		for (File key : timestampIndex.keySet()) {
-			if (!key.exists()) {
-				removedFiles.add(key);
-			}
-		}
-		return removedFiles;
+		timestampIndex.clear();
 	}
 
 	@Override
 	public synchronized boolean filesWereRemoved() {
-		return !findRemovedFiles().isEmpty();
+		return timestampIndex.keySet().stream().anyMatch(Files::notExists);
 	}
 }

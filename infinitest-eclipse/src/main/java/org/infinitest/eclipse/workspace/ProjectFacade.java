@@ -37,6 +37,7 @@ import static org.infinitest.util.InfinitestUtils.*;
 import java.io.*;
 import java.net.*;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.launching.*;
@@ -166,5 +167,13 @@ class ProjectFacade implements EclipseProject {
 		} catch (JavaModelException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * @return <code>true</code> if this class is on the project's classpath or part of the project
+	 */
+	public boolean isOnClasspath(IResource resource) {
+		// isOnClasspath() does not seem to return true for a class in its own project
+		return project.isOnClasspath(resource) || resource.getProject().equals(project.getProject());
 	}
 }

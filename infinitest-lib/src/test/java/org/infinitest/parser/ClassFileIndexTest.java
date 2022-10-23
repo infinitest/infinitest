@@ -27,17 +27,19 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +68,16 @@ class ClassFileIndexTest {
 	@Test
 	void shouldIgnoreClassFilesThatCannotBeParsed() {
 		ClassFileIndex index = new ClassFileIndex(fakeClasspath());
-		assertEquals(Collections.emptySet(), index.findClasses(newArrayList(new File("notAClassFile"))));
+		assertEquals(Collections.emptySet(), index.findClasses(Collections.singleton(new File("notAClassFile"))));
+	}
+	
+	@Test
+	public void removeFiles() {
+		JavaClass javaClass = mock(JavaClass.class);
+		when(builder.getClass(any(File.class))).thenReturn(javaClass);
+		
+		Set<JavaClass> removedClasses = index.removeClasses(Collections.singleton(new File("")));
+		
+		assertThat(removedClasses).contains(javaClass);
 	}
 }

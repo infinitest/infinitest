@@ -129,6 +129,21 @@ public class JavaAssistClassParser {
 			this.classname = classname;
 		}
 	}
+	
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		CacheEntry entry = BY_PATH.get(file.getAbsolutePath());
+		
+		if (entry != null) {
+			String classname = entry.classname;
+			
+			return CLASSES_BY_NAME.get(classname);
+		}
+		
+		return null;
+	}
 
 	public String classFileChanged(File file) throws IOException {
 		String sha1 = Files.hash(file, Hashing.sha1()).toString();
@@ -137,10 +152,7 @@ public class JavaAssistClassParser {
 			return entry.classname;
 		}
 
-		FileInputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(file);
-
+		try (FileInputStream inputStream = new FileInputStream(file)) {
 			CtClass ctClass = getClassPool().makeClass(inputStream);
 			String classname = ctClass.getName();
 
@@ -148,10 +160,6 @@ public class JavaAssistClassParser {
 			BY_PATH.put(file.getAbsolutePath(), new CacheEntry(sha1, classname));
 
 			return classname;
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
 		}
 	}
 

@@ -27,16 +27,18 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
 import org.infinitest.testrunner.TestRunner;
@@ -44,14 +46,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class WhenTriggeringACoreUpdate {
-	private List<File> updatedFiles;
+	private Set<File> updatedFiles;
 	private DefaultInfinitestCore core;
+	private ChangeDetector changeDetector;
 	private TestDetector testDetector;
 
 	@BeforeEach
-	void inContext() {
-		updatedFiles = newArrayList();
+	void inContext() throws IOException {
+		updatedFiles = new HashSet<>();
 		core = new DefaultInfinitestCore(mock(TestRunner.class), new ControlledEventQueue());
+		
+		changeDetector = mock(ChangeDetector.class);
+		when(changeDetector.findChangedFiles()).thenReturn(updatedFiles);
+		core.setChangeDetector(changeDetector);
+		
 		testDetector = mock(TestDetector.class);
 		when(testDetector.getCurrentTests()).thenReturn(Collections.<String> emptySet());
 		core.setTestDetector(testDetector);
