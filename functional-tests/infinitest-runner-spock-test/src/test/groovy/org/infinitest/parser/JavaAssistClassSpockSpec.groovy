@@ -9,11 +9,10 @@ import spock.lang.Specification
 
 class JavaAssistClassSpockSpec extends Specification {
 
-    private ClassPool classPool
+    private ClassPoolForFakeClassesTestUtil classPoolUtil
 
     void setup() {
-        classPool = new ClassPool()
-        classPool.appendSystemPath()
+        classPoolUtil = new ClassPoolForFakeClassesTestUtil()
     }
 
     void "should detect Spock 2 test (#clazz.simpleName)"() {
@@ -25,6 +24,7 @@ class JavaAssistClassSpockSpec extends Specification {
 
     private JavaAssistClass classFor(Class<?> testClass) {
         try {
+            ClassPool classPool = classPoolUtil.getClassPool()
             return new JavaAssistClass(classPool.get(testClass.getName()));
         } catch (NotFoundException e) {
             throw new RuntimeException(e);

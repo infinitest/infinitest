@@ -42,6 +42,7 @@ import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
 import org.infinitest.util.InfinitestUtils;
+import org.junit.platform.commons.annotation.Testable;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -59,13 +60,33 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) && hasSupportedTests(classReference);
+		isATest = !isAbstract(classReference) &&
+				(hasTests(classReference) || isJUnit5Testable(classReference)) &&
+				(hasJUnit5TestImport(imports) || canInstantiate(classReference));
 		className = classReference.getName();
 	}
 
-	private boolean isJUnit5TestClass(final String[] imports) {
+	private boolean hasJUnit5TestImport(final String[] imports) {
 		return stream(imports)
 				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+	}
+	
+	/**
+	 * @return <code>true</code> if the class or one of its parents is annotated with {@link Testable}
+	 */
+	private boolean isJUnit5Testable(final CtClass classReference) {
+		boolean hasTestableAnnotation = false;
+		CtClass clazz = classReference;
+		while (clazz !=null && !hasTestableAnnotation) {
+			hasTestableAnnotation = clazz.hasAnnotation(Testable.class);
+			try {
+				clazz = clazz.getSuperclass();
+			} catch (NotFoundException e) {
+				clazz = null;
+			}
+		}
+		
+		return hasTestableAnnotation;
 	}
 
 	@Override
@@ -172,20 +193,8 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return className;
 	}
 
-	private static boolean isAbstract(CtClass classReference) {
+	private boolean isAbstract(CtClass classReference) {
 		return classReference.isInterface() || Modifier.isAbstract(classReference.getModifiers());
-	}
-
-	@SuppressWarnings("RedundantIfStatement")
-	private boolean hasSupportedTests(CtClass clazz) {
-		if (hasJUnitOrTestNGTests(clazz) &&
-				(isJUnit5TestClass(imports) || canInstantiate(clazz))) {
-			return true;
-		}
-		if (isSpockTestClass(clazz)) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -236,7 +245,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return getName();
 	}
 
-	private boolean hasJUnitOrTestNGTests(CtClass classReference) {
+	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
 				|| hasTestNGTests(classReference);
@@ -406,10 +415,6 @@ public class JavaAssistClass extends AbstractJavaClass {
 		return false;
 	}
 
-	private boolean isSpockTestClass(CtClass clazz) {
-		return new SpockIsTestClassChecker(clazz).isATest();
-	}
-
 	public void setClassFile(File classFile) {
 		this.classFile = classFile;
 	}
@@ -423,41 +428,4 @@ public class JavaAssistClass extends AbstractJavaClass {
 	public File getClassFile() {
 		return classFile;
 	}
-
-	private static class SpockIsTestClassChecker {
-
-		private static final String SPOCK_BASE_CLASS_NAME = "spock.lang.Specification";
-		private final boolean isATest;
-
-		public SpockIsTestClassChecker(CtClass clazz) {
-			isATest = !isAbstract(clazz) && hasGivenClassSpockSpecificationAsSuperclass(clazz);
-		}
-
-		private boolean hasGivenClassSpockSpecificationAsSuperclass(CtClass clazz) {
-			try {
-				return isGivenClassSpockSpecification(clazz.getSuperclass());
-			} catch (NotFoundException e) {
-				return false;   //TODO: Log warning?
-			}
-		}
-
-		private boolean isGivenClassSpockSpecification(CtClass currentSuperclass) throws NotFoundException {
-			if (currentSuperclass == null || isSuperclassForInterface(currentSuperclass)) {
-				return false;
-			}
-			if (SPOCK_BASE_CLASS_NAME.equals(currentSuperclass.getName())) {
-				return true;
-			}
-			return isGivenClassSpockSpecification(currentSuperclass.getSuperclass());
-		}
-
-		private boolean isSuperclassForInterface(CtClass currentSuperclass) {
-			return "java.lang.Object".equals(currentSuperclass.getName());
-		}
-
-		boolean isATest() {
-			return isATest;
-		}
-	}
-
 }
