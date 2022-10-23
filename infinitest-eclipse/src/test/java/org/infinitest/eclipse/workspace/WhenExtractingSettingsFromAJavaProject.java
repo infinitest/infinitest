@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;

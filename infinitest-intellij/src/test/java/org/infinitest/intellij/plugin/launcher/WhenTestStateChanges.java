@@ -28,7 +28,7 @@
 package org.infinitest.intellij.plugin.launcher;
 
 import static org.infinitest.CoreStatus.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infinitest.*;
 import org.junit.jupiter.api.BeforeEach;

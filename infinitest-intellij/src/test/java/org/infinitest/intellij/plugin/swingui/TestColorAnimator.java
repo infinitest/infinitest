@@ -28,12 +28,12 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
-import static org.junit.Assert.*;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

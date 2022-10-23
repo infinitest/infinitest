@@ -31,7 +31,8 @@ import static java.lang.Thread.*;
 import static java.util.concurrent.TimeUnit.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.core.runtime.jobs.Job.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.*;
 

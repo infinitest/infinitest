@@ -28,7 +28,7 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.JLabel;
 
