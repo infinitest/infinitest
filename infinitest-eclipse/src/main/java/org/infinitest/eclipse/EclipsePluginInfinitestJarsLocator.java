@@ -39,6 +39,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.infinitest.util.InfinitestUtils;
 import org.osgi.framework.Bundle;
 import org.springframework.stereotype.Component;
 
@@ -72,7 +73,7 @@ public class EclipsePluginInfinitestJarsLocator implements InfinitestJarsLocator
 
 		private File createJar() {
 			try {
-				File file = File.createTempFile(jarPrefix, ".jar");
+				File file = InfinitestUtils.createTempFile(jarPrefix, ".jar");
 				file.deleteOnExit();
 
 				extractJarFromBundle(file);
