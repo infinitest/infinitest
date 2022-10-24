@@ -12,7 +12,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <spock.version>2.2-M3-groovy-4.0</spock.version>
+    <spock.version>2.3-groovy-4.0</spock.version>
   </properties>
 
   <build>
