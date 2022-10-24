@@ -35,10 +35,16 @@ import static java.util.logging.Level.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.text.*;
 import java.util.*;
 import java.util.jar.*;
 import java.util.logging.*;
+
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
@@ -184,5 +190,35 @@ public class InfinitestUtils {
 			trace.append((listOfStringableObjects.size() - MAX_LINE_COUNT) + " more...");
 		}
 		return trace.toString();
+	}
+	
+	/**
+	 * @param prefix the prefix string to be used in generating the file's name;
+	 * may be {@code null}
+	 * @param suffix suffix the suffix string to be used in generating the file's name;
+	 * may be {@code null}, in which case "{@code .tmp}" is used
+	 * @return A temporary file only readable, writable and executable by the current user
+	 * @throws IOException
+	 */
+	public static File createTempFile(String prefix, String suffix) throws IOException {
+		if(SystemUtils.IS_OS_UNIX) {
+			FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+			return Files.createTempFile(prefix, suffix, attr).toFile();
+		} else {
+			File f = Files.createTempFile(prefix, suffix).toFile();
+			if (!f.setReadable(true, true)) {
+				log(WARNING, "Could not set read permissions for temporary file " + f);
+			}
+
+			if (!f.setWritable(true, true)) {
+				log(WARNING, "Could not set write permissions for temporary file " + f);
+			}
+
+			if (!f.setExecutable(true, true)) {
+				log(WARNING, "Could not set executable permissions for temporary file " + f);
+			}
+			
+			return f;
+		}
 	}
 }

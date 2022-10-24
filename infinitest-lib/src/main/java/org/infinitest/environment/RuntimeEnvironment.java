@@ -49,6 +49,7 @@ import java.util.logging.Level;
 
 import org.infinitest.classloader.ClassPathFileClassLoader;
 import org.infinitest.testrunner.TestRunnerProcess;
+import org.infinitest.util.InfinitestUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -325,7 +326,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 
 	public File createClasspathFile() {
 		try {
-			File classpathFile = File.createTempFile("infinitest-", ".classpath");
+			File classpathFile = InfinitestUtils.createTempFile("infinitest-", ".classpath");
 			classpathFile.deleteOnExit();
 			Files.write(classpathFile.toPath(), getRunnerFullClassPathEntries(), StandardCharsets.UTF_8);
 			return classpathFile;
@@ -336,7 +337,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 
 	public File createClasspathArgumentFile() {
 		try {
-			File argumentFile = File.createTempFile("infinitest-", ".cp-argument");
+			File argumentFile = InfinitestUtils.createTempFile("infinitest-", ".cp-argument");
 			argumentFile.deleteOnExit();
 			String escapedRunnerFullClassPath = escapeClassPathFileContent(getRunnerFullClassPath());
 			Files.write(argumentFile.toPath(), Collections.singleton(escapedRunnerFullClassPath), StandardCharsets.UTF_8);
