@@ -43,7 +43,7 @@
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.organization>infinitest</sonar.organization>
-		<sonar.exclusions>**/exampletests/**,**/fakeco/**,**/testdata/**</sonar.exclusions>
+		<sonar.exclusions>org/infinitest/testrunner/exampletests/**/*,com/fakeco/**/*</sonar.exclusions>
 	</properties>
 
 	<profiles>
