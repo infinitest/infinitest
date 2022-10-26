@@ -75,18 +75,20 @@ public class JavaAssistClass extends AbstractJavaClass {
 	 * @return <code>true</code> if the class or one of its parents is annotated with {@link Testable}
 	 */
 	private boolean isJUnit5Testable(final CtClass classReference) {
-		boolean hasTestableAnnotation = false;
 		CtClass clazz = classReference;
-		while (clazz !=null && !hasTestableAnnotation) {
-			hasTestableAnnotation = clazz.hasAnnotation(Testable.class);
+		while (clazz !=null) {
+			if (clazz.hasAnnotation(Testable.class)) {
+				return true;
+			}
+			
 			try {
 				clazz = clazz.getSuperclass();
 			} catch (NotFoundException e) {
-				clazz = null;
+				return false;
 			}
 		}
 		
-		return hasTestableAnnotation;
+		return false;
 	}
 
 	@Override
