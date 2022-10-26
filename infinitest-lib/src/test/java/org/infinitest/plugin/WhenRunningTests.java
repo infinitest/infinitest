@@ -58,7 +58,7 @@ class WhenRunningTests {
   @BeforeAll
   static void inContext() throws InterruptedException {
     if (eventHistory == null) {
-      InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue());
+      InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue(), "myCoreName");
       builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
       TestFilter testFilter = mock(TestFilter.class);

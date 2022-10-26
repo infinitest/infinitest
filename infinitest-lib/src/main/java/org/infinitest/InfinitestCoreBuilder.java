@@ -50,14 +50,15 @@ public class InfinitestCoreBuilder {
 	private final Class<? extends TestRunner> runnerClass;
 	private final RuntimeEnvironment runtimeEnvironment;
 	private final EventQueue eventQueue;
-	private String coreName = "";
+	private String coreName;
 	private ConcurrencyController controller;
 
-	public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue) {
-		checkNotNull(environment, "No runtime environment is configured. Maybe because the project has no jdk.");
+	public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue, String coreName) {
+		checkNotNull(environment, "No runtime environment is configured. Maybe because " + coreName + " has no jdk.");
 
 		runtimeEnvironment = environment;
 		this.eventQueue = eventQueue;
+		this.coreName = coreName;
 		
 		InfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromWorkingDirectory(environment.getWorkingDirectory());
 		filterList = new RegexFileFilter(configSource);
@@ -100,10 +101,6 @@ public class InfinitestCoreBuilder {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("Cannot access runner class " + runnerClass, e);
 		}
-	}
-
-	public void setName(String coreName) {
-		this.coreName = coreName;
 	}
 
 	public void setUpdateSemaphore(ConcurrencyController semaphore) {
