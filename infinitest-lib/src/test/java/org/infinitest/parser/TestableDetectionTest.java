@@ -25,46 +25,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package org.infinitest.parser;
 
-import static java.util.Arrays.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 
-import java.io.*;
-import java.util.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestResults implements Iterable<TestEvent>, Serializable {
-	private static final long serialVersionUID = 1612875588926016329L;
+import com.fakeco.fakeproduct.JUnit5Testable;
+import com.fakeco.fakeproduct.JUnit5TestableAbstractClass;
+import com.fakeco.fakeproduct.JUnit5TestableSubclass;
 
-	private final List<TestEvent> eventsCollected;
-	private final List<MethodStats> methodStats = new LinkedList<MethodStats>();
+import javassist.ClassPool;
+import javassist.NotFoundException;
 
-	public TestResults(List<TestEvent> eventsCollected) {
-		this.eventsCollected = eventsCollected;
+class TestableDetectionTest {
+	private ClassPool classPool;
+
+	@BeforeEach
+	void inContext() throws NotFoundException {
+		classPool = new ClassPool();
+		classPool.appendPathList(fakeClasspath().getRunnerFullClassPath());
+		classPool.appendSystemPath();
 	}
 
-	public TestResults(TestEvent... failures) {
-		this(asList(failures));
+	@Test
+	void shouldDetectTestable() {
+		assertThat(classFor(JUnit5Testable.class).isATest()).isTrue();
 	}
 
-	@Override
-	public Iterator<TestEvent> iterator() {
-		return eventsCollected.iterator();
+	@Test
+	void shouldDetectTestableInParentClass() {
+		assertThat(classFor(JUnit5TestableSubclass.class).isATest()).isTrue();
 	}
 
-	public Iterable<MethodStats> getMethodStats() {
-		return methodStats;
+	@Test
+	void shouldNotDetectAbstractClassAsTestable() {
+		assertThat(classFor(JUnit5TestableAbstractClass.class).isATest()).isFalse();
 	}
 
-	public void addMethodStats(Collection<MethodStats> methodStatistics) {
-		methodStats.addAll(methodStatistics);
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("TestResults{");
-		sb.append("eventsCollected=").append(eventsCollected);
-		sb.append(", methodStats=").append(methodStats);
-		sb.append('}');
-		return sb.toString();
+	private JavaAssistClass classFor(Class<?> testClass) {
+		try {
+			return new JavaAssistClass(classPool.get(testClass.getName()));
+		} catch (NotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

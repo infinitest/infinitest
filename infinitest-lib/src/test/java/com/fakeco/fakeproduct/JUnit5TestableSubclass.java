@@ -25,46 +25,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.testrunner;
+package com.fakeco.fakeproduct;
 
-import static java.util.Arrays.*;
+import org.junit.platform.commons.annotation.Testable;
 
-import java.io.*;
-import java.util.*;
+/**
+ * A class extending another class annotated with Testable as Spock framework's Specification
+ */
+@Testable
+public class JUnit5TestableSubclass<E> extends JUnit5Testable<E> {
+	private static final long serialVersionUID = 4060301435626786548L;
 
-public class TestResults implements Iterable<TestEvent>, Serializable {
-	private static final long serialVersionUID = 1612875588926016329L;
-
-	private final List<TestEvent> eventsCollected;
-	private final List<MethodStats> methodStats = new LinkedList<MethodStats>();
-
-	public TestResults(List<TestEvent> eventsCollected) {
-		this.eventsCollected = eventsCollected;
-	}
-
-	public TestResults(TestEvent... failures) {
-		this(asList(failures));
-	}
-
-	@Override
-	public Iterator<TestEvent> iterator() {
-		return eventsCollected.iterator();
-	}
-
-	public Iterable<MethodStats> getMethodStats() {
-		return methodStats;
-	}
-
-	public void addMethodStats(Collection<MethodStats> methodStatistics) {
-		methodStats.addAll(methodStatistics);
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("TestResults{");
-		sb.append("eventsCollected=").append(eventsCollected);
-		sb.append(", methodStats=").append(methodStats);
-		sb.append('}');
-		return sb.toString();
-	}
 }

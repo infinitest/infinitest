@@ -42,6 +42,7 @@ import javassist.bytecode.annotation.*;
 import junit.framework.*;
 
 import org.infinitest.util.InfinitestUtils;
+import org.junit.platform.commons.annotation.Testable;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
@@ -60,14 +61,34 @@ public class JavaAssistClass extends AbstractJavaClass {
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
 		isATest = !isAbstract(classReference) &&
-				hasTests(classReference) &&
-				(isJUnit5TestClass(imports) || canInstantiate(classReference));
+				(hasTests(classReference) || isJUnit5Testable(classReference)) &&
+				(hasJUnit5TestImport(imports) || canInstantiate(classReference));
 		className = classReference.getName();
 	}
 
-	private boolean isJUnit5TestClass(final String[] imports) {
+	private boolean hasJUnit5TestImport(final String[] imports) {
 		return stream(imports)
 				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+	}
+	
+	/**
+	 * @return <code>true</code> if the class or one of its parents is annotated with {@link Testable}
+	 */
+	private boolean isJUnit5Testable(final CtClass classReference) {
+		CtClass clazz = classReference;
+		while (clazz !=null) {
+			if (clazz.hasAnnotation(Testable.class)) {
+				return true;
+			}
+			
+			try {
+				clazz = clazz.getSuperclass();
+			} catch (NotFoundException e) {
+				return false;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override

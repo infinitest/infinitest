@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.infinitest</groupId>
+    <artifactId>infinitest-parent</artifactId>
+    <version>5.3.2-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+  </parent>
+  <artifactId>infinitest-runner-spock-test</artifactId>
+  <name>infinitest-runner-spock-test</name>
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <spock.version>2.3-groovy-4.0</spock.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.13.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>compileTests</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <verbose>true</verbose>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Spec.java</include> <!-- Yes, .java extension -->
+            <include>**/*Test.java</include> <!-- Just in case of having also "normal" JUnit tests -->
+          </includes>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit-platform</artifactId>
+            <version>${surefire.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <version>${spock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infinitest</groupId>
+      <artifactId>infinitest-runner</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infinitest</groupId>
+      <artifactId>infinitest-lib</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infinitest</groupId>
+      <artifactId>infinitest-lib</artifactId>
+      <version>${project.parent.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
