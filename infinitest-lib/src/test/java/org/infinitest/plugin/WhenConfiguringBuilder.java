@@ -52,13 +52,13 @@ class WhenConfiguringBuilder {
 	@BeforeEach
 	final void mustProvideRuntimeEnvironmentAndEventQueue() {
 		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
-		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue());
+		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue(), "myCoreName");
 	}
 
 	@Test
 	void canUseCustomFilterToRemoveTestsFromTestRun() {
 		TestFilter testFilter = mock(TestFilter.class);
-		builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue()) {
+		builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue(), "myCoreName") {
 			@Override
 			protected TestDetector createTestDetector(TestFilter testFilter) {
 				filterUsedToCreateCore = testFilter;
@@ -72,15 +72,8 @@ class WhenConfiguringBuilder {
 
 	@Test
 	void canSetCoreName() {
-		builder.setName("myCoreName");
 		InfinitestCore core = builder.createCore();
 		assertEquals("myCoreName", core.getName());
-	}
-
-	@Test
-	void shouldUseBlankCoreNameByDefault() {
-		InfinitestCore core = builder.createCore();
-		assertEquals("", core.getName());
 	}
 
 	@Test

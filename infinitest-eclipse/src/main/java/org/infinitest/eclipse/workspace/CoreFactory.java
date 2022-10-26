@@ -48,9 +48,8 @@ class CoreFactory implements CoreSettings {
 	}
 
 	public InfinitestCore createCore(String projectName, RuntimeEnvironment environment) {
-		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(environment, eventQueue);
+		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(environment, eventQueue, projectName);
 		coreBuilder.setUpdateSemaphore(concurrencyController);
-		coreBuilder.setName(projectName);
 
 		return coreBuilder.createCore();
 	}
