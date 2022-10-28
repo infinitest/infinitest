@@ -38,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.tree.TreeModel;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.project.Project;
 
 public class InfinitestMainFrame extends JFrame implements InfinitestView {
@@ -48,8 +49,8 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	private final InfinitestLogPane logPane;
 	private final InfinitestConsoleFrame consoleFrame;
 
-	public InfinitestMainFrame(Project project) {
-		this(new InfinitestResultsPane(), new InfinitestLogPane(), new InfinitestConsoleFrame(project));
+	public InfinitestMainFrame(Project project, Application application) {
+		this(new InfinitestResultsPane(), new InfinitestLogPane(application), new InfinitestConsoleFrame(project));
 	}
 
 	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane, InfinitestConsoleFrame consoleFrame) {

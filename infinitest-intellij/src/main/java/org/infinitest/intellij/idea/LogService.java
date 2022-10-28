@@ -25,28 +25,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.swingui.harness;
-
-import static org.infinitest.intellij.plugin.swingui.harness.SwingPanelHarness.*;
+package org.infinitest.intellij.idea;
 
 import java.util.logging.Level;
 
-import javax.swing.*;
+public interface LogService {
+	LogService NOOP_LOG_SERVICE = new LogService() {
+		
+		@Override
+		public Level getLogLevel() {
+			return Level.INFO;
+		}
+		
+		@Override
+		public void changeLogLevel(Level level) {
+			// Nothing to do in noop implementation
+		}
+	};
 
-import org.infinitest.intellij.idea.LogService;
-import org.infinitest.intellij.plugin.swingui.*;
-
-public class LogPaneHarness extends JFrame {
-	private static final long serialVersionUID = -1L;
-	private static final Exception EXCEPTION = new Exception("Uh-oh!");
-
-	public static void main(String args[]) {
-		InfinitestLogPane logPane = new InfinitestLogPane(LogService.NOOP_LOG_SERVICE);
-
-		displayPanel(logPane);
-
-		logPane.writeMessage(Level.INFO, "Something interesting happened");
-		logPane.writeMessage(Level.INFO, "Something else interesting happened");
-		logPane.writeError("Oops!", EXCEPTION);
-	}
+	Level getLogLevel();
+	
+	void changeLogLevel(Level level);
 }

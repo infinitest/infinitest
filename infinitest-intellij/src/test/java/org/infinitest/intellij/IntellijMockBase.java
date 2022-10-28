@@ -36,6 +36,9 @@ import org.infinitest.DisabledTestListener;
 import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
 import org.infinitest.TestQueueListener;
+import org.infinitest.intellij.idea.IdeaLogService;
+import org.infinitest.intellij.idea.LogService;
+import org.infinitest.intellij.idea.LogServiceState;
 import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.TestResultsListener;
@@ -106,12 +109,13 @@ public class IntellijMockBase {
 	
 	/**
 	 * Not executed automatically since most tests don't need it, this needs to be called explicitly
+	 * @return 
 	 */
-	public static void setupApplication() {
-		setupApplication(false);
+	public static Application setupApplication() {
+		return setupApplication(false);
 	}
 	
-	public static void setupApplication(boolean powerSaveModeEnabled) {
+	public static Application setupApplication(boolean powerSaveModeEnabled) {
 		Application application = mock(Application.class);
 		Disposable parent = mock(Disposable.class);
 		
@@ -136,6 +140,16 @@ public class IntellijMockBase {
 		
 		when(application.getService(PropertiesComponent.class)).thenReturn(propertiesComponent);
 		
+		// Setup the log service
+		
+		IdeaLogService logService = new IdeaLogService();
+		LogServiceState logServiceState = new LogServiceState();
+		logService.loadState(logServiceState);
+		
+		when(application.getService(IdeaLogService.class)).thenReturn(logService);
+		
 		ApplicationManager.setApplication(application, parent);
+		
+		return application;
 	}
 }

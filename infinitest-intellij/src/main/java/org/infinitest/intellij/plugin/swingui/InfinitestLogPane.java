@@ -27,14 +27,26 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
 import static java.lang.String.format;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+
+import org.infinitest.intellij.idea.IdeaLogService;
+import org.infinitest.intellij.idea.LogService;
+
+import com.intellij.openapi.application.Application;
 
 public class InfinitestLogPane extends JPanel {
 	private static final long serialVersionUID = -1L;
@@ -43,7 +55,11 @@ public class InfinitestLogPane extends JPanel {
 	private final JTextArea textArea;
 	private final JComboBox<Level> levelComboBox;
 	
-	public InfinitestLogPane() {
+	public InfinitestLogPane(Application application) {
+		this(application.getService(IdeaLogService.class));
+	}
+	
+	public InfinitestLogPane(LogService logService) {
 		super(new BorderLayout());
 		
 		textArea = new JTextArea();
@@ -55,6 +71,8 @@ public class InfinitestLogPane extends JPanel {
 		toolBar.setFloatable(false);
 	
 		levelComboBox = new JComboBox<>(logLevels());
+		levelComboBox.setSelectedItem(logService.getLogLevel());
+		levelComboBox.addItemListener(e -> logService.changeLogLevel((Level) e.getItem()));
 		toolBar.add(levelComboBox);
 		
 		add(toolBar, BorderLayout.SOUTH);

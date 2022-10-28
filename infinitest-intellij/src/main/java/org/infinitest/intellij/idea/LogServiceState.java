@@ -25,28 +25,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.swingui.harness;
-
-import static org.infinitest.intellij.plugin.swingui.harness.SwingPanelHarness.*;
+package org.infinitest.intellij.idea;
 
 import java.util.logging.Level;
 
-import javax.swing.*;
+import org.infinitest.util.InfinitestGlobalSettings;
 
-import org.infinitest.intellij.idea.LogService;
-import org.infinitest.intellij.plugin.swingui.*;
+/**
+ * This class needs to be a java bean to be persisted by IntelliJ
+ */
+public final class LogServiceState {
+	private int level = InfinitestGlobalSettings.getLogLevel().intValue();
 
-public class LogPaneHarness extends JFrame {
-	private static final long serialVersionUID = -1L;
-	private static final Exception EXCEPTION = new Exception("Uh-oh!");
+	public int getLevel() {
+		return level;
+	}
 
-	public static void main(String args[]) {
-		InfinitestLogPane logPane = new InfinitestLogPane(LogService.NOOP_LOG_SERVICE);
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
-		displayPanel(logPane);
-
-		logPane.writeMessage(Level.INFO, "Something interesting happened");
-		logPane.writeMessage(Level.INFO, "Something else interesting happened");
-		logPane.writeError("Oops!", EXCEPTION);
+	public Level getLogLevel() {
+		return Level.parse(Integer.toString(level));
 	}
 }

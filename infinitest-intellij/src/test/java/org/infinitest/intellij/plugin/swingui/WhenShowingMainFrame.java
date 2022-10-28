@@ -42,6 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.Application;
 
 import junit.framework.AssertionFailedError;
 
@@ -53,12 +54,12 @@ class WhenShowingMainFrame extends IntellijMockBase {
 
   @BeforeEach
   void inContext() {
-    IntellijMockBase.setupApplication();
+	Application application = IntellijMockBase.setupApplication();
     
     InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
     
     resultsPane = new InfinitestResultsPane();
-	mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane(), consoleFrame);
+	mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane(application), consoleFrame);
     cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
   }
 
