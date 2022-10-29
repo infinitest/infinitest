@@ -30,6 +30,7 @@ package org.infinitest.intellij.plugin.swingui;
 import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -37,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.tree.TreeModel;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.project.Project;
 
 public class InfinitestMainFrame extends JFrame implements InfinitestView {
@@ -47,8 +49,8 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	private final InfinitestLogPane logPane;
 	private final InfinitestConsoleFrame consoleFrame;
 
-	public InfinitestMainFrame(Project project) {
-		this(new InfinitestResultsPane(), new InfinitestLogPane(), new InfinitestConsoleFrame(project));
+	public InfinitestMainFrame(Project project, Application application) {
+		this(new InfinitestResultsPane(), new InfinitestLogPane(application), new InfinitestConsoleFrame(project));
 	}
 
 	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane, InfinitestConsoleFrame consoleFrame) {
@@ -133,13 +135,13 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	}
 
 	@Override
-	public void writeLogMessage(String message) {
-		logPane.writeMessage(message);
+	public void writeLogMessage(Level level, String message) {
+		logPane.writeMessage(level, message);
 	}
 
 	@Override
-	public void writeError(String message) {
-		// nothing to do here
+	public void writeError(String message, Throwable throwable) {
+		logPane.writeError(message, throwable);
 	}
 
 	@Override

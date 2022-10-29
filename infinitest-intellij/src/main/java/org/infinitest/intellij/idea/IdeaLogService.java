@@ -25,62 +25,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.idea;
 
-import java.awt.*;
 import java.util.logging.Level;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import org.infinitest.util.InfinitestGlobalSettings;
 
-import org.infinitest.intellij.plugin.swingui.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.RoamingType;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.components.SettingsCategory;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 
-@SuppressWarnings("all")
-public class FakeInfinitestView implements InfinitestView {
-	public void setAngerBasedOnTime(long timeSinceGreen) {
-	}
-
-	public void setVisible(boolean b) {
-	}
-
-	public void setProgress(int progress) {
-	}
-
-	public void setProgressBarColor(Color yellow) {
-	}
-
-	public void setMaximumProgress(int maxProgress) {
-	}
-
-	public int getMaximumProgress() {
-		return 0;
-	}
-
-	public void setCycleTime(String timeStamp) {
-	}
-
-	public void setCurrentTest(String testName) {
-	}
-
-	public void addAction(Action action) {
-	}
-
-	public void setResultsModel(TreeModel results) {
-	}
-
-	public void setStatusMessage(String string) {
-	}
-
-	public void writeLogMessage(Level level, String message) {
-	}
-
-	public void writeError(String message, Throwable throwable) {
-	}
-
-	public void addResultClickListener(ResultClickListener listener) {
+/**
+ * A lightweight/application-level service to save the log level
+ */
+@Service(com.intellij.openapi.components.Service.Level.PROJECT)
+@State(category = SettingsCategory.PLUGINS, name = "org.infinitest.intellij.idea.IdeaLogService.level", storages =  {
+		@Storage(value = StoragePathMacros.NON_ROAMABLE_FILE, roamingType = RoamingType.DISABLED)
+})
+public final class IdeaLogService implements PersistentStateComponent<LogServiceState>, LogService {
+	private LogServiceState state = new LogServiceState();
+	
+	public void loadState(LogServiceState state) {
+		this.state = state;
+		
+		InfinitestGlobalSettings.setLogLevel(getLogLevel());
 	}
 	
 	@Override
-	public void consoleOutputUpdate(String newText, OutputType outputType) {
+	public LogServiceState getState() {
+		return state;
+	}
+
+	@Override
+	public Level getLogLevel() {
+		return state.getLogLevel();
+	}
+
+	@Override
+	public void changeLogLevel(Level level) {
+		InfinitestGlobalSettings.setLogLevel(level);
+		state.setLevel(level.intValue());
 	}
 }

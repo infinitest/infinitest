@@ -46,6 +46,8 @@ import org.infinitest.util.InfinitestUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.ProjectTopics;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
@@ -63,7 +65,8 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 
 	@Override
 	public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-		InfinitestMainFrame frame = new InfinitestMainFrame(project);
+		Application application = ApplicationManager.getApplication();
+		InfinitestMainFrame frame = new InfinitestMainFrame(project, application);
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(frame.getContentPane(), BorderLayout.CENTER);
 		

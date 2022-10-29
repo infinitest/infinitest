@@ -25,45 +25,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.swingui;
+package org.infinitest.intellij.idea;
 
-import java.awt.Color;
 import java.util.logging.Level;
 
-import javax.swing.Action;
-import javax.swing.tree.TreeModel;
-
-import org.infinitest.ConsoleOutputListener;
-
-/**
- * @author bjrady
- */
-public interface InfinitestView extends ConsoleOutputListener {
-	void setAngerBasedOnTime(long timeSinceGreen);
-
-	void setVisible(boolean b);
-
-	void setProgress(int progress);
-
-	void setProgressBarColor(Color yellow);
-
-	void setMaximumProgress(int maxProgress);
-
-	int getMaximumProgress();
-
-	void setCycleTime(String timeStamp);
-
-	void setCurrentTest(String testName);
-
-	void addAction(Action action);
-
-	void setResultsModel(TreeModel results);
-
-	void setStatusMessage(String string);
-
-	void writeLogMessage(Level level, String message);
-
-	void writeError(String message, Throwable throwable);
-
-	void addResultClickListener(ResultClickListener listener);
+public interface LogService {
+	Level getLogLevel();
+	
+	void changeLogLevel(Level level);
 }

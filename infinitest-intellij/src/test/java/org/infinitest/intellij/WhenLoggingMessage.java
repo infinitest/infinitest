@@ -28,8 +28,7 @@
 package org.infinitest.intellij;
 
 import static java.util.logging.Level.INFO;
-import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Level.WARNING;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -50,26 +49,14 @@ class WhenLoggingMessage {
 	}
 
 	@Test
-	void shouldDisplayMesageInView() {
+	void shouldDisplayMessageInView() {
 		listener.logMessage(INFO, "test message");
-		verify(view).writeLogMessage(contains("test message"));
+		verify(view).writeLogMessage(any(), contains("test message"));
 	}
 
 	@Test
-	void shouldIncludeLogLevelInDisplayedMessage() {
-		listener.logMessage(INFO, "test message");
-		verify(view).writeLogMessage(contains("INFO"));
-	}
-
-	@Test
-	void shouldIncludeOtherLogLevelInDisplayedMessage() {
-		listener.logMessage(WARNING, "test message");
-		verify(view).writeLogMessage(contains("WARNING"));
-	}
-
-	@Test
-	void shouldLeftAlignLogLevelInTenCharacterField() {
-		listener.logMessage(SEVERE, "test message");
-		verify(view).writeLogMessage(contains("SEVERE    "));
+	void shouldDisplayErrorMessageInView() {
+		listener.logError("There was an error", new IllegalStateException());
+		verify(view).writeError(contains("There was an error"), any());
 	}
 }

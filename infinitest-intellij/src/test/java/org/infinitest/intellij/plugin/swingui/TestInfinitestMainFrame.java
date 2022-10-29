@@ -45,13 +45,15 @@ import org.infinitest.intellij.IntellijMockBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.intellij.openapi.application.Application;
+
 class TestInfinitestMainFrame {
 	private InfinitestMainFrame frame;
 
 	@BeforeEach
 	void inContext() {
-		IntellijMockBase.setupApplication();
-		frame = new InfinitestMainFrame(null);
+		Application application = IntellijMockBase.setupApplication();
+		frame = new InfinitestMainFrame(null, application);
 	}
 
 	@Test

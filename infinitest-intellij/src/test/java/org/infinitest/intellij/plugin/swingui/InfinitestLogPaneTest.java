@@ -27,43 +27,28 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.Color;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.logging.Level;
 
-import javax.swing.Action;
-import javax.swing.tree.TreeModel;
+import org.infinitest.intellij.idea.LogService;
+import org.junit.jupiter.api.Test;
 
-import org.infinitest.ConsoleOutputListener;
+class InfinitestLogPaneTest {
 
-/**
- * @author bjrady
- */
-public interface InfinitestView extends ConsoleOutputListener {
-	void setAngerBasedOnTime(long timeSinceGreen);
+	@Test
+	void writeError() {
+		LogService logService = mock(LogService.class);
+		when(logService.getLogLevel()).thenReturn(Level.INFO);
+		
+		InfinitestLogPane logPane = new InfinitestLogPane(logService);
 
-	void setVisible(boolean b);
+		verify(logService).getLogLevel();
+		
+		assertDoesNotThrow(() -> logPane.writeError("there was an error", new IllegalArgumentException("error")));
+	}
 
-	void setProgress(int progress);
-
-	void setProgressBarColor(Color yellow);
-
-	void setMaximumProgress(int maxProgress);
-
-	int getMaximumProgress();
-
-	void setCycleTime(String timeStamp);
-
-	void setCurrentTest(String testName);
-
-	void addAction(Action action);
-
-	void setResultsModel(TreeModel results);
-
-	void setStatusMessage(String string);
-
-	void writeLogMessage(Level level, String message);
-
-	void writeError(String message, Throwable throwable);
-
-	void addResultClickListener(ResultClickListener listener);
 }

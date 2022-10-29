@@ -25,45 +25,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.swingui;
+package org.infinitest.intellij.idea;
 
-import java.awt.Color;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.logging.Level;
 
-import javax.swing.Action;
-import javax.swing.tree.TreeModel;
+import org.infinitest.util.InfinitestGlobalSettings;
+import org.junit.jupiter.api.Test;
 
-import org.infinitest.ConsoleOutputListener;
+class IdeaLogServiceTest {
 
-/**
- * @author bjrady
- */
-public interface InfinitestView extends ConsoleOutputListener {
-	void setAngerBasedOnTime(long timeSinceGreen);
+	@Test
+	void changeLogLevel() {
+		IdeaLogService service = new IdeaLogService();
+		LogServiceState state = new LogServiceState();
+		
+		service.loadState(state);
+		
+		// By default the log level should be INFO
+		assertThat(service.getLogLevel()).isEqualTo(InfinitestGlobalSettings.getLogLevel()).isEqualTo(Level.INFO);
+		
+		service.changeLogLevel(Level.FINE);
+		
+		assertThat(InfinitestGlobalSettings.getLogLevel()).isEqualTo(Level.FINE);
+		assertThat(state.getLevel()).isEqualTo(Level.FINE.intValue());
+		assertThat(service.getState()).isEqualTo(state);
+	}
 
-	void setVisible(boolean b);
-
-	void setProgress(int progress);
-
-	void setProgressBarColor(Color yellow);
-
-	void setMaximumProgress(int maxProgress);
-
-	int getMaximumProgress();
-
-	void setCycleTime(String timeStamp);
-
-	void setCurrentTest(String testName);
-
-	void addAction(Action action);
-
-	void setResultsModel(TreeModel results);
-
-	void setStatusMessage(String string);
-
-	void writeLogMessage(Level level, String message);
-
-	void writeError(String message, Throwable throwable);
-
-	void addResultClickListener(ResultClickListener listener);
 }
