@@ -30,19 +30,6 @@ package org.infinitest.intellij.idea;
 import java.util.logging.Level;
 
 public interface LogService {
-	LogService NOOP_LOG_SERVICE = new LogService() {
-		
-		@Override
-		public Level getLogLevel() {
-			return Level.INFO;
-		}
-		
-		@Override
-		public void changeLogLevel(Level level) {
-			// Nothing to do in noop implementation
-		}
-	};
-
 	Level getLogLevel();
 	
 	void changeLogLevel(Level level);
