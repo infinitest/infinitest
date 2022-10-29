@@ -27,8 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Maps.*;
 import static java.lang.Math.*;
 
 import java.util.*;
@@ -40,8 +38,8 @@ public class QueueAggregator {
 	private final List<TestQueueListener> queueListeners;
 
 	public QueueAggregator() {
-		queueListeners = newArrayList();
-		coreQueueListeners = newLinkedHashMap();
+		queueListeners = new ArrayList<>();
+		coreQueueListeners = new LinkedHashMap<>();
 	}
 
 	public void addListener(TestQueueListener testQueueAdapter) {
@@ -74,7 +72,7 @@ public class QueueAggregator {
 	}
 
 	private List<String> getAggregatedQueue() {
-		List<String> aggregatedQueue = newArrayList();
+		List<String> aggregatedQueue = new ArrayList<>();
 		for (AggregatingQueueListener each : coreQueueListeners.values()) {
 			aggregatedQueue.addAll(each.currentQueue);
 		}
@@ -100,7 +98,7 @@ public class QueueAggregator {
 	}
 
 	private class AggregatingQueueListener extends TestQueueAdapter {
-		private List<String> currentQueue = newArrayList();
+		private List<String> currentQueue = new ArrayList<>();
 
 		@Override
 		public void reloading() {

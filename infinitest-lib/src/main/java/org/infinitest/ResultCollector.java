@@ -27,8 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Maps.*;
 import static java.util.Collections.*;
 import static org.infinitest.CoreStatus.*;
 import static org.infinitest.util.InfinitestUtils.*;
@@ -54,9 +52,9 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 	private final QueueAggregator queueAggregator;
 
 	public ResultCollector() {
-		resultMap = newHashMap();
-		changeListeners = newArrayList();
-		statusChangeListeners = newArrayList();
+		resultMap = new HashMap<>();
+		changeListeners = new ArrayList<>();
+		statusChangeListeners = new ArrayList<>();
 		failuresByPointOfFailure = ArrayListMultimap.create();
 		status = SCANNING;
 		queueAggregator = new QueueAggregator();
@@ -85,7 +83,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 	}
 
 	private List<String> findFailingTestsForCore(InfinitestCore core) {
-		List<String> tests = newArrayList();
+		List<String> tests = new ArrayList<>();
 		for (TestCaseEvent eachEvent : resultMap.values()) {
 			if (core.isEventSourceFor(eachEvent)) {
 				tests.add(eachEvent.getTestName());
@@ -127,7 +125,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 	}
 
 	public List<PointOfFailure> getPointsOfFailure() {
-		List<PointOfFailure> resultList = newArrayList();
+		List<PointOfFailure> resultList = new ArrayList<>();
 		for (TestEvent failure : getFailures()) {
 			PointOfFailure pointOfFailure = failure.getPointOfFailure();
 			if (!resultList.contains(pointOfFailure)) {
@@ -146,7 +144,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 	}
 
 	public List<TestEvent> getTestsFor(PointOfFailure pointOfFailure) {
-		List<TestEvent> matchedEvents = new ArrayList<TestEvent>();
+		List<TestEvent> matchedEvents = new ArrayList<>();
 		for (TestEvent event : getFailures()) {
 			if (event.getPointOfFailure().equals(pointOfFailure)) {
 				matchedEvents.add(event);
@@ -172,7 +170,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 	}
 
 	public List<TestEvent> getFailures() {
-		List<TestEvent> failures = newArrayList();
+		List<TestEvent> failures = new ArrayList<>();
 		for (TestCaseEvent each : resultMap.values()) {
 			failures.addAll(each.getFailureEvents());
 		}
@@ -229,7 +227,7 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 
 	@Override
 	public void reloading() {
-		List<TestEvent> failuresRemoved = newArrayList(getFailures());
+		List<TestEvent> failuresRemoved = new ArrayList<>(getFailures());
 		clear();
 		setStatus(SCANNING);
 		fireChangeEvent(noEvents(), failuresRemoved);

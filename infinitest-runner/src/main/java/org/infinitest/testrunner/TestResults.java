@@ -36,7 +36,7 @@ public class TestResults implements Iterable<TestEvent>, Serializable {
 	private static final long serialVersionUID = 1612875588926016329L;
 
 	private final List<TestEvent> eventsCollected;
-	private final List<MethodStats> methodStats = new LinkedList<MethodStats>();
+	private final List<MethodStats> methodStats = new LinkedList<>();
 
 	public TestResults(List<TestEvent> eventsCollected) {
 		this.eventsCollected = eventsCollected;

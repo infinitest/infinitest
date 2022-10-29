@@ -28,7 +28,6 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
 
 import java.io.*;
 import java.util.*;
@@ -39,7 +38,6 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 import com.google.common.base.*;
-import com.google.common.collect.*;
 
 @Component
 class JavaProjectSet implements ProjectSet {
@@ -71,7 +69,7 @@ class JavaProjectSet implements ProjectSet {
 
 	@Override
 	public List<ProjectFacade> projects() {
-		List<ProjectFacade> projects = newArrayList();
+		List<ProjectFacade> projects = new ArrayList<>();
 		for (IJavaProject project : openProjects()) {
 			projects.add(new ProjectFacade(project));
 		}
@@ -116,7 +114,7 @@ class JavaProjectSet implements ProjectSet {
 	}
 
 	private List<File> customOutputDirectoriesFor(EclipseProject project) {
-		List<File> outputDirectories = Lists.newArrayList();
+		List<File> outputDirectories = new ArrayList<>();
 		for (IClasspathEntry each : project.getClasspathEntries()) {
 			IPath outputLocation = each.getOutputLocation();
 			if (outputLocation != null) {

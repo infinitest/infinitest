@@ -27,7 +27,7 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Collections.singletonList;
 
 import java.util.*;
 
@@ -101,7 +101,7 @@ public abstract class AbstractTestRunner implements TestRunner {
 	}
 
 	public void runTest(String testClass) {
-		runTests(newArrayList(testClass));
+		runTests(singletonList(testClass));
 	}
 
 	@Override

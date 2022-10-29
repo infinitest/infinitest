@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -52,14 +51,14 @@ class JavaProjectSetTest {
 
 		project = project("projectA").withJar("lib/someJarFile").andExportedJar("lib/someExportedJarFile").andExtenralJar(externalJarPath).andSourceDirectory("src", "srcbin").andDependsOn("projectB");
 		ResourceFinder finder = mock(ResourceFinder.class);
-		List<IJavaProject> projects = newArrayList(project);
+		List<IJavaProject> projects = Collections.singletonList(project);
 		when(finder.getJavaProjects()).thenReturn(projects);
 		projectSet = new JavaProjectSet(finder);
 	}
 
 	@Test
 	void shouldProvideOutputDirectoriesForProjectAsAbsolutePaths() throws JavaModelException {
-		ArrayList<File> expectedDirectories = newArrayList(new File("/root/projectA/srcbin"), new File("/root/projectA/target/classes"));
+		List<File> expectedDirectories = Arrays.asList(new File("/root/projectA/srcbin"), new File("/root/projectA/target/classes"));
 
 		assertEquals(expectedDirectories, projectSet.outputDirectories(new ProjectFacade(project)));
 	}

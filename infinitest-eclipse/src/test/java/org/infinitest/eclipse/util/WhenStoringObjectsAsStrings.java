@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.util;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Arrays.asList;
 import static org.infinitest.eclipse.util.PickleJar.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,7 +42,7 @@ class WhenStoringObjectsAsStrings {
 
 	@Test
 	void canPickleListsOfObjects() {
-		String stringForm = pickle(newArrayList("Hello", "There").toString());
-		assertEquals(newArrayList("Hello", "There").toString(), unpickle(stringForm));
+		String stringForm = pickle(asList("Hello", "There").toString());
+		assertEquals(asList("Hello", "There").toString(), unpickle(stringForm));
 	}
 }

@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.util.*;
@@ -55,7 +54,7 @@ class ProcessorRunnable implements Runnable {
 	}
 
 	private void fireEvent() {
-		eventSupport.fireQueueEvent(new TestQueueEvent(newArrayList(testQueue), initialSize));
+		eventSupport.fireQueueEvent(new TestQueueEvent(new ArrayList<>(testQueue), initialSize));
 	}
 
 	@Override

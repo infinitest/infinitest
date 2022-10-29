@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.Collections.*;
 
 import java.util.*;
@@ -39,7 +38,7 @@ import org.springframework.stereotype.*;
 
 @Component
 public class MarkerPlacer {
-	private final List<MarkerPlacementStrategy> placementStrategyChain = newArrayList();
+	private final List<MarkerPlacementStrategy> placementStrategyChain = new ArrayList<>();
 
 	@Autowired
 	public MarkerPlacer(ResourceLookup lookup) {

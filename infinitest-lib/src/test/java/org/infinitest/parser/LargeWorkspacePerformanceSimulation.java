@@ -27,12 +27,12 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,8 +51,8 @@ class LargeWorkspacePerformanceSimulation {
   void inContext() throws IOException {
     FileChangeDetector detector = new FileChangeDetector();
     detector.setClasspathProvider(fakeClasspath());
-    indexes = newArrayList();
-    files = newArrayList(detector.findChangedFiles());
+    indexes = new ArrayList<>();
+    files = new ArrayList<>(detector.findChangedFiles());
   }
 
   public static void main(String[] args) throws IOException {

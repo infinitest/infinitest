@@ -27,16 +27,12 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-
-import com.google.common.collect.*;
 
 /**
  * This would be a nice feature someday: <a
@@ -50,7 +46,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 
 	public GenericMarkerRegistry(String markerId) {
 		this.markerId = markerId;
-		markers = Maps.newHashMap();
+		markers = new HashMap<>();
 	}
 
 	@Override
@@ -99,7 +95,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 
 	private Set<MarkerInfo> copyOf(Set<MarkerInfo> keySet) {
 		// Make a copy to prevent concurrent modification while deleting markers
-		return newHashSet(keySet);
+		return new HashSet<>(keySet);
 	}
 
 	@Override
@@ -119,7 +115,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 	}
 
 	private Iterable<MarkerInfo> findMarkersFor(String testName) {
-		List<MarkerInfo> markersFound = newArrayList();
+		List<MarkerInfo> markersFound = new ArrayList<>();
 		for (MarkerInfo each : markers.keySet()) {
 			if (each.getTestName().equals(testName)) {
 				markersFound.add(each);

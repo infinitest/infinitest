@@ -38,6 +38,7 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.infinitest.environment.ClasspathArgumentBuilder;
@@ -48,8 +49,6 @@ import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Lists;
 
 class WhenCreatingRunnerProcessConnection {
 	private NativeConnectionFactory factory;
@@ -86,7 +85,7 @@ class WhenCreatingRunnerProcessConnection {
 			Socket socket = serverSocket.accept();
 			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
 			PrintStream outStream = new PrintStream(socket.getOutputStream(), true, "UTF-8");
-			List<TestEvent> results = Lists.newArrayList();
+			List<TestEvent> results = new ArrayList<>();
 			TestResults result = null;
 			int i = 0;
 			do {

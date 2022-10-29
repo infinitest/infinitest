@@ -28,9 +28,6 @@
 package org.infinitest;
 
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Maps.*;
-import static com.google.common.collect.Sets.*;
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.*;
@@ -55,10 +52,10 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	private int reloadCount;
 
 	public EventSupport(long timeout) {
-		testCaseEvents = newHashMap();
-		testEvents = newArrayList();
-		propertyEvents = newArrayList();
-		queueEvents = newArrayList();
+		testCaseEvents = new HashMap<>();
+		testEvents = new ArrayList<>();
+		propertyEvents = new ArrayList<>();
+		queueEvents = new ArrayList<>();
 		runComplete = new ThreadSafeFlag(timeout);
 		reload = new ThreadSafeFlag(timeout);
 		this.timeout = timeout;
@@ -180,7 +177,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	}
 
 	public Iterable<String> getTestsRun() {
-		Set<String> tests = newHashSet();
+		Set<String> tests = new HashSet<>();
 		for (TestEvent event : testEvents) {
 			tests.add(event.getTestName());
 		}
@@ -216,7 +213,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	}
 
 	public void assertTestsStarted(Class<?>... classes) {
-		List<String> testNames = newArrayList();
+		List<String> testNames = new ArrayList<>();
 		for (Class<?> each : classes) {
 			testNames.add(each.getName());
 		}

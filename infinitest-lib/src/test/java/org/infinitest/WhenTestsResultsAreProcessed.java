@@ -40,13 +40,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.infinitest.testrunner.TestEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Lists;
 
 class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 	private EventSupport statusListener;
@@ -116,7 +115,7 @@ class WhenTestsResultsAreProcessed extends ResultCollectorTestSupport {
 		testRunWith(testName, methodFailed(testName, "someMethod", new NullPointerException()));
 		assertEquals(1, collector.getFailures().size());
 
-		final Collection<TestEvent> removed = Lists.newArrayList();
+		final Collection<TestEvent> removed = new ArrayList<>();
 		collector.addChangeListener(new FailureListListener() {
 			@Override
 			public void failureListChanged(Collection<TestEvent> failuresAdded, Collection<TestEvent> failuresRemoved) {

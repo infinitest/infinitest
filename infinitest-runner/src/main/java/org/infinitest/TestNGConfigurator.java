@@ -60,7 +60,7 @@ public class TestNGConfigurator {
 	}
 
 	private List<Object> createListenerList(ImmutableSet<String> listenerClassNames) {
-		List<Object> listenerList = new ArrayList<Object>();
+		List<Object> listenerList = new ArrayList<>();
 
 		for (String listenerClassName : listenerClassNames) {
 			try {

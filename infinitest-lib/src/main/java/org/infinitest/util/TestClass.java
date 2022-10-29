@@ -44,7 +44,7 @@ class TestClass {
 	}
 
 	public List<Method> getAnnotatedMethods(Class<? extends Annotation> annotationClass) {
-		List<Method> results = new ArrayList<Method>();
+		List<Method> results = new ArrayList<>();
 		for (Class<?> eachClass : getSuperClasses(fClass)) {
 			Method[] methods = eachClass.getDeclaredMethods();
 			for (Method eachMethod : methods) {
@@ -89,7 +89,7 @@ class TestClass {
 	}
 
 	private List<Class<?>> getSuperClasses(Class<?> testClass) {
-		ArrayList<Class<?>> results = new ArrayList<Class<?>>();
+		ArrayList<Class<?>> results = new ArrayList<>();
 		Class<?> current = testClass;
 		while (current != null) {
 			results.add(current);

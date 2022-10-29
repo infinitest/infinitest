@@ -27,12 +27,10 @@
  */
 package org.infinitest.eclipse.status;
 
-import static com.google.common.collect.Lists.*;
-
 import java.util.*;
 
 public class StatusEventSupport {
-	private final List<StatusEventListener> listeners = newArrayList();
+	private final List<StatusEventListener> listeners = new ArrayList<>();
 
 	public void addListener(StatusEventListener listener) {
 		listeners.add(listener);

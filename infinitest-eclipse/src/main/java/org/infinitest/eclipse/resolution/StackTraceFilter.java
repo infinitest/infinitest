@@ -27,8 +27,6 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static com.google.common.collect.Lists.*;
-
 import java.util.*;
 import java.util.regex.*;
 
@@ -41,8 +39,12 @@ public class StackTraceFilter {
       Pattern.compile("java\\.lang\\.reflect\\.Method")
   };
 
+  public List<StackTraceElement> filterStack(StackTraceElement ... elements) {
+    return filterStack(Arrays.asList(elements));
+  }
+
   public List<StackTraceElement> filterStack(List<StackTraceElement> stackTrace) {
-    List<StackTraceElement> filtered = newArrayList();
+    List<StackTraceElement> filtered = new ArrayList<>();
 
     for (StackTraceElement each : stackTrace) {
       if (!match(each.getClassName())) {

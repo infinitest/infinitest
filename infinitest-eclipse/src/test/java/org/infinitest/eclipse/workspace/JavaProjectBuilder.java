@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 import static org.eclipse.jdt.core.IClasspathEntry.CPE_LIBRARY;
 import static org.eclipse.jdt.core.IClasspathEntry.CPE_PROJECT;
@@ -42,6 +41,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +87,7 @@ public class JavaProjectBuilder implements IJavaProject {
 
 	private JavaProjectBuilder(String projectName) {
 		this.projectName = projectName;
-		entries = newArrayList();
+		entries = new ArrayList<>();
 	}
 
 	public JavaProjectBuilder withJar(String jarName) {

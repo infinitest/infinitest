@@ -47,8 +47,6 @@ import org.infinitest.eclipse.workspace.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.*;
-
 class WhenAStackTraceElementIsSelected {
 	private FakeShell shell;
 	private KeyEvent keyEvent;
@@ -63,7 +61,7 @@ class WhenAStackTraceElementIsSelected {
 	@BeforeEach
 	void inContext() {
 		shell = new FakeShell();
-		stackTrace = Lists.newArrayList();
+		stackTrace = new ArrayList<>();
 		stackTrace.add(new StackTraceElement("MyClassName", "someMethod", "MyClassName.java", 72));
 		resourceLookup = mock(ResourceLookup.class);
 		listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace) {

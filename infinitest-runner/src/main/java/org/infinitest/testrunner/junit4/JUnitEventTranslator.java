@@ -49,8 +49,8 @@ class JUnitEventTranslator extends RunListener {
 
 	JUnitEventTranslator(Clock clock) {
 		this.clock = clock;
-		eventsCollected = new ArrayList<TestEvent>();
-		methodStats = new HashMap<Description, MethodStats>();
+		eventsCollected = new ArrayList<>();
+		methodStats = new HashMap<>();
 	}
 
 	JUnitEventTranslator() {

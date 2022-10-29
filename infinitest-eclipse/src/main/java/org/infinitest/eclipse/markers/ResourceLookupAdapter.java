@@ -28,6 +28,7 @@
 package org.infinitest.eclipse.markers;
 
 import static com.google.common.collect.Lists.*;
+import static java.util.Collections.singletonList;
 
 import java.util.*;
 
@@ -49,10 +50,10 @@ public class ResourceLookupAdapter implements ResourceLookup {
 	public List<IResource> findResourcesForClassName(String className) {
 		IResource resource = finder.findResourceForSourceFile(sourceFilename(className));
 		if (resource == null) {
-			return newArrayList();
+			return new ArrayList<>();
 		}
 
-		return newArrayList(resource);
+		return singletonList(resource);
 	}
 
 	private static String sourceFilename(String className) {

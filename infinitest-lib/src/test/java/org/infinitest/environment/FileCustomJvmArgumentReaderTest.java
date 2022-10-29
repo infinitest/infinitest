@@ -28,8 +28,9 @@
 package org.infinitest.environment;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.Files.write;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.infinitest.environment.FileCustomJvmArgumentReader.FILE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,7 +93,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList(singleArgument), arguments);
+		assertEquals(singletonList(singleArgument), arguments);
 	}
 	
 	@Test
@@ -101,7 +102,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+		assertEquals(asList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
 	}
 	
 	@Test
@@ -110,7 +111,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList("-DsomeArg=\"hello world\"", "-DanotherArg=foo"), arguments);
+		assertEquals(asList("-DsomeArg=\"hello world\"", "-DanotherArg=foo"), arguments);
 	}
 	
 	@Test
@@ -119,7 +120,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+		assertEquals(asList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
 	}
 
 	
@@ -129,7 +130,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
+		assertEquals(asList("-DsomeArg=foo", "-DanotherArg=foo"), arguments);
 	}
 	
 	@Test
@@ -138,7 +139,7 @@ class FileCustomJvmArgumentReaderTest {
 
 		List<String> arguments = reader.readCustomArguments();
 
-		assertEquals(newArrayList("-DsomeArg=foo not another Arg"), arguments);
+		assertEquals(asList("-DsomeArg=foo not another Arg"), arguments);
 	}
 
 

@@ -27,12 +27,10 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-
 import java.util.*;
 
 public class ControlledEventQueue implements EventQueue {
-	private final List<Runnable> events = newArrayList();
+	private final List<Runnable> events = new ArrayList<>();
 
 	@Override
 	public synchronized void push(Runnable runnable) {
@@ -41,7 +39,7 @@ public class ControlledEventQueue implements EventQueue {
 
 	public synchronized void flush() {
 		// We make a copy because some event handlers fire new events
-		ArrayList<Runnable> eventsToFire = newArrayList(events);
+		List<Runnable> eventsToFire = new ArrayList<>(events);
 		events.clear();
 		for (Runnable event : eventsToFire) {
 			event.run();

@@ -27,13 +27,13 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static org.jgrapht.Graphs.predecessorListOf;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +63,7 @@ public class ClassFileIndex {
 	}
 	
 	public Set<JavaClass> removeClasses(Collection<File> removedFiles) {
-		Set<JavaClass> removedClasses = newHashSet();
+		Set<JavaClass> removedClasses = new HashSet<>();
 		
 		for (File removedFile : removedFiles) {
 			JavaClass removedClass = builder.getClass(removedFile);
@@ -78,7 +78,7 @@ public class ClassFileIndex {
 
 	public Set<JavaClass> findClasses(Collection<File> changedFiles) {
 		// First update class index
-		List<String> changedClassesNames = new ArrayList<String>();
+		List<String> changedClassesNames = new ArrayList<>();
 		for (File changedFile : changedFiles) {
 			String changedClassname = builder.classFileChanged(changedFile);
 			if (changedClassname != null) {
@@ -87,7 +87,7 @@ public class ClassFileIndex {
 		}
 
 		// Then find dependencies
-		Set<JavaClass> changedClasses = newHashSet();
+		Set<JavaClass> changedClasses = new HashSet<>();
 		for (String changedClassesName : changedClassesNames) {
 			JavaClass javaClass = builder.getClass(changedClassesName);
 			if (javaClass != null) {
@@ -172,7 +172,7 @@ public class ClassFileIndex {
 	}
 
 	public void clear() {
-		graph = new DefaultDirectedGraph<JavaClass, DefaultEdge>(DefaultEdge.class);
+		graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		classesByName.clear();
 	}
 
