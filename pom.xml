@@ -17,6 +17,7 @@
 		<module>infinitest-eclipse-feature</module>
 		<module>infinitest-eclipse</module>
 		<module>infinitest-runner-test</module>
+		<module>functional-tests/infinitest-runner-spock-test</module>
 	</modules>
 
 	<prerequisites>
@@ -43,6 +44,7 @@
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.organization>infinitest</sonar.organization>
+		<sonar.exclusions>org/infinitest/testrunner/exampletests/**/*,com/fakeco/**/*</sonar.exclusions>
 	</properties>
 
 	<profiles>

@@ -27,7 +27,6 @@
  */
 package org.infinitest.util;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static org.infinitest.util.InfinitestGlobalSettings.getLogLevel;
 import static org.infinitest.util.InfinitestGlobalSettings.setLogLevel;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
@@ -35,6 +34,7 @@ import static org.infinitest.util.InfinitestUtils.log;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -49,8 +49,8 @@ class WhenLoggingMessagesAndErrors implements LoggingListener {
 
 	@BeforeEach
 	void inContext() {
-		errors = newHashMap();
-		messages = newHashMap();
+		errors = new HashMap<>();
+		messages = new HashMap<>();
 		addLoggingListener(this);
 		oldLevel = getLogLevel();
 	}

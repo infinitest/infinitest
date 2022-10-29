@@ -28,11 +28,11 @@
 package org.infinitest;
 
 import static com.google.common.collect.Iterables.getLast;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,9 +48,9 @@ class WhenAggregatingTestQueues {
 	@BeforeEach
 	void inContext() {
 		ResultCollector collector = new ResultCollector();
-		updateEvents = newArrayList();
+		updateEvents = new ArrayList<>();
 		finishCount = new AtomicInteger();
-		listeners = newArrayList();
+		listeners = new ArrayList<>();
 		collector.addTestQueueListener(new TestQueueAdapter() {
 			@Override
 			public void testQueueUpdated(TestQueueEvent event) {

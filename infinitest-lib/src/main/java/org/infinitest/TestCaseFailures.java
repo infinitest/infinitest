@@ -27,7 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Sets.*;
 
 import java.util.*;
@@ -39,8 +38,8 @@ public class TestCaseFailures {
 	private final Set<TestEvent> newFailures;
 
 	public TestCaseFailures(Collection<TestEvent> existingFailures) {
-		this.existingFailures = newHashSet(existingFailures);
-		newFailures = newHashSet();
+		this.existingFailures = new HashSet<>(existingFailures);
+		newFailures = new HashSet<>();
 	}
 
 	public void addNewFailure(TestEvent newFailure) {
@@ -54,7 +53,7 @@ public class TestCaseFailures {
 	}
 
 	public static List<TestEvent> listOf(Set<TestEventEqualityAdapter> set) {
-		ArrayList<TestEvent> list = newArrayList();
+		ArrayList<TestEvent> list = new ArrayList<>();
 		for (TestEventEqualityAdapter each : set) {
 			list.add(each.getEvent());
 		}

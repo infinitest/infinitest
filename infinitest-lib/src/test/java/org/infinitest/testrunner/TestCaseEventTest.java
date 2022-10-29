@@ -27,11 +27,11 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.infinitest.util.EqualityTestSupport;
@@ -45,7 +45,7 @@ class TestCaseEventTest extends EqualityTestSupport {
 
 	@BeforeEach
 	void inContext() {
-		methodEvents = newArrayList();
+		methodEvents = new ArrayList<>();
 		source = "";
 		event = new TestCaseEvent("testName", source, new TestResults(methodEvents));
 	}

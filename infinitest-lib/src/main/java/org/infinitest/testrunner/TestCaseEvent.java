@@ -27,9 +27,9 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +43,7 @@ public class TestCaseEvent {
 		this.testName = testName;
 		this.source = source;
 		this.results = results;
-		methodEvents = newArrayList();
+		methodEvents = new ArrayList<>();
 		// DEBT move this to a static factory method?
 		for (TestEvent testEvent : results) {
 			if (!isCompilationErrors(testEvent)) {

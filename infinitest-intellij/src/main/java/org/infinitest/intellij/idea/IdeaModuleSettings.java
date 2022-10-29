@@ -57,6 +57,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.OrderRootsEnumerator;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
@@ -182,7 +183,13 @@ public class IdeaModuleSettings implements ModuleSettings {
 				 */
 				Module currentModule = ((ModuleOrderEntry) entry).getModule();
 				if (currentModule != null) {
-					files.addAll(Arrays.asList(OrderEnumerator.orderEntries(currentModule).compileOnly().recursively().classes().getRoots()));
+					OrderRootsEnumerator enumerator = OrderEnumerator.orderEntries(currentModule)
+					.withoutSdk()
+					.compileOnly()
+					.recursively()
+					.classes();
+					
+					files.addAll(Arrays.asList(enumerator.getRoots()));
 				}
 			} else if (entry instanceof LibraryOrderEntry) {
 				/*

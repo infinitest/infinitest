@@ -27,11 +27,11 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.infinitest.TestQueueAdapter;
@@ -62,7 +62,7 @@ class TestRunnerEventSupport {
 
   @Test
   void shouldFireTestQueueEvents() {
-    final List<TestQueueEvent> queueEvents = newArrayList();
+    final List<TestQueueEvent> queueEvents = new ArrayList<>();
     eventSupport.addTestQueueListener(new TestQueueAdapter() {
       @Override
       public void testQueueUpdated(TestQueueEvent event) {

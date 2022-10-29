@@ -60,7 +60,7 @@ public class ClassPathResolver {
 	}
 
 	Iterable<String> unresolvedRuntimeClasspath(IJavaProject project) throws CoreException {
-		List<String> jars = Lists.newArrayList();
+		List<String> jars = new ArrayList<>();
 
 		for (IRuntimeClasspathEntry runtimeEntry : eclipseFacade.computeUnresolvedRuntimeClasspath(project)) {
 			String variable = runtimeEntry.getVariableName();

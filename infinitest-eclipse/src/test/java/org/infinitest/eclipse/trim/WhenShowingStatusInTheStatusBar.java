@@ -38,6 +38,7 @@ import static org.infinitest.CoreStatus.PASSING;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.runningTests;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -77,7 +78,7 @@ class WhenShowingStatusInTheStatusBar {
 
 	@Test
 	void shouldIgnoreUpdatesWhenStatusBarIsNotAttached() {
-		presenter.statusChanged(workspaceErrors());
+		assertDoesNotThrow(() -> presenter.statusChanged(workspaceErrors()));
 	}
 
 	@Test

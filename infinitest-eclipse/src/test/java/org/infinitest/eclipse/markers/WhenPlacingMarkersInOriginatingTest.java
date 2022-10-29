@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -59,7 +59,7 @@ class WhenPlacingMarkersInOriginatingTest {
 
 	@Test
 	void shouldUseTestNameInEvent() {
-		when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(newArrayList(testResource));
+		when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(singletonList(testResource));
 
 		MarkerPlacement placement = strategy.getPlacement(event);
 

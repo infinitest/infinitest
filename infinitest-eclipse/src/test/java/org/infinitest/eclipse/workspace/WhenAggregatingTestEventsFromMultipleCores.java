@@ -28,7 +28,6 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
@@ -48,7 +47,7 @@ class WhenAggregatingTestEventsFromMultipleCores {
 
 	@BeforeEach
 	void inContext() {
-		events = newArrayList();
+		events = new ArrayList<>();
 		aggregator = new TestResultAggregator();
 		core = mock(InfinitestCore.class);
 	}

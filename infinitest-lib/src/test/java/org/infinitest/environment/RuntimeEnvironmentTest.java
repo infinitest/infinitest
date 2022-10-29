@@ -28,7 +28,6 @@
 package org.infinitest.environment;
 
 import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.Files.touch;
 import static java.util.Arrays.asList;
 import static java.util.logging.Level.WARNING;
@@ -221,7 +220,7 @@ class RuntimeEnvironmentTest {
 
 	private RuntimeEnvironment createEnv(String outputDir, String workingDir, String classpath, String javahome) {
 		RuntimeEnvironment env = new RuntimeEnvironment(new File(javahome), new File(workingDir),
-				"runnerClassLoaderClassPath", "runnerProcessClassPath", newArrayList(new File(outputDir)), classpath);
+				"runnerClassLoaderClassPath", "runnerProcessClassPath", asList(new File(outputDir)), classpath);
 		return env;
 	}
 

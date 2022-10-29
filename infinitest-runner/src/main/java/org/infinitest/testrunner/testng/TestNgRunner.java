@@ -95,7 +95,7 @@ public class TestNgRunner {
 	}
 	
 	private static class TestNGEventTranslator implements ITestListener {
-		private final List<TestEvent> events = new ArrayList<TestEvent>();
+		private final List<TestEvent> events = new ArrayList<>();
 
 		@Override
 		public void onTestFailure(ITestResult failure) {

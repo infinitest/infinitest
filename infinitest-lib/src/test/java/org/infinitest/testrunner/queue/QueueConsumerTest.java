@@ -28,12 +28,12 @@
 package org.infinitest.testrunner.queue;
 
 import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -59,7 +59,7 @@ class QueueConsumerTest {
 		processSemaphore = null;
 		events = new SynchronousQueue<String>(true);
 		runnerEvents = new RunnerEventSupport(this);
-		queueUpdates = newArrayList();
+		queueUpdates = new ArrayList<>();
 		queue = new QueueConsumer(runnerEvents, new LinkedList<String>()) {
 			@Override
 			protected QueueProcessor createQueueProcessor() {

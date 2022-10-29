@@ -27,7 +27,8 @@
  */
 package org.infinitest.eclipse;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -64,8 +65,8 @@ class FailureMediatorTest {
 
 	@Test
 	void shouldRelayAddRemoveEvents() {
-		Collection<TestEvent> failuresAdded = newArrayList(event1, event2);
-		Collection<TestEvent> failuresRemoved = newArrayList(event3);
+		Collection<TestEvent> failuresAdded = asList(event1, event2);
+		Collection<TestEvent> failuresRemoved = singletonList(event3);
 
 		mediator.failureListChanged(failuresAdded, failuresRemoved);
 
@@ -76,7 +77,7 @@ class FailureMediatorTest {
 
 	@Test
 	void shouldRelayUpdateEvents() {
-		Collection<TestEvent> updatedFailures = newArrayList(event1, event2);
+		Collection<TestEvent> updatedFailures = asList(event1, event2);
 
 		mediator.failuresUpdated(updatedFailures);
 

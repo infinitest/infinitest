@@ -27,7 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Maps.*;
 import static java.lang.System.*;
 import static java.lang.reflect.Proxy.*;
 import static org.infinitest.util.InfinitestUtils.*;
@@ -102,7 +101,7 @@ class EventNormalizer {
 
 	public EventNormalizer(EventQueue eventQueue) {
 		this.eventQueue = eventQueue;
-		proxyCache = newHashMap();
+		proxyCache = new HashMap<>();
 	}
 
 	public TestQueueListener testQueueNormalizer(TestQueueListener listener) {

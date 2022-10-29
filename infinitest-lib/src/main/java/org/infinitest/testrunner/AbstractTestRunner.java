@@ -27,7 +27,7 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Collections.singletonList;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public abstract class AbstractTestRunner implements TestRunner {
 	private ConcurrencyController concurrencyController;
 	private Comparator<String> testPriority;
 
-	public AbstractTestRunner() {
+	protected AbstractTestRunner() {
 		eventSupport = new RunnerEventSupport(this);
 		testPriority = new NoOpComparator();
 	}
@@ -101,7 +101,7 @@ public abstract class AbstractTestRunner implements TestRunner {
 	}
 
 	public void runTest(String testClass) {
-		runTests(newArrayList(testClass));
+		runTests(singletonList(testClass));
 	}
 
 	@Override

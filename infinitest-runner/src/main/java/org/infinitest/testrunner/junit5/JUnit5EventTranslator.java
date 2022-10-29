@@ -57,8 +57,8 @@ class JUnit5EventTranslator implements TestExecutionListener {
 	
 	public JUnit5EventTranslator(Clock clock) {
 		this.clock = clock;
-		eventsCollected = new ArrayList<TestEvent>();
-		methodStats = new HashMap<TestIdentifier, MethodStats>();
+		eventsCollected = new ArrayList<>();
+		methodStats = new HashMap<>();
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.*;
 public abstract class EclipseEventProcessor {
 	private final String jobName;
 
-	public EclipseEventProcessor(String jobName) {
+	protected EclipseEventProcessor(String jobName) {
 		this.jobName = jobName;
 	}
 

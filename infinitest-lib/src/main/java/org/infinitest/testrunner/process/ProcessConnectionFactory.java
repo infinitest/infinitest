@@ -29,7 +29,6 @@ package org.infinitest.testrunner.process;
 
 import java.io.*;
 
-import org.infinitest.*;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.testrunner.*;
 

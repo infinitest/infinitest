@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.Arrays.*;
 
 import java.util.*;
@@ -39,7 +38,7 @@ import org.springframework.stereotype.*;
 
 @Component
 public class TestResultAggregator implements CoreLifecycleListener, TestResultsListener {
-	private final List<TestResultsListener> listeners = newArrayList();
+	private final List<TestResultsListener> listeners = new ArrayList<>();
 
 	@Autowired
 	public void addListeners(AggregateResultsListener... resultsListeners) {

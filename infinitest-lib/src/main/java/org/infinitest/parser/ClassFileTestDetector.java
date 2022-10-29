@@ -27,7 +27,6 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
@@ -84,7 +83,7 @@ public class ClassFileTestDetector implements TestDetector {
 	}
 
 	private Set<JavaClass> filterTests(Set<JavaClass> changedClasses) {
-		Set<JavaClass> testsToRun = new HashSet<JavaClass>();
+		Set<JavaClass> testsToRun = new HashSet<>();
 		for (JavaClass jclass : changedClasses) {
 			if (isATest(jclass) && inCurrentProject(jclass)) {
 				testsToRun.add(jclass);
@@ -134,7 +133,7 @@ public class ClassFileTestDetector implements TestDetector {
 
 	@Override
 	public Set<String> getCurrentTests() {
-		Set<String> tests = newHashSet();
+		Set<String> tests = new HashSet<>();
 		for (String each : getIndexedClasses()) {
 			if (isATest(index.findJavaClass(each))) {
 				tests.add(each);

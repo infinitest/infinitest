@@ -103,7 +103,7 @@ public class Junit4And3Runner {
 	private Class<?>[] readExcludedGroupsFromConfiguration() {
 		InfinitestConfiguration configuration = configSource.getConfiguration();
 
-		List<Class<?>> categoriesToExclude = new ArrayList<Class<?>>();
+		List<Class<?>> categoriesToExclude = new ArrayList<>();
 		for (String excludedGroup : configuration.excludedGroups()) {
 			try {
 				categoriesToExclude.add(Class.forName(excludedGroup));
