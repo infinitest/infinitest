@@ -27,8 +27,7 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static com.google.common.collect.Lists.newArrayList;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 
 	public TreeModelAdapter(Project project) {
 		this.project = project;
-		listeners = newArrayList();
+		listeners = new ArrayList<>();
 	}
 
 	@Override

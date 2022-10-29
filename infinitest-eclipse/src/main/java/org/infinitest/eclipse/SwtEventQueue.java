@@ -39,7 +39,7 @@ import org.springframework.stereotype.*;
 
 @Component
 public class SwtEventQueue implements EventQueue {
-	private final BlockingQueue<NamedRunnable> runnableQueue = new LinkedBlockingQueue<NamedRunnable>();
+	private final BlockingQueue<NamedRunnable> runnableQueue = new LinkedBlockingQueue<>();
 	private Job job;
 
 	public SwtEventQueue() {

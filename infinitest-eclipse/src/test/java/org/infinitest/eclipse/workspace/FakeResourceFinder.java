@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
 import static org.mockito.Mockito.*;
@@ -48,7 +48,7 @@ public class FakeResourceFinder implements ResourceFinder, ResourceLookup {
 	}
 
 	public FakeResourceFinder(IJavaProject... projects) {
-		this(newArrayList(projects));
+		this(asList(projects));
 	}
 
 	@Override

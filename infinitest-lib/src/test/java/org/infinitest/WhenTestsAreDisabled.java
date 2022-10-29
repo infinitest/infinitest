@@ -28,7 +28,6 @@
 package org.infinitest;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.collect.Sets.newHashSet;
 import static org.infinitest.CoreDependencySupport.withChangedFiles;
 import static org.infinitest.util.InfinitestUtils.setify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +37,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.infinitest.parser.JavaClass;
@@ -60,7 +60,7 @@ class WhenTestsAreDisabled {
 		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
 		core.setChangeDetector(withChangedFiles(PassingTest.class));
 		core.setTestDetector(testDetector);
-		final Set<String> disabledTestList = newHashSet();
+		final Set<String> disabledTestList = new HashSet<>();
 		core.addDisabledTestListener(new DisabledTestListener() {
 			@Override
 			public void testsDisabled(Collection<String> testName) {

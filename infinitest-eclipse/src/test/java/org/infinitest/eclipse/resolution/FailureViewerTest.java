@@ -27,7 +27,8 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.swt.SWT.Deactivate;
 import static org.eclipse.swt.SWT.KeyDown;
@@ -54,7 +55,7 @@ class FailureViewerTest {
 	@BeforeEach
 	void inContext() {
 		element = new StackTraceElement("class1", "method1", "file1", 0);
-		view = new FailureViewer(null, "message", newArrayList(element), null);
+		view = new FailureViewer(null, "message", singletonList(element), null);
 		dialog = new FakeShell();
 		view.show(dialog);
 		list = (List) dialog.getChildren()[1];
@@ -113,7 +114,7 @@ class FailureViewerTest {
 
 		Throwable throwable = buildAFakeStackTraceRecursively(100);
 		String msg = "Hello, this is a really long error message that is supposed to demonstrate how well we can" + " wrap long error messages. Evidently, they need to be long than what I've typed here";
-		Shell dialog = new FailureViewer(shell, msg, newArrayList(throwable.getStackTrace()), new FakeResourceFinder()).show();
+		Shell dialog = new FailureViewer(shell, msg, asList(throwable.getStackTrace()), new FakeResourceFinder()).show();
 		while (!shell.isDisposed() && !dialog.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();

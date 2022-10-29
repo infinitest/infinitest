@@ -27,14 +27,12 @@
  */
 package org.infinitest.util;
 
-import static com.google.common.collect.Lists.*;
-
 import java.lang.reflect.*;
 import java.util.*;
 
 public class Events<T> {
 	private final Method eventMethod;
-	private final List<T> listeners = newArrayList();
+	private final List<T> listeners = new ArrayList<>();
 
 	public Events(Method eventMethod) {
 		this.eventMethod = eventMethod;
@@ -62,6 +60,6 @@ public class Events<T> {
 
 	public static <T> Events<T> eventFor(Class<T> listenerClass) {
 		Method method = listenerClass.getDeclaredMethods()[0];
-		return new Events<T>(method);
+		return new Events<>(method);
 	}
 }

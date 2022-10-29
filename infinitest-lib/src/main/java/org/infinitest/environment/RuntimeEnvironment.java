@@ -28,7 +28,6 @@
 package org.infinitest.environment;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static java.io.File.pathSeparator;
 import static java.io.File.separator;
 import static java.util.logging.Level.CONFIG;
@@ -41,7 +40,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -129,13 +130,15 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		this.runnerBootstrapClassPath = runnerBootstrapClassPath;
 		this.runnerProcessClassPath = runnerProcessClassPath;
 		this.projectUnderTestClassPath = projectUnderTestClassPath;
-		additionalArgs = newArrayList();
+		additionalArgs = new ArrayList<>();
 		customArgumentsReader = new FileCustomJvmArgumentReader(workingDirectory);
 	}
 
 	public List<String> createProcessArguments(ClasspathArgumentBuilder classpathArgumentBuilder) {
 		String memorySetting = "-mx" + getHeapSize() + "m";
-		List<String> args = newArrayList(getJavaExecutable(), memorySetting);
+		List<String> args = new ArrayList<>();
+		args.add(getJavaExecutable());
+		args.add(memorySetting);
 		args.addAll(additionalArgs);
 		args.addAll(classpathArgumentBuilder.buildArguments());
 		args.addAll(addCustomArguments());
@@ -143,7 +146,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	}
 
 	public Map<String, String> createProcessEnvironment() {
-		Map<String, String> environment = newHashMap();
+		Map<String, String> environment = new HashMap<>();
 		// Put only Infinitest runner jar in classpath just to be able to load
 		// org.infinitest.testrunner.TestRunnerProcessClassLoader
 		environment.put("CLASSPATH", getRunnerBootstrapClassPath());
@@ -265,7 +268,7 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		// bad set of
 		// classDirs
 		if (classDirs == null) {
-			classDirs = newArrayList();
+			classDirs = new ArrayList<>();
 			for (String each : getClasspathEntries(projectUnderTestClassPath)) {
 				File classEntry = new File(each);
 				if (classEntry.isDirectory()) {

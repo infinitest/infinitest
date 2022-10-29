@@ -46,7 +46,6 @@ import org.junit.platform.commons.annotation.Testable;
 import org.junit.runner.*;
 
 import com.google.common.base.*;
-import com.google.common.collect.*;
 
 /**
  * Be careful: instances of this class are kept in a cache
@@ -97,7 +96,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private String[] findImports(CtClass ctClass) {
-		Set<String> imports = Sets.newHashSet();
+		Set<String> imports = new HashSet<>();
 		addDependenciesFromConstantPool(ctClass, imports);
 		addFieldDependencies(ctClass, imports);
 		addClassAnnotationDependencies(ctClass, imports);

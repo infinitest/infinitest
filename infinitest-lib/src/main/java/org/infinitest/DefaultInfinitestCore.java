@@ -27,7 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
 import static com.google.common.collect.Sets.*;
 import static java.util.logging.Level.*;
 import static org.infinitest.util.InfinitestUtils.*;
@@ -63,9 +62,9 @@ class DefaultInfinitestCore implements InfinitestCore {
 	DefaultInfinitestCore(TestRunner testRunner, EventQueue eventQueue) {
 		normalizer = new EventNormalizer(eventQueue);
 		runner = testRunner;
-		reloadListeners = newArrayList();
-		caughtExceptions = newLinkedHashSet();
-		disabledTestListeners = newArrayList();
+		reloadListeners = new ArrayList<>();
+		caughtExceptions = new LinkedHashSet<>();
+		disabledTestListeners = new ArrayList<>();
 
 		stats = new RunStatistics();
 		runner.addTestResultsListener(stats);
@@ -256,7 +255,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 	}
 
 	private List<String> classesToNames(Collection<JavaClass> classes) {
-		List<String> tests = newArrayList();
+		List<String> tests = new ArrayList<>();
 		for (JavaClass javaClass : classes) {
 			tests.add(javaClass.getName());
 		}

@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Arrays.asList;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
@@ -71,7 +71,7 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 	public void run(IMarker marker) {
 		try {
 			Serializable unpickledStack = unpickle(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE).toString());
-			List<StackTraceElement> stackTrace = newArrayList((StackTraceElement[]) unpickledStack);
+			List<StackTraceElement> stackTrace = asList((StackTraceElement[]) unpickledStack);
 			createStackViewWith(stackTrace, marker.getAttribute(MESSAGE).toString());
 		} catch (CoreException e) {
 			throw new RuntimeException(e);

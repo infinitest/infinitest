@@ -27,8 +27,6 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Maps.*;
 import static org.infinitest.util.InfinitestUtils.*;
 
 import java.net.*;
@@ -41,8 +39,8 @@ import org.springframework.stereotype.*;
 
 @Component
 class InfinitestCoreRegistry implements CoreRegistry {
-	private final Map<URI, InfinitestCore> coreMap = newHashMap();
-	private final List<CoreLifecycleListener> listeners = newArrayList();
+	private final Map<URI, InfinitestCore> coreMap = new HashMap<>();
+	private final List<CoreLifecycleListener> listeners = new ArrayList<>();
 
 	@Autowired
 	InfinitestCoreRegistry(CoreLifecycleListener... listeners) {

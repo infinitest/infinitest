@@ -50,7 +50,7 @@ import org.apache.commons.lang.SystemUtils;
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
 public class InfinitestUtils {
-	private static List<LoggingListener> loggingListeners = new ArrayList<LoggingListener>();
+	private static List<LoggingListener> loggingListeners = new ArrayList<>();
 
 	private static final String LINE_SEP = "\n";
 	private static final int MAX_LINE_COUNT = 50;
@@ -66,7 +66,7 @@ public class InfinitestUtils {
 	}
 
 	public static <T> Set<T> setify(T... items) {
-		Set<T> set = new HashSet<T>();
+		Set<T> set = new HashSet<>();
 		set.addAll(asList(items));
 		return set;
 	}
@@ -109,7 +109,7 @@ public class InfinitestUtils {
 	}
 
 	public static List<String> getClassNames(StackTraceElement[] currentStack) {
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		for (StackTraceElement element : currentStack) {
 			list.add(element.getClassName());
 		}

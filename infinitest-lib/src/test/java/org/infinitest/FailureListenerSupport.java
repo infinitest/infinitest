@@ -27,8 +27,6 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-
 import java.util.*;
 
 import org.infinitest.testrunner.*;
@@ -40,10 +38,10 @@ class FailureListenerSupport implements FailureListListener {
 	public final List<TestEvent> changed;
 
 	FailureListenerSupport() {
-		added = newArrayList();
-		removed = newArrayList();
-		failures = newArrayList();
-		changed = newArrayList();
+		added = new ArrayList<>();
+		removed = new ArrayList<>();
+		failures = new ArrayList<>();
+		changed = new ArrayList<>();
 	}
 
 	@Override

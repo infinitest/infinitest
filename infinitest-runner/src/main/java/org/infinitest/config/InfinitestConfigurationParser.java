@@ -100,11 +100,11 @@ public class InfinitestConfigurationParser {
 
 	public InfinitestConfiguration parseFileContent(CharSource textConfiguration) throws IOException {
 
-		List<String> excludedPatterns = new ArrayList<String>();
-		List<String> includedPatterns = new ArrayList<String>();
-		List<String> includedGroups = new ArrayList<String>();
-		List<String> excludedGroups = new ArrayList<String>();
-		List<String> testngListeners = new ArrayList<String>();
+		List<String> excludedPatterns = new ArrayList<>();
+		List<String> includedPatterns = new ArrayList<>();
+		List<String> includedGroups = new ArrayList<>();
+		List<String> excludedGroups = new ArrayList<>();
+		List<String> testngListeners = new ArrayList<>();
 
 		// Be careful the order of the parsers below is important as the lousy
 		// parsers are put at the end

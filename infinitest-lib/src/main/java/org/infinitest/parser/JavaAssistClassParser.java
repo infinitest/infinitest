@@ -39,11 +39,13 @@ import javassist.*;
 
 import org.infinitest.*;
 
-import com.google.common.collect.*;
 import com.google.common.hash.Hashing;
 import com.google.common.io.*;
 
 public class JavaAssistClassParser {
+	private static final Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
+	private static final Map<String, CacheEntry> BY_PATH = new HashMap<>();
+	
 	private final String classpath;
 	private ClassPool classPool;
 
@@ -90,8 +92,6 @@ public class JavaAssistClassParser {
 		return !new File(iter.next()).exists();
 	}
 
-	private final static Map<String, JavaClass> CLASSES_BY_NAME = Maps.newHashMap();
-
 	public JavaClass getClass(String className) {
 		JavaClass clazz = CLASSES_BY_NAME.get(className);
 		if (clazz == null) {
@@ -117,8 +117,6 @@ public class JavaAssistClassParser {
 
 		return clazz;
 	}
-
-	private final static Map<String, CacheEntry> BY_PATH = Maps.newHashMap();
 
 	public static class CacheEntry {
 		final String sha1;

@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.concurrent.Executors.*;
 
 import java.io.*;
@@ -93,7 +92,7 @@ public abstract class QueueConsumer {
 
 		private void startNewTestRun() {
 			processorThread = new QueueProcessorThread(runnable);
-			eventSupport.fireQueueEvent(new TestQueueEvent(newArrayList(testQueue), testQueue.size()));
+			eventSupport.fireQueueEvent(new TestQueueEvent(new ArrayList<>(testQueue), testQueue.size()));
 			processorThread.start();
 		}
 

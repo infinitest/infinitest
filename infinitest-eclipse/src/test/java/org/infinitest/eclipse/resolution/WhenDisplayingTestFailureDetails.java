@@ -28,7 +28,6 @@
 package org.infinitest.eclipse.resolution;
 
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
@@ -48,7 +47,7 @@ class WhenDisplayingTestFailureDetails {
 
 	@BeforeEach
 	void inContext() {
-		actualStackTrace = newArrayList();
+		actualStackTrace = new ArrayList<>();
 		resolution = new ErrorViewerResolution("TestName.methodName") {
 			@Override
 			protected void createStackViewWith(List<StackTraceElement> trace, String message) {
