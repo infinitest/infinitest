@@ -31,6 +31,7 @@ import static java.io.File.pathSeparator;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,8 +126,16 @@ public class IdeaModuleSettings implements ModuleSettings {
 
     private void addOutputDirectory(List<File> outputDirectories, String path) {
         if (path != null) {
-            log(java.util.logging.Level.FINE, "Adding output directory: " + path);
-            outputDirectories.add(new File(path));
+        	File file = new File(path);
+        	
+        	try {
+        		log(java.util.logging.Level.FINE, "Adding output directory: " + path);
+				File canonicalFile = file.getCanonicalFile();
+        		outputDirectories.add(canonicalFile);
+        	} catch (IOException e) {
+        		log("Error while getting canonical file for: " + path, e);
+        		outputDirectories.add(file);
+			}
         }
     }
 
