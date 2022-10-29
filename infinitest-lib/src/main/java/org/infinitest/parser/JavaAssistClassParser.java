@@ -43,8 +43,8 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.*;
 
 public class JavaAssistClassParser {
-	private final static Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
-	private final static Map<String, CacheEntry> BY_PATH = new HashMap<>();
+	private static final Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
+	private static final Map<String, CacheEntry> BY_PATH = new HashMap<>();
 	
 	private final String classpath;
 	private ClassPool classPool;

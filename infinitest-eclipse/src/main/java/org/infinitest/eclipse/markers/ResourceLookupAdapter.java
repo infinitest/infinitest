@@ -27,7 +27,6 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.Collections.singletonList;
 
 import java.util.*;
