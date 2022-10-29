@@ -111,33 +111,33 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * 
 	 * @return A list of all of the output directories for the project
 	 */
-    private List<File> listOutputDirectories() {
-        List<File> outputDirectories = new ArrayList<File>();
+	private List<File> listOutputDirectories() {
+		List<File> outputDirectories = new ArrayList<File>();
 
-        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
-        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
-        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
-        for (Module dependantModule : moduleRootManager.getDependencies()) {
-            addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
-        }
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
+		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+		for (Module dependantModule : moduleRootManager.getDependencies()) {
+			addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
+		}
 
-        return outputDirectories;
-    }
+		return outputDirectories;
+	}
 
-    private void addOutputDirectory(List<File> outputDirectories, String path) {
-        if (path != null) {
-        	File file = new File(path);
-        	
-        	try {
-        		log(java.util.logging.Level.FINE, "Adding output directory: " + path);
+	private void addOutputDirectory(List<File> outputDirectories, String path) {
+		if (path != null) {
+			File file = new File(path);
+
+			try {
+				log(java.util.logging.Level.FINE, "Adding output directory: " + path);
 				File canonicalFile = file.getCanonicalFile();
-        		outputDirectories.add(canonicalFile);
-        	} catch (IOException e) {
-        		log("Error while getting canonical file for: " + path, e);
-        		outputDirectories.add(file);
+				outputDirectories.add(canonicalFile);
+			} catch (IOException e) {
+				log("Error while getting canonical file for: " + path, e);
+				outputDirectories.add(file);
 			}
-        }
-    }
+		}
+	}
 
 
 	/**
