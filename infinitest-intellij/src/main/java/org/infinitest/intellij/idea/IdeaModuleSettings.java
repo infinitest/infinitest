@@ -111,8 +111,8 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * 
 	 * @return A list of all of the output directories for the project
 	 */
-	private List<File> listOutputDirectories() {
-		List<File> outputDirectories = new ArrayList<File>();
+	protected List<File> listOutputDirectories() {
+		List<File> outputDirectories = new ArrayList<>();
 
 		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
 		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));

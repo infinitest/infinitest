@@ -37,7 +37,6 @@ import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
 import org.infinitest.TestQueueListener;
 import org.infinitest.intellij.idea.IdeaLogService;
-import org.infinitest.intellij.idea.LogService;
 import org.infinitest.intellij.idea.LogServiceState;
 import org.infinitest.intellij.idea.ProjectTestControl;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
@@ -54,6 +53,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
@@ -147,6 +147,18 @@ public class IntellijMockBase {
 		logService.loadState(logServiceState);
 		
 		when(application.getService(IdeaLogService.class)).thenReturn(logService);
+		
+		// Read actions
+		
+		try {
+			when(application.runReadAction((ThrowableComputable<?,?>) any())).then(i -> {
+				ThrowableComputable<?,?> computable = i.getArgument(0, ThrowableComputable.class);
+				
+				return computable.compute();
+			});
+		} catch (Throwable e) {
+			throw new IllegalStateException("Could not mock actions", e);
+		}
 		
 		ApplicationManager.setApplication(application, parent);
 		
