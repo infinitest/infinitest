@@ -44,11 +44,11 @@ public abstract class QueueConsumer {
 	private final ExecutorService executor;
 	private ConcurrencyController semaphore;
 
-	public QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue) {
+	protected QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue) {
 		this(eventSupport, testQueue, 2000);
 	}
 
-	public QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue, long testTimeout) {
+	protected QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue, long testTimeout) {
 		this.eventSupport = eventSupport;
 		this.testQueue = testQueue;
 		this.testTimeout = testTimeout;

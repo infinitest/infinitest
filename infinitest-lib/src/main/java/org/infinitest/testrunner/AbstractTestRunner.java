@@ -40,7 +40,7 @@ public abstract class AbstractTestRunner implements TestRunner {
 	private ConcurrencyController concurrencyController;
 	private Comparator<String> testPriority;
 
-	public AbstractTestRunner() {
+	protected AbstractTestRunner() {
 		eventSupport = new RunnerEventSupport(this);
 		testPriority = new NoOpComparator();
 	}
