@@ -34,7 +34,6 @@ import java.io.*;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.*;
 import org.infinitest.testrunner.process.*;
 import org.infinitest.testrunner.queue.*;
 
