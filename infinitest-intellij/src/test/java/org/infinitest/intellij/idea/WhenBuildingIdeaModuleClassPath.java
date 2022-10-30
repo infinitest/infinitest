@@ -28,18 +28,31 @@
 package org.infinitest.intellij.idea;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.IsEqual.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.JdkOrderEntry;
+import com.intellij.openapi.roots.ModuleOrderEntry;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.OrderEnumerator;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.OrderRootsEnumerator;
+import com.intellij.openapi.vfs.VirtualFile;
 
 class WhenBuildingIdeaModuleClassPath {
 	private static final String PATH_A = "a";
@@ -85,6 +98,34 @@ class WhenBuildingIdeaModuleClassPath {
 		
 		verifyNoInteractions(jdkOrderEntry);
 		assertThat(classPathElementsList).hasSize(1);
+	}
+	
+	@Test
+	void shouldExcludeJdkModuleFromModuleDependencies() {
+		ModuleOrderEntry moduleOrderEntry = mock(ModuleOrderEntry.class);
+		doReturn(new OrderEntry[] { moduleOrderEntry }).when(moduleRootManagerMock).getOrderEntries();
+		doReturn(new VirtualFile[] { fileWith(PATH_D) }).when(compilerModuleExtension).getOutputRoots(true);
+		doReturn(new VirtualFile[] { fileWith(PATH_C) }).when(moduleOrderEntry).getFiles(OrderRootType.CLASSES);
+		doReturn(moduleRootManagerMock).when(ideaModuleSettingsSpy).moduleRootManagerInstance();
+		doReturn(compilerModuleExtension).when(ideaModuleSettingsSpy).compilerModuleExtension();
+		
+		Module dependentModule = mock(Module.class);
+		OrderEnumerator orderEntriesEnumerator = mock(OrderEnumerator.class);
+		OrderRootsEnumerator orderRootsEnumerator = mock(OrderRootsEnumerator.class); 
+		when(moduleOrderEntry.getModule()).thenReturn(dependentModule);
+		when(dependentModule.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManagerMock);
+		when(moduleRootManagerMock.orderEntries()).thenReturn(orderEntriesEnumerator);
+		
+		when(orderEntriesEnumerator.withoutSdk()).thenReturn(orderEntriesEnumerator);
+		when(orderEntriesEnumerator.compileOnly()).thenReturn(orderEntriesEnumerator);
+		when(orderEntriesEnumerator.recursively()).thenReturn(orderEntriesEnumerator);
+		when(orderEntriesEnumerator.classes()).thenReturn(orderRootsEnumerator);
+		when(orderRootsEnumerator.getRoots()).thenReturn(new VirtualFile[0]);
+		
+		final List<File> classPathElementsList = ideaModuleSettingsSpy.listClasspathElements();
+	
+		assertThat(classPathElementsList).hasSize(1);
+		verify(orderEntriesEnumerator, times(1)).withoutSdk();
 	}
 
 	private static OrderEntry orderEntry() {
