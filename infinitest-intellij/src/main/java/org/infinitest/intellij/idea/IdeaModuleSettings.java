@@ -44,10 +44,11 @@ import org.jetbrains.annotations.Nullable;
 
 import com.intellij.execution.CommonProgramRunConfigurationParameters;
 import com.intellij.execution.util.ProgramParametersConfigurator;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.PluginDescriptor;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.CompilerModuleExtension;
@@ -238,7 +239,8 @@ public class IdeaModuleSettings implements ModuleSettings {
 	}
 
 	private String infinitestJarPath(String jarName) {
-		PluginDescriptor descriptor = PluginManager.getPluginByClass(getClass());
+		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
+		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
 		Path pluginPath = descriptor.getPluginPath();
 
 		Path jar = pluginPath.resolve("lib/" + jarName);
