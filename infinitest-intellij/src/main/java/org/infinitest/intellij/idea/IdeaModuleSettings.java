@@ -31,6 +31,7 @@ import static java.io.File.pathSeparator;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,25 +111,33 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * 
 	 * @return A list of all of the output directories for the project
 	 */
-    private List<File> listOutputDirectories() {
-        List<File> outputDirectories = new ArrayList<File>();
+	protected List<File> listOutputDirectories() {
+		List<File> outputDirectories = new ArrayList<>();
 
-        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
-        addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
-        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
-        for (Module dependantModule : moduleRootManager.getDependencies()) {
-            addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
-        }
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
+		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+		for (Module dependantModule : moduleRootManager.getDependencies()) {
+			addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
+		}
 
-        return outputDirectories;
-    }
+		return outputDirectories;
+	}
 
-    private void addOutputDirectory(List<File> outputDirectories, String path) {
-        if (path != null) {
-            log(java.util.logging.Level.FINE, "Adding output directory: " + path);
-            outputDirectories.add(new File(path));
-        }
-    }
+	private void addOutputDirectory(List<File> outputDirectories, String path) {
+		if (path != null) {
+			File file = new File(path);
+
+			try {
+				log(java.util.logging.Level.FINE, "Adding output directory: " + path);
+				File canonicalFile = file.getCanonicalFile();
+				outputDirectories.add(canonicalFile);
+			} catch (IOException e) {
+				log("Error while getting canonical file for: " + path, e);
+				outputDirectories.add(file);
+			}
+		}
+	}
 
 
 	/**
