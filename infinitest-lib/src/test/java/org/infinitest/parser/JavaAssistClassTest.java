@@ -39,6 +39,8 @@ import javax.swing.JTree;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fakeco.fakeproduct.ANewClass;
 import com.fakeco.fakeproduct.AnnotatedClass;
@@ -50,8 +52,11 @@ import com.fakeco.fakeproduct.FakeUtils;
 import com.fakeco.fakeproduct.FieldAnnotation;
 import com.fakeco.fakeproduct.InvisibleClassAnnotation;
 import com.fakeco.fakeproduct.InvisibleParameterAnnotation;
+import com.fakeco.fakeproduct.JUnit5ArchUnitTest;
 import com.fakeco.fakeproduct.JUnit5CompositeAnnotationTest;
 import com.fakeco.fakeproduct.JUnit5ParameterizedTest;
+import com.fakeco.fakeproduct.JUnit5Testable;
+import com.fakeco.fakeproduct.JUnit5TestableSubclass;
 import com.fakeco.fakeproduct.MethodAnnotation;
 import com.fakeco.fakeproduct.ParameterAnnotation;
 import com.fakeco.fakeproduct.TestJUnit5TestCase;
@@ -147,19 +152,17 @@ class JavaAssistClassTest {
 		return classPoolUtil.dependenciesOf(dependingClass);
 	}
 	
-	@Test
-	void shouldSupportParameterizedTest() throws NotFoundException {
+	@ParameterizedTest
+	@ValueSource(classes = {
+			JUnit5ParameterizedTest.class,
+			JUnit5CompositeAnnotationTest.class,
+			JUnit5Testable.class,
+			JUnit5TestableSubclass.class,
+			JUnit5ArchUnitTest.class,
+	})
+	void shouldSupportTestClasses(Class<?> testClass) throws NotFoundException {
 		ClassPool classPool = classPoolUtil.getClassPool();
-		CtClass ctClass = classPool.get(JUnit5ParameterizedTest.class.getName());
-		JavaAssistClass javaClass = new JavaAssistClass(ctClass);
-		
-		assertTrue(javaClass.isATest());
-	}
-	
-	@Test
-	void shouldSupportCompositeTestAnnotation() throws NotFoundException {
-		ClassPool classPool = classPoolUtil.getClassPool();
-		CtClass ctClass = classPool.get(JUnit5CompositeAnnotationTest.class.getName());
+		CtClass ctClass = classPool.get(testClass.getName());
 		JavaAssistClass javaClass = new JavaAssistClass(ctClass);
 		
 		assertTrue(javaClass.isATest());

@@ -28,24 +28,39 @@
 package org.infinitest.parser;
 
 import static java.util.Arrays.stream;
-import static javassist.Modifier.*;
-import static javassist.bytecode.AnnotationsAttribute.*;
-import static org.infinitest.parser.DescriptorParser.*;
+import static javassist.Modifier.isPublic;
+import static javassist.bytecode.AnnotationsAttribute.invisibleTag;
+import static javassist.bytecode.AnnotationsAttribute.visibleTag;
+import static org.infinitest.parser.DescriptorParser.parseClassNameFromConstantPoolDescriptor;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
-
-import javassist.*;
-import javassist.bytecode.*;
-import javassist.bytecode.annotation.*;
-import junit.framework.*;
 
 import org.infinitest.util.InfinitestUtils;
 import org.junit.platform.commons.annotation.Testable;
-import org.junit.runner.*;
+import org.junit.runner.RunWith;
 
-import com.google.common.base.*;
+import com.google.common.base.Predicate;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.AttributeInfo;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.ParameterAnnotationsAttribute;
+import javassist.bytecode.annotation.Annotation;
+import junit.framework.TestCase;
 
 /**
  * Be careful: instances of this class are kept in a cache
@@ -249,6 +264,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
+				|| hasArchUnitTests(classReference)
 				|| hasTestNGTests(classReference);
 	}
 
@@ -279,6 +295,16 @@ public class JavaAssistClass extends AbstractJavaClass {
 				return isAnnotatedWithCustomRunner(input);
 			}
 		};
+	}
+
+	private boolean hasArchUnitTests(CtClass classReference) {
+		for (CtField field : classReference.getDeclaredFields()) {
+			if (field.hasAnnotation("com.tngtech.archunit.junit.ArchTest")) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private boolean hasTestNGTests(CtClass classReference) {
