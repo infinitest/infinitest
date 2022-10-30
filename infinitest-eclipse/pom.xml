@@ -119,7 +119,7 @@
 					</execution>
 					<execution>
 						<id>copy-feature</id>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
