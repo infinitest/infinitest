@@ -36,7 +36,7 @@ jobs:
         uses: GabrielBB/xvfb-action@v1
         with:
           run: |
-            mvn -f ./infinitest/pom.xml -B install -P release -Dkeystore-password=${{ secrets.KEYSTORE_PASSWORD }} -Dkeystore-file=../keystore.jks -DskipTests=true
+            mvn -f ./infinitest/pom.xml -B install -pl infinitest-eclipse,infinitest-intellij -am -P release -Dkeystore-password=${{ secrets.KEYSTORE_PASSWORD }} -Dkeystore-file=../keystore.jks -DskipTests=true
       
       # Upload the plugins artifacts to the release
       - name: Get release
