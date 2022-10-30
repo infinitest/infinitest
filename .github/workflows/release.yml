@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout the Infinitest project in the "infinitest" folder and the Website in the "website" folder
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: './infinitest/'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'infinitest/infinitest.github.com' 
           path: './website/'
@@ -41,7 +41,7 @@ jobs:
       # Upload the plugins artifacts to the release
       - name: Get release
         id: get_release
-        uses: bruceadams/get-release@v1.2.3
+        uses: bruceadams/get-release@v1.3.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Upload the Eclipse plugin
