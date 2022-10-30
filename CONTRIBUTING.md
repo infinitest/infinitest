@@ -95,6 +95,7 @@ On Windows we can use `certutil` and upload the content between the `BEGIN CERTI
 
 - Test, obviously
 - Create a new branch for a pull request
+- Add the changelog to the IntelliJ `plugin.xml` file
 - Upgrade the `pom.xml` version: at the root of the project: 
 
 `
