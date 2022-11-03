@@ -28,7 +28,7 @@
 package org.infinitest.testrunner.process;
 
 import static java.util.Arrays.asList;
-import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.CONFIG;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 	Process startProcess(int port, RuntimeEnvironment environment, ClasspathArgumentBuilder classpathArgumentBuilder) throws IOException {
 		
 		ProcessBuilder builder = buildProcess(port, environment, classpathArgumentBuilder);
-		log(INFO, "Starting TestRunner with configuration:\n"+buildTestProcessConfigurationMessage(builder));
+		log(CONFIG, "Starting TestRunner with configuration:\n"+buildTestProcessConfigurationMessage(builder));
 		try {
 			return builder.start();
 		} catch (IOException e) {
