@@ -87,8 +87,9 @@ class JUnit5RunnerTest {
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
 
 		Set<String> failedMethodNames = failedMethodNames(events);
-		assertThat(failedMethodNames).contains("tag2", "noTag");
-		assertThat(failedMethodNames).doesNotContain("tag1", "tag1And2");
+		assertThat(failedMethodNames)
+		.contains("tag2", "noTag")
+		.doesNotContain("tag1", "tag1And2");
 	}
 
 	@Test
@@ -99,8 +100,9 @@ class JUnit5RunnerTest {
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
 		Set<String> failedMethodNames = failedMethodNames(events);
 
-		assertThat(failedMethodNames).contains("tag2", "tag1And2");
-		assertThat(failedMethodNames).doesNotContain("tag1", "noTag");
+		assertThat(failedMethodNames)
+		.contains("tag2", "tag1And2")
+		.doesNotContain("tag1", "noTag");
 
 	}
 
@@ -112,8 +114,9 @@ class JUnit5RunnerTest {
 		Iterable<TestEvent> events = runner.runTest(JUnit5TestUsingTag.class.getName());
 		Set<String> failedMethodNames = failedMethodNames(events);
 
-		assertThat(failedMethodNames).contains("tag2");
-		assertThat(failedMethodNames).doesNotContain("tag1", "noTag", "tag1And2");
+		assertThat(failedMethodNames)
+		.contains("tag2")
+		.doesNotContain("tag1", "noTag", "tag1And2");
 
 	}
 	

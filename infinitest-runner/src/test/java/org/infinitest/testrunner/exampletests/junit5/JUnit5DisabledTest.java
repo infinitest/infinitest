@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 public class JUnit5DisabledTest {
     @Test
     @Disabled
-    public void disabledTest() {
+    void disabledTest() {
         Assertions.fail("failure");
     }
 }

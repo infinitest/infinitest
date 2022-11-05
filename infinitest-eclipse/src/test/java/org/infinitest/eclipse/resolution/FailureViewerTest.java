@@ -80,7 +80,7 @@ class FailureViewerTest {
 
 	@Test
 	void shouldUseSingleSelection() {
-		assertTrue((list.getStyle() & SWT.MULTI) == 0);
+		assertThat(list.getStyle() & SWT.MULTI).isZero();
 	}
 
 	@Test

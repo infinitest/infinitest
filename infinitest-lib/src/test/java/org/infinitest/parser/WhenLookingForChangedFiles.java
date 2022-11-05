@@ -98,8 +98,9 @@ class WhenLookingForChangedFiles {
 	void shouldFindChangedFiles() throws IOException {
 		Set<File> files = detector.findChangedFiles();
 
-		assertThat(files).contains(getFileForClass(TestFakeProduct.class));
-		assertThat(files).contains(getFileForClass(FakeProduct.class));
+		assertThat(files)
+		.contains(getFileForClass(TestFakeProduct.class))
+		.contains(getFileForClass(FakeProduct.class));
 		assertThat(detector.findChangedFiles()).isEmpty();
 	}
 

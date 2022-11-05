@@ -33,6 +33,7 @@ import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -67,8 +68,8 @@ class TestCustomProgressBar {
     Color foregroundColor = progressBar.getForeground();
     assertEquals(foregroundColor, new Color(img.getRGB(progressBarRightEdge - 5, size.height / 2)));
     Color backgroundColor = new Color(img.getRGB(progressBarRightEdge + 5, size.height / 2));
-    assertFalse(foregroundColor.equals(backgroundColor));
-    assertFalse(Color.WHITE.equals(backgroundColor));
+    assertNotEquals(foregroundColor, backgroundColor);
+    assertNotEquals(Color.WHITE, backgroundColor);
   }
 
   @Test

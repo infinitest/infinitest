@@ -51,7 +51,7 @@ import com.google.common.base.Strings;
 
 import jdave.test.JDaveUtils;
 
-public class TestEventTest extends EqualityTestSupport {
+class TestEventTest extends EqualityTestSupport {
 	private TestEvent event;
 	private Throwable error;
 

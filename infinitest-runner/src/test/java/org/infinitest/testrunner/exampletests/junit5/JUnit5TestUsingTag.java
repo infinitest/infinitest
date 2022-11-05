@@ -35,25 +35,25 @@ public class JUnit5TestUsingTag {
 
 	@Tag("Tag1")
 	@Test
-	public void tag1() {
+	void tag1() {
 		Assertions.fail("failure");
 	}
 
 	@Tag("Tag2")
 	@Test
-	public void tag2() {
+	void tag2() {
 		Assertions.fail("failure");
 	}
 
 	@Test
-	public void noTag() {
+	void noTag() {
 		Assertions.fail("failure");
 	}
 
 	@Test
 	@Tag("Tag1")
 	@Tag("Tag2")
-	public void tag1And2() {
+	void tag1And2() {
 		Assertions.fail("failure");
 	}
 }

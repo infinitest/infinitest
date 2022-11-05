@@ -48,7 +48,7 @@ class WhenDoubleClickingTestEvent {
     listener.mouseClicked(doubleClick(eventWithError()));
 
     assertThat(navigator.getClassName()).isEqualTo(getClass().getName());
-    assertThat(navigator.getLine()).isNotEqualTo(0);
+    assertThat(navigator.getLine()).isNotZero();
   }
 
   @SuppressWarnings("serial")

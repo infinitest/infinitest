@@ -156,7 +156,7 @@ class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener 
 		assertEquals("shouldFailIfPropertyIsSet", testEvent.getTestMethod());
 		assertEquals("Test Failed", testEvent.getMessage());
 		assertTrue(testEvent.isFailure());
-		assertTrue(testEvent.getErrorClassName() + " is not an AssertionFailedError", testEvent.getErrorClassName().equals(AssertionError.class.getSimpleName()));
+		assertEquals(testEvent.getErrorClassName() + " is not an AssertionFailedError", AssertionError.class.getSimpleName(), testEvent.getErrorClassName());
 	}
 
 	@Test
@@ -205,7 +205,7 @@ class WhenTestsAreRun extends AbstractRunnerTest implements TestResultsListener 
 
 		TestEvent e = methodEvents.get(0);
 		assertEquals("", e.getMessage());
-		assertTrue(e.getErrorClassName().equals(IllegalArgumentException.class.getSimpleName()));
+		assertEquals(IllegalArgumentException.class.getSimpleName(), e.getErrorClassName());
 		assertEquals("Test Case Name", TestFakeProduct.class.getName(), e.getTestName());
 		assertEquals("testNumber1", e.getTestMethod());
 	}

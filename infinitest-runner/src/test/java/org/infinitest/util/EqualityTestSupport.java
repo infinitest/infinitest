@@ -29,7 +29,7 @@ package org.infinitest.util;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,7 +65,7 @@ public abstract class EqualityTestSupport {
 	void differentObjectsShouldBeUnequal() {
 		Object equal = createEqualInstance();
 		for (Object other : createUnequalInstances()) {
-			assertFalse(equal.equals(other));
+			assertNotEquals(equal, other);
 		}
 	}
 
@@ -76,6 +76,6 @@ public abstract class EqualityTestSupport {
 
 	@Test
 	void shouldDifferentTypesShouldNotBeEqual() {
-		assertFalse(createEqualInstance().equals(new Object()));
+		assertNotEquals(createEqualInstance(), new Object());
 	}
 }

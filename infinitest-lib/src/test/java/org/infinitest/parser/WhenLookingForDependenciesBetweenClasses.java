@@ -33,6 +33,7 @@ import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
 import static org.infinitest.util.InfinitestUtils.setify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -156,7 +157,7 @@ class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTestBase {
     JavaClass class1 = new FakeJavaClass("com.fakeco.fakeproduct.FakeProduct$StaticInnerClass");
     JavaClass class2 = new FakeJavaClass("com.fakeco.fakeproduct.FakeProduct");
     JavaClass class3 = new FakeJavaClass("com.fakeco.fakeproduct.FakeProduct$StaticInnerClass");
-    assertFalse(class1.equals(class2));
+    assertNotEquals(class1, class2);
     assertEquals(class1, class3);
   }
 
@@ -189,7 +190,7 @@ class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTestBase {
     assertTrue(classes.isEmpty());
 
     classes = findTestsForChangedFiles(TestFakeProduct.class);
-    assertThat(classes.size()).isEqualTo(1);
+    assertThat(classes).hasSize(1);
 
     classes = findTestsForChangedFiles(ANewClass.class);
     assertThat(classes).isEmpty();

@@ -148,15 +148,15 @@ class QueueConsumerTest {
 
 	private void assertQueueEventsFired() {
 		TestQueueEvent firstEvent = get(queueUpdates, 0);
-		assertEquals(firstEvent.getTestQueue(), asList("test1", "test2"));
-		assertEquals(firstEvent.getInitialSize(), 2);
+		assertEquals(asList("test1", "test2"), firstEvent.getTestQueue());
+		assertEquals(2, firstEvent.getInitialSize());
 
 		TestQueueEvent secondEvent = get(queueUpdates, 1);
-		assertEquals(secondEvent.getTestQueue(), asList("test2"));
-		assertEquals(secondEvent.getInitialSize(), 2);
+		assertEquals(asList("test2"), secondEvent.getTestQueue());
+		assertEquals(2, secondEvent.getInitialSize());
 
 		TestQueueEvent thirdEvent = get(queueUpdates, 2);
-		assertEquals(thirdEvent.getTestQueue(), emptyList());
+		assertEquals(emptyList(), thirdEvent.getTestQueue());
 	}
 
 	private String poll() throws InterruptedException {

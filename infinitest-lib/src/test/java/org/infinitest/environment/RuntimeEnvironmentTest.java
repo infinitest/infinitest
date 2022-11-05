@@ -43,6 +43,7 @@ import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 import static org.infinitest.util.InfinitestUtils.convertFromWindowsClassPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
@@ -113,7 +114,7 @@ class RuntimeEnvironmentTest {
 
 	@Test
 	void shouldNotBeEqualToNull() {
-		assertFalse(createEqualInstance().equals(null));
+		assertNotEquals(null, createEqualInstance());
 	}
 
 	@Test

@@ -41,13 +41,13 @@ class TestNGConfiguratorTest {
 	@Test
 	void emptyConfigShouldConvertToEmptyExcludedGroups() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.empty());
-		assertThat(config.getExcludedGroups()).isEqualTo("");
+		assertThat(config.getExcludedGroups()).isEmpty();
 	}
 
 	@Test
 	void emptyConfigShouldConvertToEmptyGroups() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.empty());
-		assertThat(config.getGroups()).isEqualTo("");
+		assertThat(config.getGroups()).isEmpty();
 	}
 
 	@Test

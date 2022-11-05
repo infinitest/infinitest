@@ -51,7 +51,7 @@ class RegexFileFilterTest {
 		InfinitestConfigurationSource configSource = configSource(InfinitestConfiguration.builder().build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("SomeTest"))).isFalse();
 	}
 
 	@Test
@@ -60,7 +60,7 @@ class RegexFileFilterTest {
 		InfinitestConfigurationSource configSource = configSource(excluding("SomeTest"));
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("SomeTest"))).isTrue();
 	}
 
 	@Test
@@ -69,7 +69,7 @@ class RegexFileFilterTest {
 				InfinitestConfiguration.builder().excludedPatterns("SomeTest").build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(false);
+		assertThat(filter.match(mockClass("OtherTest"))).isFalse();
 	}
 
 	@Test
@@ -79,8 +79,8 @@ class RegexFileFilterTest {
 				InfinitestConfiguration.builder().includedPatterns("SomeTest").build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(false);
-		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("SomeTest"))).isFalse();
+		assertThat(filter.match(mockClass("OtherTest"))).isTrue();
 	}
 
 	@Test
@@ -90,9 +90,9 @@ class RegexFileFilterTest {
 				InfinitestConfiguration.builder().includedPatterns("SomeTest").excludedPatterns(".*Test").build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("FooTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("SomeTest"))).isTrue();
+		assertThat(filter.match(mockClass("OtherTest"))).isTrue();
+		assertThat(filter.match(mockClass("FooTest"))).isTrue();
 
 	}
 
@@ -111,15 +111,15 @@ class RegexFileFilterTest {
 						).build());
 		RegexFileFilter filter = new RegexFileFilter(configSource);
 
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeTest"))).isEqualTo(false);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.SomeTest"))).isEqualTo(false);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage3.SomeTest"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeIT"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherIT"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SlowTest"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherTest"))).isEqualTo(false);
-		assertThat(filter.match(mockClass("OtherTest"))).isEqualTo(true);
-		assertThat(filter.match(mockClass("SomeTest"))).isEqualTo(true);
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeTest"))).isFalse();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.SomeTest"))).isFalse();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage3.SomeTest"))).isTrue();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SomeIT"))).isTrue();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherIT"))).isTrue();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage1.SlowTest"))).isTrue();
+		assertThat(filter.match(mockClass("com.mycompany.mypackage2.OtherTest"))).isFalse();
+		assertThat(filter.match(mockClass("OtherTest"))).isTrue();
+		assertThat(filter.match(mockClass("SomeTest"))).isTrue();
 	}
 
 	@Test

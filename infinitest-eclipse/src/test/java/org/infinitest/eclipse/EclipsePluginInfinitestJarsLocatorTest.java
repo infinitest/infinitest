@@ -76,8 +76,7 @@ class EclipsePluginInfinitestJarsLocatorTest {
     assertThat(runnerJarLocation.delete()).isTrue();
 
     File newJarLocation = jarLocator.getRunnerJarFile();
-    assertThat(newJarLocation).exists();
-    assertThat(newJarLocation).isNotEqualTo(runnerJarLocation);
+    assertThat(newJarLocation).exists().isNotEqualTo(runnerJarLocation);
     assertThat(newJarLocation.getAbsolutePath()).endsWith(".jar");
   }
   

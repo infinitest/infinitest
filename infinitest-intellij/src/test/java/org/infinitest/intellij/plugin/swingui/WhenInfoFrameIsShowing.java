@@ -44,7 +44,7 @@ class WhenInfoFrameIsShowing {
 	@Test
 	void shouldCloseWithEscapeKey() {
 		EventInfoFrame frame = new EventInfoFrame(withATest());
-		assertEquals(frame.getRootPane().getActionMap().keys()[0], "ESCAPE");
+		assertEquals("ESCAPE", frame.getRootPane().getActionMap().keys()[0]);
 	}
 
 	@Test
