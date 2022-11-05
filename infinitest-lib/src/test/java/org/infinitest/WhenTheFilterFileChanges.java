@@ -27,44 +27,59 @@
  */
 package org.infinitest;
 
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.environment.FakeEnvironments.emptyClasspath;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
 
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.filter.RegexFileFilter;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.ClassFileTestDetector;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.junit.jupiter.api.Test;
 
-public class WhenTheFilterFileChanges {
-  @Test
-  public void shouldUpdateTheFilterList() throws IOException {
-    File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
+import com.google.common.base.Charsets;
+import com.google.common.io.FileWriteMode;
+import com.google.common.io.Files;
 
-    TestFilter list = new RegexFileFilter(file);
-    assertFalse(list.match(javaClass("com.foo.Bar")));
+class WhenTheFilterFileChanges {
+	@Test
+	void shouldUpdateTheFilterList() throws IOException {
+		File file = File.createTempFile("infinitest", "shouldUpdateTheFilterList");
+		file.deleteOnExit();
 
-    new PrintWriter(file).append("com.foo.Bar").close();
-    list.updateFilterList();
-    assertTrue(list.match(javaClass("com.foo.Bar")));
-  }
+		FileBasedInfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromFile(file);
+		TestFilter list = new RegexFileFilter(configSource);
+		assertFalse(list.match(javaClass("com.foo.Bar")));
 
-  @Test
-  public void shouldRecognizeChangesBeforeLookingForTests() {
-    TestFilter testFilter = mock(TestFilter.class);
-    TestDetector detector = new ClassFileTestDetector(testFilter);
+		Files.asCharSink(file, Charsets.UTF_8, FileWriteMode.APPEND).write("exclude com.foo.Bar");
+		
+		list.updateFilterList();
+		assertTrue(list.match(javaClass("com.foo.Bar")));
+	}
 
-    detector.setClasspathProvider(emptyClasspath());
-    detector.findTestsToRun(Collections.<File>emptySet());
+	@Test
+	void shouldRecognizeChangesBeforeLookingForTests() {
+		TestFilter testFilter = mock(TestFilter.class);
+		TestDetector detector = new ClassFileTestDetector(testFilter);
 
-    verify(testFilter).updateFilterList();
-  }
+		detector.setClasspathProvider(emptyClasspath());
+		detector.findTestsToRun(Collections.<File> emptySet());
 
-  static JavaClass javaClass(String name) {
-    JavaClass javaClass = mock(JavaClass.class);
-    when(javaClass.getName()).thenReturn(name);
-    return javaClass;
-  }
+		verify(testFilter).updateFilterList();
+	}
+
+	static JavaClass javaClass(String name) {
+		JavaClass javaClass = mock(JavaClass.class);
+		when(javaClass.getName()).thenReturn(name);
+		return javaClass;
+	}
 }

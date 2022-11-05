@@ -27,20 +27,20 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.emptyClasspath;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.id.*;
+import com.fakeco.fakeproduct.id.FakeId;
 
-public class WhenTheRuntimeEnvironmentChanges extends DependencyGraphTestBase {
+class WhenTheRuntimeEnvironmentChanges extends DependencyGraphTestBase {
 	@Test
-	public void shouldRecreateTheClassFileIndex() {
+	void shouldRecreateTheClassFileIndex() {
 		addToDependencyGraph(FakeId.class);
-		assertEquals(1, getGraph().getIndexedClasses().size());
+		assertThat(getGraph().getIndexedClasses()).hasSize(1);
 
 		getGraph().setClasspathProvider(emptyClasspath());
-		assertEquals(0, getGraph().getIndexedClasses().size());
+		assertThat(getGraph().getIndexedClasses()).isEmpty();
 	}
 }

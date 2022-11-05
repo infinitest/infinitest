@@ -27,17 +27,21 @@
  */
 package org.infinitest.status;
 
-import static java.util.Arrays.*;
-import static org.hamcrest.Matchers.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.runningTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.testRunFinished;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infinitest.eclipse.status.*;
-import org.junit.*;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.junit.jupiter.api.Test;
 
-public class WhenUpdatingTheWorkspaceStatus {
+class WhenUpdatingTheWorkspaceStatus {
 	@Test
-	public void shouldDisplayAMessageWhenErrorsArePresent() {
+	void shouldDisplayAMessageWhenErrorsArePresent() {
 		WorkspaceStatus status = workspaceErrors();
 		assertEquals("Infinitest disabled. Errors in workspace.", status.getMessage());
 		assertEquals(status.getMessage(), status.getToolTip());
@@ -45,21 +49,21 @@ public class WhenUpdatingTheWorkspaceStatus {
 	}
 
 	@Test
-	public void shouldReportWhichTestsAreRunning() {
+	void shouldReportWhichTestsAreRunning() {
 		WorkspaceStatus status = runningTests(10, "org.fakeco.MyCurrentTest");
 		assertEquals("Running MyCurrentTest (9 remaining)", status.getMessage());
 		assertEquals("Current test: org.fakeco.MyCurrentTest", status.getToolTip());
 	}
 
 	@Test
-	public void shouldReportTheNumberOfTestsRun() {
+	void shouldReportTheNumberOfTestsRun() {
 		WorkspaceStatus status = testRunFinished(asList("Test1", "Test2"));
-		assertThat(status.getMessage(), startsWith("2 test cases ran"));
+		assertThat(status.getMessage()).startsWith("2 test cases ran");
 		assertEquals("Tests Ran:\nTest1\nTest2", status.getToolTip());
 	}
 
 	@Test
-	public void shouldReportWhenNoTestsCouldBeRun() {
+	void shouldReportWhenNoTestsCouldBeRun() {
 		WorkspaceStatus status = noTestsRun();
 		assertTrue(status.warningMessage());
 		assertEquals("No related tests found for last change.", status.getMessage());

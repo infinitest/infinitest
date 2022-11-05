@@ -27,28 +27,32 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestColorAnimator {
+class TestColorAnimator {
 	private ColorAnimator animator;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		animator = new ColorAnimator();
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		animator = null;
 	}
 
 	@Test
-	public void shouldTurnGreenToGray() {
+	void shouldTurnGreenToGray() {
 		animator.setAngerLevel(0);
 		assertEquals(PASSING_COLOR, animator.shiftColorOnAnimationTick(PASSING_COLOR));
 
@@ -57,7 +61,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldAdjustAnimationWhenAngerLevelChanges() {
+	void shouldAdjustAnimationWhenAngerLevelChanges() {
 		animator.setAngerLevel(1);
 		for (int i = 0; i < 8; i++) {
 			animator.tick();
@@ -76,7 +80,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldBeAbleToSetAngerLevelBasedOnTime() {
+	void shouldBeAbleToSetAngerLevelBasedOnTime() {
 		int second = 1000;
 		int minute = second * 60;
 		animator.setAngerBasedOnTime(minute - 1);
@@ -113,14 +117,15 @@ public class TestColorAnimator {
 		assertEquals(10, animator.getAngerLevel());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldThrowExceptionIfAngerIsTooHigh() {
-		animator.setAngerLevel(ColorAnimator.getMaxAngerLevel() + 1);
+	@Test
+	void shouldThrowExceptionIfAngerIsTooHigh() {
+		int maxAngerLevel = ColorAnimator.getMaxAngerLevel();
+		assertThatThrownBy(() -> animator.setAngerLevel(maxAngerLevel + 1)).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldThrowExceptionIfAngerLevelIsBelowZero() {
-		animator.setAngerLevel(-1);
+	@Test
+	void shouldThrowExceptionIfAngerLevelIsBelowZero() {
+		assertThatThrownBy(() -> animator.setAngerLevel(-1)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	private void verifyColor(double colorShiftForASingleAnimationTick) {
@@ -135,7 +140,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldStayConstantColorWhenNotAngry() {
+	void shouldStayConstantColorWhenNotAngry() {
 		animator.setAngerLevel(0);
 		verifyColorDeltaForAnimationTicks(0, 1.0);
 		verifyColorDeltaForAnimationTicks(1, 1.0);
@@ -144,7 +149,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldSlowlyFlashInAngerLevelOne() {
+	void shouldSlowlyFlashInAngerLevelOne() {
 		animator.setAngerLevel(1);
 		verifyColorDeltaForAnimationTicks(0, 1.0);
 		verifyColorDeltaForAnimationTicks(1, 0.99);
@@ -155,7 +160,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldFlashFasterAndDarkerInAngerLevelFive() {
+	void shouldFlashFasterAndDarkerInAngerLevelFive() {
 		animator.setAngerLevel(5);
 		verifyColorDeltaForAnimationTicks(0, 1.0);
 		verifyColorDeltaForAnimationTicks(3, 0.75);
@@ -165,7 +170,7 @@ public class TestColorAnimator {
 	}
 
 	@Test
-	public void shouldBlinkToBlackEveryOtherTickInAngerLevelTen() {
+	void shouldBlinkToBlackEveryOtherTickInAngerLevelTen() {
 		animator.setAngerLevel(ColorAnimator.getMaxAngerLevel());
 		verifyColorDeltaForAnimationTicks(0, 1.0);
 		verifyColorDeltaForAnimationTicks(1, 0.0);

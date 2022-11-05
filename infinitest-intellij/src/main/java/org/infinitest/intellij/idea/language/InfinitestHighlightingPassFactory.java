@@ -27,50 +27,38 @@
  */
 package org.infinitest.intellij.idea.language;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
-import com.intellij.codeHighlighting.*;
-import com.intellij.openapi.editor.*;
-import com.intellij.openapi.module.*;
-import com.intellij.psi.*;
+import com.intellij.codeHighlighting.Pass;
+import com.intellij.codeHighlighting.TextEditorHighlightingPass;
+import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
+import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiFile;
 
 public class InfinitestHighlightingPassFactory implements TextEditorHighlightingPassFactory {
-	private final TextEditorHighlightingPassRegistrar passRegistrar;
+	/**
+	 * The key to retrieve the {@link InfinitestLineMarkersPass} in the {@link Editor}
+	 */
+	public static final Key<InfinitestLineMarkersPass> KEY = new Key<>("InfinitestLineMarkersPass");
 
 	public InfinitestHighlightingPassFactory(TextEditorHighlightingPassRegistrar passRegistrar) {
-		this.passRegistrar = passRegistrar;
-	}
-
-	@Override
-	public TextEditorHighlightingPass createHighlightingPass(@NotNull PsiFile psiFile, @NotNull Editor editor) {
-		Module module = ModuleUtil.findModuleForPsiElement(psiFile);
-		if (module == null) {
-			return null;
-		}
-
-		return new InfinitestLineMarkersPass(module.getProject(), editor.getDocument(), editor.getMarkupModel());
-	}
-
-	@Override
-	public void projectOpened() {
-	}
-
-	@Override
-	public void projectClosed() {
-	}
-
-	@Override
-	@NotNull
-	public String getComponentName() {
-		return "InfinitestHighlighPassFactory";
-	}
-
-	@Override
-	public void initComponent() {
 		passRegistrar.registerTextEditorHighlightingPass(this, TextEditorHighlightingPassRegistrar.Anchor.LAST, Pass.UPDATE_ALL, true, true);
 	}
 
 	@Override
-	public void disposeComponent() {
+	public TextEditorHighlightingPass createHighlightingPass(@NotNull PsiFile psiFile, @NotNull Editor editor) {
+		Module module = ModuleUtilCore.findModuleForPsiElement(psiFile);
+		if (module == null) {
+			return null;
+		}
+
+		InfinitestLineMarkersPass pass = new InfinitestLineMarkersPass(module.getProject(), editor.getDocument(), editor.getMarkupModel());
+		editor.putUserData(KEY, pass);
+		
+		return pass;
 	}
 }

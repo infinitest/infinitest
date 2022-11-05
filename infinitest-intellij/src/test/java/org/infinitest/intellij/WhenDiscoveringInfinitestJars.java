@@ -27,33 +27,31 @@
  */
 package org.infinitest.intellij;
 
-import static com.google.common.base.Charsets.*;
-import static org.apache.commons.lang.StringUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.google.common.base.Charsets.UTF_8;
+import static org.apache.commons.lang.StringUtils.substringBetween;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-import com.google.common.io.*;
+import com.google.common.io.Files;
 
-public class WhenDiscoveringInfinitestJars {
+class WhenDiscoveringInfinitestJars {
   private static final String MAVEN_VERSION = mavenVersion();
   private static final String INFINITEST_RUNNER_JAR = "infinitest-runner-" + MAVEN_VERSION + ".jar";
-  private static final String INFINITEST_SNAPSHOT_JAR = "infinitest-lib-" + MAVEN_VERSION + ".jar";
 
   @Test
-  public void shouldDetermineFileNamesFromEmbeddedPom() {
-    InfinitestJarLocator locator = new InfinitestJarLocator();
-    List<String> jarNames = locator.findInfinitestJarNames();
+  void shouldDetermineFileNamesFromEmbeddedPom() {
+    InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
-    assertThat(jarNames).contains(INFINITEST_SNAPSHOT_JAR, INFINITEST_RUNNER_JAR);
+    assertThat(locator.findInfinitestRunnerJarName()).isEqualTo(INFINITEST_RUNNER_JAR);
   }
 
   @Test
-  public void shouldDetermineInfinitestVersionFromEmbeddedPom() {
-    InfinitestJarLocator locator = new InfinitestJarLocator();
+  void shouldDetermineInfinitestVersionFromEmbeddedPom() {
+    InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
     assertThat(locator.findInfinitestVersion()).isEqualTo(MAVEN_VERSION);
   }

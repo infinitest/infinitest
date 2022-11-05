@@ -27,48 +27,81 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static java.util.Collections.*;
-import static org.infinitest.eclipse.util.StatusMatchers.*;
-import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.emptyList;
+import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
+import static org.infinitest.eclipse.workspace.JavaProjectBuilder.project;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.infinitest.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.status.*;
-import org.junit.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IJavaProject;
+import org.infinitest.InfinitestCore;
+import org.infinitest.eclipse.ResourceEventSupport;
+import org.infinitest.eclipse.SystemClassPathJarLocator;
+import org.infinitest.eclipse.UpdateListener;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.eclipse.status.WorkspaceStatusListener;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
+class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 	private List<ProjectFacade> projects;
 	private CoreRegistry coreRegistry;
+	private IPath path;
+	private IPath projectPath;
+	private IProject iproject;
+	private IResource resource;
 	private ProjectSet projectSet;
 	private EclipseWorkspace workspace;
 	private WorkspaceStatus updatedStatus;
 	private int updates;
 
-	@Before
-	public void inContext() throws CoreException {
-		projects = newArrayList();
+	@BeforeEach
+	void inContext() throws CoreException {
+		projects = new ArrayList<>();
+		path = mock(IPath.class);
+		projectPath = mock(IPath.class);
+		resource = mock(IResource.class);
+		iproject = mock(IProject.class);
 		projectSet = mock(ProjectSet.class);
-		projects.add(newFacade(project));
+		ProjectFacade projectFacade = newFacade(project);
+		projects.add(projectFacade);
 		coreRegistry = mock(CoreRegistry.class);
 		CoreFactory coreFactory = new CoreFactory(null);
-
+		
+		when(resource.getProject()).thenReturn(iproject);
+		when(resource.getFullPath()).thenReturn(path);
+		when(resource.getRawLocation()).thenReturn(path);
+		
+		when(path.makeAbsolute()).thenReturn(path);
+		
+		when(iproject.getFullPath()).thenReturn(projectPath);
+		
 		when(projectSet.projects()).thenReturn(projects);
 		when(projectSet.hasErrors()).thenReturn(false);
+		when(projectSet.findProject(projectPath)).thenReturn(projectFacade);
 		List<File> outputDirs = emptyList();
 		when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);
 
-		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory);
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory, new SystemClassPathJarLocator());
 	}
 
 	private ProjectFacade newFacade(IJavaProject project) {
@@ -81,19 +114,19 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 	}
 
 	@Test
-	public void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException {
+	void shouldCreateACoreOnUpdateIfNoneExists() throws CoreException {
 		URI projectAUri = projectAUri();
 		when(coreRegistry.getCore(projectAUri)).thenReturn(null);
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.singleton(resource));
 
 		assertStatusIs(noTestsRun());
 		verify(coreRegistry).addCore(eq(projectAUri), any(InfinitestCore.class));
 	}
 
 	@Test
-	public void shouldFireAnEvent() throws CoreException {
-		InfinitestCore core = prepateCore(projectAUri(), 10);
+	void shouldFireAnEvent() throws CoreException {
+		InfinitestCore core = prepareCore(projectAUri(), 10);
 
 		workspace.addUpdateListeners(new UpdateListener() {
 			@Override
@@ -102,50 +135,51 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 			}
 		});
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.singleton(resource));
 		assertEquals(1, updates);
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 	}
 
 	@Test
-	public void shouldUpdateCoreOnAutoBuild() throws CoreException {
-		InfinitestCore core = prepateCore(projectAUri(), 10);
+	void shouldUpdateCoreOnAutoBuild() throws CoreException {
+		InfinitestCore core = prepareCore(projectAUri(), 10);
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.singleton(resource));
 
-		assertStatusIs(findingTests(0));
+		assertStatusIs(findingTests(0, projects.size(), 0));
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 
 	}
 
-	private InfinitestCore prepateCore(URI projectAUri, int numberOfTestsRun) {
+	private InfinitestCore prepareCore(URI projectAUri, int numberOfTestsRun) {
 		InfinitestCore core = mock(InfinitestCore.class);
 		when(core.update()).thenReturn(numberOfTestsRun);
+		when(core.update(anyCollection())).thenReturn(numberOfTestsRun);
 		when(coreRegistry.getCore(projectAUri)).thenReturn(core);
 		return core;
 	}
 
 	@Test
-	public void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException {
-		InfinitestCore core = prepateCore(projectAUri(), 0);
+	void shouldSetAppropriateStatusIfNoTestsWereRun() throws CoreException {
+		InfinitestCore core = prepareCore(projectAUri(), 0);
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.singleton(resource));
 
 		assertStatusIs(noTestsRun());
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 	}
 
 	@Test
-	public void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException {
+	void shouldSetWarningStatusIfNoTestsAreRun() throws CoreException {
 		projects.clear();
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.emptySet());
 
 		assertStatusIs(noTestsRun());
 	}
 
 	@Test
-	public void shouldFireEventIfStatusChanges() throws CoreException {
+	void shouldFireEventIfStatusChanges() throws CoreException {
 		projects.clear();
 		workspace.addStatusListeners(new WorkspaceStatusListener() {
 			@Override
@@ -154,21 +188,21 @@ public class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport 
 			}
 		});
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.emptySet());
 		assertThat(updatedStatus, equalsStatus(noTestsRun()));
 	}
 
 	@Test
-	public void shouldUpdateAllCoresWhenOneChanges() throws CoreException {
+	void shouldUpdateAllCoresWhenOneChanges() throws CoreException {
 		String projectBName = "/projectB";
 		JavaProjectBuilder projectB = project(projectBName);
 		URI projectBUri = projectB.getProject().getLocationURI();
 		projects.add(newFacade(projectB));
 
-		InfinitestCore coreA = prepateCore(projectAUri(), 10);
-		InfinitestCore coreB = prepateCore(projectBUri, 10);
+		InfinitestCore coreA = prepareCore(projectAUri(), 10);
+		InfinitestCore coreB = prepareCore(projectBUri, 10);
 
-		workspace.updateProjects();
+		workspace.updateProjects(Collections.singleton(resource));
 		verify(coreA).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 		verify(coreB).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 	}

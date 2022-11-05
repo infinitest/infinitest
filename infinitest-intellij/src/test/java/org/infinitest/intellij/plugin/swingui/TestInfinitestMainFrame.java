@@ -27,38 +27,44 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
-import static org.junit.Assert.*;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestInfinitestMainFrame {
+import com.intellij.openapi.application.Application;
+
+class TestInfinitestMainFrame {
 	private InfinitestMainFrame frame;
 
-	@Before
-	public void inContext() {
-		frame = new InfinitestMainFrame();
-	}
-
-	@After
-	public void cleanup() {
-		frame = null;
+	@BeforeEach
+	void inContext() {
+		Application application = IntellijMockBase.setupApplication();
+		frame = new InfinitestMainFrame(null, application);
 	}
 
 	@Test
-	public void shouldDisplayProgress() {
+	void shouldDisplayProgress() {
 		frame.setMaximumProgress(100);
 		assertEquals(100, frame.getMaximumProgress());
 		frame.setProgress(75);
 	}
 
 	@Test
-	public void shouldUseUnknownColorToStart() {
+	void shouldUseUnknownColorToStart() {
 		assertEquals(UNKNOWN_COLOR, frame.getProgressBarColor());
 	}
 

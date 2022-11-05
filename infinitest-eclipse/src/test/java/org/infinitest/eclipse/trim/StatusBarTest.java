@@ -28,23 +28,24 @@
 package org.infinitest.eclipse.trim;
 
 import static org.eclipse.swt.SWT.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.layout.*;
 import org.infinitest.eclipse.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StatusBarTest {
+class StatusBarTest {
 	private StatusBar statusBar;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		statusBar = new StatusBar();
 	}
 
 	@Test
-	public void shouldShrinkWhenMovedToSideBars() {
+	void shouldShrinkWhenMovedToSideBars() {
 		RowData rowData = statusBar.getRowData(BOTTOM);
 		assertEquals(400, rowData.width);
 
@@ -53,7 +54,7 @@ public class StatusBarTest {
 	}
 
 	@Test
-	public void shouldRegisterStatusPluginController() {
+	void shouldRegisterStatusPluginController() {
 		final PluginActivationController mockController = mock(PluginActivationController.class);
 		StatusBar statusBar = new StatusBar() {
 			@Override

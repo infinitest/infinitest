@@ -27,18 +27,25 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.testrunner.TestEvent.TestState.TEST_CASE_STARTING;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.*;
+import java.io.IOException;
 
-import org.infinitest.*;
-import org.infinitest.testrunner.process.*;
-import org.junit.*;
+import org.infinitest.EventSupport;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.testrunner.process.ProcessConnection;
+import org.infinitest.testrunner.process.ProcessConnectionFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResultProcessorTest {
+class ResultProcessorTest {
 	private TestQueueProcessor reader;
 
 	private ProcessConnectionFactory factory;
@@ -47,8 +54,8 @@ public class ResultProcessorTest {
 
 	private ProcessConnection connection;
 
-	@Before
-	public void inContext() throws IOException {
+	@BeforeEach
+	void inContext() throws IOException {
 		eventAssert = new EventSupport();
 		factory = mock(ProcessConnectionFactory.class);
 		runnerEventSupport = new RunnerEventSupport(this);
@@ -63,7 +70,7 @@ public class ResultProcessorTest {
 	}
 
 	@Test
-	public void shouldRunGivenTest() throws Exception {
+	void shouldRunGivenTest() throws Exception {
 		reader.process("test1");
 		reader.close();
 
@@ -75,7 +82,7 @@ public class ResultProcessorTest {
 	}
 
 	@Test
-	public void shouldOnlyOpenOneConnection() throws Exception {
+	void shouldOnlyOpenOneConnection() throws Exception {
 		when(connection.runTest("test2")).thenReturn(new TestResults());
 
 		reader.process("test1");
@@ -83,11 +90,11 @@ public class ResultProcessorTest {
 		reader.close();
 		eventAssert.assertRunComplete();
 
-		verify(factory, times(1)).getConnection(any(RuntimeEnvironment.class), any(OutputStreamHandler.class));
+		verify(factory, times(1)).getConnection(isNull(), any(OutputStreamHandler.class));
 	}
 
 	@Test
-	public void shouldFireStartingEventBeforeTestStarts() throws Exception {
+	void shouldFireStartingEventBeforeTestStarts() throws Exception {
 		when(connection.runTest("test2")).thenThrow(new RuntimeException());
 		try {
 			reader.process("test2");

@@ -27,19 +27,24 @@
  */
 package org.infinitest.testrunner.process;
 
-import static org.infinitest.util.InfinitestUtils.*;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.net.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.logging.Level;
 
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.MissingClassException;
+import org.infinitest.TestRunAborted;
+import org.infinitest.testrunner.TestResults;
 
 public class TcpSocketProcessCommunicator {
 	private ServerSocket serverSocket;
 	private ObjectInputStream inStream;
-	private ObjectOutputStream outStream;
+	private PrintStream writer;
 	private Socket socket;
 	private final int timeout;
 
@@ -70,7 +75,7 @@ public class TcpSocketProcessCommunicator {
 			socket = serverSocket.accept();
 			log(Level.CONFIG, "Socket opened");
 			inStream = new ObjectInputStream(socket.getInputStream());
-			outStream = new ObjectOutputStream(socket.getOutputStream());
+			writer = new PrintStream(socket.getOutputStream(), true, "UTF-8");
 		} catch (SocketTimeoutException e) {
 			log("Test runner process failed to start in a timely manner", e);
 			throw new RuntimeException(e);
@@ -85,13 +90,12 @@ public class TcpSocketProcessCommunicator {
 	 */
 	public synchronized void closeSocket() {
 		try {
-			if (outStream != null) {
-				outStream.writeObject(null);
+			if (writer != null) {
 				if (!socket.isClosed()) {
 					inStream.close();
 					inStream = null;
-					outStream.close();
-					outStream = null;
+					writer.close();
+					writer = null;
 					socket.close();
 					socket = null;
 					log(Level.CONFIG, "Socket closed");
@@ -106,7 +110,7 @@ public class TcpSocketProcessCommunicator {
 	// closed
 	public synchronized TestResults sendMessage(String testName) {
 		try {
-			outStream.writeObject(testName);
+			writer.println(testName);
 			return (TestResults) inStream.readObject();
 		} catch (IOException e) {
 			throw new TestRunAborted(testName, e);

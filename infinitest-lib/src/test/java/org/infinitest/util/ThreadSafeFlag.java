@@ -27,7 +27,7 @@
  */
 package org.infinitest.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ThreadSafeFlag {
 	private boolean tripped;

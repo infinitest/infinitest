@@ -27,20 +27,22 @@
  */
 package org.infinitest.util;
 
-import static org.infinitest.util.Events.*;
-import static org.junit.Assert.*;
+import static org.infinitest.util.Events.eventFor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 // Reflection is OK. I promise.
 // http://www.jguru.com/faq/view.jsp?EID=246569
-public class SimpleEventSupportTest {
+class SimpleEventSupportTest {
 	protected boolean eventRecieved;
 	private Events<SimpleListener> integerEvent;
 	private SimpleListener listener;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		integerEvent = eventFor(SimpleListener.class);
 		listener = new SimpleListener() {
 			@Override
@@ -52,13 +54,13 @@ public class SimpleEventSupportTest {
 	}
 
 	@Test
-	public void shouldFireEventsWithNoParameter() {
+	void shouldFireEventsWithNoParameter() {
 		integerEvent.fire();
 		assertTrue(eventRecieved);
 	}
 
 	@Test
-	public void canRemoveListeners() {
+	void canRemoveListeners() {
 		integerEvent.removeListener(listener);
 		integerEvent.fire();
 		assertFalse(eventRecieved);

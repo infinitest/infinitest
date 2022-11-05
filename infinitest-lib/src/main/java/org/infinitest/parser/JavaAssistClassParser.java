@@ -39,11 +39,13 @@ import javassist.*;
 
 import org.infinitest.*;
 
-import com.google.common.collect.*;
 import com.google.common.hash.Hashing;
 import com.google.common.io.*;
 
 public class JavaAssistClassParser {
+	private static final Map<String, JavaClass> CLASSES_BY_NAME = new HashMap<>();
+	private static final Map<String, CacheEntry> BY_PATH = new HashMap<>();
+	
 	private final String classpath;
 	private ClassPool classPool;
 
@@ -90,8 +92,6 @@ public class JavaAssistClassParser {
 		return !new File(iter.next()).exists();
 	}
 
-	private final static Map<String, JavaClass> CLASSES_BY_NAME = Maps.newHashMap();
-
 	public JavaClass getClass(String className) {
 		JavaClass clazz = CLASSES_BY_NAME.get(className);
 		if (clazz == null) {
@@ -100,12 +100,16 @@ public class JavaAssistClassParser {
 			if (unparsableClass(ctClass)) {
 				clazz = new UnparsableClass(className);
 			} else {
-				JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
-				URL url = getClassPool().find(className);
-				if ((url != null) && url.getProtocol().equals("file")) {
-					javaAssistClass.setClassFile(new File(url.getFile()));
+				try {
+					JavaAssistClass javaAssistClass = new JavaAssistClass(ctClass);
+					URL url = getClassPool().find(className);
+					if ((url != null) && url.getProtocol().equals("file")) {
+						javaAssistClass.setClassFile(new File(url.toURI()));
+					}
+					clazz = javaAssistClass;
+				} catch (URISyntaxException e) {
+					throw new RuntimeException(e);
 				}
-				clazz = javaAssistClass;
 			}
 
 			CLASSES_BY_NAME.put(className, clazz);
@@ -113,8 +117,6 @@ public class JavaAssistClassParser {
 
 		return clazz;
 	}
-
-	private final static Map<String, CacheEntry> BY_PATH = Maps.newHashMap();
 
 	public static class CacheEntry {
 		final String sha1;
@@ -125,6 +127,21 @@ public class JavaAssistClassParser {
 			this.classname = classname;
 		}
 	}
+	
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		CacheEntry entry = BY_PATH.get(file.getAbsolutePath());
+		
+		if (entry != null) {
+			String classname = entry.classname;
+			
+			return CLASSES_BY_NAME.get(classname);
+		}
+		
+		return null;
+	}
 
 	public String classFileChanged(File file) throws IOException {
 		String sha1 = Files.hash(file, Hashing.sha1()).toString();
@@ -133,10 +150,7 @@ public class JavaAssistClassParser {
 			return entry.classname;
 		}
 
-		FileInputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(file);
-
+		try (FileInputStream inputStream = new FileInputStream(file)) {
 			CtClass ctClass = getClassPool().makeClass(inputStream);
 			String classname = ctClass.getName();
 
@@ -144,10 +158,6 @@ public class JavaAssistClassParser {
 			BY_PATH.put(file.getAbsolutePath(), new CacheEntry(sha1, classname));
 
 			return classname;
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
 		}
 	}
 

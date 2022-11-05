@@ -27,64 +27,50 @@
  */
 package org.infinitest.filter;
 
-import static com.google.common.collect.Lists.*;
-import static java.util.logging.Level.*;
-import static org.apache.commons.lang.StringUtils.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import java.util.Set;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.parser.JavaClass;
 
-import org.infinitest.parser.*;
-
-import com.google.common.base.*;
-import com.google.common.io.*;
+import com.google.common.collect.ImmutableSet;
 
 public class RegexFileFilter implements TestFilter {
-  private final File file;
-  private final List<Pattern> filters = newArrayList();
 
-  public RegexFileFilter(File file) {
-    this.file = file;
-    if (!file.exists()) {
-      log(INFO, "Filter file " + file + " does not exist.");
-    }
-    updateFilterList();
-  }
+	private final InfinitestConfigurationSource configSource;
+	private Set<String> includedPatterns = ImmutableSet.<String>of();
+	private Set<String> excludedPatterns = ImmutableSet.<String>of();
 
-  public boolean match(JavaClass javaClass) {
-    String className = javaClass.getName();
-    for (Pattern pattern : filters) {
-      if (pattern.matcher(className).lookingAt()) {
-        return true;
-      }
-    }
-    return false;
-  }
+	public RegexFileFilter(InfinitestConfigurationSource configSource) {
+		this.configSource = configSource;
+		updateFilterList();
+	}
 
-  @Override
-  public void updateFilterList() {
-    filters.clear();
+	@Override
+	public void updateFilterList() {
+		InfinitestConfiguration config = configSource.getConfiguration();
+		includedPatterns = config.includedPatterns();
+		excludedPatterns = config.excludedPatterns();
+	}
 
-    if (file.exists()) {
-      readFilterFile();
-    }
-  }
+	@Override
+	public boolean match(JavaClass javaClass) {
+		if (!includedPatterns.isEmpty() && !matchesAnyPattern(javaClass, includedPatterns)) {
+			// Rejected because not included
+			return true;
+		}
 
-  private void readFilterFile() {
-    try {
-      for (String line : Files.readLines(file, Charsets.UTF_8)) {
-        if (isValidFilter(line)) {
-          filters.add(Pattern.compile(line));
-        }
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Something horrible happened to the filter file", e);
-    }
-  }
+		// Rejected because explicitely excluded
+		return matchesAnyPattern(javaClass, excludedPatterns);
+	}
 
-  private boolean isValidFilter(String line) {
-    return !isBlank(line) && !line.startsWith("!") && !line.startsWith("#");
-  }
+	private boolean matchesAnyPattern(JavaClass javaClass, Set<String> patterns) {
+		for (String pattern : patterns) {
+			if (javaClass.getName().matches(pattern)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

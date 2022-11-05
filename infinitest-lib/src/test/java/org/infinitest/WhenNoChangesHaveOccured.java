@@ -27,22 +27,24 @@
  */
 package org.infinitest;
 
-import static java.util.Arrays.*;
-import static org.infinitest.CoreStatus.*;
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static org.infinitest.CoreStatus.PASSING;
+import static org.infinitest.CoreStatus.RUNNING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenNoChangesHaveOccured {
+
+class WhenNoChangesHaveOccured {
 	@Test
-	public void shouldStillUpdateStatus() {
+	void shouldStillUpdateStatus() {
 		ResultCollector collector = new ResultCollector();
 		collector.testRunComplete();
 		assertEquals(PASSING, collector.getStatus());
 	}
 
 	@Test
-	public void shouldStillSetRunningStatus() {
+	void shouldStillSetRunningStatus() {
 		EventSupport eventAssert = new EventSupport();
 		ResultCollector collector = new ResultCollector();
 		collector.addStatusChangeListener(eventAssert);

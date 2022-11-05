@@ -27,93 +27,50 @@
  */
 package org.infinitest;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
 
 public class TestNGConfigurator {
-	private static final String SUFFIX = "\\s?=\\s?(.+)";
-	private static final String PREFIX = "^\\s*#+\\s?";
-	private static final String EXCLUDED_GROUPS = "excluded-groups";
-	private static final String INCLUDED_GROUPS = "groups";
-	private static final String LISTENERS = "listeners";
-	private static final Pattern EXCLUDED = Pattern.compile(PREFIX + EXCLUDED_GROUPS + SUFFIX);
-	private static final Pattern INCLUDED = Pattern.compile(PREFIX + INCLUDED_GROUPS + SUFFIX);
-	private static final Pattern LISTENER = Pattern.compile(PREFIX + LISTENERS + SUFFIX);
-	private static final File FILTERFILE = new File("infinitest.filters");
+	private InfinitestConfigurationSource configSource;
 
 	public TestNGConfigurator() {
+		this(FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 	}
 
-  public TestNGConfiguration readConfig() {
-    return readConfig(FILTERFILE);
-  }
-
-	TestNGConfiguration readConfig(File file) {
-    TestNGConfiguration configuration = new TestNGConfiguration();
-
-    if ((file == null) || !file.exists()) {
-      return configuration;
-    }
-
-    try {
-      readFilters(file, configuration);
-    } catch (IOException e) {
-      throw new RuntimeException("Something horrible happened to the filter file", e);
-    }
-
-    return configuration;
+	public TestNGConfigurator(InfinitestConfigurationSource configSource) {
+		this.configSource = configSource;
 	}
 
-	private void readFilters(File file, TestNGConfiguration configuration) throws IOException {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-        addFilter(line, configuration);
-			}
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
+	public TestNGConfiguration readConfig() {
+		InfinitestConfiguration infinitestConfig = configSource.getConfiguration();
+
+		TestNGConfiguration testNgConfiguration = new TestNGConfiguration();
+		testNgConfiguration.setGroups(Joiner.on(',').join(infinitestConfig.includedGroups()));
+		testNgConfiguration.setExcludedGroups(Joiner.on(',').join(infinitestConfig.excludedGroups()));
+
+		testNgConfiguration.setListeners(createListenerList(infinitestConfig.testngListeners()));
+		return testNgConfiguration;
 	}
 
-	private void addFilter(String line, TestNGConfiguration configuration) {
-		Matcher matcher = EXCLUDED.matcher(line.trim());
-		if (matcher.matches()) {
-			String excludedGroups = matcher.group(1);
-      configuration.setExcludedGroups(excludedGroups);
-      return;
-		}
+	private List<Object> createListenerList(ImmutableSet<String> listenerClassNames) {
+		List<Object> listenerList = new ArrayList<>();
 
-    matcher = INCLUDED.matcher(line);
-    if (matcher.matches()) {
-      String includedGroups = matcher.group(1).trim();
-      configuration.setGroups(includedGroups);
-      return;
-    }
-
-    matcher = LISTENER.matcher(line);
-    if (matcher.matches()) {
-      List<Object> listenerList = createListenerList(matcher.group(1).trim());
-      configuration.setListeners(listenerList);
-    }
-  }
-
-	private List<Object> createListenerList(String listeners) {
-		List<Object> listenerList = new ArrayList<Object>();
-
-    for (String listenerName : listeners.split("\\s*,\\s*")) {
+		for (String listenerClassName : listenerClassNames) {
 			try {
-				listenerList.add(Class.forName(listenerName).newInstance());
+				listenerList.add(Class.forName(listenerClassName).newInstance());
 			} catch (Exception e) {
 				// unable to add this listener, just continue with the next.
 				e.printStackTrace();
 			}
 		}
-
 		return listenerList;
 	}
+
 }

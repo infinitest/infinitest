@@ -27,9 +27,8 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.eclipse.workspace.JavaProjectBuilder.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
@@ -37,28 +36,29 @@ import java.net.*;
 import java.util.*;
 
 import org.eclipse.jdt.core.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class JavaProjectSetTest {
+class JavaProjectSetTest {
 	private IJavaProject project;
 	private JavaProjectSet projectSet;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		URL resource = getClass().getResource("/emptyJar.jar");
 		File externalJar = new File(resource.getPath());
 		String externalJarPath = externalJar.getAbsolutePath();
 
 		project = project("projectA").withJar("lib/someJarFile").andExportedJar("lib/someExportedJarFile").andExtenralJar(externalJarPath).andSourceDirectory("src", "srcbin").andDependsOn("projectB");
 		ResourceFinder finder = mock(ResourceFinder.class);
-		List<IJavaProject> projects = newArrayList(project);
+		List<IJavaProject> projects = Collections.singletonList(project);
 		when(finder.getJavaProjects()).thenReturn(projects);
 		projectSet = new JavaProjectSet(finder);
 	}
 
 	@Test
-	public void shouldProvideOutputDirectoriesForProjectAsAbsolutePaths() throws JavaModelException {
-		ArrayList<File> expectedDirectories = newArrayList(new File("/root/projectA/srcbin"), new File("/root/projectA/target/classes"));
+	void shouldProvideOutputDirectoriesForProjectAsAbsolutePaths() throws JavaModelException {
+		List<File> expectedDirectories = Arrays.asList(new File("/root/projectA/srcbin"), new File("/root/projectA/target/classes"));
 
 		assertEquals(expectedDirectories, projectSet.outputDirectories(new ProjectFacade(project)));
 	}

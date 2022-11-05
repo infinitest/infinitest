@@ -7,7 +7,6 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<filtered>false</filtered>
 			<directory>target/classes</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
@@ -15,7 +14,6 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<filtered>true</filtered>
 			<directory>${basedir}</directory>
 			<outputDirectory></outputDirectory>
 			<includes>

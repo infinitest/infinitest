@@ -27,10 +27,14 @@
  */
 package org.infinitest;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
-import org.infinitest.testrunner.*;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestResultsListener;
 
 /**
  * Each core runs tests for a single project (a collection of tests that all
@@ -75,6 +79,8 @@ public interface InfinitestCore {
 	 * Uses a list of changed files instead of searching for them
 	 */
 	int update(Collection<File> changedFiles);
+	
+	void remove(Collection<File> removedFiles, Set<JavaClass> removedClasses);
 
 	/**
 	 * Re-indexes all the classes in the output directory and re-runs all the

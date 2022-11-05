@@ -27,14 +27,19 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 // RISK This class is only tested by running it, which is slow and throws off coverage
 public class TestRunnerProcess {
 	public static final String TEST_RUN_ERROR = "Error occurred during test run";
+	
 	private NativeRunner runner;
 
 	private TestRunnerProcess(String runnerClass) {
@@ -57,11 +62,7 @@ public class TestRunnerProcess {
 		try {
 			Class<?> runnerClass = Class.forName(runnerClassName);
 			return (NativeRunner) runnerClass.newInstance();
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -72,18 +73,21 @@ public class TestRunnerProcess {
 
 	public static void main(String[] args) {
 		try {
-			checkForJUnit4();
-
-			TestRunnerProcess process = new TestRunnerProcess(args[0]);
+			checkForJUnit4();			
+			if (args.length != 2) {
+				throw new IllegalArgumentException("runner expects two parameters: runnerClass and port");
+			}
+			String runnerClass = args[0];
+			TestRunnerProcess process = new TestRunnerProcess(runnerClass);
 			int portNum = Integer.parseInt(args[1]);
 			Socket clientSocket = new Socket("127.0.0.1", portNum);
 			// DEBT Extract this to a reader class
 			ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-			ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
+			BufferedReader inputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
 
 			String testName;
 			do {
-				testName = (String) inputStream.readObject();
+				testName = inputStream.readLine();
 
 				if (testName != null) {
 					writeTestResultToOutputStream(process, outputStream, testName);

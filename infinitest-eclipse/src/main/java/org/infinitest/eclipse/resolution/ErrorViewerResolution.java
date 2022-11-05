@@ -27,7 +27,7 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static com.google.common.collect.Lists.*;
+import static java.util.Arrays.asList;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
 import static org.infinitest.eclipse.util.PickleJar.*;
@@ -71,34 +71,29 @@ public class ErrorViewerResolution implements IMarkerResolution2 {
 	public void run(IMarker marker) {
 		try {
 			Serializable unpickledStack = unpickle(marker.getAttribute(PICKLED_STACK_TRACE_ATTRIBUTE).toString());
-			List<StackTraceElement> stackTrace = newArrayList((StackTraceElement[]) unpickledStack);
+			List<StackTraceElement> stackTrace = asList((StackTraceElement[]) unpickledStack);
 			createStackViewWith(stackTrace, marker.getAttribute(MESSAGE).toString());
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected void createStackViewWith(List<StackTraceElement> stackTrace, String message) {
-		List<StackTraceElement> filteredStackTrace = stackTraceFilter.filterStack(stackTrace);
-		ResourceLookup resourceLookup = InfinitestPlugin.getInstance().getBean(ResourceLookup.class);
-		new FailureViewer(getMainShell(), message, filteredStackTrace, resourceLookup).show();
-	}
+	protected void createStackViewWith(List<StackTraceElement> stackTrace, String message) {		
+		// We use async exec here to avoid issue #152
+		// Using asyncExec allows to open the FailerViewer after main shell have
+		// been reactivated.
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				List<StackTraceElement> filteredStackTrace = stackTraceFilter.filterStack(stackTrace);
+				ResourceLookup resourceLookup = InfinitestPlugin.getInstance().getBean(ResourceLookup.class);
+				Shell parentShell = Display.getCurrent().getActiveShell();
+				final FailureViewer failureViewer = new FailureViewer(parentShell, message, filteredStackTrace, resourceLookup);
 
-	private Shell getMainShell() {
-		// RISK Untested
-		for (Shell shell : Display.getDefault().getShells()) {
-			if (isPrimary(shell)) {
-				return shell;
+				failureViewer.show();
 			}
-		}
-		// This is problematic because the active shell may be the Problems View
-		// QuickFix dialog,
-		// rather than the main eclipse shell
-		return Display.getDefault().getActiveShell();
+		});
+
 	}
 
-	private boolean isPrimary(Shell shell) {
-		// This is my best guess at how to identify the primary shell
-		return shell.getParent() == null;
-	}
 }

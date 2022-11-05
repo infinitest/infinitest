@@ -3,6 +3,11 @@
 *.iml
 test-output/
 
+
+# gradle
+.gradle
+build/
+
 # Eclipse files
 .classpath
 .metadata

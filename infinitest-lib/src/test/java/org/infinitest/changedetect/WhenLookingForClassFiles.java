@@ -27,28 +27,23 @@
  */
 package org.infinitest.changedetect;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
+import java.nio.file.FileSystems;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 public class WhenLookingForClassFiles {
-	private ClassFileFilter filter;
 
-	@Before
-	public void inContext() {
-		filter = new ClassFileFilter();
+	@Test
+	void shouldIgnoreCase() {
+		assertTrue(ClassFileFilter.isClassFile(FileSystems.getDefault().getPath("foo.ClAsS")));
 	}
 
 	@Test
-	public void shouldIgnoreCase() {
-		assertTrue(filter.accept(new File("foo.ClAsS")));
-	}
-
-	@Test
-	public void shouldOnlyFindFilesWithClassExtension() {
-		assertFalse(filter.accept(new File("foo.clas")));
-		assertFalse(filter.accept(new File("fooclass")));
+	void shouldOnlyFindFilesWithClassExtension() {
+		assertFalse(ClassFileFilter.isClassFile(FileSystems.getDefault().getPath("foo.clas")));
+		assertFalse(ClassFileFilter.isClassFile(FileSystems.getDefault().getPath("fooclass")));
 	}
 }

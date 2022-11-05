@@ -27,27 +27,34 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import org.infinitest.*;
-import org.junit.*;
+import org.infinitest.ConcurrencyController;
+import org.infinitest.QueueDispatchException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class ProcessorRunnableTest {
-	@After
-	public void cleanup() {
+class ProcessorRunnableTest {
+	@AfterEach
+	void cleanup() {
 		// Clear interrupted state
 		Thread.interrupted();
 	}
 
 	@Test
-	public void shouldNotAttemptReQueueIfNoTestHasBeenPulled() {
+	void shouldNotAttemptReQueueIfNoTestHasBeenPulled() {
 		final Collection<String> additions = newLinkedList();
 		Queue<String> queue = new LinkedList<String>() {
 			private static final long serialVersionUID = -1L;
@@ -62,12 +69,12 @@ public class ProcessorRunnableTest {
 		ProcessorRunnable runnable = new ProcessorRunnable(queue, processor, null, 1, mock(ConcurrencyController.class));
 		Thread.currentThread().interrupt();
 		runnable.run();
-		assertTrue(additions.isEmpty());
+		assertThat(additions).isEmpty();
 		verify(processor).close();
 	}
 
 	@Test
-	public void shouldReQueueTestIfEventDispatchFails() throws InterruptedException, IOException {
+	void shouldReQueueTestIfEventDispatchFails() throws InterruptedException, IOException {
 		Queue<String> testQueue = newLinkedList(asList("test1"));
 		QueueProcessor processor = mock(QueueProcessor.class);
 		doThrow(new QueueDispatchException(new Throwable())).when(processor).process("test1");

@@ -29,27 +29,30 @@ package org.infinitest.eclipse.resolution;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.eclipse.markers.ProblemMarkerInfo.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenGeneratingQuickFixesForErrorMarkers {
+class WhenGeneratingQuickFixesForErrorMarkers {
   private MarkerResolutionGenerator generator;
   private IMarker marker;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     generator = new MarkerResolutionGenerator();
     marker = mock(IMarker.class);
   }
 
   @Test
-  public void shouldIncludePrintStackTraceIfMarkerHasAStackTrace() throws Exception {
+  void shouldIncludePrintStackTraceIfMarkerHasAStackTrace() throws Exception {
     when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenReturn("TestName");
     when(marker.getAttribute(METHOD_NAME_ATTRIBUTE)).thenReturn("methodName");
 
@@ -60,7 +63,7 @@ public class WhenGeneratingQuickFixesForErrorMarkers {
   }
 
   @Test
-  public void shouldNotAddResolutionsToMarkersWithNoStackTrace() throws Exception {
+  void shouldNotAddResolutionsToMarkersWithNoStackTrace() throws Exception {
     IMarker marker = mock(IMarker.class);
     when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenReturn(null);
 
@@ -69,7 +72,7 @@ public class WhenGeneratingQuickFixesForErrorMarkers {
   }
 
   @Test
-  public void shouldNotHaveResolutionIfMarkerThrowsResourceException() throws CoreException {
+  void shouldNotHaveResolutionIfMarkerThrowsResourceException() throws CoreException {
     IMarker marker = mock(IMarker.class);
     ResourceException resourceException = new ResourceException(mock(IStatus.class));
     when(marker.getAttribute(TEST_NAME_ATTRIBUTE)).thenThrow(resourceException);

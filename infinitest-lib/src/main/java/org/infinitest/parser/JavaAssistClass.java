@@ -27,23 +27,40 @@
  */
 package org.infinitest.parser;
 
-import static javassist.Modifier.*;
-import static javassist.bytecode.AnnotationsAttribute.*;
-import static org.infinitest.parser.DescriptorParser.*;
+import static java.util.Arrays.stream;
+import static javassist.Modifier.isPublic;
+import static javassist.bytecode.AnnotationsAttribute.invisibleTag;
+import static javassist.bytecode.AnnotationsAttribute.visibleTag;
+import static org.infinitest.parser.DescriptorParser.parseClassNameFromConstantPoolDescriptor;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 
-import javassist.*;
-import javassist.bytecode.*;
-import javassist.bytecode.annotation.*;
-import junit.framework.*;
+import org.infinitest.util.InfinitestUtils;
+import org.junit.platform.commons.annotation.Testable;
+import org.junit.runner.RunWith;
 
-import org.junit.Test;
-import org.junit.runner.*;
+import com.google.common.base.Predicate;
 
-import com.google.common.base.*;
-import com.google.common.collect.*;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.AttributeInfo;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.ParameterAnnotationsAttribute;
+import javassist.bytecode.annotation.Annotation;
+import junit.framework.TestCase;
 
 /**
  * Be careful: instances of this class are kept in a cache
@@ -57,8 +74,35 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
-		isATest = !isAbstract(classReference) && hasTests(classReference) && canInstantiate(classReference);
+		isATest = !isAbstract(classReference) &&
+				(hasTests(classReference) || isJUnit5Testable(classReference)) &&
+				(hasJUnit5TestImport(imports) || canInstantiate(classReference));
 		className = classReference.getName();
+	}
+
+	private boolean hasJUnit5TestImport(final String[] imports) {
+		return stream(imports)
+				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
+	}
+	
+	/**
+	 * @return <code>true</code> if the class or one of its parents is annotated with {@link Testable}
+	 */
+	private boolean isJUnit5Testable(final CtClass classReference) {
+		CtClass clazz = classReference;
+		while (clazz !=null) {
+			if (clazz.hasAnnotation(Testable.class)) {
+				return true;
+			}
+			
+			try {
+				clazz = clazz.getSuperclass();
+			} catch (NotFoundException e) {
+				return false;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -67,7 +111,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private String[] findImports(CtClass ctClass) {
-		Set<String> imports = Sets.newHashSet();
+		Set<String> imports = new HashSet<>();
 		addDependenciesFromConstantPool(ctClass, imports);
 		addFieldDependencies(ctClass, imports);
 		addClassAnnotationDependencies(ctClass, imports);
@@ -220,6 +264,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
+				|| hasArchUnitTests(classReference)
 				|| hasTestNGTests(classReference);
 	}
 
@@ -252,6 +297,16 @@ public class JavaAssistClass extends AbstractJavaClass {
 		};
 	}
 
+	private boolean hasArchUnitTests(CtClass classReference) {
+		for (CtField field : classReference.getDeclaredFields()) {
+			if (field.hasAnnotation("com.tngtech.archunit.junit.ArchTest")) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	private boolean hasTestNGTests(CtClass classReference) {
 		if (isTestNGTestClass(classReference)) {
 			return true;
@@ -270,12 +325,49 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasJUnitTestMethods(CtClass classReference) {
 		for (CtMethod ctMethod : classReference.getMethods()) {
-			if (isJUnit4TestMethod(ctMethod) || isJUnit3TestMethod(ctMethod)) {
+			if (isJUnit5TestMethod(ctMethod, classReference.getClassPool())
+					|| isJUnit4TestMethod(ctMethod) 
+					|| isJUnit3TestMethod(ctMethod)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+    private boolean isJUnit5TestMethod(CtMethod ctMethod, ClassPool classPool) {
+        final List<?> attributes = ctMethod.getMethodInfo2().getAttributes();
+        return attributes.stream()
+                .filter(clazz -> clazz instanceof AnnotationsAttribute)
+                .map(attribute -> (AnnotationsAttribute) attribute)
+                .map(AnnotationsAttribute::getAnnotations)
+                .flatMap(Arrays::stream)
+                .anyMatch(annotation -> isJUnit5TestAnnotation(annotation, classPool));
+    }
+	
+	/**
+	 * @return <code>true</code> if the annotation is JUnit's <code>Test</code> or if the annotation type itself is annotated
+	 * with <code>Test</code> or <code>TestTemplate</code>. Annotations such as <code>ParameterizedTest<code> are annotated with
+	 * <code>TestTemplate</code> and should be detected as tests
+	 */
+	private boolean isJUnit5TestAnnotation(Annotation annotation, ClassPool classPool) {
+		String annotationTypeName = annotation.getTypeName();
+		boolean isJUnitTestAnnotation = org.junit.jupiter.api.Test.class.getName().equals(annotationTypeName);
+		
+		if (isJUnitTestAnnotation) {
+			return true;
+		}
+		
+		try {
+			CtClass annotationType = classPool.get(annotationTypeName);
+			
+			return isAnnotatedWithGivenAnnotation(annotationType, org.junit.jupiter.api.Test.class)
+					|| isAnnotatedWithGivenAnnotation(annotationType, org.junit.jupiter.api.TestTemplate.class);
+		} catch (NotFoundException  e) {
+			InfinitestUtils.log(Level.FINE, "Could not load class " + annotationTypeName + " : " + e.getMessage());
+			
+			return false;
+		}
+    }
 
 	private boolean isJUnit3TestMethod(CtMethod ctMethod) {
 		return ctMethod.getName().startsWith("test") && anySuperclassOf(ctMethod.getDeclaringClass(), isTestCase());
@@ -340,7 +432,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 			if (attribute instanceof AnnotationsAttribute) {
 				AnnotationsAttribute annotations = (AnnotationsAttribute) attribute;
 				for (Annotation each : annotations.getAnnotations()) {
-					if (Test.class.getName().equals(each.getTypeName())) {
+					if (org.junit.Test.class.getName().equals(each.getTypeName())) {
 						return true;
 					}
 				}

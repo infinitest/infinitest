@@ -27,14 +27,13 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class TestCaseEvent {
-	private static final Set<String> IGNORED_ERRORS = newHashSet(VerifyError.class.getName(), Error.class.getName());
 	private final List<TestEvent> methodEvents;
 	private final Object source;
 	private final String testName;
@@ -44,13 +43,26 @@ public class TestCaseEvent {
 		this.testName = testName;
 		this.source = source;
 		this.results = results;
-		methodEvents = newArrayList();
+		methodEvents = new ArrayList<>();
 		// DEBT move this to a static factory method?
 		for (TestEvent testEvent : results) {
-			if (!IGNORED_ERRORS.contains(testEvent.getFullErrorClassName())) {
+			if (!isCompilationErrors(testEvent)) {
 				methodEvents.add(testEvent);
 			}
 		}
+	}
+
+	private boolean isCompilationErrors(TestEvent testEvent) {
+		return Objects.equals(testEvent.getFullErrorClassName(), VerifyError.class.getName())
+				|| isUnresolvedCompilationProblemsError(testEvent);
+	}
+
+	private boolean isUnresolvedCompilationProblemsError(TestEvent testEvent) {
+		// This is the kind of error launched at runtime if code with compile errors are
+		// executed
+		return Objects.equals(testEvent.getFullErrorClassName(), Error.class.getName())
+				&& testEvent.getMessage() != null
+				&& testEvent.getMessage().contains("Unresolved compilation problems:");
 	}
 
 	public boolean failed() {

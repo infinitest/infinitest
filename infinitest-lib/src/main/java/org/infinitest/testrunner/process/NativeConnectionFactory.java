@@ -27,16 +27,21 @@
  */
 package org.infinitest.testrunner.process;
 
-import static java.util.Arrays.*;
-import static java.util.logging.Level.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static java.util.Arrays.asList;
+import static java.util.logging.Level.CONFIG;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.environment.ClasspathArgumentBuilder;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.testrunner.NativeRunner;
+import org.infinitest.testrunner.OutputStreamHandler;
+import org.infinitest.testrunner.TestRunnerProcess;
 
 public class NativeConnectionFactory implements ProcessConnectionFactory {
 	private final Class<? extends NativeRunner> runnerClass;
@@ -48,49 +53,70 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 	@Override
 	public ProcessConnection getConnection(RuntimeEnvironment environment, OutputStreamHandler outputListener) throws IOException {
 		TcpSocketProcessCommunicator communicator = createCommunicator();
-		Process process = startProcess(communicator.createSocket(), environment);
+				
+		ClasspathArgumentBuilder classpathArgumentBuilder = environment.createClasspathArgumentBuilder();
+		
+		Process process = startProcess(communicator.createSocket(), environment, classpathArgumentBuilder);
 		outputListener.processStream(process.getErrorStream(), OutputType.STDERR);
 		outputListener.processStream(process.getInputStream(), OutputType.STDOUT);
 		communicator.openSocket();
-		return new NativeProcessConnection(communicator, process);
+		return new NativeProcessConnection(communicator, process, classpathArgumentBuilder);
 	}
+
+
 
 	protected TcpSocketProcessCommunicator createCommunicator() {
 		return new TcpSocketProcessCommunicator();
 	}
 
-	Process startProcess(int port, RuntimeEnvironment environment) throws IOException {
-		ProcessBuilder builder = buildProcess(port, environment);
-		return builder.start();
+	Process startProcess(int port, RuntimeEnvironment environment, ClasspathArgumentBuilder classpathArgumentBuilder) throws IOException {
+		
+		ProcessBuilder builder = buildProcess(port, environment, classpathArgumentBuilder);
+		log(CONFIG, "Starting TestRunner with configuration:\n"+buildTestProcessConfigurationMessage(builder));
+		try {
+			return builder.start();
+		} catch (IOException e) {
+			String message = "Failed to start runner process with configuration\n" +buildTestProcessConfigurationMessage(builder);
+			throw new IOException(message, e);
+		}
 	}
 
-	ProcessBuilder buildProcess(int port, RuntimeEnvironment environment) {
+	ProcessBuilder buildProcess(int port, RuntimeEnvironment environment, ClasspathArgumentBuilder classpathArgumentBuilder) {
 		// Could extract this to a class. Could then replace with:
 		// http://wiki.eclipse.org/FAQ_How_do_I_launch_a_Java_program%3F
 		ProcessBuilder builder = new ProcessBuilder();
 		builder.directory(environment.getWorkingDirectory());
 
-		List<String> arguments = environment.createProcessArguments();
+		List<String> arguments = environment.createProcessArguments(classpathArgumentBuilder);
 		arguments.addAll(buildRunnerArgs(port));
 		builder.command(arguments);
 
 		builder.environment().putAll(environment.createProcessEnvironment());
 
-		logProcessEnvironment(builder);
 		return builder;
 	}
 
-	private void logProcessEnvironment(ProcessBuilder builder) {
+	
+	
+	private String buildTestProcessConfigurationMessage(ProcessBuilder builder) {
 		String lineSeparator = System.getProperty("line.separator");
 
 		StringBuilder message = new StringBuilder();
-		message.append("Launching test runner process with the following configuration:").append(lineSeparator);
-		message.append("Directory: ").append(builder.directory().getAbsolutePath()).append(lineSeparator).append("Environment: ").append(builder.environment()).append(lineSeparator).append("Command: ").append(builder.command());
+		message.append("  Directory: ").append(builder.directory().getAbsolutePath()).append(lineSeparator);
+		message.append("  Environment:").append(lineSeparator);
+		for (Map.Entry<String, String> e: builder.environment().entrySet()) {
+			message.append("    ").append(e.getKey()).append("=").append(e.getValue()).append(lineSeparator);	
+		}
+		
+		message.append("  Command: ").append(builder.command());
 
-		log(INFO, message.toString());
+		return message.toString();
 	}
 
 	private Collection<String> buildRunnerArgs(int portNum) {
-		return asList(TestRunnerProcess.class.getName(), runnerClass.getName(), String.valueOf(portNum));
+		return asList(
+				TestRunnerProcess.class.getName(), 
+				runnerClass.getName(), 
+				String.valueOf(portNum));
 	}
 }

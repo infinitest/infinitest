@@ -27,14 +27,16 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenComparingTestStatus {
+
+class WhenComparingTestStatus {
 	@Test
-	public void shouldBeEqual() {
-		assertFalse(CoreStatus.FAILING.equals(CoreStatus.PASSING));
-		assertTrue(CoreStatus.FAILING.equals(CoreStatus.FAILING));
+	void shouldBeEqual() {
+		assertNotEquals(CoreStatus.FAILING, CoreStatus.PASSING);
+		assertEquals(CoreStatus.FAILING, CoreStatus.FAILING);
 	}
 }

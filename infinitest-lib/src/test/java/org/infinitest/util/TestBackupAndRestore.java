@@ -27,18 +27,19 @@
  */
 package org.infinitest.util;
 
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.util.InfinitestTestUtils.createBackup;
+import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
+import java.io.File;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.FakeProduct;
 
-public class TestBackupAndRestore {
+class TestBackupAndRestore {
 	@Test
-	public void shouldBackupAndRestoreClasses() throws Exception {
+	void shouldBackupAndRestoreClasses() throws Exception {
 		String className = FakeProduct.class.getName();
 		File backup = createBackup(className);
 		File file = getFileForClass(className);

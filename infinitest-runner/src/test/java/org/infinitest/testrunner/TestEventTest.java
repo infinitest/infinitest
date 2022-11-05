@@ -27,31 +27,40 @@
  */
 package org.infinitest.testrunner;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestEvent.testCaseStarting;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.*;
-import java.util.*;
-
-import jdave.test.*;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.infinitest.util.*;
-import org.junit.*;
-import org.junit.rules.*;
+import org.infinitest.util.EqualityTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import com.google.common.base.*;
+import com.google.common.base.Strings;
 
-public class TestEventTest extends EqualityTestSupport {
+import jdave.test.JDaveUtils;
+
+class TestEventTest extends EqualityTestSupport {
 	private TestEvent event;
 	private Throwable error;
 
-	@Rule
-	public TestName testName = new TestName();
+	public TestInfo testInfo;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext(TestInfo testInfo) {
+		this.testInfo = testInfo;
+		
 		try {
 			throw new UnserializableException("Exception Message");
 		} catch (UnserializableException e) {
@@ -74,19 +83,19 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldHandleUnserializeableExceptions() throws Exception {
+	void shouldHandleUnserializeableExceptions() throws Exception {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-		objStream.writeObject(event);
+		assertDoesNotThrow(() -> objStream.writeObject(event));
 	}
 
 	@Test
-	public void shouldStoreExceptionClassesAsStrings() {
+	void shouldStoreExceptionClassesAsStrings() {
 		assertEquals(UnserializableException.class.getSimpleName(), event.getErrorClassName());
 	}
 
 	@Test
-	public void shouldFilterJunitElementsFromPointOfFailure() {
+	void shouldFilterJunitElementsFromPointOfFailure() {
 		try {
 			fail();
 		} catch (AssertionError e) {
@@ -97,40 +106,60 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	@Test
-	public void shouldSupportAssertJAssertions() {
+	void shouldSupportAssertJAssertions() {
 		try {
 			Assertions.assertThat(true).isFalse();
-		} catch (ComparisonFailure e) {
+		} catch (AssertionError e) {
 			error = e;
 			event = eventWithError(e);
-			verifyPointOfFailureMessage(e.getStackTrace()[3].getLineNumber());
+			
+			// AssertJ reflectively calls the constructor of org.junit.ComparisonFailure
+			// Between Java 11 and 17 a new stacktrace element was added:
+			// at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+			// In java 18 DirectConstructorHandleAccessor was introduced
+			// Depending on the Java version we're looking for the element with index 3, 4 or 2
+			int stackTraceElementIndex = 3;
+			for (int i = 0; i < e.getStackTrace().length; i++) {
+				StackTraceElement element = e.getStackTrace()[i];
+				if (element.getClassName().equals("jdk.internal.reflect.DirectConstructorHandleAccessor")) {
+					stackTraceElementIndex = 2;
+					break;
+				} else if (element.getMethodName().equals("newInstanceWithCaller")) {
+					stackTraceElementIndex = 4;
+					break;
+				}
+			}
+			
+			
+			verifyPointOfFailureMessage(e.getStackTrace()[stackTraceElementIndex].getLineNumber());
 		}
 	}
 
 	@Test
-	public void shouldFilterJdaveElementsFromPointOfFailure() {
+	void shouldFilterJdaveElementsFromPointOfFailure() {
 		error = JDaveUtils.createException();
 		event = eventWithError(error);
 		verifyPointOfFailureMessage(error.getStackTrace()[1].getLineNumber());
 	}
 
 	@Test
-	public void shouldHaveUserPresentableToString() {
+	void shouldHaveUserPresentableToString() {
 		assertEquals(event.getTestName() + "." + event.getTestMethod(), event.toString());
 	}
 
 	@Test
-	public void shouldProvideFullErrorClassName() {
+	void shouldProvideFullErrorClassName() {
 		assertEquals("java.lang.RuntimeException", methodFailed("", "", new RuntimeException()).getFullErrorClassName());
 	}
 
 	@Test
-	public void shouldSupportExceptionsWithoutStackTrace() {
-		methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure();
+	void shouldSupportExceptionsWithoutStackTrace() {
+		assertDoesNotThrow(() -> methodFailed("", "", new ExceptionWithoutStackTrace()).getPointOfFailure());
 	}
-
-	private int getLineNumber() {
-		return error.getStackTrace()[0].getLineNumber();
+	
+	@Test
+	void shouldSupportExceptionsWithNullStackTrace() {
+		assertDoesNotThrow(() -> methodFailed("", "", new ExceptionWithNullStackTrace()).getPointOfFailure());
 	}
 
 	private void verifyPointOfFailureMessage(int lineNumber) {
@@ -158,7 +187,8 @@ public class TestEventTest extends EqualityTestSupport {
 	}
 
 	private TestEvent eventWithError(Throwable error) {
-		return new TestEvent(METHOD_FAILURE, error.getMessage(), TestEventTest.class.getName(), testName.getMethodName(), error);
+		String methodName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
+		return new TestEvent(METHOD_FAILURE, error.getMessage(), TestEventTest.class.getName(), methodName, error);
 	}
 
 	@SuppressWarnings("serial")
@@ -166,6 +196,14 @@ public class TestEventTest extends EqualityTestSupport {
 		@Override
 		public synchronized Throwable fillInStackTrace() {
 			return this;
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private static class ExceptionWithNullStackTrace extends RuntimeException {
+		@Override
+		public StackTraceElement[] getStackTrace() {
+			return null;
 		}
 	}
 }

@@ -28,7 +28,6 @@
 package org.infinitest.parser;
 
 import java.io.*;
-import java.util.*;
 
 public interface JavaClass {
 	String getName();

@@ -27,27 +27,29 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.infinitest.*;
-import org.junit.*;
+import org.infinitest.TestQueueAdapter;
+import org.infinitest.TestQueueEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestRunnerEventSupport {
+class TestRunnerEventSupport {
   private int events;
   private RunnerEventSupport eventSupport;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     eventSupport = new RunnerEventSupport(this);
   }
 
   @Test
-  public void shouldFireEventsWhenTestRunFinishes() {
+  void shouldFireEventsWhenTestRunFinishes() {
     eventSupport.addTestQueueListener(new TestQueueAdapter() {
       @Override
       public void testRunComplete() {
@@ -59,8 +61,8 @@ public class TestRunnerEventSupport {
   }
 
   @Test
-  public void shouldFireTestQueueEvents() {
-    final List<TestQueueEvent> queueEvents = newArrayList();
+  void shouldFireTestQueueEvents() {
+    final List<TestQueueEvent> queueEvents = new ArrayList<>();
     eventSupport.addTestQueueListener(new TestQueueAdapter() {
       @Override
       public void testQueueUpdated(TestQueueEvent event) {

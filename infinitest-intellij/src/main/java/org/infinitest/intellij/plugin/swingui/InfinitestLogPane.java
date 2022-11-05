@@ -27,47 +27,87 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.lang.String.format;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+
+import org.infinitest.intellij.idea.IdeaLogService;
+import org.infinitest.intellij.idea.LogService;
+
+import com.intellij.openapi.application.Application;
 
 public class InfinitestLogPane extends JPanel {
 	private static final long serialVersionUID = -1L;
 	private static final String CRLF = System.getProperty("line.separator");
 
 	private final JTextArea textArea;
-
-	public InfinitestLogPane() {
+	private final JComboBox<Level> levelComboBox;
+	
+	public InfinitestLogPane(Application application) {
+		this(application.getService(IdeaLogService.class));
+	}
+	
+	public InfinitestLogPane(LogService logService) {
+		super(new BorderLayout());
+		
 		textArea = new JTextArea();
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		setLayout(new BorderLayout());
 		add(new JScrollPane(textArea), CENTER);
+		
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+	
+		levelComboBox = new JComboBox<>(logLevels());
+		levelComboBox.setSelectedItem(logService.getLogLevel());
+		levelComboBox.addItemListener(e -> logService.changeLogLevel((Level) e.getItem()));
+		toolBar.add(levelComboBox);
+		
+		add(toolBar, BorderLayout.SOUTH);
 	}
 
-	public void writeMessage(final String message) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				textArea.append(message);
+	private Level[] logLevels() {
+		return new Level[] {Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINEST, Level.ALL};
+	}
+
+	public void writeMessage(final Level level, final String message) {
+		Level currentLevel = (Level) levelComboBox.getSelectedItem();
+
+		if (level.intValue() >= currentLevel.intValue()) {
+			SwingUtilities.invokeLater(() -> {
+				textArea.append(leftAlign(level) + " " + message);
 				textArea.append(CRLF);
-			}
-		});
+			});
+		}
 	}
 
-	public void writeError(String message, Exception error) {
-		writeMessage(message);
-		writeMessage(stackTraceFor(error));
+	public void writeError(String message, Throwable error) {
+		writeMessage(Level.SEVERE, message);
+		writeMessage(Level.SEVERE, stackTraceFor(error));
 	}
 
-	private String stackTraceFor(Exception error) {
+	private String stackTraceFor(Throwable error) {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		PrintWriter writer = new PrintWriter(output);
 		error.printStackTrace(writer);
 		writer.close();
 
 		return output.toString();
+	}
+
+	private String leftAlign(Level info) {
+		return format("%-10s", info.getName());
 	}
 }

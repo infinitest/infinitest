@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.1.114-SNAPSHOT</version>
+		<version>5.4.0.4-SNAPSHOT</version>
 	</parent>
 
 	<name>Infinitest Plugin for Eclipse</name>
@@ -117,6 +117,24 @@
 							<excludeScope>test</excludeScope>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-feature</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.infinitest.eclipse</groupId>
+									<artifactId>infinitest-eclipse-feature</artifactId>
+									<version>${project.parent.version}</version>
+									<outputDirectory>${project.build.directory}/update_site/features</outputDirectory>
+									<destFileName>org.infinitest.eclipse.feature_${project.parent.version}.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -142,21 +160,6 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>feature</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>${feature.id}_${plugin.version}</finalName>
-							<outputDirectory>${project.build.directory}/update_site/features</outputDirectory>
-							<descriptors>
-								<descriptor>src/main/assembly/assembly-feature.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
 					<execution>
 						<id>plugin</id>
 						<phase>package</phase>
@@ -190,12 +193,27 @@
 							</descriptors>
 						</configuration>
 					</execution>
+					<execution>
+						<id>site-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>update_site</finalName>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<descriptors>
+								<descriptor>src/main/assembly/assembly-site-zip.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
+				<version>5.1.8</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -272,6 +290,12 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
 			<version>${assertj.version}</version>
@@ -288,12 +312,18 @@
 			<artifactId>infinitest-lib</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>3.2.3.RELEASE</version>
-    </dependency>
-    <dependency>
+		<dependency>
+			<groupId>org.infinitest.eclipse</groupId>
+			<artifactId>infinitest-eclipse-feature</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.22</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>core.net</artifactId>
 			<version>1.0.0.I20070531</version>

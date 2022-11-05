@@ -30,7 +30,9 @@ package org.infinitest.eclipse.resolution;
 import static java.util.Arrays.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.swt.SWT.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
@@ -41,13 +43,11 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.ui.*;
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.*;
-
-public class WhenAStackTraceElementIsSelected {
+class WhenAStackTraceElementIsSelected {
 	private FakeShell shell;
 	private KeyEvent keyEvent;
 	private StackElementSelectionListener listener;
@@ -58,10 +58,10 @@ public class WhenAStackTraceElementIsSelected {
 	private java.util.List<StackTraceElement> stackTrace;
 	private Event event;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		shell = new FakeShell();
-		stackTrace = Lists.newArrayList();
+		stackTrace = new ArrayList<>();
 		stackTrace.add(new StackTraceElement("MyClassName", "someMethod", "MyClassName.java", 72));
 		resourceLookup = mock(ResourceLookup.class);
 		listener = new StackElementSelectionListener(shell, resourceLookup, stackTrace) {
@@ -92,35 +92,35 @@ public class WhenAStackTraceElementIsSelected {
 	}
 
 	@Test
-	public void shouldOnlyReactToReturnKeyEvents() {
+	void shouldOnlyReactToReturnKeyEvents() {
 		keyEvent.keyCode = ARROW_DOWN;
 		listener.keyPressed(keyEvent);
 		assertFalse(shell.disposed);
 	}
 
 	@Test
-	public void shouldDoNothingIfNoLineSelected() {
+	void shouldDoNothingIfNoLineSelected() {
 		list.setSelection(-1);
 		listener.keyPressed(keyEvent);
 		assertFalse(shell.disposed);
 	}
 
 	@Test
-	public void shouldCloseTheDialog() throws CoreException {
+	void shouldCloseTheDialog() throws CoreException {
 		expectJumpTo("MyClassName", 72);
 		listener.keyPressed(keyEvent);
 		assertTrue(shell.disposed);
 	}
 
 	@Test
-	public void shouldJumpToThatLine() throws CoreException {
+	void shouldJumpToThatLine() throws CoreException {
 		expectJumpToTheOtherClass();
 		listener.keyPressed(keyEvent);
 		assertSame(newMarker, selectedMarker);
 	}
 
 	@Test
-	public void shouldDoNothingIfFileCannotBeFound() {
+	void shouldDoNothingIfFileCannotBeFound() {
 		when(resourceLookup.findResourcesForClassName("MissingClass")).thenReturn(Collections.<IResource> emptyList());
 		stackTrace.add(new StackTraceElement("MissingClass", "MissingMethod", "MissingClass.java", 72));
 		list.setSelection(1);
@@ -129,7 +129,7 @@ public class WhenAStackTraceElementIsSelected {
 	}
 
 	@Test
-	public void shouldJumpToThatLineWhenYouDoubleClickWithTheMouseToo() throws CoreException {
+	void shouldJumpToThatLineWhenYouDoubleClickWithTheMouseToo() throws CoreException {
 		expectJumpToTheOtherClass();
 		listener.mouseDoubleClick(new MouseEvent(event));
 		assertSame(newMarker, selectedMarker);

@@ -31,34 +31,35 @@ import static java.util.Arrays.*;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConsoleClearingListenerTest {
+class ConsoleClearingListenerTest {
 	private TextOutputWriter writer;
 	private ConsoleClearingListener listener;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		writer = mock(TextOutputWriter.class);
 		listener = new ConsoleClearingListener(writer);
 	}
 
 	@Test
-	public void shouldClearConsoleWhenTestRunIsStarted() {
+	void shouldClearConsoleWhenTestRunIsStarted() {
 		listener.testQueueUpdated(new TestQueueEvent(asList("test"), 1));
 
 		verify(writer).clearConsole();
 	}
 
 	@Test
-	public void shouldNotClearTheConsoleWhenTestsAreRunning() {
+	void shouldNotClearTheConsoleWhenTestsAreRunning() {
 		listener.testQueueUpdated(new TestQueueEvent(asList("test"), 2));
 
 		verify(writer, never()).clearConsole();
 	}
 
 	@Test
-	public void shouldClearTheConsoleWhenTheCoreIsReloaded() {
+	void shouldClearTheConsoleWhenTheCoreIsReloaded() {
 		listener.reloading();
 
 		verify(writer).clearConsole();

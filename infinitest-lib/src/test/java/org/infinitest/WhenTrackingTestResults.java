@@ -27,26 +27,31 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.List;
 
-import junit.framework.*;
+import org.infinitest.testrunner.PointOfFailure;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.Test;
 
-import org.infinitest.testrunner.*;
-import org.junit.Test;
+import com.google.common.collect.Iterables;
 
-import com.google.common.collect.*;
+import junit.framework.AssertionFailedError;
 
-public class WhenTrackingTestResults extends ResultCollectorTestSupport {
+class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	private static final String TEST_NAME = "com.fakeco.TestFoo";
 	private static final String TEST_METHOD = "someMethod";
 
 	@Test
-	public void shouldOrderMostRecentFailuresFirst() {
+	void shouldOrderMostRecentFailuresFirst() {
 		TestEvent mostRecentFailure = eventWithError();
 
 		testRun(eventWithError());
@@ -56,7 +61,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldUnifyEventsWithSamePointOfFailure() {
+	void shouldUnifyEventsWithSamePointOfFailure() {
 		Throwable pointOfFailure = new AssertionFailedError().fillInStackTrace();
 
 		testRun(eventWithError(pointOfFailure), eventWithError(pointOfFailure), eventWithError(new AssertionError()));
@@ -66,7 +71,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldFireEventsToNotifyListenerWhenTestCaseIsComplete() {
+	void shouldFireEventsToNotifyListenerWhenTestCaseIsComplete() {
 		assertTrue(listener.failures.isEmpty());
 
 		TestEvent failure = eventWithError();
@@ -75,7 +80,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldClearResultsWhenStatusChangesToReloading() {
+	void shouldClearResultsWhenStatusChangesToReloading() {
 		TestEvent event = eventWithError();
 		testRun(event);
 		collector.reloading();
@@ -86,30 +91,30 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldIndicateFailures() {
+	void shouldIndicateFailures() {
 		testRun(eventWithError());
 
 		assertTrue(collector.hasFailures());
 	}
 
 	@Test
-	public void shouldFireUpdateEventsWhenFailuresChange() {
+	void shouldFireUpdateEventsWhenFailuresChange() {
 		TestEvent event = eventWithError();
 		testRun(event);
-		assertTrue(listener.removed.isEmpty());
-		assertTrue(listener.changed.isEmpty());
+		assertThat(listener.removed).isEmpty();
+		assertThat(listener.changed).isEmpty();
 
 		listener.clear();
 		event = eventWithError();
 		testRun(event);
 
 		assertSame(event, getOnlyElement(listener.changed));
-		assertTrue(listener.removed.isEmpty());
-		assertTrue(listener.added.toString(), listener.added.isEmpty());
+		assertThat(listener.removed).isEmpty();
+		assertThat(listener.added).as(listener.added.toString()).isEmpty();
 	}
 
 	@Test
-	public void shouldProvideUniqueSetOfPointsOfFailure() {
+	void shouldProvideUniqueSetOfPointsOfFailure() {
 		Exception firstException = new Exception("Some message.");
 		Exception secondException = new Exception("Some other message.");
 		testRun(methodFailed("shouldFoo", "", firstException), methodFailed("shouldBar", "", firstException), methodFailed("shouldBaz", "", secondException));
@@ -118,7 +123,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void shouldProvideAllFailuresForSpecificPointOfFailure() {
+	void shouldProvideAllFailuresForSpecificPointOfFailure() {
 		Exception firstException = new Exception("Some message.");
 		Exception secondException = new Exception("Some other message.");
 		testRun(methodFailed("shouldFoo", "", firstException), methodFailed("shouldBar", "", firstException), methodFailed("shouldBaz", "", secondException));
@@ -133,7 +138,7 @@ public class WhenTrackingTestResults extends ResultCollectorTestSupport {
 	}
 
 	@Test
-	public void canClearAllData() {
+	void canClearAllData() {
 		testRun(eventWithError());
 		List<TestEvent> failures = collector.getFailures();
 

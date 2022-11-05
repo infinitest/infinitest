@@ -27,15 +27,18 @@
  */
 package org.infinitest.util;
 
-import static java.util.logging.Level.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
-import static org.junit.Assert.*;
+import static java.util.logging.Level.CONFIG;
+import static java.util.logging.Level.INFO;
+import static org.infinitest.util.InfinitestGlobalSettings.getLogLevel;
+import static org.infinitest.util.InfinitestGlobalSettings.resetToDefaults;
+import static org.infinitest.util.InfinitestGlobalSettings.setLogLevel;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenConfiguringGlobalSettings {
+class WhenConfiguringGlobalSettings {
 	@Test
-	public void canResetToDefaults() {
+	void canResetToDefaults() {
 		InfinitestGlobalSettings.setSlowTestTimeLimit(100);
 		setLogLevel(CONFIG);
 		resetToDefaults();

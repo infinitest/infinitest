@@ -27,22 +27,24 @@
  */
 package org.infinitest.intellij;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.infinitest.intellij.plugin.swingui.*;
-import org.junit.*;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.junit.jupiter.api.Test;
 
-public class WhenLoggingError {
+class WhenLoggingError {
 	private static final Exception ERROR = new Exception("test");
 
 	@Test
-	public void shouldDisplayErrorInView() {
+	void shouldDisplayErrorInView() {
 		InfinitestView view = mock(InfinitestView.class);
 
 		InfinitestLoggingListener listener = new InfinitestLoggingListener(view);
 		listener.logError("test message", ERROR);
 
-		verify(view).writeError(contains("test message"));
+		verify(view).writeError(contains("test message"), same(ERROR));
 	}
 }

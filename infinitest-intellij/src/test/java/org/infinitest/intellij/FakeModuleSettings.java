@@ -27,14 +27,16 @@
  */
 package org.infinitest.intellij;
 
-import static java.lang.System.*;
-import static java.util.Collections.*;
+import static java.lang.System.getProperty;
+import static java.util.Collections.emptyList;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
+import org.infinitest.environment.RuntimeEnvironment;
+
+import com.intellij.openapi.diagnostic.Logger;
 
 public class FakeModuleSettings implements ModuleSettings {
 	private final String name;
@@ -67,6 +69,7 @@ public class FakeModuleSettings implements ModuleSettings {
 
 	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
-		return new RuntimeEnvironment(Collections.<File> emptyList(), new File("."), "", new File(getProperty("java.home")));
+		String systemClasspath = System.getProperty("java.class.path");
+		return new RuntimeEnvironment(new File(getProperty("java.home")), new File("."), systemClasspath, systemClasspath , Collections.<File> emptyList(), "");
 	}
 }

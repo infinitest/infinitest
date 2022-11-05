@@ -27,13 +27,15 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.testrunner.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.infinitest.eclipse.workspace.FakeResourceFinder;
+import org.infinitest.testrunner.TestEvent;
 
 final class FakeProblemMarkerInfo extends ProblemMarkerInfo {
 	public FakeProblemMarkerInfo(TestEvent event) {

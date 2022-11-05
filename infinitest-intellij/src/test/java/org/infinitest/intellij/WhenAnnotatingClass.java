@@ -32,36 +32,35 @@ import static org.assertj.core.api.Assertions.*;
 import org.assertj.core.internal.Failures;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
-import org.assertj.core.api.Fail;
 import org.infinitest.intellij.idea.language.*;
 import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenAnnotatingClass {
+class WhenAnnotatingClass {
   private IdeaInfinitestAnnotator annotator;
 
-  @Before
-  public void setUp() {
-    annotator = IdeaInfinitestAnnotator.getInstance();
+  @BeforeEach
+  void setUp() {
+    annotator = new IdeaInfinitestAnnotator();
   }
 
   @Test
-  public void shouldAnnotateTopLevelClass() {
+  void shouldAnnotateTopLevelClass() {
     annotator.annotate(eventWithError(new Exception()));
 
     assertThat(getOnlyElement(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
   }
 
   @Test
-  @Ignore
-  public void shouldAnnotateContainingClassOfInnerClassFailures() {
+  void shouldAnnotateContainingClassOfInnerClassFailures() {
     annotator.annotate(eventWithError(InnerClass.createException()));
 
     assertThat(getOnlyElement(annotator.getTestEvents()).getPointOfFailureClassName()).isEqualTo(getClass().getName());
   }
 
   static class InnerClass {
-    public static Throwable createException() {
+    static Throwable createException() {
       try {
         return Failures.instance().failure("Intentional exception");
       } catch (Throwable e) {

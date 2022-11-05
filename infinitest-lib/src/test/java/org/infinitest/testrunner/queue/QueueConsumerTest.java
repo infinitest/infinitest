@@ -27,33 +27,39 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
-import static java.util.concurrent.TimeUnit.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.get;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
 
-import org.infinitest.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.TestQueueAdapter;
+import org.infinitest.TestQueueEvent;
+import org.infinitest.TestRunAborted;
+import org.infinitest.testrunner.RunnerEventSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class QueueConsumerTest {
+class QueueConsumerTest {
 	private BlockingQueue<String> events;
 	private QueueConsumer queue;
 	private RunnerEventSupport runnerEvents;
 	protected List<TestQueueEvent> queueUpdates;
 	private Semaphore processSemaphore;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		processSemaphore = null;
 		events = new SynchronousQueue<String>(true);
 		runnerEvents = new RunnerEventSupport(this);
-		queueUpdates = newArrayList();
+		queueUpdates = new ArrayList<>();
 		queue = new QueueConsumer(runnerEvents, new LinkedList<String>()) {
 			@Override
 			protected QueueProcessor createQueueProcessor() {
@@ -69,7 +75,7 @@ public class QueueConsumerTest {
 	}
 
 	@Test
-	public void shouldSpawnWorkersWhenQueueIsPopulated() throws Exception {
+	void shouldSpawnWorkersWhenQueueIsPopulated() throws Exception {
 		queue.push(asList("test1"));
 		assertEquals("Starting test1", poll());
 		assertEquals("Finished test1", poll());
@@ -77,7 +83,7 @@ public class QueueConsumerTest {
 	}
 
 	@Test
-	public void shouldConsumeUntilQueueIsEmpty() throws Exception {
+	void shouldConsumeUntilQueueIsEmpty() throws Exception {
 		queue.push(asList("test1", "test2"));
 		assertEquals("Starting test1", poll());
 		assertEquals("Finished test1", poll());
@@ -88,7 +94,7 @@ public class QueueConsumerTest {
 	}
 
 	@Test
-	public void shouldThrowProcessorCreationErrorsWhenPushIsCalled() {
+	void shouldThrowProcessorCreationErrorsWhenPushIsCalled() {
 		queue = new QueueConsumer(runnerEvents, new LinkedList<String>(), 50) {
 			@Override
 			protected QueueProcessor createQueueProcessor() {
@@ -104,7 +110,7 @@ public class QueueConsumerTest {
 	}
 
 	@Test
-	public void shouldForceCleanIfInterruptFails() throws Exception {
+	void shouldForceCleanIfInterruptFails() throws Exception {
 		queue = new QueueConsumer(runnerEvents, new LinkedList<String>(), 50) {
 			@Override
 			protected QueueProcessor createQueueProcessor() {
@@ -122,7 +128,7 @@ public class QueueConsumerTest {
 	}
 
 	@Test
-	public void shouldInterruptProcessorWhenAddingToQueue() throws Exception {
+	void shouldInterruptProcessorWhenAddingToQueue() throws Exception {
 		processSemaphore = new Semaphore(1);
 		processSemaphore.acquire();
 		queue.push(asList("test1"));
@@ -142,15 +148,15 @@ public class QueueConsumerTest {
 
 	private void assertQueueEventsFired() {
 		TestQueueEvent firstEvent = get(queueUpdates, 0);
-		assertEquals(firstEvent.getTestQueue(), asList("test1", "test2"));
-		assertEquals(firstEvent.getInitialSize(), 2);
+		assertEquals(asList("test1", "test2"), firstEvent.getTestQueue());
+		assertEquals(2, firstEvent.getInitialSize());
 
 		TestQueueEvent secondEvent = get(queueUpdates, 1);
-		assertEquals(secondEvent.getTestQueue(), asList("test2"));
-		assertEquals(secondEvent.getInitialSize(), 2);
+		assertEquals(asList("test2"), secondEvent.getTestQueue());
+		assertEquals(2, secondEvent.getInitialSize());
 
 		TestQueueEvent thirdEvent = get(queueUpdates, 2);
-		assertEquals(thirdEvent.getTestQueue(), emptyList());
+		assertEquals(emptyList(), thirdEvent.getTestQueue());
 	}
 
 	private String poll() throws InterruptedException {

@@ -27,13 +27,20 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.idea.ProjectTestControl;
+import org.infinitest.intellij.plugin.SourceNavigator;
+import org.infinitest.testrunner.TestEvent;
+
+import com.intellij.openapi.module.Module;
 
 public class ResultClickListener extends MouseAdapter {
 	private final SourceNavigator navigator;
@@ -44,16 +51,46 @@ public class ResultClickListener extends MouseAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() != 2) {
-			return;
-		}
-
 		JTree tree = (JTree) e.getSource();
+		if (e.getClickCount() == 2) {
+			mouseDoubleClicked(tree, e);
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
+			mouseRightClicked(tree, e);
+		}
+	}
+
+	private void mouseDoubleClicked(JTree tree, MouseEvent e) {
 		TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
 		Object treeNode = path.getLastPathComponent();
 		if (treeNode instanceof TestEvent) {
 			TestEvent event = (TestEvent) treeNode;
 			navigator.open(classFor(event)).line(lineFor(event));
+		}
+	}
+	
+	private void mouseRightClicked(JTree tree, MouseEvent e) {
+		TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+		if (path != null && path.getLastPathComponent() instanceof Module) {
+			Module module = (Module) path.getLastPathComponent();
+			
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
+			
+			JPopupMenu popupMenu = new JPopupMenu();
+			JCheckBoxMenuItem testControlMenuItem = new JCheckBoxMenuItem("Enable/disable tests", testControl.shouldRunTests(module));
+			testControlMenuItem.addActionListener(x -> toggleTestControl(testControl, module, testControlMenuItem, tree));
+			popupMenu.add(testControlMenuItem);
+			
+			if (tree.isShowing()) {
+				popupMenu.show(tree, e.getX(), e.getY());
+			}
+		}
+	}
+
+	private void toggleTestControl(TestControl testControl, Module module, JCheckBoxMenuItem testControlMenuItem, JTree tree) {
+		testControl.setRunTests(testControlMenuItem.isSelected(), module);
+		
+		if (!testControl.shouldRunTests(module)) {
+			((TreeModelAdapter) tree.getModel()).fireTreeStructureChanged();
 		}
 	}
 

@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.infinitest</groupId>
 	<artifactId>infinitest-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Infinitest Parent POM</name>
-	<version>5.1.114-SNAPSHOT</version>
+	<version>5.4.0.4-SNAPSHOT</version>
 	<url>http://infinitest.github.com/</url>
 
 	<modules>
 		<module>infinitest-lib</module>
 		<module>infinitest-runner</module>
+		<module>infinitest-classloader</module>
 		<module>infinitest-intellij</module>
+		<module>infinitest-eclipse-feature</module>
 		<module>infinitest-eclipse</module>
+		<module>infinitest-runner-test</module>
+		<module>functional-tests/infinitest-runner-spock-test</module>
 	</modules>
 
 	<prerequisites>
@@ -22,15 +26,26 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<mockito.version>1.10.8</mockito.version>
+		<javassist.version>3.29.2-GA</javassist.version>
+		<mockito.version>4.7.0</mockito.version>
 		<junit.version>4.12</junit.version>
+		<junit5.version>5.9.1</junit5.version>
+		<junit5-platform.version>1.9.1</junit5-platform.version>
+		<archunit-junit5.version>1.0.0</archunit-junit5.version>
 		<guava.version>18.0</guava.version>
 		<hamcrest.version>1.3</hamcrest.version>
 		<testng.version>6.8.8</testng.version>
-		<assertj.version>1.7.0</assertj.version>
+		<assertj.version>3.11.1</assertj.version>
+		<autovalue.version>1.3</autovalue.version>
+		<jcommander.version>1.35</jcommander.version>
+		<surefire.version>3.0.0-M7</surefire.version>
+		
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.organization>infinitest</sonar.organization>
+		<sonar.exclusions>org/infinitest/testrunner/exampletests/**/*,com/fakeco/**/*</sonar.exclusions>
 	</properties>
 
 	<profiles>
@@ -42,8 +57,42 @@
 				</os>
 			</activation>
 			<properties>
-				<stop.stealing.focus>-Dapple.awt.UIElement=true</stop.stealing.focus>
+				<!-- configure surefire arg line to stop stealing the focus -->
+				<argLine>-Dapple.awt.UIElement=true</argLine>
 			</properties>
+		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-jars</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<keystore>${keystore-file}</keystore>
+							<alias>infinitest</alias>
+							<storepass>${keystore-password}</storepass>
+							<keypass>${keystore-password}</keypass>
+							<removeExistingSignatures>true</removeExistingSignatures>
+							<includes>
+								<include>**/*.jar</include>
+							</includes>
+							<excludeClassifiers>
+								<excludeClassifier>dist</excludeClassifier>
+							</excludeClassifiers>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
@@ -63,6 +112,14 @@
 			<id>dgageot</id>
 			<name>David Gageot</name>
 		</developer>
+		<developer>
+			<id>apupier</id>
+			<name>Aurélien Pupier</name>
+		</developer>
+		<developer>
+			<id>sarod</id>
+			<name>Sébastien Arod</name>
+		</developer>
 	</developers>
 
 	<scm>
@@ -71,8 +128,8 @@
 	</scm>
 
 	<issueManagement>
-		<system>Lighthouse</system>
-		<url>http://improvingworks.lighthouseapp.com/projects/36728-infinitest/tickets</url>
+		<system>GitHub Issues</system>
+		<url>https://github.com/infinitest/infinitest/issues</url>
 	</issueManagement>
 
 	<licenses>
@@ -100,11 +157,11 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.5.2</version>
+					<version>3.1.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.2</version>
+					<version>3.8.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-eclipse-plugin</artifactId>
@@ -116,7 +173,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.4</version>
+					<version>${surefire.version}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-deploy-plugin</artifactId>
@@ -135,9 +192,22 @@
 					<version>1.3.1</version>
 				</plugin>
 				<plugin>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.4.0</version>
+				</plugin>
+				<plugin>
 					<groupId>com.mycila.maven-license-plugin</groupId>
 					<artifactId>maven-license-plugin</artifactId>
 					<version>1.9.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.8</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -161,13 +231,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
-						<version>2.12.4</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<includes>
 						<include>**/When*.java</include>
@@ -179,8 +242,10 @@
 					<excludes>
 						<exclude>**/*$*</exclude>
 						<exclude>com/fakeco/**</exclude>
+						
+						<exclude>**/exampletests/**</exclude>
 					</excludes>
-					<argLine>${stop.stealing.focus}</argLine>
+					<!-- argLine is configured using a property to simplify jacoco configuration -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -194,7 +259,7 @@
 						</goals>
 						<configuration>
 							<rules>
-								<requireUpperBoundDep/>
+								<requireUpperBoundDep />
 							</rules>
 						</configuration>
 					</execution>
@@ -226,6 +291,26 @@
 						<phase>validate</phase>
 						<goals>
 							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<!-- report as part of test to let travis build reports for codecov -->
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>

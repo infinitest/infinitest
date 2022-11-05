@@ -27,27 +27,31 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenTreeNodesAreAdded {
+class WhenTreeNodesAreAdded {
 	private DefaultTreeModel model;
 	private JTree tree;
 	private MutableTreeNode root;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		tree = new JTree();
 		root = new DefaultMutableTreeNode("root");
 		model = new DefaultTreeModel(root);
 	}
 
 	@Test
-	public void shouldExpandExistingNodes() {
+	void shouldExpandExistingNodes() {
 		MutableTreeNode child = new DefaultMutableTreeNode("child");
 		model.insertNodeInto(child, root, 0);
 		tree.setModel(model);
@@ -59,7 +63,7 @@ public class WhenTreeNodesAreAdded {
 	}
 
 	@Test
-	public void shouldExpandTreeWhenEventIsFired() {
+	void shouldExpandTreeWhenEventIsFired() {
 		tree.setModel(model);
 		tree.collapseRow(0);
 		assertFalse(tree.isExpanded(0));

@@ -27,53 +27,57 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.*;
-import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.CoreStatus.FAILING;
+import static org.infinitest.CoreStatus.INDEXING;
+import static org.infinitest.CoreStatus.PASSING;
+import static org.infinitest.CoreStatus.SCANNING;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
+import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
+import static org.infinitest.intellij.plugin.launcher.StatusMessages.getMessage;
+import static org.infinitest.util.InfinitestUtils.formatTime;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Action;
 
-import org.infinitest.intellij.*;
-import org.infinitest.intellij.plugin.launcher.*;
-import org.infinitest.intellij.plugin.swingui.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestInfinitestPresenter {
+class TestInfinitestPresenter extends IntellijMockBase {
 	private InfinitestView mockView;
 	private InfinitestPresenter presenter;
 	private InfinitestCore mockCore;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		mockView = mock(InfinitestView.class);
 		mockCore = mock(InfinitestCore.class);
+		
+		when(launcher.getCore()).thenReturn(mockCore);
 
-		TestControl mockTestControl = mock(TestControl.class);
-		when(mockTestControl.shouldRunTests()).thenReturn(true);
-
-		presenter = new InfinitestPresenter(new ResultCollector(mockCore), mockCore, mockView, mockTestControl, new FakeInfinitestAnnotator());
+		presenter = new InfinitestPresenter(project, mockView);
 	}
 
-	public void verifyMocks() {
+	void verifyMocks() {
 		verify(mockView, times(2)).addAction(any(Action.class));
 		verify(mockView).setAngerBasedOnTime(anyLong());
 		verify(mockView).setStatusMessage(getMessage(SCANNING));
 		verify(mockView).setCycleTime(formatTime(0L));
-
-		verify(mockCore).addTestResultsListener(any(TestResultsListener.class));
-		verify(mockCore, times(2)).addTestQueueListener(any(TestQueueListener.class));
-		verify(mockCore).addDisabledTestListener(any(DisabledTestListener.class));
 	}
 
 	@Test
-	public void shouldUpdateProgressWhenATestIsRun() {
+	void shouldUpdateProgressWhenATestIsRun() {
 		final int testsLeftToRun = 9;
 		final int totalTests = 10;
 
@@ -86,7 +90,7 @@ public class TestInfinitestPresenter {
 	}
 
 	private List<String> tests(int count) {
-		List<String> list = newArrayList();
+		List<String> list = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			list.add("SomeTest " + i);
 		}
@@ -99,7 +103,7 @@ public class TestInfinitestPresenter {
 	}
 
 	@Test
-	public void shouldChangeProgressBarToRedWhenChangedToFailedStatus() {
+	void shouldChangeProgressBarToRedWhenChangedToFailedStatus() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		ensureStatusEventFired(null, FAILING);
@@ -111,7 +115,7 @@ public class TestInfinitestPresenter {
 	}
 
 	@Test
-	public void shouldChangeProgressBarToGreenWhenChangedToPassingStatus() {
+	void shouldChangeProgressBarToGreenWhenChangedToPassingStatus() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		ensureStatusEventFired(null, PASSING);
@@ -123,7 +127,7 @@ public class TestInfinitestPresenter {
 	}
 
 	@Test
-	public void shouldClearResultTreeOnReload() {
+	void shouldClearResultTreeOnReload() {
 		when(mockView.getMaximumProgress()).thenReturn(100);
 
 		presenter.coreStatusChanged(null, INDEXING);
@@ -131,5 +135,24 @@ public class TestInfinitestPresenter {
 		verify(mockView).setProgress(100);
 		verify(mockView).setStatusMessage(getMessage(INDEXING));
 		verify(mockView).setProgressBarColor(UNKNOWN_COLOR);
+	}
+	
+	@Test
+	void enablePowerSaveMode() {
+		setupApplication(false);
+		
+		presenter.powerSaveStateChanged();
+		
+		verify(mockView).setStatusMessage("Waiting for changes");
+	}
+
+	
+	@Test
+	void disablePowerSaveMode() {
+		setupApplication(true);
+		
+		presenter.powerSaveStateChanged();
+		
+		verify(mockView).setStatusMessage("Infinitest disabled when power save mode is enabled");
 	}
 }

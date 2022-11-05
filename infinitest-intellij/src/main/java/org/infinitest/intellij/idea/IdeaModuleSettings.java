@@ -27,29 +27,51 @@
  */
 package org.infinitest.intellij.idea;
 
-import static java.io.File.*;
+import static java.io.File.pathSeparator;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.log4j.*;
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.jetbrains.annotations.*;
-import org.testng.collections.*;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.intellij.InfinitestJarsLocator;
+import org.infinitest.intellij.ModuleSettings;
+import org.jetbrains.annotations.Nullable;
 
-import com.intellij.ide.plugins.*;
-import com.intellij.openapi.compiler.*;
-import com.intellij.openapi.extensions.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
+import com.intellij.execution.CommonProgramRunConfigurationParameters;
+import com.intellij.execution.util.ProgramParametersConfigurator;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.compiler.CompilerPaths;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.JdkOrderEntry;
+import com.intellij.openapi.roots.LibraryOrderEntry;
+import com.intellij.openapi.roots.ModuleOrderEntry;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.OrderEnumerator;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.OrderRootsEnumerator;
+import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
 	private final Module module;
-	private final InfinitestJarLocator locator = new InfinitestJarLocator();
+	private final InfinitestJarsLocator locator = new InfinitestJarsLocator();
 
+	private static final Boolean TEST_CLASSES = true;
+	private static final Boolean MAIN_CLASSES = false;
+
+	/**
+	 * @param module Injected by the platform
+	 */
 	public IdeaModuleSettings(Module module) {
 		this.module = module;
 	}
@@ -79,7 +101,9 @@ public class IdeaModuleSettings implements ModuleSettings {
 		if (sdkPath == null) {
 			return null;
 		}
-		return new RuntimeEnvironment(listOutputDirectories(), getWorkingDirectory(), buildClasspathString(), new File(sdkPath.getAbsolutePath()));
+		String runnerClassLoaderClassPath = infinitestJarPath(locator.findInfinitestClassLoaderlJarName());
+		String runnerProcessClassPath  = infinitestJarPath(locator.findInfinitestRunnerJarName());
+		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()), getWorkingDirectory(), runnerClassLoaderClassPath, runnerProcessClassPath, listOutputDirectories(), buildClasspathString());
 	}
 
 	/**
@@ -88,14 +112,34 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 * 
 	 * @return A list of all of the output directories for the project
 	 */
-	private List<File> listOutputDirectories() {
-		List<File> outputDirectories = new ArrayList<File>();
+	protected List<File> listOutputDirectories() {
+		List<File> outputDirectories = new ArrayList<>();
 
-		outputDirectories.add(new File(CompilerPaths.getModuleOutputPath(module, false)));
-		outputDirectories.add(new File(CompilerPaths.getModuleOutputPath(module, true)));
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, TEST_CLASSES));
+		addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(module, MAIN_CLASSES));
+		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+		for (Module dependantModule : moduleRootManager.getDependencies()) {
+			addOutputDirectory(outputDirectories, CompilerPaths.getModuleOutputPath(dependantModule, MAIN_CLASSES));
+		}
 
 		return outputDirectories;
 	}
+
+	private void addOutputDirectory(List<File> outputDirectories, String path) {
+		if (path != null) {
+			File file = new File(path);
+
+			try {
+				log(java.util.logging.Level.FINE, "Adding output directory: " + path);
+				File canonicalFile = file.getCanonicalFile();
+				outputDirectories.add(canonicalFile);
+			} catch (IOException e) {
+				log("Error while getting canonical file for: " + path, e);
+				outputDirectories.add(file);
+			}
+		}
+	}
+
 
 	/**
 	 * Creates a classpath string consisting of all libraries and output
@@ -116,11 +160,16 @@ public class IdeaModuleSettings implements ModuleSettings {
 			builder.append(each.getAbsolutePath().replace("!", ""));
 		}
 
-		return appendInfinitestJarTo(builder.toString());
+		return builder.toString();
 	}
 
 	private File getWorkingDirectory() {
-		return new File(module.getModuleFilePath()).getParentFile();
+		CommonProgramRunConfigurationParameters configuration = new InfinitestRunConfigurationParameters();
+		
+		ProgramParametersConfigurator configurator = new ProgramParametersConfigurator();
+		String workingDir = configurator.getWorkingDir(configuration, module.getProject(), module);
+		
+		return new File(workingDir);
 	}
 
 	/**
@@ -131,11 +180,11 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 */
 	List<File> listClasspathElements() {
 		// Classpath order is significant
-		List<File> classpathElements = Lists.newArrayList();
+		List<File> classpathElements = new ArrayList<>();
 
 		// all our dependencies (recursively where needed)
 		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			List<VirtualFile> files = new ArrayList<VirtualFile>();
+			List<VirtualFile> files = new ArrayList<>();
 
 			if (entry instanceof ModuleOrderEntry) {
 				/*
@@ -144,7 +193,13 @@ public class IdeaModuleSettings implements ModuleSettings {
 				 */
 				Module currentModule = ((ModuleOrderEntry) entry).getModule();
 				if (currentModule != null) {
-					files.addAll(Arrays.asList(OrderEnumerator.orderEntries(currentModule).compileOnly().recursively().classes().getRoots()));
+					OrderRootsEnumerator enumerator = OrderEnumerator.orderEntries(currentModule)
+					.withoutSdk()
+					.compileOnly()
+					.recursively()
+					.classes();
+					
+					files.addAll(Arrays.asList(enumerator.getRoots()));
 				}
 			} else if (entry instanceof LibraryOrderEntry) {
 				/*
@@ -153,7 +208,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 				 */
 				LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry) entry;
 				files.addAll(Arrays.asList(libraryOrderEntry.getRootFiles(OrderRootType.CLASSES)));
-			} else {
+			} else if (!(entry instanceof JdkOrderEntry)) {
 				/*
 				 * all other cases (whichever they are) we want to have their
 				 * classes outputs.
@@ -183,44 +238,22 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return CompilerModuleExtension.getInstance(module);
 	}
 
-	private String appendInfinitestJarTo(String classpath) {
-		StringBuilder builder = new StringBuilder(classpath);
-		for (String each : infinitestJarPaths()) {
-			builder.append(System.getProperty("path.separator"));
-			builder.append(each);
-		}
-
-		return builder.toString();
-	}
-
-	private List<String> infinitestJarPaths() {
+	private String infinitestJarPath(String jarName) {
 		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
 		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
-		File pluginPath = descriptor.getPath();
+		Path pluginPath = descriptor.getPluginPath();
 
-		List<String> paths = new ArrayList<String>();
-		for (String each : locator.findInfinitestJarNames()) {
-			File jar = new File(pluginPath, "lib/" + each);
-			if (jar.exists()) {
-				paths.add(jar.getAbsolutePath());
-			}
-		}
-
-		File classes = new File(pluginPath, "classes");
-		if (classes.exists()) {
-			paths.add(classes.getAbsolutePath());
-		}
-
-		return paths;
+		Path jar = pluginPath.resolve("lib/" + jarName);
+		return jar.toString();		
 	}
-
+	
 	@Nullable
-	private File getSdkHomePath() {
-		Sdk projectSdk = ProjectRootManager.getInstance(module.getProject()).getProjectSdk();
-		if (projectSdk == null) {
+	protected File getSdkHomePath() {
+		Sdk moduleSdk = ModuleRootManager.getInstance(module).getSdk();
+		if (moduleSdk == null) {
 			return null;
 		}
 
-		return new File(projectSdk.getHomePath());
+		return new File(moduleSdk.getHomePath());
 	}
 }

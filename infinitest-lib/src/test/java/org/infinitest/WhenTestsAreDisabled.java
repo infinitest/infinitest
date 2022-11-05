@@ -27,26 +27,30 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Sets.*;
-import static org.infinitest.CoreDependencySupport.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.infinitest.CoreDependencySupport.withChangedFiles;
+import static org.infinitest.util.InfinitestUtils.setify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.simple.*;
+import com.fakeco.fakeproduct.simple.PassingTest;
 
-public class WhenTestsAreDisabled {
+class WhenTestsAreDisabled {
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldFireAppropriateEvent() {
+	void shouldFireAppropriateEvent() {
 		TestRunner runner = mock(TestRunner.class);
 		TestDetector testDetector = mock(TestDetector.class);
 		when(testDetector.getCurrentTests()).thenReturn(setify("MyClass", "OtherClass"), setify("OtherClass"));
@@ -56,7 +60,7 @@ public class WhenTestsAreDisabled {
 		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());
 		core.setChangeDetector(withChangedFiles(PassingTest.class));
 		core.setTestDetector(testDetector);
-		final Set<String> disabledTestList = newHashSet();
+		final Set<String> disabledTestList = new HashSet<>();
 		core.addDisabledTestListener(new DisabledTestListener() {
 			@Override
 			public void testsDisabled(Collection<String> testName) {

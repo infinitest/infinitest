@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static com.google.common.collect.Lists.*;
 import static java.util.concurrent.Executors.*;
 
 import java.io.*;
@@ -45,11 +44,11 @@ public abstract class QueueConsumer {
 	private final ExecutorService executor;
 	private ConcurrencyController semaphore;
 
-	public QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue) {
+	protected QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue) {
 		this(eventSupport, testQueue, 2000);
 	}
 
-	public QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue, long testTimeout) {
+	protected QueueConsumer(RunnerEventSupport eventSupport, Queue<String> testQueue, long testTimeout) {
 		this.eventSupport = eventSupport;
 		this.testQueue = testQueue;
 		this.testTimeout = testTimeout;
@@ -93,7 +92,7 @@ public abstract class QueueConsumer {
 
 		private void startNewTestRun() {
 			processorThread = new QueueProcessorThread(runnable);
-			eventSupport.fireQueueEvent(new TestQueueEvent(newArrayList(testQueue), testQueue.size()));
+			eventSupport.fireQueueEvent(new TestQueueEvent(new ArrayList<>(testQueue), testQueue.size()));
 			processorThread.start();
 		}
 

@@ -88,8 +88,6 @@ class StackElementSelectionListener extends KeyAdapter implements MouseListener 
 			marker.setAttribute(LINE_NUMBER, lineNumber);
 			jumpToMarker(marker);
 			marker.delete();
-		} catch (PartInitException e) {
-			throw new RuntimeException(e);
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}

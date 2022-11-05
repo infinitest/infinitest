@@ -27,21 +27,27 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
-import org.infinitest.changedetect.*;
-import org.junit.*;
+import org.infinitest.changedetect.ChangeDetector;
+import org.infinitest.changedetect.FakeChangeDetector;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenAnErrorOccurs {
+class WhenAnErrorOccurs {
 	private ChangeDetector failingDetector;
 	protected boolean shouldFail;
 	private InfinitestCore core;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		shouldFail = true;
 		failingDetector = new FakeChangeDetector() {
 			@Override
@@ -56,7 +62,7 @@ public class WhenAnErrorOccurs {
 	}
 
 	@Test
-	public void shouldReloadIndexOnIOException() throws Exception {
+	void shouldReloadIndexOnIOException() throws Exception {
 		EventSupport statusSupport = new EventSupport();
 		core.addTestQueueListener(statusSupport);
 		core.update();
@@ -67,9 +73,9 @@ public class WhenAnErrorOccurs {
 		statusSupport.assertReloadOccured();
 	}
 
-	@Test(expected = FatalInfinitestError.class)
-	public void shouldNotRetryIfErrorOccursTwiceInARow() {
+	@Test
+	void shouldNotRetryIfErrorOccursTwiceInARow() {
 		core.update();
-		core.update();
+		assertThatThrownBy(() -> core.update()).isInstanceOf(FatalInfinitestError.class);
 	}
 }

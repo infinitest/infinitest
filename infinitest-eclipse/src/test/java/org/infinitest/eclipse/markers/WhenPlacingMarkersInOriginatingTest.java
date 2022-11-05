@@ -27,17 +27,21 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.singletonList;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.eclipse.core.resources.IResource;
+import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPlacingMarkersInOriginatingTest {
+class WhenPlacingMarkersInOriginatingTest {
 	private static final String TEST_NAME = "com.fakeco.TestFoo";
 
 	private TestNamePlacementStrategy strategy;
@@ -45,8 +49,8 @@ public class WhenPlacingMarkersInOriginatingTest {
 	private IResource testResource;
 	private ResourceLookup lookup;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		testResource = mock(IResource.class);
 		lookup = mock(ResourceLookup.class);
 		strategy = new TestNamePlacementStrategy(lookup);
@@ -54,17 +58,17 @@ public class WhenPlacingMarkersInOriginatingTest {
 	}
 
 	@Test
-	public void shouldUseTestNameInEvent() {
-		when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(newArrayList(testResource));
+	void shouldUseTestNameInEvent() {
+		when(lookup.findResourcesForClassName(TEST_NAME)).thenReturn(singletonList(testResource));
 
 		MarkerPlacement placement = strategy.getPlacement(event);
 
 		assertSame(testResource, placement.getResource());
-		assertEquals("Line zero indicates we don't know where to place the marker", 0, placement.getLineNumber());
+		assertEquals(0, placement.getLineNumber(), "Line zero indicates we don't know where to place the marker");
 	}
 
 	@Test
-	public void shouldReturnNullIfTestCannotBeFoundInWorkspace() {
+	void shouldReturnNullIfTestCannotBeFoundInWorkspace() {
 		assertNull(strategy.getPlacement(event));
 	}
 

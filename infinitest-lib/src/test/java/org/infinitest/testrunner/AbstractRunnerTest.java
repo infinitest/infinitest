@@ -31,15 +31,15 @@ import java.util.*;
 
 import org.infinitest.*;
 import org.infinitest.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import com.fakeco.fakeproduct.*;
 
-public abstract class AbstractRunnerTest {
+abstract class AbstractRunnerTest {
 	private ThreadSafeFlag runComplete;
 
 	@Test
-	public void shouldFireEventWhenTestRunIsComplete() throws Exception {
+	void shouldFireEventWhenTestRunIsComplete() throws Exception {
 		runComplete = new ThreadSafeFlag();
 		getRunner().addTestQueueListener(new TestQueueAdapter() {
 			@Override

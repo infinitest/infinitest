@@ -27,11 +27,14 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.net.*;
-
-import org.infinitest.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.infinitest.ConcurrencyController;
+import org.infinitest.EventQueue;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.MultiCoreConcurrencyController;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 class CoreFactory implements CoreSettings {
@@ -45,9 +48,8 @@ class CoreFactory implements CoreSettings {
 	}
 
 	public InfinitestCore createCore(String projectName, RuntimeEnvironment environment) {
-		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(environment, eventQueue);
+		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(environment, eventQueue, projectName);
 		coreBuilder.setUpdateSemaphore(concurrencyController);
-		coreBuilder.setName(projectName);
 
 		return coreBuilder.createCore();
 	}

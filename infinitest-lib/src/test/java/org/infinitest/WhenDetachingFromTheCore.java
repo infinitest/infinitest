@@ -27,19 +27,21 @@
  */
 package org.infinitest;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.infinitest.CoreDependencySupport.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infinitest.changedetect.*;
-import org.junit.*;
+import org.infinitest.changedetect.FakeChangeDetector;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenDetachingFromTheCore {
+class WhenDetachingFromTheCore {
 	private int eventCount;
 	private TestQueueListener listener;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		listener = new TestQueueAdapter() {
 			@Override
 			public void reloading() {
@@ -49,7 +51,7 @@ public class WhenDetachingFromTheCore {
 	}
 
 	@Test
-	public void shouldNoLongerRecieveEvents() {
+	void shouldNoLongerRecieveEvents() {
 		ControlledEventQueue eventQueue = new ControlledEventQueue();
 		DefaultInfinitestCore core = createCore(new FakeChangeDetector(), withNoTestsToRun(), eventQueue);
 		core.addTestQueueListener(listener);
@@ -64,9 +66,9 @@ public class WhenDetachingFromTheCore {
 	}
 
 	@Test
-	public void shouldTreatNormalizedListenersAsEquivelent() {
+	void shouldTreatNormalizedListenersAsEquivelent() {
 		EventNormalizer normalizer = new EventNormalizer(new FakeEventQueue());
 		assertEquals(normalizer.testQueueNormalizer(listener), normalizer.testQueueNormalizer(listener));
-		assertThat(normalizer.testQueueNormalizer(listener), not(equalTo(normalizer.testQueueNormalizer(new TestQueueAdapter()))));
+		assertThat(normalizer.testQueueNormalizer(listener)).isNotEqualTo(normalizer.testQueueNormalizer(new TestQueueAdapter()));
 	}
 }

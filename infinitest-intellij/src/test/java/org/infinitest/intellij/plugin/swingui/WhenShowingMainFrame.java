@@ -28,39 +28,48 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.event.WindowEvent;
 
-import javax.swing.*;
-import junit.framework.*;
+import javax.swing.JLabel;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
-import org.junit.Test;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenShowingMainFrame {
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.Application;
+
+import junit.framework.AssertionFailedError;
+
+class WhenShowingMainFrame extends IntellijMockBase {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
   private Component focusedComponent;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
+	Application application = IntellijMockBase.setupApplication();
+    
+    InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
+    
     resultsPane = new InfinitestResultsPane();
-    mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane());
+	mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane(application), consoleFrame);
     cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
   }
 
-  @Test
-  public void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+  @org.junit.jupiter.api.Test
+  void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
     assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
   }
 
   @Test
-  public void shouldStartWithTreeFocused() {
+  void shouldStartWithTreeFocused() {
     TreeFocusListener listener = new TreeFocusListener() {
       @Override
       protected void setFocus(Component c) {
@@ -72,24 +81,19 @@ public class WhenShowingMainFrame {
   }
 
   @Test
-  public void shouldHaveIconToIndicatePoFNodes() {
+  void shouldHaveIconToIndicatePoFNodes() {
     Object node = "PointOfFailure.java:32";
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("error"));
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
   }
 
   @Test
-  public void shouldHaveIconToIndicateFailingTest() {
+  void shouldHaveIconToIndicateFailingTest() {
     Object node = eventWithError();
     JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
 
-    assertThat(treeCell.getIcon().toString()).isEqualTo(expectedIcon("failure"));
-  }
-
-  private String expectedIcon(String iconName) {
-    ImageIcon expectedIcon = new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/" + iconName + ".png"));
-    return expectedIcon.toString();
+    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
   }
 
   private static TestEvent eventWithError() {

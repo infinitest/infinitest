@@ -27,32 +27,45 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.event.*;
-import java.net.*;
+import java.awt.event.ActionEvent;
+import java.net.URL;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
-import org.infinitest.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.module.Module;
 
 public class ReloadIndexAction extends AbstractAction {
 	private static final long serialVersionUID = -1L;
 
-	private final InfinitestCore core;
+	private final Project project;
 
-	public ReloadIndexAction(InfinitestCore core) {
+	public ReloadIndexAction(Project project) {
+		this.project = project;
+		
 		Icon icon = new ImageIcon(packageRelativeResource("reload.png", this.getClass()));
 		putValue(Action.SMALL_ICON, icon);
 		putValue(Action.SHORT_DESCRIPTION, "Force rebuild of dependency graph");
-		this.core = core;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		core.reload();
+		for (Module module : ModuleManager.getInstance(project).getModules()) {
+			InfinitestLauncher launcher = module.getService(InfinitestLauncher.class);
+			InfinitestCore core = launcher.getCore();
+			core.reload();
+		}
 	}
 
 	private static URL packageRelativeResource(String resourceName, Class<?> clazz) {
-		String directoryPrefix = '/' + clazz.getPackage().getName().replaceAll("\\.", "/") + '/';
+		String directoryPrefix = '/' + clazz.getPackage().getName().replace(".", "/") + '/';
 		return clazz.getResource(directoryPrefix + resourceName);
 	}
 }

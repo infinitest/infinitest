@@ -27,24 +27,32 @@
  */
 package org.infinitest.testrunner.process;
 
-import static com.google.common.collect.Iterables.*;
-import static org.infinitest.testrunner.FailingRunner.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.infinitest.testrunner.FailingRunner.FAILING_EVENT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.SynchronousQueue;
 
 import org.infinitest.ConsoleOutputListener.OutputType;
-import org.infinitest.testrunner.*;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.testrunner.FailingRunner;
+import org.infinitest.testrunner.HangingRunner;
+import org.infinitest.testrunner.OutputStreamHandler;
+import org.infinitest.testrunner.RunnerThatCannotBeCreated;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestRunnerProcess;
+import org.infinitest.util.InfinitestTestUtils;
+import org.junit.jupiter.api.Test;
 
-public class NativeConnectionFactoryTest {
+class NativeConnectionFactoryTest {
 	protected String errorMsg;
 
 	@Test
-	public void shouldRunTests() throws Exception {
+	void shouldRunTests() throws Exception {
 		NativeConnectionFactory manager = new NativeConnectionFactory(FailingRunner.class);
 		ProcessConnection connection = manager.getConnection(fakeEnvironment(), new NoOpOutputHandler());
 		Iterable<TestEvent> results = connection.runTest("testName");
@@ -53,7 +61,7 @@ public class NativeConnectionFactoryTest {
 	}
 
 	@Test
-	public void canStopTestRun() throws Exception {
+	void canStopTestRun() throws Exception {
 		final SynchronousQueue<String> testQueue = new SynchronousQueue<String>();
 		NativeConnectionFactory manager = new NativeConnectionFactory(HangingRunner.class);
 		final ProcessConnection connection = manager.getConnection(fakeEnvironment(), new NoOpOutputHandler());
@@ -75,7 +83,7 @@ public class NativeConnectionFactoryTest {
 	}
 
 	@Test
-	public void shouldPrintConsoleOutputEvenIfRunnerFailsToStart() throws Exception {
+	void shouldPrintConsoleOutputEvenIfRunnerFailsToStart() throws Exception {
 		NativeConnectionFactory manager = new NativeConnectionFactory(RunnerThatCannotBeCreated.class) {
 			@Override
 			protected TcpSocketProcessCommunicator createCommunicator() {

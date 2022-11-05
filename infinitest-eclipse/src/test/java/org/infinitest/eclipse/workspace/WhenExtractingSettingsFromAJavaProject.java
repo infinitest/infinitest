@@ -27,20 +27,21 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenExtractingSettingsFromAJavaProject {
+class WhenExtractingSettingsFromAJavaProject {
 	private ProjectFacade facade;
 	private IJavaProject project;
 	private IPath path;
 
-	@Before
-	public void inContext() throws JavaModelException {
+	@BeforeEach
+	void inContext() throws JavaModelException {
 		project = mock(IJavaProject.class);
 		path = mock(IPath.class);
 		when(project.getOutputLocation()).thenReturn(path);
@@ -48,7 +49,7 @@ public class WhenExtractingSettingsFromAJavaProject {
 	}
 
 	@Test
-	public void shouldProvideDefaultOutputDirectory() {
+	void shouldProvideDefaultOutputDirectory() {
 		assertSame(path, facade.getDefaultOutputLocation());
 	}
 }

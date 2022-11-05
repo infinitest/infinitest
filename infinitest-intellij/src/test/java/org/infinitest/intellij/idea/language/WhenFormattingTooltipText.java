@@ -30,18 +30,18 @@ package org.infinitest.intellij.idea.language;
 import static org.assertj.core.api.Assertions.*;
 import static org.infinitest.testrunner.TestEvent.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenFormattingTooltipText {
+class WhenFormattingTooltipText {
   @Test
-  public void shouldIncludeExceptionType() {
+  void shouldIncludeExceptionType() {
     InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(methodFailed(null, "", new RuntimeException("BUG"))));
 
     assertThat(renderer.getTooltipText()).contains("RuntimeException");
   }
 
   @Test
-  public void shouldIncludeMessage() {
+  void shouldIncludeMessage() {
     InfinitestGutterIconRenderer renderer = new InfinitestGutterIconRenderer(new InnerClassFriendlyTestEvent(methodFailed(null, "", new RuntimeException("BUG"))));
 
     assertThat(renderer.getTooltipText()).contains("BUG");

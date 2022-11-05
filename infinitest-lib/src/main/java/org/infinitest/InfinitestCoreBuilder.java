@@ -27,14 +27,18 @@
  */
 package org.infinitest;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.*;
-
-import org.infinitest.changedetect.*;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
+import org.infinitest.changedetect.FileChangeDetector;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.filter.RegexFileFilter;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.ClassFileTestDetector;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.MultiProcessRunner;
+import org.infinitest.testrunner.TestRunner;
 
 /**
  * Used to create instances of an {@link InfinitestCore}.
@@ -46,16 +50,18 @@ public class InfinitestCoreBuilder {
 	private final Class<? extends TestRunner> runnerClass;
 	private final RuntimeEnvironment runtimeEnvironment;
 	private final EventQueue eventQueue;
-	private String coreName = "";
+	private String coreName;
 	private ConcurrencyController controller;
 
-	public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue) {
-		checkNotNull(environment, "No runtime environment is configured. Maybe because the project has no jdk.");
+	public InfinitestCoreBuilder(RuntimeEnvironment environment, EventQueue eventQueue, String coreName) {
+		checkNotNull(environment, "No runtime environment is configured. Maybe because " + coreName + " has no jdk.");
 
 		runtimeEnvironment = environment;
 		this.eventQueue = eventQueue;
-		String filterFileLocation = environment.getWorkingDirectory().getAbsolutePath() + File.separator + "infinitest.filters";
-		filterList = new RegexFileFilter(new File(filterFileLocation));
+		this.coreName = coreName;
+		
+		InfinitestConfigurationSource configSource = FileBasedInfinitestConfigurationSource.createFromWorkingDirectory(environment.getWorkingDirectory());
+		filterList = new RegexFileFilter(configSource);
 		runnerClass = MultiProcessRunner.class;
 		controller = new SingleLockConcurrencyController();
 	}
@@ -95,10 +101,6 @@ public class InfinitestCoreBuilder {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("Cannot access runner class " + runnerClass, e);
 		}
-	}
-
-	public void setName(String coreName) {
-		this.coreName = coreName;
 	}
 
 	public void setUpdateSemaphore(ConcurrencyController semaphore) {

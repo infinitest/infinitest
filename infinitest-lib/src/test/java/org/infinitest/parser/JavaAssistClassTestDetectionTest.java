@@ -27,26 +27,38 @@
  */
 package org.infinitest.parser;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import javassist.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.*;
+import com.fakeco.fakeproduct.FakeProduct;
+import com.fakeco.fakeproduct.JUnit3TestThatInherits;
+import com.fakeco.fakeproduct.JUnit4TestThatInherits;
+import com.fakeco.fakeproduct.ParameterizedTest;
+import com.fakeco.fakeproduct.TestJUnit4TestCase;
+import com.fakeco.fakeproduct.TestJUnit5TestCase;
+import com.fakeco.fakeproduct.TestJunit3TestCase;
+import com.fakeco.fakeproduct.TestNGFakeProductTest;
+import com.fakeco.fakeproduct.TestNGWithClassLevelOnlyTestAnnotationFakeTest;
+import com.fakeco.fakeproduct.TestThatInherits;
+import com.fakeco.fakeproduct.TestWithACustomRunner;
 
-import com.fakeco.fakeproduct.*;
+import javassist.NotFoundException;
 
-public class JavaAssistClassTestDetectionTest {
+class JavaAssistClassTestDetectionTest {
 	private ClassPoolForFakeClassesTestUtil classPoolUtil;
 
-	@Before
-	public void inContext() throws NotFoundException {
+	@BeforeEach
+	void inContext() throws NotFoundException {
 		classPoolUtil = new ClassPoolForFakeClassesTestUtil();
 	}
 
 	@Test
-	public void shouldDetectTestsInClass() {
+	void shouldDetectTestsInClass() {
 		assertThat(classPoolUtil.getClass(TestJunit3TestCase.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(TestJUnit5TestCase.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestThatInherits.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(JUnit3TestThatInherits.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(JUnit4TestThatInherits.class).isATest()).isTrue();
@@ -57,7 +69,7 @@ public class JavaAssistClassTestDetectionTest {
 	}
 
 	@Test
-	public void shouldNotDetectTestsInNotTestClass() throws NotFoundException {
+	void shouldNotDetectTestsInNotTestClass() throws NotFoundException {
 		assertThat(classPoolUtil.getClass(FakeProduct.class).isATest()).isFalse();
 	}
 }

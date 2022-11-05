@@ -28,66 +28,95 @@
 package org.infinitest.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
-import javassist.*;
-import javax.swing.*;
+import javax.swing.JTree;
 
-import org.junit.*;
+import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import com.fakeco.fakeproduct.*;
-import com.fakeco.fakeproduct.id.*;
+import com.fakeco.fakeproduct.ANewClass;
+import com.fakeco.fakeproduct.AnnotatedClass;
+import com.fakeco.fakeproduct.ClassAnnotation;
+import com.fakeco.fakeproduct.FakeDependency;
+import com.fakeco.fakeproduct.FakeProduct;
+import com.fakeco.fakeproduct.FakeTree;
+import com.fakeco.fakeproduct.FakeUtils;
+import com.fakeco.fakeproduct.FieldAnnotation;
+import com.fakeco.fakeproduct.InvisibleClassAnnotation;
+import com.fakeco.fakeproduct.InvisibleParameterAnnotation;
+import com.fakeco.fakeproduct.JUnit5ArchUnitTest;
+import com.fakeco.fakeproduct.JUnit5CompositeAnnotationTest;
+import com.fakeco.fakeproduct.JUnit5ParameterizedTest;
+import com.fakeco.fakeproduct.JUnit5Testable;
+import com.fakeco.fakeproduct.JUnit5TestableSubclass;
+import com.fakeco.fakeproduct.MethodAnnotation;
+import com.fakeco.fakeproduct.ParameterAnnotation;
+import com.fakeco.fakeproduct.TestJUnit5TestCase;
+import com.fakeco.fakeproduct.id.FakeId;
 
-public class JavaAssistClassTest {
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.NotFoundException;
+
+class JavaAssistClassTest {
 	private ClassPoolForFakeClassesTestUtil classPoolUtil;
 
-	@Before
-	public void inContext() throws NotFoundException {
+	@BeforeEach
+	void inContext() throws NotFoundException {
 		classPoolUtil = new ClassPoolForFakeClassesTestUtil();
 	}
 
 	@Test
-	public void shouldFindDependenciesInConstantPool() {
+	void shouldFindDependenciesInConstantPool() {
 		assertThat(dependenciesOf(FakeProduct.class)).contains(FakeId.class.getName());
 		assertThat(dependenciesOf(ANewClass.class)).contains(FakeProduct.class.getName());
 		assertThat(dependenciesOf(ANewClass.class)).contains(Integer.class.getName());
 	}
 
 	@Test
-	public void shouldReturnClassNameInToString() {
+	void shouldReturnClassNameInToString() {
 		assertEquals(FakeProduct.class.getName(), classPoolUtil.getClass(FakeProduct.class).toString());
 	}
 
 	@Test
-	public void shouldDependOnParentClass() {
+	void shouldDependOnParentClass() {
 		assertThat(dependenciesOf(FakeTree.class)).contains(JTree.class.getName());
 	}
 
 	@Test
-	public void shouldFindFieldDependenciesInTheSamePackage() {
+	void shouldFindFieldDependenciesInTheSamePackage() {
 		assertThat(dependenciesOf(FakeTree.class)).contains(FakeDependency.class.getName());
 	}
 
 	@Test
-	public void shouldFindMethodDependenciesInTheSameClass() {
+	void shouldFindMethodDependenciesInTheSameClass() {
 		assertThat(dependenciesOf(FakeUtils.class)).contains(Integer.class.getName());
 		assertThat(dependenciesOf(FakeUtils.class)).contains(String.class.getName());
 	}
 
 	@Test
-	public void shouldFindDependenciesForClassAnnotations() {
+	void shouldFindDependenciesForClassAnnotations() {
 		assertThat(dependenciesOf(AnnotatedClass.class)).contains(ClassAnnotation.class.getName());
 		assertThat(dependenciesOf(AnnotatedClass.class)).contains(InvisibleClassAnnotation.class.getName());
 	}
 
 	@Test
-	public void shouldFindDependenciesForFieldAnnotations() {
+	void shouldFindDependenciesForFieldAnnotations() {
 		assertThat(dependenciesOf(FakeProduct.class)).contains(FieldAnnotation.class.getName());
 	}
 
 	@Test
-	public void shouldFindDependenciesForMethodAnnotations() {
-		assertThat(dependenciesOf(AnnotatedClass.class)).contains(Test.class.getName());
+	void shouldFindDependenciesForMethodAnnotations() {
+		assertThat(dependenciesOf(AnnotatedClass.class)).contains(org.junit.Test.class.getName());
 		assertThat(dependenciesOf(AnnotatedClass.class)).contains(Ignore.class.getName());
 		assertThat(dependenciesOf(AnnotatedClass.class)).contains(MethodAnnotation.class.getName());
 		assertThat(dependenciesOf(AnnotatedClass.class)).contains(ParameterAnnotation.class.getName());
@@ -95,7 +124,12 @@ public class JavaAssistClassTest {
 	}
 
 	@Test
-	public void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
+	void shouldFindDependenciesForJUnit5MethodAnnotations() {
+		assertThat(dependenciesOf(TestJUnit5TestCase.class)).contains(org.junit.jupiter.api.Test.class.getName());
+	}
+
+	@Test
+	void shouldIgnoreTestsWithStrangeOneArgConstructors() throws Exception {
 		ClassPool classPool = classPoolUtil.getClassPool();
 		CtClass fakeClass = classPool.makeClass("FakeClass");
 		CtClass[] params = {classPool.get(Integer.class.getName())};
@@ -103,7 +137,34 @@ public class JavaAssistClassTest {
 		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
 	}
 
+	@Test
+	void shouldIgnoreTestsWithInvalidParameterNotInClassPool() throws Exception {
+		ClassPool classPool = classPoolUtil.getClassPool();
+		CtClass fakeClass = classPool.makeClass("FakeClass");
+		CtClass notInClassPool = mock(CtClass.class);
+		given(notInClassPool.getName()).willReturn("NonClassPoolClass");
+		CtClass[] params = {notInClassPool};
+		fakeClass.addConstructor(new CtConstructor(params, fakeClass));
+		assertFalse(new JavaAssistClass(fakeClass).canInstantiate(fakeClass));
+	}
+
 	private String[] dependenciesOf(Class<?> dependingClass) {
 		return classPoolUtil.dependenciesOf(dependingClass);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(classes = {
+			JUnit5ParameterizedTest.class,
+			JUnit5CompositeAnnotationTest.class,
+			JUnit5Testable.class,
+			JUnit5TestableSubclass.class,
+			JUnit5ArchUnitTest.class,
+	})
+	void shouldSupportTestClasses(Class<?> testClass) throws NotFoundException {
+		ClassPool classPool = classPoolUtil.getClassPool();
+		CtClass ctClass = classPool.get(testClass.getName());
+		JavaAssistClass javaClass = new JavaAssistClass(ctClass);
+		
+		assertTrue(javaClass.isATest());
 	}
 }

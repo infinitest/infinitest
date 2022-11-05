@@ -27,15 +27,16 @@
  */
 package org.infinitest.parser;
 
-import static com.google.common.collect.Sets.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
 
-import org.infinitest.*;
-import org.infinitest.filter.*;
+import org.infinitest.environment.ClasspathProvider;
+import org.infinitest.filter.TestFilter;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
@@ -52,6 +53,13 @@ public class ClassFileTestDetector implements TestDetector {
 	@Override
 	public void clear() {
 		index.clear();
+	}
+	
+	@Override
+	public Set<JavaClass> removeClasses(Collection<File> removedFiles) {
+		Set<JavaClass> removeClasses = index.removeClasses(removedFiles);
+		
+		return filterTests(removeClasses);
 	}
 
 	/**
@@ -75,7 +83,7 @@ public class ClassFileTestDetector implements TestDetector {
 	}
 
 	private Set<JavaClass> filterTests(Set<JavaClass> changedClasses) {
-		Set<JavaClass> testsToRun = new HashSet<JavaClass>();
+		Set<JavaClass> testsToRun = new HashSet<>();
 		for (JavaClass jclass : changedClasses) {
 			if (isATest(jclass) && inCurrentProject(jclass)) {
 				testsToRun.add(jclass);
@@ -125,7 +133,7 @@ public class ClassFileTestDetector implements TestDetector {
 
 	@Override
 	public Set<String> getCurrentTests() {
-		Set<String> tests = newHashSet();
+		Set<String> tests = new HashSet<>();
 		for (String each : getIndexedClasses()) {
 			if (isATest(index.findJavaClass(each))) {
 				tests.add(each);

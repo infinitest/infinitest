@@ -32,6 +32,7 @@ import junit.framework.AssertionFailedError;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
 import java.io.*;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:benrady@gmail.com">Ben Rady</a>
@@ -80,6 +81,9 @@ public class TestEvent implements Serializable {
 	private void populateAttributesToEnsureSerializability(Throwable error) {
 		isAssertionFailure = isTestFailure(error);
 		stackTrace = error.getStackTrace();
+		if (stackTrace == null) {
+			stackTrace = new StackTraceElement[0];
+		}
 		simpleErrorClassName = error.getClass().getSimpleName();
 		fullErrorClassName = error.getClass().getName();
 	}
@@ -158,24 +162,11 @@ public class TestEvent implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof TestEvent) {
 			TestEvent other = (TestEvent) obj;
-			return safeEquals(name, other.name) && safeEquals(method, other.method);
+			return Objects.equals(name, other.name) && Objects.equals(method, other.method);
 		}
 		return false;
 	}
 
-	// Can't use infinitestUtils.safeEquals here because this class needs to
-	// remain serializable,
-	// and InfinitestUtils uses 3rd party libraries
-	private static boolean safeEquals(Object orig, Object other) {
-		if ((orig == null) && (other == null)) {
-			return true;
-		}
-		if ((orig == null) || (other == null)) {
-			return false;
-		}
-
-		return orig.equals(other);
-	}
 
 	public String getErrorClassName() {
 		return simpleErrorClassName;

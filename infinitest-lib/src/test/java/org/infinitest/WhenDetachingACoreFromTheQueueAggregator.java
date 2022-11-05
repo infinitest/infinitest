@@ -27,14 +27,15 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenDetachingACoreFromTheQueueAggregator {
+
+class WhenDetachingACoreFromTheQueueAggregator {
 	@Test
-	public void shouldRemoveFromMap() {
+	void shouldRemoveFromMap() {
 		QueueAggregator aggregator = new QueueAggregator();
 		InfinitestCore core = mock(InfinitestCore.class);
 		aggregator.attach(core);

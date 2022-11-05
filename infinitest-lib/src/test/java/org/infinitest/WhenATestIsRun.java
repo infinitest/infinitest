@@ -27,24 +27,26 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Comparator;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.jupiter.api.Test;
 
-public class WhenATestIsRun {
+class WhenATestIsRun {
 	@Test
-	public void shouldEvent() {
+	void shouldEvent() {
 		EventNormalizer normalizer = new EventNormalizer(new ControlledEventQueue());
 		assertNotNull(normalizer.consoleEventNormalizer(new ConsoleListenerAdapter()));
 	}
 
 	@Test
-	public void shouldFireEventsForConsoleUpdates() {
+	void shouldFireEventsForConsoleUpdates() {
 		TestRunner runner = mock(TestRunner.class);
 
 		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, new ControlledEventQueue());

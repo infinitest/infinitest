@@ -27,13 +27,20 @@
  */
 package org.infinitest.parser;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
-import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 
 public interface TestDetector {
 	void clear();
+	
+	/**
+	 * @param removedFiles The removed files
+	 * @return the removed test classes
+	 */
+	Set<JavaClass> removeClasses(Collection<File> removedFiles);
 
 	Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
 

@@ -1,26 +1,44 @@
-<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin>
     <name>Infinitest</name>
 
-    <description>Infinitest plugin for Intellij</description>
+    <description>Infinitest is a continuous test runner for Java, and is valuable to developers using a unit testing tool called JUnit. Continuous testing is the practice of constantly running unit tests while developers make changes to source code. Kind of like a spellchecker, except that instead of looking for spelling errors like a regular spellchecker, or looking for syntax errors like many IDE's do, Infinitest constantly looks for logical errors and immediately identifies them. It does this by running an optimized set of unit tests every time a developer makes a change to source code.</description>
     <version>${project.parent.version}</version>
-    <vendor>Infinitest</vendor>
-    <idea-version since-build="9732"/>
-    <application-components>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.facet.InfinitestFacetLoader</implementation-class>
-        </component>
-    </application-components>
+    <vendor url="http://infinitest.github.io/">Infinitest</vendor>
+    
+    <change-notes><![CDATA[
+    <h2>5.4.0</h2>
+    <ul>
+        <li>Infinitest is no longer a facet, just build the project to use it.</li>
+        <li>Spock 2 support</li>
+        <li>ArchUnit support</li>
+        <li>Disable Infinitest when Power Save mode is on</li>
+        <li>Fix for projects in folders using symbolic links</li>
+        <li>Adjustable log level in the Logging view.</li>
+    </ul>
+        ]]>
+    </change-notes>
+    
+    <idea-version since-build="201"/>
+    
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    
     <project-components>
         <component>
-            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory
-            </implementation-class>
+            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory</implementation-class>
         </component>
     </project-components>
-    <module-components>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.window.InfinitestToolWindow
-            </implementation-class>
-        </component>
-    </module-components>
+    
+    <projectListeners>
+    	<listener class="org.infinitest.intellij.idea.IdeaCompilationListener" topic="com.intellij.task.ProjectTaskListener"/>
+    </projectListeners>
+    
+	<extensions defaultExtensionNs="com.intellij">
+    	<toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
+    	
+    	<projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
+    	
+	    <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
+    	<moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
+	</extensions>
 </idea-plugin>

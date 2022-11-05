@@ -28,6 +28,7 @@
 package org.infinitest.intellij;
 
 import java.awt.*;
+import java.util.logging.Level;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -70,12 +71,16 @@ public class FakeInfinitestView implements InfinitestView {
 	public void setStatusMessage(String string) {
 	}
 
-	public void writeLogMessage(String message) {
+	public void writeLogMessage(Level level, String message) {
 	}
 
-	public void writeError(String message) {
+	public void writeError(String message, Throwable throwable) {
 	}
 
 	public void addResultClickListener(ResultClickListener listener) {
+	}
+	
+	@Override
+	public void consoleOutputUpdate(String newText, OutputType outputType) {
 	}
 }

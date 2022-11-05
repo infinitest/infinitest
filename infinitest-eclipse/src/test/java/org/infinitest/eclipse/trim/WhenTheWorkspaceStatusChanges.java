@@ -30,11 +30,11 @@ package org.infinitest.eclipse.trim;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.eclipse.status.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenTheWorkspaceStatusChanges {
+class WhenTheWorkspaceStatusChanges {
 	@Test
-	public void shouldUpdateTheStatusBar() {
+	void shouldUpdateTheStatusBar() {
 		VisualStatusPresenter presenter = new VisualStatusPresenter();
 		VisualStatus statusBar = mock(VisualStatus.class);
 		presenter.updateVisualStatus(statusBar);

@@ -27,28 +27,30 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Iterables.getLast;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenAggregatingTestQueues {
+class WhenAggregatingTestQueues {
 	private List<TestQueueListener> listeners;
 	private AtomicInteger finishCount;
 	private List<TestQueueEvent> updateEvents;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		ResultCollector collector = new ResultCollector();
-		updateEvents = newArrayList();
+		updateEvents = new ArrayList<>();
 		finishCount = new AtomicInteger();
-		listeners = newArrayList();
+		listeners = new ArrayList<>();
 		collector.addTestQueueListener(new TestQueueAdapter() {
 			@Override
 			public void testQueueUpdated(TestQueueEvent event) {
@@ -77,7 +79,7 @@ public class WhenAggregatingTestQueues {
 	}
 
 	@Test
-	public void shouldOnlyFireTestRunCompleteWhenAllQueuesAreEmpty() {
+	void shouldOnlyFireTestRunCompleteWhenAllQueuesAreEmpty() {
 		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1"), 1));
 		listenerForCore(1).testQueueUpdated(new TestQueueEvent(asList("test3"), 1));
 		listenerForCore(0).testQueueUpdated(new TestQueueEvent(Collections.<String> emptyList(), 1));
@@ -90,12 +92,12 @@ public class WhenAggregatingTestQueues {
 	}
 
 	@Test
-	public void shouldTrackCoresUsingInternalListenerInstances() {
+	void shouldTrackCoresUsingInternalListenerInstances() {
 		assertEquals(2, listeners.size());
 	}
 
 	@Test
-	public void shouldCalculateTestQueueSizeBasedOnTheAggregatedQueues() {
+	void shouldCalculateTestQueueSizeBasedOnTheAggregatedQueues() {
 		listenerForCore(0).testQueueUpdated(new TestQueueEvent(asList("test1", "test2"), 2));
 		assertEquals(2, lastEvent().getInitialSize());
 		assertEquals(2, lastEvent().getTestQueue().size());

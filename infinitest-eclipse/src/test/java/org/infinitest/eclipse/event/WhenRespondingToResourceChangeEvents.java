@@ -27,18 +27,20 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.*;
-import org.junit.*;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.infinitest.EventQueue;
+import org.infinitest.NamedRunnable;
+import org.junit.jupiter.api.Test;
 
-public class WhenRespondingToResourceChangeEvents {
+class WhenRespondingToResourceChangeEvents {
 	private CoreUpdateNotifier chain;
 
 	@Test
-	public void shouldProcessEventsOnEventQueue() {
+	void shouldProcessEventsOnEventQueue() {
 		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
 		EventQueue queue = mock(EventQueue.class);
 

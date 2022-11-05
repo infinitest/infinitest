@@ -27,21 +27,25 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.launching.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 
-@RunWith(MockitoJUnitRunner.class)
-public class WhenResolvingClassPath {
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class WhenResolvingClassPath {
 	@InjectMocks
 	private ClassPathResolver classPathResolver;
 
@@ -61,7 +65,7 @@ public class WhenResolvingClassPath {
 	private IClasspathEntry classpathEntry;
 
 	@Test
-	public void shouldFindDefaultRuntimeClassPathWithOneJar() throws CoreException {
+	void shouldFindDefaultRuntimeClassPathWithOneJar() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[]{"1.jar"});
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[0]);
 
@@ -71,7 +75,7 @@ public class WhenResolvingClassPath {
 	}
 
 	@Test
-	public void shouldFindDefaultRuntimeClassPathWithTwoJars() throws CoreException {
+	void shouldFindDefaultRuntimeClassPathWithTwoJars() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[]{"1.jar", "2.jar"});
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[0]);
 
@@ -81,7 +85,7 @@ public class WhenResolvingClassPath {
 	}
 
 	@Test
-	public void shouldAddUnresolvedRuntimeJars() throws CoreException {
+	void shouldAddUnresolvedRuntimeJars() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[]{"1.jar", "2.jar"});
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("SCALA_CONTAINER");
@@ -97,15 +101,10 @@ public class WhenResolvingClassPath {
 	}
 
 	@Test
-	public void shouldIgnoreJreContainer() throws CoreException {
+	void shouldIgnoreJreContainer() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[0]);
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("org.eclipse.jdt.launching.JRE_CONTAINER");
-		when(runtimeClasspathEntry.getPath()).thenReturn(path);
-		when(eclipseFacade.getClasspathContainer(path, project)).thenReturn(classpathContainer);
-		when(classpathContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[]{classpathEntry});
-		when(classpathEntry.getPath()).thenReturn(jarPath);
-		when(jarPath.toString()).thenReturn("3.jar");
 
 		String classpath = classPathResolver.rawClasspath(project);
 
@@ -113,15 +112,10 @@ public class WhenResolvingClassPath {
 	}
 
 	@Test
-	public void shouldIgnoreNonJar() throws CoreException {
+	void shouldIgnoreNonJar() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[0]);
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("SCALA_CONTAINER");
-		when(runtimeClasspathEntry.getPath()).thenReturn(path);
-		when(eclipseFacade.getClasspathContainer(path, project)).thenReturn(classpathContainer);
-		when(classpathContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[]{classpathEntry});
-		when(classpathEntry.getPath()).thenReturn(jarPath);
-		when(jarPath.toString()).thenReturn("3.zip");
 
 		String classpath = classPathResolver.rawClasspath(project);
 
@@ -129,7 +123,7 @@ public class WhenResolvingClassPath {
 	}
 
 	@Test
-	public void shouldIgnoreCase() throws CoreException {
+	void shouldIgnoreCase() throws CoreException {
 		when(eclipseFacade.computeDefaultRuntimeClassPath(project)).thenReturn(new String[0]);
 		when(eclipseFacade.computeUnresolvedRuntimeClasspath(project)).thenReturn(new IRuntimeClasspathEntry[]{runtimeClasspathEntry});
 		when(runtimeClasspathEntry.getVariableName()).thenReturn("SCALA_CONTAINER");

@@ -27,23 +27,32 @@
  */
 package org.infinitest.parser;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.*;
+import java.io.File;
 
-import org.infinitest.*;
-import org.junit.*;
+import org.infinitest.MissingClassException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.AnnotatedClass;
+import com.fakeco.fakeproduct.ClassAnnotation;
+import com.fakeco.fakeproduct.FakeProduct;
+import com.fakeco.fakeproduct.FieldAnnotation;
+import com.fakeco.fakeproduct.MethodAnnotation;
+import com.fakeco.fakeproduct.ParameterAnnotation;
 
-public class WhenParsingClassFiles {
+class WhenParsingClassFiles {
 	private JavaAssistClassParser parser;
 
-	@Before
-	public void inContext() {
-		parser = new JavaAssistClassParser(fakeClasspath().getCompleteClasspath());
+	@BeforeEach
+	void inContext() {
+		parser = new JavaAssistClassParser(fakeClasspath().getRunnerFullClassPath());
 	}
 
 	private JavaClass parseClass(Class<?> classToParse) {
@@ -51,24 +60,24 @@ public class WhenParsingClassFiles {
 	}
 
 	@Test
-	public void shouldLazilyCreateClassPool() {
-		new JavaAssistClassParser("doesNotExist.jar");
-	}
-
-	@Test(expected = MissingClassException.class)
-	public void shouldThrowMissingClassExceptionIfClasspathElementsCannotBeFound() {
-		JavaAssistClassParser classParser = new JavaAssistClassParser("doesNotExist.jar");
-		classParser.getClass("doesn't matter");
+	void shouldLazilyCreateClassPool() {
+		assertDoesNotThrow(() -> new JavaAssistClassParser("doesNotExist.jar"));
 	}
 
 	@Test
-	public void shouldIncludeSystemClasspathInClasspool() {
+	void shouldThrowMissingClassExceptionIfClasspathElementsCannotBeFound() {
+		JavaAssistClassParser classParser = new JavaAssistClassParser("doesNotExist.jar");
+		assertThatThrownBy(() -> classParser.getClass("doesn't matter")).isInstanceOf(MissingClassException.class);
+	}
+
+	@Test
+	void shouldIncludeSystemClasspathInClasspool() {
 		JavaClass stringClass = parseClass(String.class);
 		assertEquals(String.class.getName(), stringClass.getName());
 	}
 
 	@Test
-	public void shouldAddImportsFromAnnotations() {
+	void shouldAddImportsFromAnnotations() {
 		JavaClass clazz = parseClass(AnnotatedClass.class);
 		assertEquals(AnnotatedClass.class.getName(), clazz.getName());
 
@@ -78,7 +87,7 @@ public class WhenParsingClassFiles {
 	}
 
 	@Test
-	public void shouldDetectFieldAnnotations() {
+	void shouldDetectFieldAnnotations() {
 		JavaClass javaClass = parseClass(FakeProduct.class);
 
 		String[] imports = javaClass.getImports();
@@ -87,15 +96,15 @@ public class WhenParsingClassFiles {
 	}
 
 	@Test
-	public void shouldSkipMissingJarFilesWhenCreatingClassPool() {
-		String classpath = fakeClasspath().getCompleteClasspath();
+	void shouldSkipMissingJarFilesWhenCreatingClassPool() {
+		String classpath = fakeClasspath().getRunnerFullClassPath();
 		classpath += File.pathSeparator + "notAJar.jar";
 		parser = new JavaAssistClassParser(classpath);
 		assertNotNull(parseClass(FakeProduct.class));
 	}
 
 	@Test
-	public void shouldHandleMissingClassDirs() {
-		parser = new JavaAssistClassParser("notADirYet");
+	void shouldHandleMissingClassDirs() {
+		assertDoesNotThrow(() -> new JavaAssistClassParser("notADirYet"));
 	}
 }

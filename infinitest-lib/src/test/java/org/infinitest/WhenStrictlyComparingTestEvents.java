@@ -28,21 +28,22 @@
 package org.infinitest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.testrunner.TestEvent.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.util.InfinitestTestUtils.throwableWithStack;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infinitest.testrunner.*;
-import org.infinitest.util.*;
-import org.junit.*;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.util.EqualityTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenStrictlyComparingTestEvents extends EqualityTestSupport {
+class WhenStrictlyComparingTestEvents extends EqualityTestSupport {
   private Throwable throwable;
   private TestEventEqualityAdapter event1;
   private TestEventEqualityAdapter event2;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     throwable = new Throwable();
     throwable.fillInStackTrace();
     event1 = createEqualInstance();
@@ -50,7 +51,7 @@ public class WhenStrictlyComparingTestEvents extends EqualityTestSupport {
   }
 
   @Test
-  public void shouldIncludeLineNumberInEventComparison() {
+  void shouldIncludeLineNumberInEventComparison() {
     throwable = new Throwable();
     throwable.fillInStackTrace();
     event2 = adapterFor(methodFailed("message1", "testName", "methodName", throwable));
@@ -59,7 +60,7 @@ public class WhenStrictlyComparingTestEvents extends EqualityTestSupport {
   }
 
   @Test
-  public void shouldIncludeStackTraceOfFailureInEventComparison() {
+  void shouldIncludeStackTraceOfFailureInEventComparison() {
     throwable = throwableWithStack(new StackTraceElement("declaringClass", "methodName", "fileName", 1), new StackTraceElement("declaringClass", "anotherMethod", "fileName", 1));
 
     Throwable anotherThrowable = throwableWithStack(new StackTraceElement("declaringClass", "methodName", "fileName", 1), new StackTraceElement("declaringClass", "anotherMethod", "fileName", 2));

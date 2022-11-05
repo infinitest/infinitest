@@ -27,15 +27,15 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.resources.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenDispatchingEventProcessingOnTheEventQueue {
+class WhenDispatchingEventProcessingOnTheEventQueue {
 	@Test
-	public void shouldInvokeTheProcessorFromARunnable() {
+	void shouldInvokeTheProcessorFromARunnable() {
 		MockProcessor processor = new MockProcessor();
 		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
 		EventProcessorRunnable runnable = new EventProcessorRunnable(processor, event);

@@ -27,26 +27,27 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static java.lang.Thread.*;
-import static java.util.Arrays.*;
-import static org.infinitest.EventSupport.*;
-import static org.junit.Assert.*;
+import static java.lang.Thread.sleep;
+import static java.util.Arrays.asList;
+import static org.infinitest.EventSupport.testCaseFailing;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.testrunner.RunStatistics;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPrioritizingTests {
+class WhenPrioritizingTests {
 	private RunStatistics stats;
 	private TestQueue queue;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		stats = new RunStatistics();
 		queue = new TestQueue(new TestComparator(stats));
 	}
 
 	@Test
-	public void shouldPreferRecentlyFailedTests() throws Exception {
+	void shouldPreferRecentlyFailedTests() throws Exception {
 		stats.testCaseComplete(testCaseFailing("test2", "", new Exception()));
 		sleep(2);
 		stats.testCaseComplete(testCaseFailing("test1", "", new Exception()));
@@ -58,7 +59,7 @@ public class WhenPrioritizingTests {
 	}
 
 	@Test
-	public void shouldNeverRunTheSameTestTwice() {
+	void shouldNeverRunTheSameTestTwice() {
 		queue.addAll(asList("test1", "test2", "test1"));
 		assertEquals(2, queue.size());
 	}

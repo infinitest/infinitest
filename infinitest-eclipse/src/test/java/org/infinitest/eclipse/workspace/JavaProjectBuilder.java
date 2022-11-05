@@ -27,22 +27,45 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static org.eclipse.core.resources.IResource.*;
-import static org.eclipse.jdt.core.IClasspathEntry.*;
-import static org.eclipse.jdt.core.IJavaModelMarker.*;
-import static org.eclipse.jdt.core.IPackageFragmentRoot.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_LIBRARY;
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_PROJECT;
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_SOURCE;
+import static org.eclipse.jdt.core.IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER;
+import static org.eclipse.jdt.core.IPackageFragmentRoot.K_BINARY;
+import static org.eclipse.jdt.core.IPackageFragmentRoot.K_SOURCE;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.net.*;
-import java.util.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.core.eval.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jdt.core.IBuffer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaModel;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IOpenable;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IRegion;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
+import org.eclipse.jdt.core.WorkingCopyOwner;
+import org.eclipse.jdt.core.eval.IEvaluationContext;
 
 public class JavaProjectBuilder implements IJavaProject {
 	public static final String PATH_TO_WORKSPACE = "/path/to/workspace/";
@@ -64,7 +87,7 @@ public class JavaProjectBuilder implements IJavaProject {
 
 	private JavaProjectBuilder(String projectName) {
 		this.projectName = projectName;
-		entries = newArrayList();
+		entries = new ArrayList<>();
 	}
 
 	public JavaProjectBuilder withJar(String jarName) {
@@ -157,7 +180,7 @@ public class JavaProjectBuilder implements IJavaProject {
 		if (marker != null) {
 			try {
 				when(resource.createMarker(anyString())).thenReturn(marker);
-				resource.deleteMarkers((String) anyObject(), eq(true), eq(DEPTH_INFINITE));
+				resource.deleteMarkers(anyString(), eq(true), eq(DEPTH_INFINITE));
 			} catch (CoreException e) {
 				throw new RuntimeException(e);
 			}
@@ -362,7 +385,7 @@ public class JavaProjectBuilder implements IJavaProject {
 
 	@Override
 	public boolean isOnClasspath(IResource iResource) {
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 	@Override

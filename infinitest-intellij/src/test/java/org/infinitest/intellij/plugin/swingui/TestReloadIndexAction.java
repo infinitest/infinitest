@@ -27,17 +27,22 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.infinitest.*;
-import org.junit.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.intellij.IntellijMockBase;
+import org.junit.jupiter.api.Test;
 
-public class TestReloadIndexAction {
+class TestReloadIndexAction extends IntellijMockBase {
 	@Test
-	public void shouldReloadWhenActionPerformed() {
+	void shouldReloadWhenActionPerformed() {
 		final InfinitestCore reloader = mock(InfinitestCore.class);
-
-		ReloadIndexAction action = new ReloadIndexAction(reloader);
+		
+		when(launcher.getCore()).thenReturn(reloader);
+		
+		ReloadIndexAction action = new ReloadIndexAction(project);
 		action.actionPerformed(null);
 
 		verify(reloader).reload();

@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Maps.*;
 import static java.lang.System.*;
 
 import java.util.*;
@@ -36,7 +35,7 @@ public class RunStatistics implements TestResultsListener {
 	private final Map<String, Long> failureTimestamps;
 
 	public RunStatistics() {
-		failureTimestamps = newHashMap();
+		failureTimestamps = new HashMap<>();
 	}
 
 	private void update(TestEvent event) {

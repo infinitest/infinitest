@@ -27,7 +27,7 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.util.FakeEnvironments.*;
+import static org.infinitest.environment.FakeEnvironments.*;
 
 import javassist.*;
 
@@ -44,7 +44,7 @@ class ClassPoolForFakeClassesTestUtil {
 		// .classpath file correctly, but somewhere betweeen there and eclipse
 		// that path
 		// gets messed up.
-		classPool.appendPathList(fakeClasspath().getCompleteClasspath());
+		classPool.appendPathList(fakeClasspath().getRunnerFullClassPath());
 		classPool.appendSystemPath();
 	}
 

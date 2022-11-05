@@ -27,37 +27,54 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Lists.*;
-import static org.infinitest.eclipse.InfinitestCoreClasspath.*;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.*;
-import static org.infinitest.util.Events.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
+import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
+import static org.infinitest.util.Events.eventFor;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.core.runtime.*;
-import org.infinitest.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.status.*;
-import org.infinitest.util.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.infinitest.InfinitestCore;
+import org.infinitest.eclipse.InfinitestJarsLocator;
+import org.infinitest.eclipse.UpdateListener;
+import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.eclipse.status.WorkspaceStatusListener;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.util.Events;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 class EclipseWorkspace implements WorkspaceFacade {
 	private final CoreRegistry coreRegistry;
 	private final CoreFactory coreFactory;
 	private WorkspaceStatus status;
-	private final List<WorkspaceStatusListener> statusListeners = newArrayList();
+	private final List<WorkspaceStatusListener> statusListeners = new ArrayList<>();
 	private final Events<UpdateListener> updateEvent = eventFor(UpdateListener.class);
 	private final ProjectSet projectSet;
+	private final InfinitestJarsLocator infinitestJarsClasspathProvider;
 
 	@Autowired
-	EclipseWorkspace(ProjectSet projectSet, CoreRegistry coreRegistry, CoreFactory coreFactory) {
+	EclipseWorkspace(ProjectSet projectSet, 
+			CoreRegistry coreRegistry, 
+			CoreFactory coreFactory, 
+			InfinitestJarsLocator infinitestJarsClasspathProvider) {
 		this.projectSet = projectSet;
 		this.coreRegistry = coreRegistry;
 		this.coreFactory = coreFactory;
+		this.infinitestJarsClasspathProvider = infinitestJarsClasspathProvider;
 	}
 
 	@Autowired
@@ -66,13 +83,29 @@ class EclipseWorkspace implements WorkspaceFacade {
 	}
 
 	@Override
-	public void updateProjects() throws CoreException {
+	public void updateProjects(Set<IResource> modifiedResources) throws CoreException {
 		if (projectSet.hasErrors()) {
 			setStatus(workspaceErrors());
 		} else {
-			int numberOfTestsToRun = updateProjectsIn(projectSet);
+			int numberOfTestsToRun = updateProjectsIn(modifiedResources);
 			if (numberOfTestsToRun == 0) {
 				setStatus(noTestsRun());
+			}
+		}
+	}
+	
+	@Override
+	public void remove(Set<IResource> removedResources) {
+		Map<ProjectFacade, Set<File>> removedFilesByProject = groupResourcesByProject(removedResources);
+		Set<JavaClass> removedClasses = new HashSet<JavaClass>();
+
+		for (Map.Entry<ProjectFacade, Set<File>> entry : removedFilesByProject.entrySet()) {
+			ProjectFacade project = entry.getKey();
+			Set<File> removedFiles = entry.getValue();
+			
+			InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
+			if (core != null) {
+				core.remove(removedFiles, removedClasses);
 			}
 		}
 	}
@@ -88,41 +121,53 @@ class EclipseWorkspace implements WorkspaceFacade {
 		return status;
 	}
 
-	private int updateProjectsIn(ProjectSet projectSet) throws CoreException {
+	private int updateProjectsIn(Set<IResource> modifiedResources) throws CoreException {
 		updateEvent.fire();
 		int totalTests = 0;
-		for (ProjectFacade project : projectSet.projects()) {
-			setStatus(findingTests(totalTests));
-			totalTests += updateProject(project);
+		int processedProjects = 0;
+		
+		Map<ProjectFacade, Set<File>> modifiedFilesByProject = groupResourcesByProject(modifiedResources);
+		
+		for (Map.Entry<ProjectFacade, Set<File>> entry : modifiedFilesByProject.entrySet()) {
+			ProjectFacade project = entry.getKey();
+			Set<File> modifiedFiles = entry.getValue();
+			
+			setStatus(findingTests(processedProjects, modifiedFilesByProject.size(), totalTests));
+			totalTests += updateProject(project, modifiedFiles);
+			
+			processedProjects++;
 		}
+		
 		return totalTests;
 	}
 
-	private int updateProject(ProjectFacade project) throws CoreException {
+	private int updateProject(ProjectFacade project, Collection<File> changedFiles) throws CoreException {
 		RuntimeEnvironment environment = buildRuntimeEnvironment(project);
 		InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
 		if (core == null) {
 			core = createCore(project, environment);
 		}
 		core.setRuntimeEnvironment(environment);
-		return core.update();
+		return core.update(changedFiles);
 	}
 
 	public RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project) throws CoreException {
 		File javaHome = project.getJvmHome();
-		RuntimeEnvironment environment = buildRuntimeEnvironment(project, javaHome);
-		environment.setInfinitestRuntimeClassPath(getCoreJarLocation(InfinitestPlugin.getInstance()).getAbsolutePath());
-		return environment;
+		return buildRuntimeEnvironment(project, javaHome);
 	}
 
 	private RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project, File javaHome) throws CoreException {
-		return new RuntimeEnvironment(projectSet.outputDirectories(project), project.workingDirectory(), project.rawClasspath(), javaHome);
+		String runnerBootsrapClassPath = infinitestJarsClasspathProvider.getInfinitestClassLoaderClassPath();
+		String runnerProcessClassPath = infinitestJarsClasspathProvider.getInfinitestRunnerClassPath();
+		
+		return new RuntimeEnvironment(javaHome, project.workingDirectory(), runnerBootsrapClassPath, runnerProcessClassPath, projectSet.outputDirectories(project), project.rawClasspath());
 	}
+
 
 	private InfinitestCore createCore(ProjectFacade project, RuntimeEnvironment environment) {
 		InfinitestCore core = coreFactory.createCore(project.getName(), environment);
 		coreRegistry.addCore(project.getLocationURI(), core);
-		log("Added core " + core.getName() + " with classpath " + environment.getCompleteClasspath());
+		log("Added core " + core.getName() + " with classpath " + environment.getRunnerFullClassPath());
 		return core;
 	}
 
@@ -130,5 +175,26 @@ class EclipseWorkspace implements WorkspaceFacade {
 		for (UpdateListener each : updateListeners) {
 			updateEvent.addListener(each);
 		}
+	}
+	
+	private Map<ProjectFacade, Set<File>> groupResourcesByProject(Set<IResource> resources) {
+		Map<ProjectFacade, Set<File>> filesByProjectFacade = new HashMap<>();
+		List<ProjectFacade> projects = projectSet.projects();
+		
+		for (IResource resource : resources) {
+			File file = null;
+			
+			for (ProjectFacade project : projects) {
+				if (project.isOnClasspath(resource)) {
+					if (file == null) {
+						file = resource.getRawLocation().makeAbsolute().toFile();
+					}
+					
+					filesByProjectFacade.computeIfAbsent(project, x -> new HashSet<File>()).add(file);
+				}
+			}
+		}
+		
+		return filesByProjectFacade;
 	}
 }

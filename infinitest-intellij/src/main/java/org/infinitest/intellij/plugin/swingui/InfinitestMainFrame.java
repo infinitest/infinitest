@@ -27,13 +27,19 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
-import java.net.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.net.URL;
+import java.util.logging.Level;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.tree.TreeModel;
 
-import org.infinitest.*;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.project.Project;
 
 public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	private static final long serialVersionUID = -1L;
@@ -41,26 +47,25 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 
 	private final InfinitestResultsPane resultsPane;
 	private final InfinitestLogPane logPane;
+	private final InfinitestConsoleFrame consoleFrame;
 
-	public InfinitestMainFrame() {
-		this(new InfinitestResultsPane(), new InfinitestLogPane());
+	public InfinitestMainFrame(Project project, Application application) {
+		this(new InfinitestResultsPane(), new InfinitestLogPane(application), new InfinitestConsoleFrame(project));
 	}
 
-	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane) {
+	InfinitestMainFrame(InfinitestResultsPane resultsPane, InfinitestLogPane logPane, InfinitestConsoleFrame consoleFrame) {
 		this.resultsPane = resultsPane;
 		this.logPane = logPane;
+		this.consoleFrame = consoleFrame;
+		
 		initializeFrame();
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.add("Results", resultsPane);
 		tabbedPane.add("Logging", logPane);
+		tabbedPane.add("Console", consoleFrame.getComponent());
+		
 		add(tabbedPane);
-	}
-
-	public static InfinitestView createFrame(ResultCollector results) {
-		InfinitestMainFrame mainFrame = new InfinitestMainFrame();
-		mainFrame.setResultsModel(new TreeModelAdapter(results));
-		return mainFrame;
 	}
 
 	private void initializeFrame() {
@@ -130,13 +135,13 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	}
 
 	@Override
-	public void writeLogMessage(String message) {
-		logPane.writeMessage(message);
+	public void writeLogMessage(Level level, String message) {
+		logPane.writeMessage(level, message);
 	}
 
 	@Override
-	public void writeError(String message) {
-		// nothing to do here
+	public void writeError(String message, Throwable throwable) {
+		logPane.writeError(message, throwable);
 	}
 
 	@Override
@@ -154,5 +159,10 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 
 	public Component getTree() {
 		return resultsPane.getTree();
+	}
+	
+	@Override
+	public void consoleOutputUpdate(String newText, OutputType outputType) {
+		consoleFrame.consoleOutputUpdate(newText, outputType);
 	}
 }

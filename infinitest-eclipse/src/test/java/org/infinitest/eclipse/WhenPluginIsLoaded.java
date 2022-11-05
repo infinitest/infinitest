@@ -28,22 +28,23 @@
 package org.infinitest.eclipse;
 
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPluginIsLoaded {
+class WhenPluginIsLoaded {
 	private InfinitestPlugin plugin;
 	private Preferences preferences;
 	private CoreSettings coreSettings;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		preferences = mock(Preferences.class);
 		coreSettings = mock(CoreSettings.class);
 
@@ -51,7 +52,7 @@ public class WhenPluginIsLoaded {
 	}
 
 	@Test
-	public void shouldRestoreSavedPreferences() {
+	void shouldRestoreSavedPreferences() {
 		when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
 		when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
 		when(preferences.getInt(FAILING_BACKGROUND_COLOR)).thenReturn(1);

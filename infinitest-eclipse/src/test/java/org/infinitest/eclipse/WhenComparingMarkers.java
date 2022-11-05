@@ -27,23 +27,24 @@
  */
 package org.infinitest.eclipse;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.infinitest.eclipse.markers.*;
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenComparingMarkers {
+class WhenComparingMarkers {
 	private Throwable error;
 	private ProblemMarkerInfo methodError;
 	private ProblemMarkerInfo methodFailure;
 	private FakeResourceFinder finder;
 	private AssertionError failure;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		error = new Throwable();
 		failure = new AssertionError();
 		failure.fillInStackTrace();
@@ -53,12 +54,12 @@ public class WhenComparingMarkers {
 	}
 
 	@Test
-	public void shouldBeEqualIfTestNameAndMethodNameAreEqual() {
+	void shouldBeEqualIfTestNameAndMethodNameAreEqual() {
 		assertEquals(methodError, new ProblemMarkerInfo(methodFailed("testClass", "", error), finder));
-		assertThat(methodError, not(equalTo(new ProblemMarkerInfo(methodFailed("testClass2", "", error), finder))));
+		assertThat(methodError).isNotEqualTo(new ProblemMarkerInfo(methodFailed("testClass2", "", error), finder));
 
 		ProblemMarkerInfo errorMarker = new ProblemMarkerInfo(methodFailed("testClass", "", new AssertionError()), finder);
-		assertThat(methodError, equalTo(errorMarker));
-		assertThat(methodFailure, not(equalTo(methodError)));
+		assertThat(methodError).isEqualTo(errorMarker);
+		assertThat(methodFailure).isNotEqualTo(methodError);
 	}
 }

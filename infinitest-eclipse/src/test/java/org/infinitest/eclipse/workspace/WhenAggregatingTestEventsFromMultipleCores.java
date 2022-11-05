@@ -28,9 +28,8 @@
 package org.infinitest.eclipse.workspace;
 
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.testrunner.TestEvent.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
@@ -38,36 +37,37 @@ import java.util.*;
 import org.infinitest.*;
 import org.infinitest.eclipse.*;
 import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenAggregatingTestEventsFromMultipleCores {
+class WhenAggregatingTestEventsFromMultipleCores {
 	private TestResultAggregator aggregator;
 	private InfinitestCore core;
 	private List<Object> events;
 
-	@Before
-	public void inContext() {
-		events = newArrayList();
+	@BeforeEach
+	void inContext() {
+		events = new ArrayList<>();
 		aggregator = new TestResultAggregator();
 		core = mock(InfinitestCore.class);
 	}
 
 	@Test
-	public void shouldAttachToNewCores() {
+	void shouldAttachToNewCores() {
 		aggregator.coreCreated(core);
 
 		verify(core).addTestResultsListener(aggregator);
 	}
 
 	@Test
-	public void shouldDetachFromRemovedCores() {
+	void shouldDetachFromRemovedCores() {
 		aggregator.coreRemoved(core);
 
 		verify(core).removeTestResultsListener(aggregator);
 	}
 
 	@Test
-	public void shouldNotifyListenersOfAggregatedEvents() {
+	void shouldNotifyListenersOfAggregatedEvents() {
 		aggregator.addListeners(new AggregateResultsListener() {
 			@Override
 			public void testCaseStarting(TestEvent event) {

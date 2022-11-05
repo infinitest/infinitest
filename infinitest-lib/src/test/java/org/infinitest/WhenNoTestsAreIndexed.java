@@ -27,14 +27,15 @@
  */
 package org.infinitest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenNoTestsAreIndexed {
+
+class WhenNoTestsAreIndexed {
 	@Test
-	public void shouldAlwaysBeInScanningState() {
+	void shouldAlwaysBeInScanningState() {
 		ResultCollector collector = new ResultCollector(mock(InfinitestCore.class));
 		assertEquals(CoreStatus.SCANNING, collector.getStatus());
 	}

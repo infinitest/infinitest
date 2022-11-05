@@ -27,33 +27,92 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import java.awt.*;
+import java.awt.Component;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
+import org.infinitest.ResultCollector;
+import org.infinitest.TestControl;
+import org.infinitest.intellij.InfinitestIcons;
+import org.infinitest.intellij.idea.ProjectTestControl;
+import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.testrunner.TestEvent.TestState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
+import com.intellij.ui.RowIcon;
+import com.intellij.util.ui.EmptyIcon;
 
 /**
  * @author <a href="mailto:benrady@gmail.com".Ben Rady</a>
  */
 class FailureCellRenderer extends DefaultTreeCellRenderer {
 	private static final long serialVersionUID = -1L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(FailureCellRenderer.class);
+	
+	private ModuleIconProvider moduleIconProvider;
 
 	public FailureCellRenderer() {
 		setToolTipText("Double-click test nodes to navigate to source");
+		
+		try {
+			// Checking if ModuleType.EMPTY is available
+			// com.intellij.openapi.module.EmptyModuleType is not available during unit tests
+			ModuleType.EMPTY.getDescription();
+			moduleIconProvider = new ModuleTypeIconProvider();
+		} catch (ExceptionInInitializerError | NoClassDefFoundError e) {
+			LOGGER.debug("Error initializing ModuleTypeIconProvider", e);
+			moduleIconProvider = ModuleIconProvider.NULL_MODULE_ICON_PROVIDER;
+		}
 	}
 
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean focused) {
 		JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, focused);
+		
+		if (value instanceof Module) {
+			// The module's toStrint() 5 returns "module: 'XYZ'" and we just want to show the module's name
+			Module module = (Module) value;
+			label.setText(module.getName());
+		}
+		
 		label.setIcon(loadIcon(value));
 		return label;
 	}
 
 	private Icon loadIcon(Object node) {
-		if (node instanceof String) {
-			return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/error.png"));
+		if (node instanceof TestEvent) {
+			TestEvent testEvent = (TestEvent) node;
+			if (testEvent.getType() == TestState.METHOD_FAILURE) {
+				return AllIcons.RunConfigurations.TestFailed;
+			}
 		}
-		return new ImageIcon(getClass().getResource("/org/infinitest/intellij/plugin/swingui/failure.png"));
+		
+		if (node instanceof Module) {
+			Module module = (Module) node;
+			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
+			
+			Icon moduleTypeIcon = moduleIconProvider.getIcon(module);
+			Icon moduleStateIcon;
+			
+			if (testControl.shouldRunTests(module)) {
+				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
+				moduleStateIcon = InfinitestIcons.getIcon(collector.getStatus());
+			} else {
+				moduleStateIcon = InfinitestIcons.WAITING;
+			}
+			
+			return new RowIcon(moduleStateIcon, EmptyIcon.create(2, 16), moduleTypeIcon);
+		}
+		
+		return AllIcons.General.Warning;
 	}
 
 }

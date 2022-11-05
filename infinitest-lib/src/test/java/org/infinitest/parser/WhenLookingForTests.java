@@ -27,73 +27,95 @@
  */
 package org.infinitest.parser;
 
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
-import javassist.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.AbstractTestFakeProduct;
+import com.fakeco.fakeproduct.AllTests;
+import com.fakeco.fakeproduct.ClassWithAnInnerTestClass;
+import com.fakeco.fakeproduct.JUnit3TestThatInherits;
+import com.fakeco.fakeproduct.JUnit4TestThatInherits;
+import com.fakeco.fakeproduct.LooksLikeAJUnit3TestButIsnt;
+import com.fakeco.fakeproduct.ParameterizedTest;
+import com.fakeco.fakeproduct.TestJUnit5TestCase;
+import com.fakeco.fakeproduct.TestJunit3TestCase;
+import com.fakeco.fakeproduct.TestNGFakeProductTest;
+import com.fakeco.fakeproduct.TestThatInheritsACustomRunner;
+import com.fakeco.fakeproduct.TestWithACustomRunner;
+import com.fakeco.fakeproduct.ValidTestWithUnconventionalConstructor;
 
-public class WhenLookingForTests {
+import javassist.ClassPool;
+import javassist.NotFoundException;
+
+class WhenLookingForTests {
 	private ClassPool classPool;
 
-	@Before
-	public void inContext() throws NotFoundException {
+	@BeforeEach
+	void inContext() throws NotFoundException {
 		classPool = new ClassPool();
-		classPool.appendPathList(fakeClasspath().getCompleteClasspath());
+		classPool.appendPathList(fakeClasspath().getRunnerFullClassPath());
 		classPool.appendSystemPath();
 	}
 
 	@Test
-	public void shouldIgnoreAbstractClasses() {
+	void shouldIgnoreAbstractClasses() {
 		assertFalse(classFor(AbstractTestFakeProduct.class).isATest());
 	}
 
 	@Test
-	public void shouldIgnoreInnerClasses() {
+	void shouldIgnoreInnerClasses() {
 		assertFalse(classFor(ClassWithAnInnerTestClass.InnerTest.class).isATest());
 	}
 
 	@Test
-	public void shouldIgnoreTestCasesWithSuiteMethods() {
+	void shouldIgnoreTestCasesWithSuiteMethods() {
 		assertFalse(classFor(AllTests.class).isATest());
 	}
 
 	@Test
-	public void shouldDetectParameterizedTestsWithAlternateConstructors() {
+	void shouldDetectParameterizedTestsWithAlternateConstructors() {
 		assertTrue(classFor(ParameterizedTest.class).isATest());
 	}
 
 	@Test
-	public void shouldDetectClassesThatInheritFromTests() {
+	void shouldDetectClassesThatInheritFromTests() {
 		assertTrue(classFor(JUnit4TestThatInherits.class).isATest());
 		assertTrue(classFor(JUnit3TestThatInherits.class).isATest());
 	}
 
 	@Test
-	public void canDetectTestsWithCustomRunners() {
+	void canDetectTestsWithCustomRunners() {
 		assertTrue(classFor(TestWithACustomRunner.class).isATest());
 	}
 
 	@Test
-	public void shouldDetectClassesThatInheritCustomRunners() {
+	void shouldDetectClassesThatInheritCustomRunners() {
 		assertTrue(classFor(TestThatInheritsACustomRunner.class).isATest());
 	}
 
 	@Test
-	public void shouldDetectTestThatInheritARunnerAndHasUnconventionalConstructor() {
+	void shouldDetectTestThatInheritARunnerAndHasUnconventionalConstructor() {
 		assertTrue(classFor(ValidTestWithUnconventionalConstructor.class).isATest());
 	}
 
 	@Test
-	public void canDetectJUnit3Tests() {
+	void canDetectJUnit3Tests() {
 		assertTrue(classFor(TestJunit3TestCase.class).isATest());
 		assertFalse(classFor(LooksLikeAJUnit3TestButIsnt.class).isATest());
 	}
 
 	@Test
-	public void canDetectTestNGTests() {
+	void canDetectJUnit5Tests() {
+		assertThat(classFor(TestJUnit5TestCase.class).isATest()).as("JUnit5 (Jupiter) annotated test is detected").isTrue();
+	}
+
+	@Test
+	void canDetectTestNGTests() {
 		assertTrue(classFor(TestNGFakeProductTest.class).isATest());
 	}
 

@@ -27,21 +27,24 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static java.awt.Color.*;
-import static org.assertj.core.api.Assertions.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.GREEN;
+import static java.awt.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenDrawingProgressBar {
+class WhenDrawingProgressBar {
   private FakeGraphics2D graphics;
 
-  @Before
-  public void inContext() {
+  @BeforeEach
+  void inContext() {
     graphics = new FakeGraphics2D();
   }
 
   @Test
-  public void shouldUseWhiteFontIfBarIsBlack() {
+  void shouldUseWhiteFontIfBarIsBlack() {
     CustomProgressBar progressBar = new CustomProgressBar();
     progressBar.setForeground(BLACK);
 
@@ -51,7 +54,7 @@ public class WhenDrawingProgressBar {
   }
 
   @Test
-  public void shouldUseBlackFontIfBarIsGreen() {
+  void shouldUseBlackFontIfBarIsGreen() {
     CustomProgressBar progressBar = new CustomProgressBar();
     progressBar.setForeground(GREEN);
 

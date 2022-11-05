@@ -27,22 +27,28 @@
  */
 package org.infinitest;
 
-import static org.infinitest.CoreDependencySupport.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.infinitest.CoreDependencySupport.createCore;
+import static org.infinitest.CoreDependencySupport.withNoChangedFiles;
+import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
+import static org.infinitest.environment.FakeEnvironments.emptyRuntimeEnvironment;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.*;
+import java.util.Comparator;
 
-import org.infinitest.changedetect.*;
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
+import org.infinitest.changedetect.ChangeDetector;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
+import org.junit.jupiter.api.Test;
 
-public class WhenTheRuntimeEnvironmentChanges {
+class WhenTheRuntimeEnvironmentChanges {
 	@Test
-	public void shouldTriggerACompleteReloadInTheCore() throws Exception {
+	void shouldTriggerACompleteReloadInTheCore() throws Exception {
 		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);
@@ -51,7 +57,7 @@ public class WhenTheRuntimeEnvironmentChanges {
 	}
 
 	@Test
-	public void shouldUpdateSupportingClassesInTheCore() {
+	void shouldUpdateSupportingClassesInTheCore() {
 		RuntimeEnvironment environment = fakeEnvironment();
 		TestRunner testRunner = mock(TestRunner.class);
 		TestDetector testDetector = mock(TestDetector.class);
@@ -72,7 +78,7 @@ public class WhenTheRuntimeEnvironmentChanges {
 	}
 
 	@Test
-	public void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception {
+	void shouldDoNothingIfEnvironmentIsNotActuallyDifferent() throws Exception {
 		InfinitestCore core = createCore(withNoChangedFiles(), withNoTestsToRun());
 		EventSupport eventSupport = new EventSupport();
 		core.addTestQueueListener(eventSupport);

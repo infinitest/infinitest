@@ -27,94 +27,44 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import java.awt.*;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.ResultCollector;
+import org.infinitest.intellij.InfinitestTopics;
+import org.infinitest.intellij.ModuleSettings;
+import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
 
-import javax.swing.*;
-
-import org.apache.log4j.*;
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.infinitest.intellij.idea.*;
-import org.infinitest.intellij.plugin.*;
-import org.infinitest.intellij.plugin.swingui.*;
-import org.infinitest.util.*;
-
-import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.wm.*;
+import com.intellij.openapi.module.Module;
 
 public class InfinitestLauncherImpl implements InfinitestLauncher {
-	private final ModuleSettings moduleSettings;
-	private final ToolWindowRegistry toolWindowRegistry;
-	private final CompilationNotifier compilationNotifier;
-	private final SourceNavigator navigator;
-	private final InfinitestBuilder infinitestBuilder;
-	private IdeaCompilationListener testControl;
-	private final FileEditorListener fileEditorListener;
-	private final ToolWindowListener toolWindowListener;
-
-	public InfinitestLauncherImpl(ModuleSettings moduleSettings, ToolWindowRegistry toolWindowRegistry, CompilationNotifier compilationNotifier, SourceNavigator navigator, FileEditorManager fileEditorManager, ToolWindowManager toolWindowManager) {
-		this.moduleSettings = moduleSettings;
-		this.toolWindowRegistry = toolWindowRegistry;
-		this.compilationNotifier = compilationNotifier;
-		this.navigator = navigator;
-		infinitestBuilder = createInfinitestBuilder();
-		fileEditorListener = new FileEditorListener(fileEditorManager);
-		toolWindowListener = new ToolWindowListener(toolWindowManager, toolWindowId());
+	private final InfinitestCore core;
+	private final ResultCollector resultCollector;
+	
+	/**
+	 * @param module Injected by the platform
+	 */
+	public InfinitestLauncherImpl(Module module) {
+		ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(), new SwingEventQueue(), moduleSettings.getName());
+		core = coreBuilder.createCore();
+		resultCollector = new ResultCollector(core);
+		
+		core.addConsoleOutputListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.CONSOLE_TOPIC));
+		core.addDisabledTestListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.DISABLED_TEST_TOPIC));
+		core.addTestResultsListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.TEST_RESULTS_TOPIC));
+		
+		resultCollector.addChangeListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.FAILURE_LIST_TOPIC));
+		resultCollector.addStatusChangeListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.STATUS_CHANGE_TOPIC));
+		resultCollector.addTestQueueListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.TEST_QUEUE_TOPIC));
 	}
 
 	@Override
-	public void launchInfinitest() {
-		moduleSettings.writeToLogger(Logger.getLogger(getClass()));
-
-		testControl = new IdeaCompilationListener(infinitestBuilder.getCore(), moduleSettings);
-		initializeInfinitestLogging();
-		registerInfinitestWindow();
-		addCompilationStatusListener();
-		addResultClickListener();
-		addFileEditorListener();
-		addToolWindowListener();
+	public InfinitestCore getCore() {
+		return core;
 	}
-
-	private void addResultClickListener() {
-		infinitestBuilder.addResultClickListener(new ResultClickListener(navigator));
-	}
-
-	private void initializeInfinitestLogging() {
-		InfinitestUtils.addLoggingListener(new InfinitestLoggingListener(infinitestBuilder.getView()));
-	}
-
-	private void addCompilationStatusListener() {
-		compilationNotifier.addCompilationStatusListener(testControl);
-	}
-
-	private void registerInfinitestWindow() {
-		JPanel rootPanel = new JPanel(new BorderLayout());
-
-		rootPanel.add(infinitestBuilder.createPluginComponent(testControl), BorderLayout.CENTER);
-
-		toolWindowRegistry.registerToolWindow(rootPanel, toolWindowId());
-	}
-
+	
 	@Override
-	public void stop() {
-		toolWindowRegistry.unregisterToolWindow(toolWindowId());
-		compilationNotifier.removeCompilationStatusListener(testControl);
-	}
-
-	private String toolWindowId() {
-		return moduleSettings.getName();
-	}
-
-	private InfinitestBuilder createInfinitestBuilder() {
-		InfinitestCoreBuilder coreBuilder = new InfinitestCoreBuilder(moduleSettings.getRuntimeEnvironment(), new SwingEventQueue());
-		return new InfinitestBuilder(coreBuilder.createCore());
-	}
-
-	private void addFileEditorListener() {
-		infinitestBuilder.addPresenterListener(fileEditorListener);
-	}
-
-	private void addToolWindowListener() {
-		infinitestBuilder.addPresenterListener(toolWindowListener);
+	public ResultCollector getResultCollector() {
+		return resultCollector;
 	}
 }

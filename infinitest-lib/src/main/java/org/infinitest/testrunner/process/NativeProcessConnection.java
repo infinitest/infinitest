@@ -27,19 +27,23 @@
  */
 package org.infinitest.testrunner.process;
 
-import org.infinitest.testrunner.*;
+import org.infinitest.environment.ClasspathArgumentBuilder;
+import org.infinitest.testrunner.TestResults;
 
 public class NativeProcessConnection implements ProcessConnection {
 	private final TcpSocketProcessCommunicator communicator;
 	private final Process process;
+	private final ClasspathArgumentBuilder classpathArgumentBuilder;
 
-	public NativeProcessConnection(TcpSocketProcessCommunicator communicator, Process process) {
+	public NativeProcessConnection(TcpSocketProcessCommunicator communicator, Process process, ClasspathArgumentBuilder classpathArgumentBuilder) {
 		this.communicator = communicator;
 		this.process = process;
+		this.classpathArgumentBuilder = classpathArgumentBuilder;
 	}
 
 	@Override
 	public boolean abort() {
+		classpathArgumentBuilder.cleanup();
 		process.destroy();
 		try {
 			process.waitFor();

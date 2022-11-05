@@ -30,15 +30,15 @@ package org.infinitest.eclipse.event;
 import static org.mockito.Mockito.*;
 
 import org.infinitest.*;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenNoProcessorsCanHandleEvent {
+class WhenNoProcessorsCanHandleEvent {
 	@Test
-	public void shouldDoNothing() {
+	void shouldDoNothing() {
 		EventQueue eventQueue = mock(EventQueue.class);
 
 		CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
 		factory.processEvent(null);
-		verifyZeroInteractions(eventQueue);
+		verifyNoInteractions(eventQueue);
 	}
 }

@@ -27,28 +27,36 @@
  */
 package org.infinitest.eclipse;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.eclipse.beans.*;
-import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
-import org.springframework.context.*;
-import org.springframework.context.annotation.*;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.infinitest.eclipse.beans.FakeWorkspace;
+import org.infinitest.eclipse.workspace.ResourceFinder;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 
-public class PluginContextIntegrationTest {
-  @Test
-  public void shouldWireComponentsTogetherByTypeUsingSpringAutowiring() {
-    ApplicationContext ctx = new AnnotationConfigApplicationContext(TestInfinitestConfig.class);
+class PluginContextIntegrationTest {
+	@Test
+	void shouldWireComponentsTogetherByTypeUsingSpringAutowiring() {
+		AnnotationConfigApplicationContext ctx = null;
+		try {
+			ctx = new AnnotationConfigApplicationContext(TestInfinitestConfig.class);
+			
+			assertThat(ctx.getBeansOfType(IResourceChangeListener.class)).isNotEmpty();
+			assertThat(ctx.getBeansOfType(ResourceFinder.class)).isNotEmpty();
+		} finally {
+			if (ctx != null) {
+				ctx.close();
+			}
+		}
+	}
 
-    assertThat(ctx.getBeansOfType(IResourceChangeListener.class)).isNotEmpty();
-    assertThat(ctx.getBeansOfType(ResourceFinder.class)).isNotEmpty();
-  }
-
-  static class TestInfinitestConfig extends InfinitestConfig {
-    @Bean
-    public IWorkspace workspace() {
-      return new FakeWorkspace();
-    }
-  }
+	static class TestInfinitestConfig extends InfinitestConfig {
+		@Bean
+		public IWorkspace workspace() {
+			return new FakeWorkspace();
+		}
+	}
 }

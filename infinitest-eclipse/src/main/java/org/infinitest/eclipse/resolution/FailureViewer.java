@@ -32,6 +32,7 @@ import static org.eclipse.swt.SWT.*;
 import java.util.List;
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.infinitest.eclipse.workspace.*;
@@ -42,9 +43,10 @@ public class FailureViewer {
 	private final Shell viewerDialog;
 	private final String message;
 
-	public FailureViewer(Shell shell, String message, List<StackTraceElement> stackTrace, ResourceLookup resourceLookup) {
+	public FailureViewer(Shell parentShell, String message, List<StackTraceElement> stackTrace,
+			ResourceLookup resourceLookup) {
 		this.message = message;
-		viewerDialog = new Shell(shell, ON_TOP | APPLICATION_MODAL);
+		viewerDialog = new Shell(parentShell, ON_TOP | APPLICATION_MODAL);
 		GridLayout gridLayout = new GridLayout(1, true);
 		viewerDialog.setLayout(gridLayout);
 		this.stackTrace = stackTrace;
@@ -60,11 +62,46 @@ public class FailureViewer {
 	public void show(final Shell dialog) {
 		createMessage(dialog);
 		createList(dialog);
-		dialog.pack();
-		dialog.layout();
+
+		sizeDialog(dialog);
+
+		moveToParentDialogCenter(dialog);
 		dialog.open();
+
 		dialog.forceActive();
 		dialog.addShellListener(new DialogDeactivationDisposer(dialog));
+	}
+
+	private void sizeDialog(final Shell dialog) {
+		dialog.pack();
+		Monitor monitor = dialog.getShell().getMonitor();
+		if (monitor != null) {
+			if (dialog.getSize().x > monitor.getClientArea().width) {
+				dialog.setSize(monitor.getClientArea().width, dialog.getSize().y);
+			}
+			if (dialog.getSize().y > monitor.getClientArea().height) {
+				dialog.setSize(dialog.getSize().x, monitor.getClientArea().height);
+			}
+		}
+		dialog.layout();
+
+	}
+
+	private void moveToParentDialogCenter(Shell dialog) {
+		if (dialog.getParent() == null) {
+			// No parent shell no positioning
+			return;
+		}
+		Point dialogSize = dialog.getSize();
+		Rectangle parentDialogBounds = dialog.getParent().getBounds();
+		Point newLocation = computeCenteredLocation(dialogSize, parentDialogBounds);
+		dialog.setLocation(newLocation);
+	}
+
+	public static Point computeCenteredLocation(Point dialogSize, Rectangle parentDialogBounds) {
+		Point parentDialogCenter = new Point(parentDialogBounds.x + parentDialogBounds.width / 2,
+				parentDialogBounds.y + parentDialogBounds.height / 2);
+		return new Point(parentDialogCenter.x - dialogSize.x / 2, parentDialogCenter.y - dialogSize.y / 2);
 	}
 
 	private void createMessage(Shell dialog) {
@@ -75,8 +112,9 @@ public class FailureViewer {
 		failureMessageGroup.setLayoutData(gridData);
 		failureMessageGroup.setLayout(new FillLayout());
 		failureMessageGroup.setText("Failure Message:");
-		Label label = new Label(failureMessageGroup, WRAP);
+		Text label = new Text(failureMessageGroup, WRAP);
 		label.setText(message);
+		label.setEditable(false);
 	}
 
 	private void createList(final Shell dialog) {
@@ -84,7 +122,8 @@ public class FailureViewer {
 		for (StackTraceElement each : stackTrace) {
 			list.add(each.toString());
 		}
-		StackElementSelectionListener selectionListener = new StackElementSelectionListener(dialog, resourceFinder, stackTrace);
+		StackElementSelectionListener selectionListener = new StackElementSelectionListener(dialog, resourceFinder,
+				stackTrace);
 		list.addKeyListener(selectionListener);
 		list.addMouseListener(selectionListener);
 		GridData gridData = new GridData(FILL, FILL, true, true, 1, 1);

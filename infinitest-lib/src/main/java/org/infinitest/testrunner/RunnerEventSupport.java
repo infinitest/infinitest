@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner;
 
-import static com.google.common.collect.Lists.*;
 import static org.infinitest.testrunner.TestEvent.*;
 
 import java.util.*;
@@ -43,9 +42,9 @@ public class RunnerEventSupport {
 
 	public RunnerEventSupport(Object eventSource) {
 		source = eventSource;
-		listeners = newArrayList();
-		consoleListenerList = newArrayList();
-		testQueueListenerList = newArrayList();
+		listeners = new ArrayList<>();
+		consoleListenerList = new ArrayList<>();
+		testQueueListenerList = new ArrayList<>();
 	}
 
 	public void addTestStatusListener(TestResultsListener listener) {

@@ -32,6 +32,7 @@ import java.io.*;
 import javassist.*;
 
 import org.infinitest.*;
+import org.infinitest.environment.ClasspathProvider;
 
 /**
  * @author Ben Rady
@@ -40,7 +41,7 @@ class JavaClassBuilder {
 	private final JavaAssistClassParser parser;
 
 	JavaClassBuilder(ClasspathProvider classpath) {
-		this(new JavaAssistClassParser(classpath.getCompleteClasspath()));
+		this(new JavaAssistClassParser(classpath.getRunnerFullClassPath()));
 	}
 
 	public JavaClassBuilder(JavaAssistClassParser parser) {
@@ -61,6 +62,13 @@ class JavaClassBuilder {
 		} catch (MissingClassException e) {
 			return new UnparsableClass(classname);
 		}
+	}
+	
+	/**
+	 * @return The {@link JavaClass} corresponding to this file or null if it was not parsed or does not exist
+	 */
+	public JavaClass getClass(File file) {
+		return parser.getClass(file);
 	}
 
 	public String classFileChanged(File file) {

@@ -30,7 +30,8 @@ package org.infinitest.eclipse.prefs;
 import static org.eclipse.jface.preference.FieldEditor.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.jface.preference.*;
@@ -40,16 +41,18 @@ import org.infinitest.eclipse.*;
 import org.infinitest.eclipse.markers.*;
 import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPreferencesAreChanged {
+class WhenPreferencesAreChanged {
 	private FieldEditor eventSource;
 	private PluginActivationController controller;
 	private PreferenceChangeHandler handler;
 	private CoreSettings coreSettings;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		controller = mock(PluginActivationController.class);
 		coreSettings = mock(CoreSettings.class);
 		eventSource = mock(BooleanFieldEditor.class);
@@ -58,41 +61,41 @@ public class WhenPreferencesAreChanged {
 		handler.setSlowMarkerRegistry(new SlowMarkerRegistry());
 	}
 
-	@After
-	public void cleanup() {
+	@AfterEach
+	void cleanup() {
 		resetToDefaults();
 	}
 
 	@Test
-	public void shouldStartContinouslyTestingIfSelectionIsChecked() {
+	void shouldStartContinouslyTestingIfSelectionIsChecked() {
 		when(eventSource.getPreferenceName()).thenReturn(AUTO_TEST);
 		changeProperty(VALUE, false, true);
 		verify(controller).enable();
 	}
 
 	@Test
-	public void shouldStopContinouslyTestingIfSelectionIsChecked() {
+	void shouldStopContinouslyTestingIfSelectionIsChecked() {
 		when(eventSource.getPreferenceName()).thenReturn(AUTO_TEST);
 		changeProperty(VALUE, true, false);
 		verify(controller).disable();
 	}
 
 	@Test
-	public void shouldIgnoreIfPropertyNameDoesNotMatch() {
+	void shouldIgnoreIfPropertyNameDoesNotMatch() {
 		when(eventSource.getPreferenceName()).thenReturn("SomeEventName");
 		changeProperty(VALUE, true, false);
-		verifyZeroInteractions(controller);
+		verifyNoInteractions(controller);
 	}
 
 	@Test
-	public void shouldAdjustWarningTimeout() {
+	void shouldAdjustWarningTimeout() {
 		when(eventSource.getPreferenceName()).thenReturn(SLOW_TEST_WARNING);
 		changeProperty(VALUE, "500", "100");
 		assertEquals(100, getSlowTestTimeLimit());
 	}
 
 	@Test
-	public void shouldAdjustFailingBackgroundColor() {
+	void shouldAdjustFailingBackgroundColor() {
 		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAILING_BACKGROUND_COLOR);
 		int red = SWT.COLOR_DARK_RED;
 		int blue = SWT.COLOR_BLUE;
@@ -103,7 +106,7 @@ public class WhenPreferencesAreChanged {
 	}
 
 	@Test
-	public void shouldAdjustFailingTextColor() {
+	void shouldAdjustFailingTextColor() {
 		when(eventSource.getPreferenceName()).thenReturn(PreferencesConstants.FAILING_TEXT_COLOR);
 		int white = SWT.COLOR_WHITE;
 		int yellow = SWT.COLOR_YELLOW;
@@ -114,23 +117,23 @@ public class WhenPreferencesAreChanged {
 	}
 
 	@Test
-	public void shouldAdjustSemaphorePermits() {
+	void shouldAdjustSemaphorePermits() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
 		changeProperty(VALUE, "1", "2");
 		verify(coreSettings).setConcurrentCoreCount(2);
 	}
 
 	@Test
-	public void shouldIgnoreOtherPropertyTypes() {
+	void shouldIgnoreOtherPropertyTypes() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
 		changeProperty(IS_VALID, false, true);
-		verifyZeroInteractions(controller);
+		verifyNoInteractions(controller);
 	}
 
 	@Test
-	public void shouldIgnoreBlankValues() {
+	void shouldIgnoreBlankValues() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
-		changeProperty(VALUE, "", "");
+		assertDoesNotThrow(() -> changeProperty(VALUE, "", ""));
 	}
 
 	private void changeProperty(String type, Object oldValue, Object newValue) {

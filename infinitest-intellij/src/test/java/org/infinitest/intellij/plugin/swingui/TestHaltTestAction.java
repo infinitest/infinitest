@@ -27,24 +27,41 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.junit.Assert.*;
 
-import javax.swing.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.infinitest.*;
-import org.junit.*;
+import javax.swing.Action;
+import javax.swing.Icon;
 
-public class TestHaltTestAction {
+import org.infinitest.TestControl;
+import org.junit.jupiter.api.Test;
+
+import com.intellij.openapi.module.Module;
+
+class TestHaltTestAction {
 	private boolean runTests;
 
 	@Test
-	public void shouldDisableAndEnableTests() {
+	void shouldDisableAndEnableTests() {
 		TestControl control = new TestControl() {
 			@Override
 			public void setRunTests(boolean shouldRunTests) {
 				runTests = shouldRunTests;
 			}
+			
+			@Override
+			public void setRunTests(boolean shouldRunTests, Module module) {
+				runTests = shouldRunTests;
+			}
 
+			@Override
+			public boolean shouldRunTests(Module module) {
+				return runTests;
+			}
+			
 			@Override
 			public boolean shouldRunTests() {
 				return runTests;

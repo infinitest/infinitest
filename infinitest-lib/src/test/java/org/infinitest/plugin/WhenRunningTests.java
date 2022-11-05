@@ -27,28 +27,38 @@
  */
 package org.infinitest.plugin;
 
-import static org.infinitest.CoreStatus.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.junit.Assert.*;
+import static org.infinitest.CoreStatus.FAILING;
+import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.infinitest.*;
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
-import org.mockito.*;
+import org.infinitest.ConcurrencyController;
+import org.infinitest.EventSupport;
+import org.infinitest.FakeEventQueue;
+import org.infinitest.InfinitestCore;
+import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.ResultCollector;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.JavaClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.mockito.ArgumentMatcher;
 
-import com.fakeco.fakeproduct.simple.*;
+import com.fakeco.fakeproduct.simple.FailingTest;
+import com.fakeco.fakeproduct.simple.PassingTest;
 
-public class WhenRunningTests {
+class WhenRunningTests {
   private static EventSupport eventHistory;
   private static ResultCollector collector;
 
-  @BeforeClass
-  public static void inContext() throws InterruptedException {
+  @BeforeAll
+  static void inContext() throws InterruptedException {
     if (eventHistory == null) {
-      InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue());
+      InfinitestCoreBuilder builder = new InfinitestCoreBuilder(fakeEnvironment(), new FakeEventQueue(), "myCoreName");
       builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
       TestFilter testFilter = mock(TestFilter.class);
@@ -68,20 +78,21 @@ public class WhenRunningTests {
   }
 
   @Test
-  public void canListenForResultEvents() {
+  void canListenForResultEvents() {
     eventHistory.assertTestFailed(FailingTest.class);
     eventHistory.assertTestPassed(PassingTest.class);
   }
 
   // This will frequently hang when something goes horribly wrong in the test
   // runner
-  @Test(timeout = 5000)
-  public void canListenForChangesToTheTestQueue() throws Exception {
+  @Timeout(5)
+  @Test
+  void canListenForChangesToTheTestQueue() throws Exception {
     eventHistory.assertQueueChanges(3);
   }
 
   @Test
-  public void canCollectStateUsingAResultCollector() {
+  void canCollectStateUsingAResultCollector() {
     assertEquals(1, collector.getFailures().size());
     assertEquals(FAILING, collector.getStatus());
   }
@@ -89,8 +100,8 @@ public class WhenRunningTests {
   static ArgumentMatcher<JavaClass> startsWith(final String namePrefix) {
     return new ArgumentMatcher<JavaClass>() {
       @Override
-      public boolean matches(Object argument) {
-        return (argument instanceof JavaClass) && ((JavaClass) argument).getName().startsWith(namePrefix);
+      public boolean matches(JavaClass argument) {
+        return argument.getName().startsWith(namePrefix);
       }
     };
   }

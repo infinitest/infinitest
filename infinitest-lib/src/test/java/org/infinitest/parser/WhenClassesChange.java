@@ -28,40 +28,45 @@
 package org.infinitest.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.infinitest.util.InfinitestUtils.*;
-import static org.junit.Assert.*;
+import static org.infinitest.util.InfinitestTestUtils.createBackup;
+import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
+import static org.infinitest.util.InfinitestTestUtils.restoreFromBackup;
+import static org.infinitest.util.InfinitestUtils.setify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Set;
 
-import javassist.*;
+import org.infinitest.environment.FakeEnvironments;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.assertj.core.api.Assertions;
-import org.infinitest.util.*;
-import org.junit.*;
-import org.junit.Assert;
+import com.fakeco.fakeproduct.TestAlmostNotATest;
 
-import com.fakeco.fakeproduct.*;
+import javassist.ClassPool;
+import javassist.CtClass;
 
-public class WhenClassesChange extends DependencyGraphTestBase {
+class WhenClassesChange extends DependencyGraphTestBase {
   private File backup;
 
-  @Before
-  public void inContext() throws Exception {
+  @BeforeEach
+  void inContext() throws Exception {
     backup = createBackup(TestAlmostNotATest.class.getName());
   }
 
-  @After
-  public void cleanupContext() {
+  @AfterEach
+  void cleanupContext() {
     restoreFromBackup(backup);
   }
 
   @Test
-  public void shouldRecognizeWhenTestsAreChangedToRegularClasses() throws Exception {
+  void shouldRecognizeWhenTestsAreChangedToRegularClasses() throws Exception {
     Class<?> testClass = TestAlmostNotATest.class;
     JavaClass javaClass = runTest(testClass);
-    assertTrue("Inital state is incorrect", javaClass.isATest());
+    assertTrue(javaClass.isATest(), "Inital state is incorrect");
 
     untestify();
     updateGraphWithChangedClass(testClass);
@@ -69,7 +74,7 @@ public class WhenClassesChange extends DependencyGraphTestBase {
     assertThat(getGraph().getCurrentTests()).isEmpty();
 
     javaClass = getGraph().findJavaClass(testClass.getName());
-    assertFalse("Class was not reloaded", javaClass.isATest());
+    assertFalse(javaClass.isATest(), "Class was not reloaded");
   }
 
   private JavaClass runTest(Class<?> testClass) {

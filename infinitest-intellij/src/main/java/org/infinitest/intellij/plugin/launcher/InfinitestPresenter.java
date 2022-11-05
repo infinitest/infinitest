@@ -27,56 +27,76 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import static com.google.common.collect.Lists.*;
-import static java.awt.Color.*;
-import static org.infinitest.intellij.plugin.launcher.StatusMessages.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
+import static org.infinitest.intellij.plugin.launcher.StatusMessages.getMessage;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.awt.Color;
+import java.util.Collection;
 
-import org.infinitest.*;
-import org.infinitest.intellij.*;
-import org.infinitest.intellij.plugin.swingui.*;
-import org.infinitest.testrunner.*;
-import org.infinitest.util.*;
+import javax.swing.JComponent;
 
-import com.intellij.openapi.ui.*;
-import com.intellij.openapi.ui.popup.*;
-import com.intellij.openapi.wm.*;
-import com.intellij.ui.awt.*;
+import org.infinitest.CoreStatus;
+import org.infinitest.FailureListListener;
+import org.infinitest.StatusChangeListener;
+import org.infinitest.TestControl;
+import org.infinitest.TestQueueEvent;
+import org.infinitest.TestQueueListener;
+import org.infinitest.intellij.InfinitestAnnotator;
+import org.infinitest.intellij.InfinitestTopics;
+import org.infinitest.intellij.idea.ProjectTestControl;
+import org.infinitest.intellij.plugin.swingui.HaltTestAction;
+import org.infinitest.intellij.plugin.swingui.InfinitestView;
+import org.infinitest.intellij.plugin.swingui.ReloadIndexAction;
+import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
+import org.infinitest.testrunner.TestEvent;
+import org.infinitest.util.InfinitestUtils;
 
-public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener {
+import com.intellij.ide.PowerSaveMode;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.awt.RelativePoint;
+import com.intellij.util.messages.MessageBusConnection;
+
+public class InfinitestPresenter implements StatusChangeListener, TestQueueListener, FailureListListener, PowerSaveMode.Listener {
 	public static final Color PASSING_COLOR = new Color(0x359b35);
 	public static final Color FAILING_COLOR = RED;
 	public static final Color UNKNOWN_COLOR = YELLOW;
 
-	private final List<PresenterListener> presenterListeners = newArrayList();
+	private final Project project;
 	private final InfinitestView view;
 	private final StateMonitor monitor;
-	private final ResultCollector resultCollector;
 	private final InfinitestAnnotator annotator;
 
-	public InfinitestPresenter(ResultCollector resultCollector, InfinitestCore core, InfinitestView infinitestView, TestControl control, InfinitestAnnotator annotator) {
-		this.resultCollector = resultCollector;
-		this.annotator = annotator;
+	public InfinitestPresenter(Project project, InfinitestView infinitestView) {
+		this.project = project;
+		
+		MessageBusConnection connection = project.getMessageBus().connect();
+		TestControl control = project.getService(ProjectTestControl.class);
+		
+		this.annotator = project.getService(InfinitestAnnotator.class);
 		view = infinitestView;
-		resultCollector.addStatusChangeListener(this);
-		resultCollector.addChangeListener(this);
-		core.addTestQueueListener(this);
-		view.addAction(new ReloadIndexAction(core));
+		view.addAction(new ReloadIndexAction(project));
 		view.addAction(new HaltTestAction(control));
 		monitor = new StateMonitor();
-		resultCollector.addStatusChangeListener(monitor);
 		updateStatus();
 		indicateWaitingForChanges();
+		
+		connection.subscribe(InfinitestTopics.STATUS_CHANGE_TOPIC, this);
+		connection.subscribe(InfinitestTopics.TEST_QUEUE_TOPIC, this);
+		connection.subscribe(InfinitestTopics.FAILURE_LIST_TOPIC, this);
+		connection.subscribe(InfinitestTopics.STATUS_CHANGE_TOPIC, monitor);
+		connection.subscribe(PowerSaveMode.TOPIC, this);
 	}
 
 	private void indicateWaitingForChanges() {
 		view.setProgressBarColor(BLACK);
 		view.setMaximumProgress(1);
 		view.setProgress(1);
-		onWait();
 	}
 
 	@Override
@@ -104,7 +124,6 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		switch (status) {
 			case RUNNING:
 				view.setProgressBarColor(UNKNOWN_COLOR);
-				onRun();
 				break;
 			case FAILING:
 				view.setProgressBarColor(FAILING_COLOR);
@@ -134,22 +153,23 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 		try {
 			String html = "<html><body><strong>Infinitest:</strong> " + message + "</body></html>";
 
+			JComponent component = WindowManager.getInstance().getIdeFrame(project).getComponent();
 			JBPopupFactory.getInstance()
 				.createHtmlTextBalloonBuilder(html, type, null)
 				.setFadeoutTime(fadeoutTime)
 				.createBalloon()
-				.show(RelativePoint.getNorthEastOf(WindowManager.getInstance().getAllProjectFrames()[0].getComponent()), Balloon.Position.above);
+				.show(RelativePoint.getNorthEastOf(component), Balloon.Position.above);
 		} catch (Exception e) {
 			// Ignore error. It's just a balloon
 		}
 	}
 
-	public void updateStatus() {
+	private void updateStatus() {
 		long cycleTime = monitor.getCycleLengthInMillis();
 		String timeStamp = InfinitestUtils.formatTime(cycleTime);
 		view.setAngerBasedOnTime(cycleTime);
 		view.setCycleTime(timeStamp);
-		view.setStatusMessage(getMessage(resultCollector.getStatus()));
+		view.setStatusMessage(getMessage(CoreStatus.SCANNING));
 	}
 
 	@Override
@@ -159,7 +179,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 
 	@Override
 	public void testRunComplete() {
-		onComplete();
+		// nothing to do here
 	}
 
 	@Override
@@ -179,38 +199,18 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 			annotator.annotate(updated);
 		}
 	}
-
-	public void addPresenterListener(PresenterListener listener) {
-		if (listener != null) {
-			presenterListeners.add(listener);
+	
+	@Override
+	public void powerSaveStateChanged() {
+		indicateWaitingForChanges();
+		
+		String message;
+		if (PowerSaveMode.isEnabled()) {
+			message = "Infinitest disabled when power save mode is enabled";
+		} else {
+			message = "Waiting for changes";
 		}
-	}
-
-	/* private */void onComplete() {
-		for (PresenterListener presenterListener : presenterListeners) {
-			presenterListener.testRunCompleted();
-
-			if (isSuccess()) {
-				presenterListener.testRunSucceed();
-			} else {
-				presenterListener.testRunFailed();
-			}
-		}
-	}
-
-	/* private */boolean isSuccess() {
-		return !resultCollector.hasFailures();
-	}
-
-	/* private */void onRun() {
-		for (PresenterListener presenterListener : presenterListeners) {
-			presenterListener.testRunStarted();
-		}
-	}
-
-	/* private */void onWait() {
-		for (PresenterListener presenterListener : presenterListeners) {
-			presenterListener.testRunWaiting();
-		}
+		
+		view.setStatusMessage(message);
 	}
 }

@@ -27,31 +27,33 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.infinitest.testrunner.TestEvent.TestState.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import junit.framework.*;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.eclipse.workspace.*;
-import org.infinitest.testrunner.*;
-import org.junit.*;
-import org.junit.Test;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.infinitest.eclipse.workspace.ResourceLookup;
+import org.infinitest.testrunner.TestEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenPlacingMarkersInTheWorkspace {
+import junit.framework.AssertionFailedError;
+
+class WhenPlacingMarkersInTheWorkspace {
 	private TestEvent event;
 	private ResourceLookup lookup;
 	private IWorkspaceRoot workspaceRoot;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		event = createEvent();
 		lookup = mock(ResourceLookup.class);
 		workspaceRoot = mock(IWorkspaceRoot.class);
 	}
 
 	@Test
-	public void shouldAlwaysReturnTheWorkspaceResource() {
+	void shouldAlwaysReturnTheWorkspaceResource() {
 		when(lookup.workspaceRoot()).thenReturn(workspaceRoot);
 		MarkerPlacer placer = new MarkerPlacer(lookup);
 

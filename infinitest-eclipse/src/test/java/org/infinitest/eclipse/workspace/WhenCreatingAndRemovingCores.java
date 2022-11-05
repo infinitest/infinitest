@@ -27,32 +27,34 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import java.net.*;
 
 import org.infinitest.*;
 import org.infinitest.eclipse.*;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WhenCreatingAndRemovingCores implements CoreLifecycleListener {
+class WhenCreatingAndRemovingCores implements CoreLifecycleListener {
 	private InfinitestCoreRegistry registry;
 	private InfinitestCore coreAdded;
 	private InfinitestCore coreRemoved;
 
-	@Before
-	public void inContext() {
+	@BeforeEach
+	void inContext() {
 		registry = new InfinitestCoreRegistry();
 	}
 
 	@Test
-	public void shouldTolerateRemovingACoreThatsNotThere() throws URISyntaxException {
-		registry.removeCore(new URI("//thisIsNotAProject"));
+	void shouldTolerateRemovingACoreThatsNotThere() throws URISyntaxException {
+		assertDoesNotThrow(() -> registry.removeCore(new URI("//thisIsNotAProject")));
 	}
 
 	@Test
-	public void shouldFireEventWhenCoresAreCreatedOrRemoved() throws URISyntaxException {
+	void shouldFireEventWhenCoresAreCreatedOrRemoved() throws URISyntaxException {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		registry.addLifecycleListener(this);
 		registry.addCore(new URI("//someProject"), mockCore);

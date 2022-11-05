@@ -27,13 +27,13 @@
  */
 package org.infinitest.eclipse.resolution;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
-public class WhenTheUserClicksOffTheFailureViewer {
+class WhenTheUserClicksOffTheFailureViewer {
 	@Test
-	public void shouldDisposeOfTheDialog() {
+	void shouldDisposeOfTheDialog() {
 		FakeShell dialog = new FakeShell();
 		DialogDeactivationDisposer disposer = new DialogDeactivationDisposer(dialog);
 		disposer.shellDeactivated(null);

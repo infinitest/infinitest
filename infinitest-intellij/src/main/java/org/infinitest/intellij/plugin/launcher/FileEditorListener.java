@@ -27,42 +27,46 @@
  */
 package org.infinitest.intellij.plugin.launcher;
 
-import com.intellij.codeHighlighting.*;
-import com.intellij.openapi.fileEditor.*;
+import org.infinitest.TestQueueEvent;
+import org.infinitest.TestQueueListener;
+import org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory;
+import org.infinitest.intellij.idea.language.InfinitestLineMarkersPass;
 
-public class FileEditorListener implements PresenterListener {
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.TextEditor;
+
+public class FileEditorListener implements TestQueueListener {
 	FileEditorManager fileEditorManager;
 
 	public FileEditorListener(FileEditorManager fileEditorManager) {
 		this.fileEditorManager = fileEditorManager;
 	}
-
+	
 	@Override
-	public void testRunCompleted() {
+	public void testRunComplete() {
 		for (FileEditor fileEditor : fileEditorManager.getSelectedEditors()) {
-			for (HighlightingPass highlightingPass : fileEditor.getBackgroundHighlighter().createPassesForEditor()) {
-				highlightingPass.applyInformationToEditor();
+			if (fileEditor instanceof TextEditor) {
+				TextEditor textEditor = (TextEditor) fileEditor;
+				Editor editor = textEditor.getEditor();
+				
+				InfinitestLineMarkersPass pass = editor.getUserData(InfinitestHighlightingPassFactory.KEY);
+
+				if (pass != null) {
+					pass.applyInformationToEditor();
+				}
 			}
 		}
 	}
-
+	
 	@Override
-	public void testRunSucceed() {
+	public void testQueueUpdated(TestQueueEvent event) {
 		// nothing to do here
 	}
 
 	@Override
-	public void testRunFailed() {
-		// nothing to do here
-	}
-
-	@Override
-	public void testRunStarted() {
-		// nothing to do here
-	}
-
-	@Override
-	public void testRunWaiting() {
+	public void reloading() {
 		// nothing to do here
 	}
 }

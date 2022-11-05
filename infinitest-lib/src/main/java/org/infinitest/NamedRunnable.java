@@ -30,7 +30,7 @@ package org.infinitest;
 public abstract class NamedRunnable implements Runnable {
 	private final String name;
 
-	public NamedRunnable(String name) {
+	protected NamedRunnable(String name) {
 		this.name = name;
 	}
 

@@ -27,32 +27,33 @@
  */
 package org.infinitest;
 
-import static java.util.Arrays.*;
-import static org.infinitest.util.FakeEnvironments.*;
-import static org.infinitest.util.InfinitestTestUtils.*;
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.environment.FakeEnvironments.fakeBuildPaths;
+import static org.infinitest.environment.FakeEnvironments.fakeClasspath;
+import static org.infinitest.util.InfinitestTestUtils.getFileForClass;
 import static org.mockito.Mockito.mock;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
-import org.infinitest.filter.*;
-import org.infinitest.parser.*;
-import org.junit.*;
+import org.infinitest.filter.TestFilter;
+import org.infinitest.parser.ClassFileTestDetector;
+import org.junit.jupiter.api.Test;
 
-import com.fakeco.fakeproduct.*;
+import com.fakeco.fakeproduct.TestFakeProduct;
 
-public class WhenSelectingWhichTestsToRun {
+class WhenSelectingWhichTestsToRun {
 	@Test
-	public void shouldIgnoreTestsInDependentProjects() {
+	void shouldIgnoreTestsInDependentProjects() {
 		List<File> outputDirs = asList(new File("target/classes"));
 		List<File> classDirsInClasspath = fakeBuildPaths();
-		String rawClasspath = fakeClasspath().getCompleteClasspath();
+		String rawClasspath = fakeClasspath().getRunnerFullClassPath();
 		StandaloneClasspath classpath = new StandaloneClasspath(outputDirs, classDirsInClasspath, rawClasspath);
 
 		ClassFileTestDetector testDetector = new ClassFileTestDetector(mock(TestFilter.class));
 		testDetector.setClasspathProvider(classpath);
 		File classFileNotInOutputDirectory = getFileForClass(TestFakeProduct.class);
-		assertTrue(testDetector.findTestsToRun(asList(classFileNotInOutputDirectory)).isEmpty());
+		assertThat(testDetector.findTestsToRun(asList(classFileNotInOutputDirectory))).isEmpty();
 	}
 }
