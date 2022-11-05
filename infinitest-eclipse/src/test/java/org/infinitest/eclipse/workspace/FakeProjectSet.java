@@ -49,11 +49,6 @@ public class FakeProjectSet implements ProjectSet {
 	}
 
 	@Override
-	public boolean hasErrors() throws CoreException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<ProjectFacade> projects() {
 		throw new UnsupportedOperationException();
 	}

@@ -27,20 +27,21 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static java.util.logging.Level.*;
-import static org.eclipse.core.resources.IMarker.*;
-import static org.eclipse.core.resources.IResource.*;
-import static org.eclipse.jdt.core.IJavaModelMarker.*;
-import static org.eclipse.jdt.launching.JavaRuntime.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static java.util.logging.Level.WARNING;
+import static org.eclipse.jdt.launching.JavaRuntime.getVMInstall;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.net.URI;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.launching.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.IVMInstall2;
 
 class ProjectFacade implements EclipseProject {
 	private final IJavaProject project;
@@ -149,11 +150,6 @@ class ProjectFacade implements EclipseProject {
 
 	public String getName() {
 		return project.getElementName();
-	}
-
-	public boolean hasErrors() throws CoreException {
-		int severity = project.getProject().findMaxProblemSeverity(JAVA_MODEL_PROBLEM_MARKER, false, DEPTH_INFINITE);
-		return severity == SEVERITY_ERROR;
 	}
 
 	public String rawClasspath() throws CoreException {

@@ -27,11 +27,11 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.JavaModelException;
 
 public interface ProjectSet {
 	ProjectFacade findProject(IPath path);
@@ -39,6 +39,4 @@ public interface ProjectSet {
 	List<File> outputDirectories(EclipseProject project) throws JavaModelException;
 
 	List<ProjectFacade> projects();
-
-	boolean hasErrors() throws CoreException;
 }

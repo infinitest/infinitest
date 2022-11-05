@@ -96,7 +96,6 @@ class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 		when(iproject.getFullPath()).thenReturn(projectPath);
 		
 		when(projectSet.projects()).thenReturn(projects);
-		when(projectSet.hasErrors()).thenReturn(false);
 		when(projectSet.findProject(projectPath)).thenReturn(projectFacade);
 		List<File> outputDirs = emptyList();
 		when(projectSet.outputDirectories(any(EclipseProject.class))).thenReturn(outputDirs);

@@ -29,7 +29,6 @@ package org.infinitest.eclipse.workspace;
 
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.findingTests;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.noTestsRun;
-import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
 import static org.infinitest.util.Events.eventFor;
 import static org.infinitest.util.InfinitestUtils.log;
 
@@ -84,20 +83,16 @@ class EclipseWorkspace implements WorkspaceFacade {
 
 	@Override
 	public void updateProjects(Set<IResource> modifiedResources) throws CoreException {
-		if (projectSet.hasErrors()) {
-			setStatus(workspaceErrors());
-		} else {
-			int numberOfTestsToRun = updateProjectsIn(modifiedResources);
-			if (numberOfTestsToRun == 0) {
-				setStatus(noTestsRun());
-			}
+		int numberOfTestsToRun = updateProjectsIn(modifiedResources);
+		if (numberOfTestsToRun == 0) {
+			setStatus(noTestsRun());
 		}
 	}
 	
 	@Override
 	public void remove(Set<IResource> removedResources) {
 		Map<ProjectFacade, Set<File>> removedFilesByProject = groupResourcesByProject(removedResources);
-		Set<JavaClass> removedClasses = new HashSet<JavaClass>();
+		Set<JavaClass> removedClasses = new HashSet<>();
 
 		for (Map.Entry<ProjectFacade, Set<File>> entry : removedFilesByProject.entrySet()) {
 			ProjectFacade project = entry.getKey();
@@ -131,7 +126,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 		for (Map.Entry<ProjectFacade, Set<File>> entry : modifiedFilesByProject.entrySet()) {
 			ProjectFacade project = entry.getKey();
 			Set<File> modifiedFiles = entry.getValue();
-			
+
 			setStatus(findingTests(processedProjects, modifiedFilesByProject.size(), totalTests));
 			totalTests += updateProject(project, modifiedFiles);
 			

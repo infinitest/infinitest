@@ -76,16 +76,6 @@ class JavaProjectSet implements ProjectSet {
 		return projects;
 	}
 
-	@Override
-	public boolean hasErrors() throws CoreException {
-		for (ProjectFacade project : projects()) {
-			if (project.hasErrors()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private Iterable<IJavaProject> openProjects() {
 		return filter(finder.getJavaProjects(), new Predicate<IJavaProject>() {
 			@Override
