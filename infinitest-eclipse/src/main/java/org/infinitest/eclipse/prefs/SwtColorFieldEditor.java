@@ -54,7 +54,5 @@ public class SwtColorFieldEditor extends ComboFieldEditor {
 
 	public SwtColorFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, ENTRY_NAMES_AND_VALUES, parent);
-		// TODO Auto-generated constructor stub
 	}
-
 }

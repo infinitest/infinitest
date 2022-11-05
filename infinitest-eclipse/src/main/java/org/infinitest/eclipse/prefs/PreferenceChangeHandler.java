@@ -65,13 +65,9 @@ public class PreferenceChangeHandler {
 			updateSlowTestWarning((String) newValue);
 		} else if (PARALLEL_CORES.equals(preference)) {
 			updateConcurrency((String) newValue);
-		}
-
-		if (PreferencesConstants.FAILING_BACKGROUND_COLOR.equals(preference)) {
+		} else if (PreferencesConstants.FAILING_BACKGROUND_COLOR.equals(preference)) {
 			updateFailingBackgroundColor((String) newValue);
-		}
-
-		if (PreferencesConstants.FAILING_TEXT_COLOR.equals(preference)) {
+		} else if (PreferencesConstants.FAILING_TEXT_COLOR.equals(preference)) {
 			updateFailingTextColor((String) newValue);
 		}
 	}

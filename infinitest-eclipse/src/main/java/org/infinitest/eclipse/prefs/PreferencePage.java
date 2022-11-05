@@ -76,8 +76,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	}
 
 	private BooleanFieldEditor createAutoTestEditor() {
-		BooleanFieldEditor autoTestEditor = new BooleanFieldEditor(AUTO_TEST, "Continuously Test", getFieldEditorParent());
-		return autoTestEditor;
+		return new BooleanFieldEditor(AUTO_TEST, "Continuously Test", getFieldEditorParent());
 	}
 
 	private SwtColorFieldEditor createFailingBackgroundColorEditor() {
