@@ -67,6 +67,8 @@ import junit.framework.TestCase;
  * so we should keep its footprint minimal.
  */
 public class JavaAssistClass extends AbstractJavaClass {
+	private static final String ARCHUNIT_ARCHTEST = "com.tngtech.archunit.junit.ArchTest";
+	
 	private final String[] imports;
 	private final boolean isATest;
 	private final String className;
@@ -299,7 +301,14 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasArchUnitTests(CtClass classReference) {
 		for (CtField field : classReference.getDeclaredFields()) {
-			if (field.hasAnnotation("com.tngtech.archunit.junit.ArchTest")) {
+			if (field.hasAnnotation(ARCHUNIT_ARCHTEST)) {
+				return true;
+			}
+		}
+		
+		// getMethods() returns the non-private methods
+		for (CtMethod ctMethod : classReference.getDeclaredMethods()) {
+			if (ctMethod.hasAnnotation(ARCHUNIT_ARCHTEST)) {
 				return true;
 			}
 		}
