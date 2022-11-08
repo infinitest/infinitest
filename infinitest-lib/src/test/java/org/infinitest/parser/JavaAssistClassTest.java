@@ -52,6 +52,7 @@ import com.fakeco.fakeproduct.FakeUtils;
 import com.fakeco.fakeproduct.FieldAnnotation;
 import com.fakeco.fakeproduct.InvisibleClassAnnotation;
 import com.fakeco.fakeproduct.InvisibleParameterAnnotation;
+import com.fakeco.fakeproduct.JUnit5ArchUnitMethodTest;
 import com.fakeco.fakeproduct.JUnit5ArchUnitTest;
 import com.fakeco.fakeproduct.JUnit5CompositeAnnotationTest;
 import com.fakeco.fakeproduct.JUnit5ParameterizedTest;
@@ -159,6 +160,7 @@ class JavaAssistClassTest {
 			JUnit5Testable.class,
 			JUnit5TestableSubclass.class,
 			JUnit5ArchUnitTest.class,
+			JUnit5ArchUnitMethodTest.class,
 	})
 	void shouldSupportTestClasses(Class<?> testClass) throws NotFoundException {
 		ClassPool classPool = classPoolUtil.getClassPool();
