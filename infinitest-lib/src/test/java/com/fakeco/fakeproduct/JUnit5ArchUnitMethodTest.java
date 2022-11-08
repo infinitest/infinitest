@@ -36,10 +36,6 @@ import com.tngtech.archunit.junit.ArchTest;
 @AnalyzeClasses(packages = "com.fakeco.fakeproduct")
 public class JUnit5ArchUnitMethodTest {
 	
-	public void test() {
-		no_access_to_standard_streams_as_method();
-	}
-
 	@ArchTest
 	private void no_access_to_standard_streams_as_method() {
 		noClasses().should(ACCESS_STANDARD_STREAMS);
