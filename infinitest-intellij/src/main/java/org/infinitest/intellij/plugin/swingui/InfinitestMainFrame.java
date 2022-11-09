@@ -29,22 +29,15 @@ package org.infinitest.intellij.plugin.swingui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.net.URL;
 import java.util.logging.Level;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 import javax.swing.tree.TreeModel;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.project.Project;
 
-public class InfinitestMainFrame extends JFrame implements InfinitestView {
-	private static final long serialVersionUID = -1L;
-	private static final String APP_TITLE = "Infinitest";
-
+public class InfinitestMainFrame implements InfinitestView {
 	private final InfinitestResultsPane resultsPane;
 	private final InfinitestLogPane logPane;
 	private final InfinitestConsoleFrame consoleFrame;
@@ -57,23 +50,18 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 		this.resultsPane = resultsPane;
 		this.logPane = logPane;
 		this.consoleFrame = consoleFrame;
-		
-		initializeFrame();
-
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.add("Results", resultsPane);
-		tabbedPane.add("Logging", logPane);
-		tabbedPane.add("Console", consoleFrame.getComponent());
-		
-		add(tabbedPane);
 	}
 
-	private void initializeFrame() {
-		URL iconURL = InfinitestMainFrame.class.getResource("infinitest-icon.png");
-		setIconImage(new ImageIcon(iconURL).getImage());
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addWindowFocusListener(new TreeFocusListener());
+	public InfinitestResultsPane getResultsPane() {
+		return resultsPane;
+	}
+
+	public InfinitestLogPane getLogPane() {
+		return logPane;
+	}
+
+	public InfinitestConsoleFrame getConsoleFrame() {
+		return consoleFrame;
 	}
 
 	@Override
@@ -107,11 +95,6 @@ public class InfinitestMainFrame extends JFrame implements InfinitestView {
 	@Override
 	public int getMaximumProgress() {
 		return resultsPane.getMaximumProgress();
-	}
-
-	@Override
-	public void setCycleTime(String timeStamp) {
-		setTitle(APP_TITLE + " - Cycle Time: " + timeStamp);
 	}
 
 	@Override

@@ -166,9 +166,7 @@ public class InfinitestPresenter implements StatusChangeListener, TestQueueListe
 
 	private void updateStatus() {
 		long cycleTime = monitor.getCycleLengthInMillis();
-		String timeStamp = InfinitestUtils.formatTime(cycleTime);
 		view.setAngerBasedOnTime(cycleTime);
-		view.setCycleTime(timeStamp);
 		view.setStatusMessage(getMessage(CoreStatus.SCANNING));
 	}
 

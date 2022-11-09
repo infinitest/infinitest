@@ -31,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.Component;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JLabel;
 
 import org.infinitest.intellij.IntellijMockBase;
@@ -50,7 +47,6 @@ class WhenShowingMainFrame extends IntellijMockBase {
   private FailureCellRenderer cellRenderer;
   private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
-  private Component focusedComponent;
 
   @BeforeEach
   void inContext() {
@@ -66,18 +62,6 @@ class WhenShowingMainFrame extends IntellijMockBase {
   @org.junit.jupiter.api.Test
   void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
     assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
-  }
-
-  @Test
-  void shouldStartWithTreeFocused() {
-    TreeFocusListener listener = new TreeFocusListener() {
-      @Override
-      protected void setFocus(Component c) {
-        focusedComponent = c;
-      }
-    };
-    listener.windowGainedFocus(new WindowEvent(mainFrame, 0));
-    assertEquals(resultsPane.getTree(), focusedComponent);
   }
 
   @Test

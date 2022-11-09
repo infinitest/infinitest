@@ -27,10 +27,6 @@
  */
 package org.infinitest.intellij.idea.window;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JPanel;
-
 import org.infinitest.CoreStatus;
 import org.infinitest.StatusChangeListener;
 import org.infinitest.intellij.InfinitestIcons;
@@ -67,12 +63,15 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 	public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 		Application application = ApplicationManager.getApplication();
 		InfinitestMainFrame frame = new InfinitestMainFrame(project, application);
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(frame.getContentPane(), BorderLayout.CENTER);
 		
-		Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "Infinitest", false);
+		Content resultsContent = ContentFactory.SERVICE.getInstance().createContent(frame.getResultsPane(), "Results", false);
+		Content loggingContent = ContentFactory.SERVICE.getInstance().createContent(frame.getLogPane(), "Logging", false);
+		Content consoleContent = ContentFactory.SERVICE.getInstance().createContent(frame.getConsoleFrame().getComponent(), "Console", false);
 		
-		toolWindow.getContentManager().addContent(content);
+		toolWindow.getContentManager().addContent(resultsContent);
+		toolWindow.getContentManager().addContent(loggingContent);
+		toolWindow.getContentManager().addContent(consoleContent);
+		
 		toolWindow.setIcon(IconLoader.getIcon(WAITING_ICON_PATH, getClass()));
 		
 		FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);

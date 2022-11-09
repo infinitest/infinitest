@@ -41,8 +41,6 @@ import org.infinitest.ConsoleOutputListener;
 public interface InfinitestView extends ConsoleOutputListener {
 	void setAngerBasedOnTime(long timeSinceGreen);
 
-	void setVisible(boolean b);
-
 	void setProgress(int progress);
 
 	void setProgressBarColor(Color yellow);
@@ -50,8 +48,6 @@ public interface InfinitestView extends ConsoleOutputListener {
 	void setMaximumProgress(int maxProgress);
 
 	int getMaximumProgress();
-
-	void setCycleTime(String timeStamp);
 
 	void setCurrentTest(String testName);
 
