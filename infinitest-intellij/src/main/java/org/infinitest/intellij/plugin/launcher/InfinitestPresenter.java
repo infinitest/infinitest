@@ -51,7 +51,6 @@ import org.infinitest.intellij.plugin.swingui.InfinitestView;
 import org.infinitest.intellij.plugin.swingui.ReloadIndexAction;
 import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
 import org.infinitest.testrunner.TestEvent;
-import org.infinitest.util.InfinitestUtils;
 
 import com.intellij.ide.PowerSaveMode;
 import com.intellij.openapi.project.Project;

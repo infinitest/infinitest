@@ -33,33 +33,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.JLabel;
 
-import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.application.Application;
 
 import junit.framework.AssertionFailedError;
 
-class WhenShowingMainFrame extends IntellijMockBase {
+class WhenShowingMainFrame {
   private FailureCellRenderer cellRenderer;
-  private InfinitestMainFrame mainFrame;
   private InfinitestResultsPane resultsPane;
 
   @BeforeEach
   void inContext() {
-	Application application = IntellijMockBase.setupApplication();
-    
-    InfinitestConsoleFrame consoleFrame = new InfinitestConsoleFrame(project);
-    
     resultsPane = new InfinitestResultsPane();
-	mainFrame = new InfinitestMainFrame(resultsPane, new InfinitestLogPane(application), consoleFrame);
     cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
     assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
   }
