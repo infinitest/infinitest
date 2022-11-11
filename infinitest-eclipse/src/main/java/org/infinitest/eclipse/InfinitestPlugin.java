@@ -29,6 +29,8 @@ package org.infinitest.eclipse;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
 import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
@@ -39,6 +41,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.infinitest.eclipse.prefs.PreferencesConstants;
+import org.infinitest.eclipse.trim.ColorSettings;
 import org.infinitest.eclipse.workspace.CoreSettings;
 import org.infinitest.util.InfinitestGlobalSettings;
 import org.infinitest.util.InfinitestUtils;
@@ -96,6 +100,8 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(PARALLEL_CORES, 1);
 		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
+		store.setDefault(FAILING_BACKGROUND_COLOR, ColorSettings.getFailingBackgroundColor());
+		store.setDefault(FAILING_TEXT_COLOR, ColorSettings.getFailingTextColor());
 	}
 
 	// Only used for testing.
@@ -116,7 +122,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 
 	public <T> T getBean(Class<T> beanClass) {
 		if (context == null) {
-      context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
+			context = new AnnotationConfigApplicationContext(InfinitestConfig.class);
 
 			restoreSavedPreferences(getPluginPreferences(), getBean(CoreSettings.class));
 			InfinitestUtils.log(Level.FINE, "Beans loaded: " + asList(context.getBeanDefinitionNames()));
@@ -128,5 +134,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings) {
 		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
+		ColorSettings.setFailingBackgroundColor(preferences.getInt(PreferencesConstants.FAILING_BACKGROUND_COLOR));
+		ColorSettings.setFailngTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
 	}
 }

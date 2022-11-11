@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.*;
+import org.infinitest.eclipse.trim.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,10 +55,14 @@ class WhenPluginIsLoaded {
 	void shouldRestoreSavedPreferences() {
 		when(preferences.getInt(PARALLEL_CORES)).thenReturn(4);
 		when(preferences.getLong(SLOW_TEST_WARNING)).thenReturn(1000L);
+		when(preferences.getInt(FAILING_BACKGROUND_COLOR)).thenReturn(1);
+		when(preferences.getInt(FAILING_TEXT_COLOR)).thenReturn(2);
 
 		plugin.restoreSavedPreferences(preferences, coreSettings);
 
 		verify(coreSettings).setConcurrentCoreCount(4);
 		assertEquals(1000L, InfinitestGlobalSettings.getSlowTestTimeLimit());
+		assertEquals(1, ColorSettings.getFailingBackgroundColor());
+		assertEquals(2, ColorSettings.getFailingTextColor());
 	}
 }

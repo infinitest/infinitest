@@ -1,3 +1,7 @@
+package org.infinitest.eclipse.trim;
+
+import org.eclipse.swt.*;
+
 /*
  * Infinitest, a Continuous Test Runner.
  *
@@ -25,24 +29,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.eclipse.prefs;
+public class ColorSettings {
+	private static int failingBackgroundColor = SWT.COLOR_DARK_RED;
+	private static int failingTextColor = SWT.COLOR_WHITE;
+	
+	private ColorSettings() {
+	}
 
-public abstract class PreferencesConstants {
-	/**
-	 * Indicates if Infinitest should automatically be run.
-	 */
-	public static final String AUTO_TEST = "org.infinitest.eclipse.auto";
+	public static int getFailingTextColor() {
+		return failingTextColor;
+	}
 
-	public static final String LICENSE_KEY = "org.infinitest.eclipse.license.key";
+	public static void setFailngTextColor(int failTextColor) {
+		ColorSettings.failingTextColor = failTextColor;
+	}
 
-	public static final String EXP_DATE_DISPLAY = "org.infinitest.eclipse.license.expdate";
+	public static int getFailingBackgroundColor() {
+		return failingBackgroundColor;
+	}
 
-	public static final String PARALLEL_CORES = "org.infinitest.eclipse.parallel";
-
-	public static final String SLOW_TEST_WARNING = "org.infinitest.eclipse.slow-warning";
-
-	public static final String FAILING_BACKGROUND_COLOR = "org.infinitest.eclipse.color.failing.background";
-
-	public static final String FAILING_TEXT_COLOR = "org.infinitest.eclipse.color.failing.text";
+	public static void setFailingBackgroundColor(int failBackgroundColor) {
+		ColorSettings.failingBackgroundColor = failBackgroundColor;
+	}
 
 }

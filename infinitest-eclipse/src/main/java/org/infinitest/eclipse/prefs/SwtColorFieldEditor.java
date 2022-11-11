@@ -1,3 +1,9 @@
+package org.infinitest.eclipse.prefs;
+
+import org.eclipse.jface.preference.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.widgets.*;
+
 /*
  * Infinitest, a Continuous Test Runner.
  *
@@ -25,24 +31,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.eclipse.prefs;
+public class SwtColorFieldEditor extends ComboFieldEditor {
 
-public abstract class PreferencesConstants {
-	/**
-	 * Indicates if Infinitest should automatically be run.
-	 */
-	public static final String AUTO_TEST = "org.infinitest.eclipse.auto";
+	private static final String[][] ENTRY_NAMES_AND_VALUES = {
+		{"Black", String.valueOf(SWT.COLOR_BLACK)},
+		{"Blue", String.valueOf(SWT.COLOR_BLUE )},
+		{"Blue (Dark)", String.valueOf(SWT.COLOR_DARK_BLUE)},
+		{"Cyan", String.valueOf(SWT.COLOR_CYAN)},
+		{"Cyan(Dark)", String.valueOf(SWT.COLOR_DARK_CYAN)},
+		{"Green", String.valueOf(SWT.COLOR_GREEN)},
+		{"Green (Dark)", String.valueOf(SWT.COLOR_DARK_GREEN)},
+		{"Gray", String.valueOf(SWT.COLOR_GRAY)},
+		{"Gray (Dark)", String.valueOf(SWT.COLOR_DARK_GRAY)},
+		{"Red", String.valueOf(SWT.COLOR_RED)},
+		{"Red (Dark)", String.valueOf(SWT.COLOR_DARK_RED)},
+		{"Magenta", String.valueOf(SWT.COLOR_MAGENTA)},
+		{"Magenta (Dark)", String.valueOf(SWT.COLOR_DARK_MAGENTA)},
+		{"Yellow", String.valueOf(SWT.COLOR_YELLOW)},
+		{"Yellow (Dark)", String.valueOf(SWT.COLOR_DARK_YELLOW)},
+		{"White", String.valueOf(SWT.COLOR_WHITE)},
+	};
 
-	public static final String LICENSE_KEY = "org.infinitest.eclipse.license.key";
-
-	public static final String EXP_DATE_DISPLAY = "org.infinitest.eclipse.license.expdate";
-
-	public static final String PARALLEL_CORES = "org.infinitest.eclipse.parallel";
-
-	public static final String SLOW_TEST_WARNING = "org.infinitest.eclipse.slow-warning";
-
-	public static final String FAILING_BACKGROUND_COLOR = "org.infinitest.eclipse.color.failing.background";
-
-	public static final String FAILING_TEXT_COLOR = "org.infinitest.eclipse.color.failing.text";
-
+	public SwtColorFieldEditor(String name, String labelText, Composite parent) {
+		super(name, labelText, ENTRY_NAMES_AND_VALUES, parent);
+	}
 }
