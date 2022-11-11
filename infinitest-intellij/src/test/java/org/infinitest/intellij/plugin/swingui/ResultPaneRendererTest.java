@@ -41,38 +41,40 @@ import com.intellij.icons.AllIcons;
 
 import junit.framework.AssertionFailedError;
 
-class WhenShowingMainFrame {
-  private FailureCellRenderer cellRenderer;
-  private InfinitestResultsPane resultsPane;
+class ResultPaneRendererTest {
+	private FailureCellRenderer cellRenderer;
+	private InfinitestResultsPane resultsPane;
 
-  @BeforeEach
-  void inContext() {
-    resultsPane = new InfinitestResultsPane();
-    cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
-  }
+	@BeforeEach
+	void inContext() {
+		resultsPane = new InfinitestResultsPane();
+		cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
+	}
 
-  @Test
-  void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
-    assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
-  }
+	@Test
+	void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+		assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
+	}
 
-  @Test
-  void shouldHaveIconToIndicatePoFNodes() {
-    Object node = "PointOfFailure.java:32";
-    JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
+	@Test
+	void shouldHaveIconToIndicatePoFNodes() {
+		Object node = "PointOfFailure.java:32";
+		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
+				false, 0, false);
 
-    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
-  }
+		assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
+	}
 
-  @Test
-  void shouldHaveIconToIndicateFailingTest() {
-    Object node = eventWithError();
-    JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false, false, 0, false);
+	@Test
+	void shouldHaveIconToIndicateFailingTest() {
+		Object node = eventWithError();
+		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
+				false, 0, false);
 
-    assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
-  }
+		assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
+	}
 
-  private static TestEvent eventWithError() {
-    return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
-  }
+	private static TestEvent eventWithError() {
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+	}
 }
