@@ -27,33 +27,54 @@
  */
 package org.infinitest.intellij.plugin.swingui;
 
-import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.infinitest.intellij.IntellijMockBase;
+import javax.swing.JLabel;
+
+import org.infinitest.testrunner.TestEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.intellij.openapi.application.Application;
+import com.intellij.icons.AllIcons;
 
-class TestInfinitestMainFrame {
-	private InfinitestMainFrame frame;
+import junit.framework.AssertionFailedError;
+
+class ResultPaneRendererTest {
+	private FailureCellRenderer cellRenderer;
+	private InfinitestResultsPane resultsPane;
 
 	@BeforeEach
 	void inContext() {
-		Application application = IntellijMockBase.setupApplication();
-		frame = new InfinitestMainFrame(null, application);
+		resultsPane = new InfinitestResultsPane();
+		cellRenderer = (FailureCellRenderer) resultsPane.getTree().getCellRenderer();
 	}
 
 	@Test
-	void shouldDisplayProgress() {
-		frame.setMaximumProgress(100);
-		assertEquals(100, frame.getMaximumProgress());
-		frame.setProgress(75);
+	void shouldHaveTooltipToInformUsersAboutClickFunctionality() {
+		assertEquals("Double-click test nodes to navigate to source", cellRenderer.getToolTipText());
 	}
 
 	@Test
-	void shouldUseUnknownColorToStart() {
-		assertEquals(UNKNOWN_COLOR, frame.getProgressBarColor());
+	void shouldHaveIconToIndicatePoFNodes() {
+		Object node = "PointOfFailure.java:32";
+		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
+				false, 0, false);
+
+		assertThat(treeCell.getIcon()).isEqualTo(AllIcons.General.Warning);
+	}
+
+	@Test
+	void shouldHaveIconToIndicateFailingTest() {
+		Object node = eventWithError();
+		JLabel treeCell = (JLabel) cellRenderer.getTreeCellRendererComponent(resultsPane.getTree(), node, false, false,
+				false, 0, false);
+
+		assertThat(treeCell.getIcon()).isEqualTo(AllIcons.RunConfigurations.TestFailed);
+	}
+
+	private static TestEvent eventWithError() {
+		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
 	}
 }

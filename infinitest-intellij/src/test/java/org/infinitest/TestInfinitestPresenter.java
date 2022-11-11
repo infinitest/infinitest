@@ -35,7 +35,6 @@ import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.FAILIN
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.PASSING_COLOR;
 import static org.infinitest.intellij.plugin.launcher.InfinitestPresenter.UNKNOWN_COLOR;
 import static org.infinitest.intellij.plugin.launcher.StatusMessages.getMessage;
-import static org.infinitest.util.InfinitestUtils.formatTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -73,7 +72,6 @@ class TestInfinitestPresenter extends IntellijMockBase {
 		verify(mockView, times(2)).addAction(any(Action.class));
 		verify(mockView).setAngerBasedOnTime(anyLong());
 		verify(mockView).setStatusMessage(getMessage(SCANNING));
-		verify(mockView).setCycleTime(formatTime(0L));
 	}
 
 	@Test
