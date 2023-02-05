@@ -49,6 +49,8 @@ class WhenCompilationCompletes extends IntellijMockBase {
 
 	@BeforeEach
 	void inContext() {
+		setupApplication(false);
+		
 		core = mock(InfinitestCore.class);
 		result = mock(Result.class);
 		
