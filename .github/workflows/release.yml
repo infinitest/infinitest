@@ -33,10 +33,8 @@ jobs:
           sudo apt-get install -y gtk2.0 libxtst6
       - name: Build and Test
       # We need a virtual X11 for the Eclipse unit tests
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: |
-            mvn -f ./infinitest/pom.xml -B install -pl infinitest-eclipse,infinitest-intellij -am -P release -Dkeystore-password=${{ secrets.KEYSTORE_PASSWORD }} -Dkeystore-file=../keystore.jks -DskipTests=true
+        run: |
+          xvfb-run -a mvn -f ./infinitest/pom.xml -B install -pl infinitest-eclipse,infinitest-intellij -am -P release -Dkeystore-password=${{ secrets.KEYSTORE_PASSWORD }} -Dkeystore-file=../keystore.jks -DskipTests=true
       
       # Upload the plugins artifacts to the release
       - name: Get release
