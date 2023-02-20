@@ -44,7 +44,7 @@ jobs:
         with:
           plugin-location: 'infinitest-intellij/target/infinitest-intellij-*-dist.zip'
           ide-versions: |
-            ideaIC:2020.1
+            ideaIC:2020.1.4
             ideaIC:LATEST-EAP-SNAPSHOT
   codeql-analysis:
     runs-on: ubuntu-latest
