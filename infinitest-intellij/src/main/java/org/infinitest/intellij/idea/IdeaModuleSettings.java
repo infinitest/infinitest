@@ -165,6 +165,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 
 	private File getWorkingDirectory() {
 		CommonProgramRunConfigurationParameters configuration = new InfinitestRunConfigurationParameters();
+		configuration.setWorkingDirectory("%MODULE_WORKING_DIR%");
 		
 		ProgramParametersConfigurator configurator = new ProgramParametersConfigurator();
 		String workingDir = configurator.getWorkingDir(configuration, module.getProject(), module);

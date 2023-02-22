@@ -36,7 +36,7 @@ import com.intellij.execution.CommonProgramRunConfigurationParameters;
 import com.intellij.openapi.project.Project;
 
 /**
- * ProgramParametersConfigurator.getWorkingDir only calls getWorkingDirectory and we want this to return null
+ * ProgramParametersConfigurator.getWorkingDir only calls getWorkingDirectory
  * The interface is implemented but it does not seem to be necessary in the current version of IDEA
  * 
  * In a future version it might be good to actually implement a run configuration and let the user configure the
