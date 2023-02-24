@@ -38,7 +38,7 @@ To run tests `infinitest-lib` starts a dedicated `ìnfinitest-runner` process an
 `testWorkspace` is a collection of sample projects that we use for exploratory testing. If you find something in the wild that makes Infinitest break, it's a good idea to reproduce it in testWorkspace, fix it, and then try it again to be sure you've really fixed it.
 
 
-# Setup and debug in in Eclipse
+# Setup and debug in Eclipse
 
 ## Install Eclipse
 
@@ -67,7 +67,9 @@ Keep in mind that while you can use Infinitest to test Infinitest, some weird th
 
 # Setup and debug in IntelliJ
 
-**TODO** 
+* run `mvn clean install` to build the project
+* From IntelliJ install the plugin from disk (in `File / Settings / Plugins`), look for the .zip file in `infinitest-intellij/target`
+* In Intellij's `Help / Edit Custom JVM Options` menu add the options for remote debug (and then you can remotely debug IntelliJ from Eclipse): `-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n`
 
 # Maintainers Area
 
