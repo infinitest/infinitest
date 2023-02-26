@@ -105,7 +105,7 @@ public final class ProjectTestControl implements TestControl, PersistentStateCom
 	}
 	
 	/**
-	 * In case a module does not have a JDK (for instance a Javascript module) it won't have a JDK
+	 * In case a module does not have a JDK (for instance a Javascript module) it won't have a runtime environment
 	 * @param module The module
 	 * @return <code>true</code> if the module has a {@link RuntimeEnvironment} we can use to run tests
 	 */
