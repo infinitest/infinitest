@@ -29,6 +29,8 @@ package org.infinitest.intellij.idea;
 
 import org.infinitest.InfinitestCore;
 import org.infinitest.TestControl;
+import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.intellij.ModuleSettings;
 import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 
 import com.intellij.ide.PowerSaveMode;
@@ -97,14 +99,27 @@ public final class ProjectTestControl implements TestControl, PersistentStateCom
 
 	@Override
 	public boolean shouldRunTests(Module module) {
-		return !state.getDisabledModulesNames().contains(module.getName()) && !PowerSaveMode.isEnabled();
+		return !state.getDisabledModulesNames().contains(module.getName()) 
+				&& !PowerSaveMode.isEnabled()
+				&& moduleHasRuntimeEnvironment(module);
 	}
 	
+	/**
+	 * In case a module does not have a JDK (for instance a Javascript module) it won't have a JDK
+	 * @param module The module
+	 * @return <code>true</code> if the module has a {@link RuntimeEnvironment} we can use to run tests
+	 */
+	private boolean moduleHasRuntimeEnvironment(Module module) {
+		ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+		return moduleSettings.getRuntimeEnvironment() != null;
+	}
+
 	@Override
 	public boolean shouldRunTests() {
 		return state.isRunTests();
 	}
 	
+	@Override
 	public void loadState(ProjectTestControlState state) {
 		this.state = state;
 	}

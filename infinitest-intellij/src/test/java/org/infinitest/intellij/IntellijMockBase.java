@@ -36,6 +36,7 @@ import org.infinitest.DisabledTestListener;
 import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
 import org.infinitest.TestQueueListener;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.idea.IdeaLogService;
 import org.infinitest.intellij.idea.LogServiceState;
 import org.infinitest.intellij.idea.ProjectTestControl;
@@ -72,6 +73,8 @@ public class IntellijMockBase {
 	protected MessageBusConnection messageBusConnection;
 	
 	protected InfinitestLauncher launcher;
+	protected ModuleSettings moduleSettings;
+	protected RuntimeEnvironment runtimeEnvironment;
 	protected ProjectTestControl control;
 	protected InfinitestAnnotator annotator;
 	
@@ -83,6 +86,8 @@ public class IntellijMockBase {
 		messageBus = mock(MessageBus.class);
 		messageBusConnection = mock(MessageBusConnection.class);
 		launcher = mock(InfinitestLauncher.class);
+		moduleSettings = mock(ModuleSettings.class);
+		runtimeEnvironment = mock(RuntimeEnvironment.class);
 		control = new ProjectTestControl(project);
 		annotator = mock(InfinitestAnnotator.class);
 		
@@ -94,6 +99,9 @@ public class IntellijMockBase {
 		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		
+		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
 		
 		when(moduleManager.getModules()).thenReturn(new Module[] {module});
 		
