@@ -99,4 +99,15 @@ class IdeaTestControlTest extends IntellijMockBase {
 		
 		verify(core, never()).reload();
 	}
+	
+	@Test
+	void moduleWithoutRuntimeEnvironment() {
+		setupApplication(false);
+		
+		ProjectTestControl testControl = new ProjectTestControl(project);
+		
+		when(moduleSettings.getRuntimeEnvironment()).thenReturn(null);
+		
+		assertThat(testControl.shouldRunTests(module)).isFalse();
+	}
 }
