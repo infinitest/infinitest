@@ -25,28 +25,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.parser;
+package org.infinitest.intellij.idea;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Set;
 
-import org.infinitest.environment.ClasspathProvider;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
+import org.infinitest.intellij.ModuleSettings;
 
-public interface TestDetector {
-	void clear();
+import com.intellij.openapi.module.Module;
+
+/**
+ * @author gtoison
+ *
+ */
+public class IdeaInfinitestConfigurationSource implements InfinitestConfigurationSource {
+	private Module module;
 	
-	/**
-	 * @param removedFiles The removed files
-	 * @return the removed test classes
-	 */
-	Set<JavaClass> removeClasses(Collection<File> removedFiles);
+	public IdeaInfinitestConfigurationSource(Module module) {
+		this.module = module;
+	}
 
-	Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
+	@Override
+	public InfinitestConfiguration getConfiguration() {
+		File filterFile = getFile();
+		if (filterFile != null) {
+			return FileBasedInfinitestConfigurationSource.createFromFile(filterFile).getConfiguration();
+		} else {
+			return InfinitestConfiguration.empty();
+		}
+	}
 
-	void setClasspathProvider(ClasspathProvider classpath);
+	@Override
+	public File getFile() {
+		ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+		return moduleSettings.getFilterFile();
+	}
 
-	Set<String> getCurrentTests();
-
-	void updateFilterList();
 }

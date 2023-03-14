@@ -49,6 +49,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.infinitest.classloader.ClassPathFileClassLoader;
+import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.testrunner.TestRunnerProcess;
 import org.infinitest.util.InfinitestUtils;
 
@@ -98,7 +99,8 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	private List<File> classDirs;
 	private final CustomJvmArgumentsReader customArgumentsReader;
 	private final String runnerBootstrapClassPath;
-
+	private final InfinitestConfigurationSource configurationSource;
+	
 	/**
 	 * Creates a new environment for test execution.
 	 * 
@@ -121,15 +123,24 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	 *            The classpath used to launch the tests. It must include the test
 	 *            classes and their dependencies (including directories in
 	 *            classOutputDirs). it must not include infinitest itself.
+	 * @param configurationSource
+	 *            The configuration source, the file used by this source might change to another file
 	 */
-	public RuntimeEnvironment(File javaHome, File workingDirectory, String runnerBootstrapClassPath,
-			String runnerProcessClassPath, List<File> classOutputDirs, String projectUnderTestClassPath) {
+	public RuntimeEnvironment(File javaHome,
+			File workingDirectory,
+			String runnerBootstrapClassPath,
+			String runnerProcessClassPath,
+			List<File> classOutputDirs,
+			String projectUnderTestClassPath,
+			InfinitestConfigurationSource configurationSource) {
 		this.classOutputDirs = classOutputDirs;
 		this.workingDirectory = workingDirectory;
 		this.javaHome = javaHome;
 		this.runnerBootstrapClassPath = runnerBootstrapClassPath;
 		this.runnerProcessClassPath = runnerProcessClassPath;
 		this.projectUnderTestClassPath = projectUnderTestClassPath;
+		this.configurationSource = configurationSource;
+		
 		additionalArgs = new ArrayList<>();
 		customArgumentsReader = new FileCustomJvmArgumentReader(workingDirectory);
 	}
@@ -231,6 +242,13 @@ public class RuntimeEnvironment implements ClasspathProvider {
 	 */
 	public File getWorkingDirectory() {
 		return workingDirectory;
+	}
+	
+	/**
+	 * @return The configuration source
+	 */
+	public InfinitestConfigurationSource getConfigurationSource() {
+		return configurationSource;
 	}
 
 	public void addVMArgs(List<String> newArgs) {

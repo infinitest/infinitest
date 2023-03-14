@@ -53,6 +53,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.messages.MessageBus;
@@ -70,6 +71,7 @@ public class IntellijMockBase {
 	
 	protected MessageBus messageBus;
 	protected MessageBusConnection messageBusConnection;
+	protected ProjectFileIndex projectFileIndex;
 	
 	protected InfinitestLauncher launcher;
 	protected ProjectTestControl control;
@@ -82,6 +84,7 @@ public class IntellijMockBase {
 		moduleManager = mock(ModuleManager.class);
 		messageBus = mock(MessageBus.class);
 		messageBusConnection = mock(MessageBusConnection.class);
+		projectFileIndex = mock(ProjectFileIndex.class);
 		launcher = mock(InfinitestLauncher.class);
 		control = new ProjectTestControl(project);
 		annotator = mock(InfinitestAnnotator.class);
@@ -90,6 +93,7 @@ public class IntellijMockBase {
 		when(project.getMessageBus()).thenReturn(messageBus);
 		when(project.getService(ProjectTestControl.class)).thenReturn(control);
 		when(project.getService(InfinitestAnnotator.class)).thenReturn(annotator);
+		when(project.getService(ProjectFileIndex.class)).thenReturn(projectFileIndex);
 		
 		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);

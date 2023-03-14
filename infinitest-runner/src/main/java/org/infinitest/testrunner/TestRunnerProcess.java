@@ -30,11 +30,14 @@ package org.infinitest.testrunner;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 
 // RISK This class is only tested by running it, which is slow and throws off coverage
 public class TestRunnerProcess {
@@ -42,8 +45,8 @@ public class TestRunnerProcess {
 	
 	private NativeRunner runner;
 
-	private TestRunnerProcess(String runnerClass) {
-		createRunner(runnerClass);
+	private TestRunnerProcess(String runnerClass, File filterFile) {
+		createRunner(runnerClass, filterFile);
 	}
 
 	private static void checkForJUnit4() {
@@ -54,8 +57,12 @@ public class TestRunnerProcess {
 		}
 	}
 
-	private void createRunner(String runnerClassName) {
+	private void createRunner(String runnerClassName, File filterFile) {
 		runner = instantiateTestRunner(runnerClassName);
+		
+		if (filterFile != null && filterFile.exists()) {
+			runner.setTestConfigurationSource(FileBasedInfinitestConfigurationSource.createFromFile(filterFile));
+		}
 	}
 
 	private NativeRunner instantiateTestRunner(String runnerClassName) {
@@ -74,11 +81,12 @@ public class TestRunnerProcess {
 	public static void main(String[] args) {
 		try {
 			checkForJUnit4();			
-			if (args.length != 2) {
-				throw new IllegalArgumentException("runner expects two parameters: runnerClass and port");
+			if (args.length != 3) {
+				throw new IllegalArgumentException("runner expects three parameters: runnerClass, port and filterFile");
 			}
 			String runnerClass = args[0];
-			TestRunnerProcess process = new TestRunnerProcess(runnerClass);
+			File filterFile = getFilterFile(args);
+			TestRunnerProcess process = new TestRunnerProcess(runnerClass, filterFile);
 			int portNum = Integer.parseInt(args[1]);
 			Socket clientSocket = new Socket("127.0.0.1", portNum);
 			// DEBT Extract this to a reader class
@@ -108,6 +116,14 @@ public class TestRunnerProcess {
 			System.exit(0);
 		}
 
+	}
+
+	private static File getFilterFile(String[] args) {
+		if (!"null".equals(args[2])) {
+			return new File(args[2]);
+		} else {
+			return null;
+		}
 	}
 
 	private static void writeTestResultToOutputStream(TestRunnerProcess process, ObjectOutputStream outputStream, String testName) throws IOException {

@@ -27,18 +27,27 @@
  */
 package org.infinitest;
 
-import static com.google.common.collect.Sets.*;
-import static java.util.logging.Level.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static com.google.common.collect.Sets.difference;
+import static java.util.logging.Level.CONFIG;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.infinitest.changedetect.*;
+import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.environment.RuntimeEnvironment;
-import org.infinitest.parser.*;
-import org.infinitest.testrunner.*;
-import org.infinitest.testrunner.queue.*;
+import org.infinitest.parser.JavaClass;
+import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.RunStatistics;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestResultsListener;
+import org.infinitest.testrunner.TestRunner;
+import org.infinitest.testrunner.queue.TestComparator;
 
 /**
  * @author <a href="mailto:benrady@gmail.com">Ben Rady</a>
@@ -119,6 +128,7 @@ class DefaultInfinitestCore implements InfinitestCore {
 	@Override
 	public void reload() {
 		log("Reloading core " + name);
+		testDetector.updateFilterList();
 		testDetector.clear();
 		changeDetector.clear();
 		firstRunSinceReload = true;
@@ -227,6 +237,12 @@ class DefaultInfinitestCore implements InfinitestCore {
 	@Override
 	public boolean isEventSourceFor(TestCaseEvent testCaseEvent) {
 		return testCaseEvent.getSource().equals(getRunner());
+	}
+	
+	@Override
+	public void filterFileWasUpdated() {
+		reload();
+		update();
 	}
 
 	TestRunner getRunner() {

@@ -25,28 +25,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.parser;
+package org.infinitest.eclipse.workspace;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Set;
 
-import org.infinitest.environment.ClasspathProvider;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
 
-public interface TestDetector {
-	void clear();
+/**
+ * @author gtoison
+ *
+ */
+public class EclipseConfigurationSource implements InfinitestConfigurationSource {
+	private ProjectFacade project;
 	
-	/**
-	 * @param removedFiles The removed files
-	 * @return the removed test classes
-	 */
-	Set<JavaClass> removeClasses(Collection<File> removedFiles);
+	public EclipseConfigurationSource(ProjectFacade project) {
+		this.project = project;
+	}
 
-	Set<JavaClass> findTestsToRun(Collection<File> changedFiles);
+	@Override
+	public InfinitestConfiguration getConfiguration() {
+		File file = getFile();
+		if (file.exists()) {
+			return FileBasedInfinitestConfigurationSource.createFromFile(getFile()).getConfiguration();
+		} else {
+			return InfinitestConfiguration.empty();
+		}
+	}
 
-	void setClasspathProvider(ClasspathProvider classpath);
-
-	Set<String> getCurrentTests();
-
-	void updateFilterList();
+	@Override
+	public File getFile() {
+		File workingDirectory = project.workingDirectory();
+		
+		return new File(workingDirectory, FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME);
+	}
 }

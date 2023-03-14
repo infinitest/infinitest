@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.io.File;
 
 import org.infinitest.EventSupport;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.environment.FakeEnvironments;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.util.InfinitestTestUtils;
@@ -70,7 +71,13 @@ class WhenRunningTestsInDifferentEnvironments extends AbstractRunnerTest {
 
   @Test
   void canUseACustomWorkingDirectory() throws Exception {
-    runner.setRuntimeEnvironment(new RuntimeEnvironment(currentJavaHome(), new File("src"), FakeEnvironments.systemClasspath(), FakeEnvironments.systemClasspath(), fakeBuildPaths(), FakeEnvironments.systemClasspath()));
+    runner.setRuntimeEnvironment(new RuntimeEnvironment(currentJavaHome(),
+        new File("src"),
+        FakeEnvironments.systemClasspath(),
+        FakeEnvironments.systemClasspath(),
+        fakeBuildPaths(),
+        FakeEnvironments.systemClasspath(),
+        FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory()));
     runTests(WorkingDirectoryVerifier.class);
     eventAssert.assertTestPassed(WorkingDirectoryVerifier.class);
   }

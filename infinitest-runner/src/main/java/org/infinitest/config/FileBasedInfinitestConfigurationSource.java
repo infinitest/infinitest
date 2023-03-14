@@ -29,14 +29,14 @@ package org.infinitest.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
 
 public class FileBasedInfinitestConfigurationSource implements InfinitestConfigurationSource {
 
-	private static final String INFINITEST_FILTERS_FILE_NAME = "infinitest.filters";
+	public static final String INFINITEST_FILTERS_FILE_NAME = "infinitest.filters";
 	private final File file;
 
 	private FileBasedInfinitestConfigurationSource(File file) {
@@ -45,10 +45,10 @@ public class FileBasedInfinitestConfigurationSource implements InfinitestConfigu
 
 	@Override
 	public InfinitestConfiguration getConfiguration() {
-		if (!file.exists()) {
+		if (file == null || !file.exists()) {
 			return InfinitestConfiguration.empty();
 		}
-		CharSource charSource = Files.asCharSource(file, Charsets.UTF_8);
+		CharSource charSource = Files.asCharSource(file, StandardCharsets.UTF_8);
 		try {
 			return new InfinitestConfigurationParser().parseFileContent(charSource);
 		} catch (IOException e) {
@@ -70,4 +70,8 @@ public class FileBasedInfinitestConfigurationSource implements InfinitestConfigu
 		return createFromWorkingDirectory(workingDirectory);
 	}
 
+	@Override
+	public File getFile() {
+		return file;
+	}
 }

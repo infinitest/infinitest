@@ -27,9 +27,12 @@
  */
 package org.infinitest.intellij;
 
+import java.io.File;
+
 import org.infinitest.environment.RuntimeEnvironment;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
 
 public interface ModuleSettings {
 	void writeToLogger(Logger log);
@@ -37,4 +40,10 @@ public interface ModuleSettings {
 	String getName();
 
 	RuntimeEnvironment getRuntimeEnvironment();
+	
+	/**
+	 * @return The filter {@link File} for this {@link Module}, this should be either the filter file at
+	 * the root of the module folder or, if there isn't a file there the project root, or <code>null</code>
+	 */
+	File getFilterFile();
 }

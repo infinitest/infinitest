@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -70,6 +71,16 @@ public class FakeModuleSettings implements ModuleSettings {
 	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
 		String systemClasspath = System.getProperty("java.class.path");
-		return new RuntimeEnvironment(new File(getProperty("java.home")), new File("."), systemClasspath, systemClasspath , Collections.<File> emptyList(), "");
+		return new RuntimeEnvironment(new File(getProperty("java.home")),
+				new File("."),
+				systemClasspath, systemClasspath,
+				Collections.<File>emptyList(),
+				null,
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
+	}
+	
+	@Override
+	public File getFilterFile() {
+		return null;
 	}
 }

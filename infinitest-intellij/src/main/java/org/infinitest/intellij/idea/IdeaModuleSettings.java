@@ -28,6 +28,7 @@
 package org.infinitest.intellij.idea;
 
 import static java.io.File.pathSeparator;
+import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
@@ -60,6 +62,7 @@ import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.OrderRootsEnumerator;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
@@ -103,7 +106,18 @@ public class IdeaModuleSettings implements ModuleSettings {
 		}
 		String runnerClassLoaderClassPath = infinitestJarPath(locator.findInfinitestClassLoaderlJarName());
 		String runnerProcessClassPath  = infinitestJarPath(locator.findInfinitestRunnerJarName());
-		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()), getWorkingDirectory(), runnerClassLoaderClassPath, runnerProcessClassPath, listOutputDirectories(), buildClasspathString());
+		
+		File workingDirectory = getWorkingDirectory();
+		
+		InfinitestConfigurationSource configurationSource = module.getService(InfinitestConfigurationSource.class);
+		
+		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()),
+				workingDirectory,
+				runnerClassLoaderClassPath,
+				runnerProcessClassPath,
+				listOutputDirectories(),
+				buildClasspathString(),
+				configurationSource);
 	}
 
 	/**
@@ -171,6 +185,29 @@ public class IdeaModuleSettings implements ModuleSettings {
 		String workingDir = configurator.getWorkingDir(configuration, module.getProject(), module);
 		
 		return new File(workingDir);
+	}
+	
+	/**
+	 * @param workingDirectory
+	 * @return The filter file for the module, or if it does not exist the project filter file, or null if it does not exist
+	 */
+	@Override
+	public File getFilterFile() {
+		File workingDirectory = getWorkingDirectory();
+		File filterFile = new File(workingDirectory, INFINITEST_FILTERS_FILE_NAME);
+		
+		if (filterFile.exists()) {
+			return filterFile;
+		}
+		
+		for (VirtualFile projectRoot : ProjectRootManager.getInstance(module.getProject()).getContentRoots()) {
+			VirtualFile vf = projectRoot.findChild(INFINITEST_FILTERS_FILE_NAME);
+			if (vf != null) {
+				return new File(vf.getCanonicalPath());
+			}
+		}
+		
+		return null;
 	}
 
 	/**

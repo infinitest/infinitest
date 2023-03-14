@@ -68,7 +68,7 @@ public class ClassFileTestDetector implements TestDetector {
 	 */
 	@Override
 	public synchronized Set<JavaClass> findTestsToRun(Collection<File> changedFiles) {
-		filters.updateFilterList();
+		updateFilterList();
 
 		// Find changed classes
 		Set<JavaClass> changedClasses = index.findClasses(changedFiles);
@@ -80,6 +80,11 @@ public class ClassFileTestDetector implements TestDetector {
 		// run through total set, and pick out tests to run
 		log(Level.FINE, "Total changeset: " + changedParents);
 		return filterTests(changedClasses);
+	}
+
+	@Override
+	public void updateFilterList() {
+		filters.updateFilterList();
 	}
 
 	private Set<JavaClass> filterTests(Set<JavaClass> changedClasses) {

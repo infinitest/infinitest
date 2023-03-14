@@ -27,14 +27,13 @@
  */
 package org.infinitest.environment;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
-import org.infinitest.*;
-import org.infinitest.environment.ClasspathProvider;
-import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.StandaloneClasspath;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 
 public class FakeEnvironments {
 	public static File fakeClassDirectory() {
@@ -50,7 +49,13 @@ public class FakeEnvironments {
 	}
 
 	public static RuntimeEnvironment fakeEnvironment() {
-		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
+		return new RuntimeEnvironment(currentJavaHome(),
+				fakeWorkingDirectory(),
+				systemClasspath(),
+				systemClasspath(),
+				fakeBuildPaths(),
+				systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 	}
 
 	public static File fakeWorkingDirectory() {
@@ -66,11 +71,23 @@ public class FakeEnvironments {
 	}
 
 	public static RuntimeEnvironment emptyRuntimeEnvironment() {
-		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), "infinitest-classloader.classpath", "infinitest-runner.classpath", asList(new File("thisdirectorydoesnotexist")), "classpath");
+		return new RuntimeEnvironment(currentJavaHome(),
+				fakeWorkingDirectory(),
+				"infinitest-classloader.classpath",
+				"infinitest-runner.classpath",
+				asList(new File("thisdirectorydoesnotexist")),
+				"classpath",
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 	}
 
 	public static RuntimeEnvironment fakeVeryLongClasspathEnvironment() {
-		return new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), fakeVeryLongClassPaths(), fakeVeryLongClassPaths(), fakeBuildPaths(), fakeVeryLongClassPaths());
+		return new RuntimeEnvironment(currentJavaHome(),
+				fakeWorkingDirectory(),
+				fakeVeryLongClassPaths(),
+				fakeVeryLongClassPaths(),
+				fakeBuildPaths(),
+				fakeVeryLongClassPaths(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 	}
 
 	private static String fakeVeryLongClassPaths() {

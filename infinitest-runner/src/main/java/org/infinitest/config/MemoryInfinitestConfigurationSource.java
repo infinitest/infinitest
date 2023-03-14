@@ -27,6 +27,8 @@
  */
 package org.infinitest.config;
 
+import java.io.File;
+
 public class MemoryInfinitestConfigurationSource implements InfinitestConfigurationSource {
 
 	private InfinitestConfiguration configuration;
@@ -44,4 +46,8 @@ public class MemoryInfinitestConfigurationSource implements InfinitestConfigurat
 		return configuration;
 	}
 
+	@Override
+	public File getFile() {
+		return null;
+	}
 }
