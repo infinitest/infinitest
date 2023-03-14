@@ -4,8 +4,7 @@ on:
     branches:
       - master
   pull_request:
-    branches:
-      - master
+    types: [opened, synchronize, reopened]
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
