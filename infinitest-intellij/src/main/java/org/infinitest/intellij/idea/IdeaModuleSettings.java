@@ -177,7 +177,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return builder.toString();
 	}
 
-	private File getWorkingDirectory() {
+	protected File getWorkingDirectory() {
 		CommonProgramRunConfigurationParameters configuration = new InfinitestRunConfigurationParameters();
 		configuration.setWorkingDirectory("%MODULE_WORKING_DIR%");
 		
@@ -276,7 +276,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return CompilerModuleExtension.getInstance(module);
 	}
 
-	private String infinitestJarPath(String jarName) {
+	protected String infinitestJarPath(String jarName) {
 		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
 		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
 		Path pluginPath = descriptor.getPluginPath();

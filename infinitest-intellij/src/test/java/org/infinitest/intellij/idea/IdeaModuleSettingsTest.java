@@ -28,18 +28,25 @@
 package org.infinitest.intellij.idea;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.infinitest.intellij.IntellijMockBase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VirtualFile;
 
 class IdeaModuleSettingsTest extends IntellijMockBase {
 
@@ -62,4 +69,73 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 		assertThat(outputDirs).hasSize(2);
 	}
 
+	@Test
+	void getRuntimeEnvironment() {
+		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
+			@Override
+			protected String infinitestJarPath(String jarName) {
+				return "infinitest.jar";
+			}
+			
+			@Override
+			protected File getWorkingDirectory() {
+				return new File(".");
+			}
+		};
+		
+		assertNotNull(settings.getRuntimeEnvironment());
+	}
+	
+	@Test
+	void getAbsentFilterFileFromWorkingDirectory(@TempDir File moduleRoot) {
+		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
+			@Override
+			protected File getWorkingDirectory() {
+				return moduleRoot;
+			}
+		};
+		
+		
+		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
+		
+		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
+		
+		assertNull(settings.getFilterFile());
+	}
+	
+
+	
+	@Test
+	void getFilterFileFromWorkingDirectory(@TempDir File moduleRoot) throws IOException {
+		File filterFile = new File(moduleRoot, INFINITEST_FILTERS_FILE_NAME);
+		filterFile.createNewFile();
+		
+		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
+			@Override
+			protected File getWorkingDirectory() {
+				return moduleRoot;
+			}
+		};
+		
+		assertEquals(filterFile, settings.getFilterFile());
+	}
+	
+	@Test
+	void getFilterFileFromProjectDirectory(@TempDir File moduleRoot) {
+		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
+			@Override
+			protected File getWorkingDirectory() {
+				return moduleRoot;
+			}
+		};
+		
+		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
+		VirtualFile filterVFile = mock(VirtualFile.class);
+		
+		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
+		when(virtualFiles[0].findChild(INFINITEST_FILTERS_FILE_NAME)).thenReturn(filterVFile);
+		when(filterVFile.getCanonicalPath()).thenReturn("test.filter");
+		
+		assertThat(settings.getFilterFile().getAbsolutePath()).endsWith("test.filter");
+	}
 }
