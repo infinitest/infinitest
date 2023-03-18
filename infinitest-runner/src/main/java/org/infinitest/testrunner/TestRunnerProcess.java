@@ -45,7 +45,7 @@ public class TestRunnerProcess {
 	
 	private NativeRunner runner;
 
-	private TestRunnerProcess(String runnerClass, File filterFile) {
+	protected TestRunnerProcess(String runnerClass, File filterFile) {
 		createRunner(runnerClass, filterFile);
 	}
 
@@ -57,7 +57,7 @@ public class TestRunnerProcess {
 		}
 	}
 
-	private void createRunner(String runnerClassName, File filterFile) {
+	protected void createRunner(String runnerClassName, File filterFile) {
 		runner = instantiateTestRunner(runnerClassName);
 		
 		if (filterFile != null && filterFile.exists()) {
@@ -65,7 +65,7 @@ public class TestRunnerProcess {
 		}
 	}
 
-	private NativeRunner instantiateTestRunner(String runnerClassName) {
+	protected NativeRunner instantiateTestRunner(String runnerClassName) {
 		try {
 			Class<?> runnerClass = Class.forName(runnerClassName);
 			return (NativeRunner) runnerClass.newInstance();
@@ -81,9 +81,8 @@ public class TestRunnerProcess {
 	public static void main(String[] args) {
 		try {
 			checkForJUnit4();			
-			if (args.length != 3) {
-				throw new IllegalArgumentException("runner expects three parameters: runnerClass, port and filterFile");
-			}
+			checkArgsCount(args);
+			
 			String runnerClass = args[0];
 			File filterFile = getFilterFile(args);
 			TestRunnerProcess process = new TestRunnerProcess(runnerClass, filterFile);
@@ -118,7 +117,13 @@ public class TestRunnerProcess {
 
 	}
 
-	private static File getFilterFile(String[] args) {
+	public static void checkArgsCount(String[] args) {
+		if (args.length != 3) {
+			throw new IllegalArgumentException("runner expects three parameters: runnerClass, port and filterFile");
+		}
+	}
+
+	public static File getFilterFile(String[] args) {
 		if (!"null".equals(args[2])) {
 			return new File(args[2]);
 		} else {
