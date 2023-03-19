@@ -40,6 +40,10 @@ public abstract class PreferencesConstants {
 	public static final String PARALLEL_CORES = "org.infinitest.eclipse.parallel";
 
 	public static final String SLOW_TEST_WARNING = "org.infinitest.eclipse.slow-warning";
+	
+	public static final String FAILED_TEST_MARKER_SEVERITY = "org.infinitest.eclipse.failed.test.marker.severity";
+	
+	public static final String SLOW_TEST_MARKER_SEVERITY = "org.infinitest.eclipse.slow.test.marker.severity";
 
 	public static final String FAILING_BACKGROUND_COLOR = "org.infinitest.eclipse.color.failing.background";
 

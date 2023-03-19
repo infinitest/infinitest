@@ -27,13 +27,18 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.infinitest.eclipse.PluginConstants.*;
+import static org.infinitest.eclipse.PluginConstants.SLOW_MARKER_ID;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_MARKER_SEVERITY;
 
-import org.springframework.stereotype.*;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SlowMarkerRegistry extends GenericMarkerRegistry {
 	public SlowMarkerRegistry() {
-		super(SLOW_MARKER_ID);
+		super(SLOW_MARKER_ID, SLOW_TEST_MARKER_SEVERITY);
+	}
+	
+	public SlowMarkerRegistry(int markerSeverity) {
+		super(SLOW_MARKER_ID, markerSeverity);
 	}
 }

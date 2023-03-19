@@ -32,7 +32,9 @@ import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -42,6 +44,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.infinitest.MultiCoreConcurrencyController;
 import org.infinitest.eclipse.InfinitestPlugin;
+import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
 import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -53,6 +56,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	PreferencePage(PreferenceChangeHandler changeHandler) {
 		handler = changeHandler;
+		handler.setProblemMarkerRegistry(InfinitestPlugin.getInstance().getBean(ProblemMarkerRegistry.class));
 		handler.setSlowMarkerRegistry(InfinitestPlugin.getInstance().getBean(SlowMarkerRegistry.class));
 	}
 
@@ -71,6 +75,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		addField(createAutoTestEditor());
 		addField(createParallelizationEditor());
 		addField(createSlowTestWarningCutoffEditor());
+		addField(createSeverityEditor(PreferencesConstants.FAILED_TEST_MARKER_SEVERITY, "Failed test severity"));
+		addField(createSeverityEditor(PreferencesConstants.SLOW_TEST_MARKER_SEVERITY, "Slow test severity"));
 		addField(createFailingBackgroundColorEditor());
 		addField(createFailingTextColorEditor());
 	}
@@ -101,6 +107,15 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		return editor;
 	}
 
+	private ComboFieldEditor createSeverityEditor(String name, String labelText) {
+		String[][] values = new String[][] {
+		    {"Info", String.valueOf(IMarker.SEVERITY_INFO)},
+		    {"Warning", String.valueOf(IMarker.SEVERITY_WARNING)},
+		    {"Error", String.valueOf(IMarker.SEVERITY_ERROR)}};
+		    
+		return new ComboFieldEditor(name, labelText, values, getFieldEditorParent());
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		handler.propertyChange(event);
@@ -126,7 +141,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	@Override
 	public void performDefaults() {
+		handler.clearProblemMarkers();
 		handler.clearSlowMarkers();
+		
 		super.performDefaults();
 	}
 }

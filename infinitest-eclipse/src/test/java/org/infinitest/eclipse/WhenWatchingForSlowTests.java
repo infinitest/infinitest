@@ -33,6 +33,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
+import org.eclipse.core.resources.IMarker;
 import org.infinitest.eclipse.markers.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
@@ -52,7 +53,7 @@ class WhenWatchingForSlowTests {
 		mockMarkerRegistry = mock(SlowMarkerRegistry.class);
 		methodStats = new MethodStats("shouldRunSlowly");
 		ResourceLookup resourceLookup = mock(ResourceLookup.class);
-		expectedMarker = new SlowTestMarkerInfo("MyTest", methodStats, resourceLookup);
+		expectedMarker = new SlowTestMarkerInfo("MyTest", methodStats, resourceLookup, IMarker.SEVERITY_ERROR);
 		setSlowTestTimeLimit(2000);
 		observer = new SlowTestObserver(mockMarkerRegistry, resourceLookup);
 

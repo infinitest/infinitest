@@ -51,7 +51,7 @@ class WhenCreatingMarkers {
 	@BeforeEach
 	void inContext() {
 		error = new AssertionError();
-		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID);
+		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID, IMarker.SEVERITY_ERROR);
 	}
 
 	@Test

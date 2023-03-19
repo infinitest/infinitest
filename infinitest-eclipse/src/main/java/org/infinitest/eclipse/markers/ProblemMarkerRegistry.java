@@ -27,13 +27,18 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.infinitest.eclipse.PluginConstants.*;
+import static org.infinitest.eclipse.PluginConstants.PROBLEM_MARKER_ID;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
 
-import org.springframework.stereotype.*;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProblemMarkerRegistry extends GenericMarkerRegistry {
 	public ProblemMarkerRegistry() {
-		super(PROBLEM_MARKER_ID);
+		super(PROBLEM_MARKER_ID, FAILED_TEST_MARKER_SEVERITY);
+	}
+	
+	public ProblemMarkerRegistry(int markerSeverity) {
+		super(PROBLEM_MARKER_ID, markerSeverity);
 	}
 }

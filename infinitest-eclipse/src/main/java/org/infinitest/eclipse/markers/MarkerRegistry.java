@@ -27,6 +27,8 @@
  */
 package org.infinitest.eclipse.markers;
 
+import org.eclipse.core.resources.IMarker;
+
 public interface MarkerRegistry {
 	void addMarker(MarkerInfo marker);
 
@@ -37,4 +39,12 @@ public interface MarkerRegistry {
 	void updateMarker(MarkerInfo marker);
 
 	void removeMarkers(String testName);
+
+	/**
+	 * Updates the severity of all the markers
+	 * @param markersSeverity The new marker severity, for instance {@link IMarker#SEVERITY_ERROR}
+	 */
+	void updateMarkersSeverity(int markersSeverity);
+	
+	int markerServerity();
 }

@@ -27,6 +27,7 @@
  */
 package org.infinitest.eclipse.prefs;
 
+import static org.eclipse.core.resources.IMarker.SEVERITY_WARNING;
 import static org.eclipse.jface.preference.FieldEditor.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
@@ -58,7 +59,7 @@ class WhenPreferencesAreChanged {
 		eventSource = mock(BooleanFieldEditor.class);
 
 		handler = new PreferenceChangeHandler(controller, coreSettings);
-		handler.setSlowMarkerRegistry(new SlowMarkerRegistry());
+		handler.setSlowMarkerRegistry(new SlowMarkerRegistry(SEVERITY_WARNING));
 	}
 
 	@AfterEach
