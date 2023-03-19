@@ -83,4 +83,9 @@ public class FakeModuleSettings implements ModuleSettings {
 	public File getFilterFile() {
 		return null;
 	}
+	
+	@Override
+	public List<File> getRootDirectories() {
+		return Collections.emptyList();
+	}
 }

@@ -110,6 +110,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		File workingDirectory = getWorkingDirectory();
 		
 		InfinitestConfigurationSource configurationSource = module.getService(InfinitestConfigurationSource.class);
+		IdeaCustomJvmArgumentsReader argumentsReader = new IdeaCustomJvmArgumentsReader(module);
 		
 		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()),
 				workingDirectory,
@@ -117,7 +118,8 @@ public class IdeaModuleSettings implements ModuleSettings {
 				runnerProcessClassPath,
 				listOutputDirectories(),
 				buildClasspathString(),
-				configurationSource);
+				configurationSource,
+				argumentsReader);
 	}
 
 	/**
@@ -193,21 +195,30 @@ public class IdeaModuleSettings implements ModuleSettings {
 	 */
 	@Override
 	public File getFilterFile() {
-		File workingDirectory = getWorkingDirectory();
-		File filterFile = new File(workingDirectory, INFINITEST_FILTERS_FILE_NAME);
-		
-		if (filterFile.exists()) {
-			return filterFile;
-		}
-		
-		for (VirtualFile projectRoot : ProjectRootManager.getInstance(module.getProject()).getContentRoots()) {
-			VirtualFile vf = projectRoot.findChild(INFINITEST_FILTERS_FILE_NAME);
-			if (vf != null) {
-				return new File(vf.getCanonicalPath());
+		for (File rootDirectory : getRootDirectories()) {
+			File filterFile = new File(rootDirectory, INFINITEST_FILTERS_FILE_NAME);
+			
+			if (filterFile.exists()) {
+				return filterFile;
 			}
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @return A list consisting of the module working directory and the project content root(s)
+	 */
+	@Override
+	public List<File> getRootDirectories() {
+		List<File> directories = new ArrayList<>();
+		directories.add(getWorkingDirectory());
+		
+		for (VirtualFile projectRoot : ProjectRootManager.getInstance(module.getProject()).getContentRoots()) {
+			directories.add(projectRoot.toNioPath().toFile());
+		}
+		
+		return directories;
 	}
 
 	/**

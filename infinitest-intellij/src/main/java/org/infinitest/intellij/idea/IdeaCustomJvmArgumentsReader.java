@@ -25,28 +25,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.idea;
 
 import java.io.File;
 import java.util.List;
 
-import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.environment.CustomJvmArgumentsReader;
+import org.infinitest.environment.FileCustomJvmArgumentReader;
+import org.infinitest.intellij.ModuleSettings;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 
-public interface ModuleSettings {
-	void writeToLogger(Logger log);
-
-	String getName();
-
-	RuntimeEnvironment getRuntimeEnvironment();
+/**
+ * @author gtoison
+ *
+ */
+public class IdeaCustomJvmArgumentsReader implements CustomJvmArgumentsReader {
+	private Module module;
 	
-	/**
-	 * @return The filter {@link File} for this {@link Module}, this should be either the filter file at
-	 * the root of the module folder or, if there isn't a file there the project root, or <code>null</code>
-	 */
-	File getFilterFile();
-
-	List<File> getRootDirectories();
+	public IdeaCustomJvmArgumentsReader(Module module) {
+		this.module = module;
+	}
+	
+	@Override
+	public List<String> readCustomArguments() {
+		ModuleSettings moduleSettings = module.getService(ModuleSettings.class);
+		
+		File[] directories = moduleSettings.getRootDirectories().toArray(File[]::new);
+		FileCustomJvmArgumentReader reader = new FileCustomJvmArgumentReader(directories);
+		
+		return reader.readCustomArguments();
+	}
 }

@@ -31,7 +31,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.write;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.infinitest.environment.FileCustomJvmArgumentReader.FILE_NAME;
+import static org.infinitest.environment.FileCustomJvmArgumentReader.INFINITEST_ARGS_FILE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -56,7 +56,7 @@ class FileCustomJvmArgumentReaderTest {
 		tempDirectory = new File(System.getProperty("java.io.tmpdir"));
 		assertTrue(tempDirectory.exists());
 		assertTrue(tempDirectory.exists());
-		file = new File(tempDirectory, FILE_NAME);
+		file = new File(tempDirectory, INFINITEST_ARGS_FILE_NAME);
 		file.createNewFile();
 		assertTrue(file.exists(), "Failed to create arguments file.");
 

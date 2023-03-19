@@ -37,6 +37,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.infinitest.intellij.IntellijMockBase;
@@ -87,7 +88,7 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 	}
 	
 	@Test
-	void getAbsentFilterFileFromWorkingDirectory(@TempDir File moduleRoot) {
+	void getAbsentFilterFileFromWorkingDirectory(@TempDir File moduleRoot, @TempDir File projectRoot) {
 		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
 			@Override
 			protected File getWorkingDirectory() {
@@ -97,6 +98,11 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 		
 		
 		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
+		Path path = mock(Path.class);
+
+		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
+		when(virtualFiles[0].toNioPath()).thenReturn(path);
+		when(path.toFile()).thenReturn(projectRoot);
 		
 		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
 		
@@ -121,7 +127,7 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 	}
 	
 	@Test
-	void getFilterFileFromProjectDirectory(@TempDir File moduleRoot) {
+	void getFilterFileFromProjectDirectory(@TempDir File moduleRoot, @TempDir File projectRoot) throws IOException {
 		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
 			@Override
 			protected File getWorkingDirectory() {
@@ -130,12 +136,14 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 		};
 		
 		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
-		VirtualFile filterVFile = mock(VirtualFile.class);
+		File filterFile = new File(projectRoot, INFINITEST_FILTERS_FILE_NAME);
+		filterFile.createNewFile();
+		Path path = mock(Path.class);
 		
 		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
-		when(virtualFiles[0].findChild(INFINITEST_FILTERS_FILE_NAME)).thenReturn(filterVFile);
-		when(filterVFile.getCanonicalPath()).thenReturn("test.filter");
+		when(virtualFiles[0].toNioPath()).thenReturn(path);
+		when(path.toFile()).thenReturn(projectRoot);
 		
-		assertThat(settings.getFilterFile().getAbsolutePath()).endsWith("test.filter");
+		assertEquals(filterFile, settings.getFilterFile());
 	}
 }

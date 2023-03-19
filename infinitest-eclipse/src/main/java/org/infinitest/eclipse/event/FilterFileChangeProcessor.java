@@ -29,6 +29,7 @@ package org.infinitest.eclipse.event;
 
 import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
 import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
+import static org.infinitest.environment.FileCustomJvmArgumentReader.INFINITEST_ARGS_FILE_NAME;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Triggers a tests run when a filter file is updated, created, deleted
+ * Triggers a tests run when a filter file or an args file is updated, created, deleted
  * 
  * @author gtoison
  */
@@ -91,7 +92,8 @@ class FilterFileChangeProcessor extends EclipseEventProcessor {
 			return true;
 		}
 		private boolean isFilterFile(IResourceDelta delta) {
-			return delta.getFullPath().toPortableString().endsWith(INFINITEST_FILTERS_FILE_NAME);
+			String path = delta.getFullPath().toPortableString();
+			return path.endsWith(INFINITEST_FILTERS_FILE_NAME) || path.endsWith(INFINITEST_ARGS_FILE_NAME);
 		}
 	}
 }

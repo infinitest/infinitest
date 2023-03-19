@@ -28,6 +28,7 @@
 package org.infinitest.intellij.idea;
 
 import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
+import static org.infinitest.environment.FileCustomJvmArgumentReader.INFINITEST_ARGS_FILE_NAME;
 
 import java.util.List;
 
@@ -45,10 +46,10 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 
 /**
- * Watches for changes (saved, deleted, created, etc.) on files named 'infinitest.filters'. When a change is detected
- * in a project this triggers a run of all the enabled tests. We're running all the tests because the filters mix
- * different kinds of logic to exclude/include tests (regex on the name, JUnit annotations) so the plugin cannot
- * easily compute a diff of the new/old tests
+ * Watches for changes (saved, deleted, created, etc.) on files named 'infinitest.filters' or 'infinitest.args'.
+ * When a change is detected in a project this triggers a run of all the enabled tests. 
+ * We're running all the tests because the filters mix different kinds of logic to exclude/include tests (regex
+ * on the name, JUnit annotations) so the plugin cannot easily compute a diff of the new/old tests
  * 
  * @author gtoison
  */
@@ -64,7 +65,8 @@ public class FilterFileWatcher implements BulkFileListener {
 		ProjectFileIndex projectFileIndex = ProjectFileIndex.getInstance(project);
 		
 		for (VFileEvent event : events) {
-			if (event.getPath().endsWith(INFINITEST_FILTERS_FILE_NAME)) {
+			String path = event.getPath();
+			if (path.endsWith(INFINITEST_FILTERS_FILE_NAME) || path.endsWith(INFINITEST_ARGS_FILE_NAME)) {
 				VirtualFile file = event.getFile();
 				// The javadoc says that the file might be null
 				if (file != null && projectFileIndex.isInContent(file)) {

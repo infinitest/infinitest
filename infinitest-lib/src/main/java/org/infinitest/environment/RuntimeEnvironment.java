@@ -133,6 +133,24 @@ public class RuntimeEnvironment implements ClasspathProvider {
 			List<File> classOutputDirs,
 			String projectUnderTestClassPath,
 			InfinitestConfigurationSource configurationSource) {
+		this(javaHome,
+				workingDirectory,
+				runnerBootstrapClassPath,
+				runnerProcessClassPath,
+				classOutputDirs,
+				projectUnderTestClassPath,
+				configurationSource,
+				new FileCustomJvmArgumentReader(workingDirectory));
+	}
+	
+	public RuntimeEnvironment(File javaHome,
+			File workingDirectory,
+			String runnerBootstrapClassPath,
+			String runnerProcessClassPath,
+			List<File> classOutputDirs,
+			String projectUnderTestClassPath,
+			InfinitestConfigurationSource configurationSource,
+			CustomJvmArgumentsReader customJvmArgumentsReader) {
 		this.classOutputDirs = classOutputDirs;
 		this.workingDirectory = workingDirectory;
 		this.javaHome = javaHome;
@@ -140,9 +158,9 @@ public class RuntimeEnvironment implements ClasspathProvider {
 		this.runnerProcessClassPath = runnerProcessClassPath;
 		this.projectUnderTestClassPath = projectUnderTestClassPath;
 		this.configurationSource = configurationSource;
+		this.customArgumentsReader = customJvmArgumentsReader;
 		
 		additionalArgs = new ArrayList<>();
-		customArgumentsReader = new FileCustomJvmArgumentReader(workingDirectory);
 	}
 
 	public List<String> createProcessArguments(ClasspathArgumentBuilder classpathArgumentBuilder) {
