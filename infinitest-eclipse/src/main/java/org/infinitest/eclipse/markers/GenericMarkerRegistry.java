@@ -172,7 +172,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		IProgressMonitor monitor = new NullProgressMonitor();
 		
 		for (IMarker marker : markers.values()) {
-			UpdateMarkersOperation operation = new UpdateMarkersOperation(markersArray, attributes, "Infinitest markers update", true);
+			UpdateMarkersOperation operation = buildUpdateMarkersAction(attributes, markersArray);
 			
 			try {
 				operation.execute(monitor, marker.getResource());
@@ -180,6 +180,10 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 				log("Error updating marker severity " + marker, e);
 			}
 		}
+	}
+
+	protected UpdateMarkersOperation buildUpdateMarkersAction(Map<String, Integer> attributes, IMarker[] markers) {
+		return new UpdateMarkersOperation(markers, attributes, "Infinitest markers update", true);
 	}
 	
 	@Override

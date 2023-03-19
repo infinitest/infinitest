@@ -32,13 +32,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.IMarker.MESSAGE;
 import static org.eclipse.core.resources.IMarker.SEVERITY;
 import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
+import static org.eclipse.core.resources.IMarker.SEVERITY_INFO;
 import static org.infinitest.eclipse.PluginConstants.PROBLEM_MARKER_ID;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.Map;
+
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.ui.ide.undo.UpdateMarkersOperation;
+import org.infinitest.eclipse.prefs.PreferencesConstants;
 import org.infinitest.eclipse.workspace.FakeResourceFinder;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +55,18 @@ import org.junit.jupiter.api.Test;
 class WhenCreatingMarkers {
 	private GenericMarkerRegistry registry;
 	private AssertionError error;
+	private UpdateMarkersOperation updateMarkersOperation;
 
 	@BeforeEach
 	void inContext() {
 		error = new AssertionError();
-		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID, IMarker.SEVERITY_ERROR);
+		updateMarkersOperation = mock(UpdateMarkersOperation.class);
+		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID, PreferencesConstants.FAILED_TEST_MARKER_SEVERITY) {
+			@Override
+			protected UpdateMarkersOperation buildUpdateMarkersAction(Map<String, Integer> attributes, IMarker[] markers) {
+				return updateMarkersOperation;
+			}
+		};
 	}
 
 	@Test
@@ -159,6 +174,15 @@ class WhenCreatingMarkers {
 		registry.clear();
 
 		assertThat(registry.getMarkers()).isEmpty();
+	}
+	
+	@Test
+	void updateMarkerSeverity() throws ExecutionException {
+		addMarker(failureEvent("failure message 1"));
+		addMarker(failureEvent("failure message 2"));
+		registry.updateMarkersSeverity(SEVERITY_INFO);
+		
+		verify(updateMarkersOperation).execute(any(), any());
 	}
 
 	private void addMarker(TestEvent event) {

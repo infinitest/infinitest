@@ -37,8 +37,4 @@ public class ProblemMarkerRegistry extends GenericMarkerRegistry {
 	public ProblemMarkerRegistry() {
 		super(PROBLEM_MARKER_ID, FAILED_TEST_MARKER_SEVERITY);
 	}
-	
-	public ProblemMarkerRegistry(int markerSeverity) {
-		super(PROBLEM_MARKER_ID, markerSeverity);
-	}
 }
