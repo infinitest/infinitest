@@ -59,7 +59,7 @@ class FilterFileChangeProcessorTest {
 		IResourceDelta filterDelta = mock(IResourceDelta.class);
 		IPath path = mock(IPath.class);
 		
-		when(event.getType()).thenReturn(IResourceChangeEvent.POST_CHANGE);
+		when(event.getType()).thenReturn(IResourceChangeEvent.POST_BUILD);
 		when(event.getDelta()).thenReturn(delta);
 		
 		when(delta.getAffectedChildren()).thenReturn(deltas);
