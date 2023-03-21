@@ -35,7 +35,7 @@ jobs:
         if: ${{ matrix.Java != '8' }}
       # We need a virtual X11 for the Eclipse unit tests
         run: |
-          xvfb-run -a mvn -B test
+          xvfb-run -a mvn -B package
       - name: Verify Plugin on IntelliJ Platforms
         if: ${{ matrix.Java == '17' }}
         uses: ChrisCarini/intellij-platform-plugin-verifier-action@latest
