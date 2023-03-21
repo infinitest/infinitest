@@ -37,7 +37,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import org.infinitest.intellij.IntellijMockBase;
@@ -47,7 +46,6 @@ import org.junit.jupiter.api.io.TempDir;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
 
 class IdeaModuleSettingsTest extends IntellijMockBase {
 
@@ -96,15 +94,7 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 			}
 		};
 		
-		
-		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
-		Path path = mock(Path.class);
-
-		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
-		when(virtualFiles[0].toNioPath()).thenReturn(path);
-		when(path.toFile()).thenReturn(projectRoot);
-		
-		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
+		when(project.getBasePath()).thenReturn(projectRoot.getAbsolutePath());
 		
 		assertNull(settings.getFilterFile());
 	}
@@ -112,16 +102,18 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 
 	
 	@Test
-	void getFilterFileFromWorkingDirectory(@TempDir File moduleRoot) throws IOException {
-		File filterFile = new File(moduleRoot, INFINITEST_FILTERS_FILE_NAME);
-		filterFile.createNewFile();
-		
+	void getFilterFileFromWorkingDirectory(@TempDir File moduleRoot, @TempDir File projectRoot) throws IOException {
 		IdeaModuleSettings settings = new IdeaModuleSettings(module) {
 			@Override
 			protected File getWorkingDirectory() {
 				return moduleRoot;
 			}
 		};
+		
+		File filterFile = new File(moduleRoot, INFINITEST_FILTERS_FILE_NAME);
+		filterFile.createNewFile();
+		
+		when(project.getBasePath()).thenReturn(projectRoot.getAbsolutePath());
 		
 		assertEquals(filterFile, settings.getFilterFile());
 	}
@@ -135,14 +127,10 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 			}
 		};
 		
-		VirtualFile[] virtualFiles = new VirtualFile[] {mock(VirtualFile.class)};
 		File filterFile = new File(projectRoot, INFINITEST_FILTERS_FILE_NAME);
 		filterFile.createNewFile();
-		Path path = mock(Path.class);
 		
-		when(projectRootManager.getContentRoots()).thenReturn(virtualFiles);
-		when(virtualFiles[0].toNioPath()).thenReturn(path);
-		when(path.toFile()).thenReturn(projectRoot);
+		when(project.getBasePath()).thenReturn(projectRoot.getAbsolutePath());
 		
 		assertEquals(filterFile, settings.getFilterFile());
 	}

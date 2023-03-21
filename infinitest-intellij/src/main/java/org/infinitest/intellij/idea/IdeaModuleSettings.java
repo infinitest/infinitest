@@ -62,7 +62,6 @@ import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.OrderRootsEnumerator;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
@@ -207,15 +206,17 @@ public class IdeaModuleSettings implements ModuleSettings {
 	}
 	
 	/**
-	 * @return A list consisting of the module working directory and the project content root(s)
+	 * @return A list consisting of the module working directory and (if there's one) the project base path
 	 */
 	@Override
 	public List<File> getRootDirectories() {
 		List<File> directories = new ArrayList<>();
-		directories.add(getWorkingDirectory());
 		
-		for (VirtualFile projectRoot : ProjectRootManager.getInstance(module.getProject()).getContentRoots()) {
-			directories.add(projectRoot.toNioPath().toFile());
+		directories.add(getWorkingDirectory());
+
+		String basePath = module.getProject().getBasePath();
+		if (basePath != null) {
+			directories.add(new File(basePath));
 		}
 		
 		return directories;
