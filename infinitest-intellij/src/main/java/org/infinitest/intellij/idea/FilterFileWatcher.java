@@ -43,6 +43,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 
 /**
@@ -69,7 +70,8 @@ public class FilterFileWatcher implements BulkFileListener {
 			if (path.endsWith(INFINITEST_FILTERS_FILE_NAME) || path.endsWith(INFINITEST_ARGS_FILE_NAME)) {
 				VirtualFile file = event.getFile();
 				// The javadoc says that the file might be null
-				if (file != null && projectFileIndex.isInContent(file)) {
+				// When the user deleted the file .isInContent() returns false so we test the event type
+				if ((file != null && projectFileIndex.isInContent(file)) || event instanceof VFileDeleteEvent) {
 					runEnabledTests();
 					return;
 				}
