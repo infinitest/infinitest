@@ -51,13 +51,15 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private final PreferenceChangeHandler handler;
 
 	public PreferencePage() {
-		this(InfinitestPlugin.getInstance().getBean(PreferenceChangeHandler.class));
+		this(InfinitestPlugin.getInstance().getBean(PreferenceChangeHandler.class),
+				InfinitestPlugin.getInstance().getBean(ProblemMarkerRegistry.class),
+				InfinitestPlugin.getInstance().getBean(SlowMarkerRegistry.class));
 	}
 
-	PreferencePage(PreferenceChangeHandler changeHandler) {
+	PreferencePage(PreferenceChangeHandler changeHandler, ProblemMarkerRegistry problemMarkerRegistry, SlowMarkerRegistry slowMarkerRegistry) {
 		handler = changeHandler;
-		handler.setProblemMarkerRegistry(InfinitestPlugin.getInstance().getBean(ProblemMarkerRegistry.class));
-		handler.setSlowMarkerRegistry(InfinitestPlugin.getInstance().getBean(SlowMarkerRegistry.class));
+		handler.setProblemMarkerRegistry(problemMarkerRegistry);
+		handler.setSlowMarkerRegistry(slowMarkerRegistry);
 	}
 
 	@Override

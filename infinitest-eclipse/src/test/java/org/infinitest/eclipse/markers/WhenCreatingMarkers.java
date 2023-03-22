@@ -183,6 +183,8 @@ class WhenCreatingMarkers {
 		registry.updateMarkersSeverity(SEVERITY_INFO);
 		
 		verify(updateMarkersOperation).execute(any(), any());
+		
+		assertEquals(SEVERITY_INFO, registry.markerServerity());
 	}
 
 	private void addMarker(TestEvent event) {
