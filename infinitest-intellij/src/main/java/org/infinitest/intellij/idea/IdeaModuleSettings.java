@@ -205,9 +205,6 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return null;
 	}
 	
-	/**
-	 * @return A list consisting of the module working directory and (if there's one) the project base path
-	 */
 	@Override
 	public List<File> getRootDirectories() {
 		List<File> directories = new ArrayList<>();
