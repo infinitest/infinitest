@@ -35,7 +35,18 @@ jobs:
         if: ${{ matrix.Java != '8' }}
       # We need a virtual X11 for the Eclipse unit tests
         run: |
-          xvfb-run -a mvn -B test
+          xvfb-run -a mvn -B package
+      - name: Verify Plugin on IntelliJ Platforms
+        if: ${{ matrix.Java == '17' }}
+        uses: ChrisCarini/intellij-platform-plugin-verifier-action@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          plugin-location: 'infinitest-intellij/target/infinitest-intellij-*-dist.zip'
+          ide-versions: |
+            ideaIC:2020.1.4
+            ideaIC:2022.3.3
+            ideaIC:LATEST-EAP-SNAPSHOT
   codeql-analysis:
     runs-on: ubuntu-latest
     steps:
