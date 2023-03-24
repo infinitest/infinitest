@@ -42,7 +42,6 @@ import static org.infinitest.environment.FakeEnvironments.systemClasspath;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 import static org.infinitest.util.InfinitestUtils.convertFromWindowsClassPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -56,6 +55,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment.JavaHomeException;
 import org.infinitest.util.LoggingAdapter;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,9 +119,13 @@ class RuntimeEnvironmentTest {
 
 	@Test
 	void shouldThrowExceptionOnInvalidJavaHome() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome, fakeWorkingDirectory(),
-				"runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(),
-				FakeEnvironments.systemClasspath());
+		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome,
+				fakeWorkingDirectory(),
+				"runnerClassLoaderClassPath",
+				"runnerProcessClassPath",
+				fakeBuildPaths(),
+				FakeEnvironments.systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 		try {
 			ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
 			environment.createProcessArguments(classpathArgumentBuilder);
@@ -134,9 +138,13 @@ class RuntimeEnvironmentTest {
 
 	@Test
 	void shouldAllowAlternateJavaHomesOnUnixAndWindows() throws Exception {
-		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome, fakeWorkingDirectory(),
-				"runnerClassLoaderClassPath", "runnerProcessClassPath", fakeBuildPaths(),
-				FakeEnvironments.systemClasspath());
+		RuntimeEnvironment environment = new RuntimeEnvironment(javaHome,
+				fakeWorkingDirectory(),
+				"runnerClassLoaderClassPath",
+				"runnerProcessClassPath",
+				fakeBuildPaths(),
+				FakeEnvironments.systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 
 		touch(new File(javaHome, "bin/java.exe"));
 		ClasspathArgumentBuilder classpathArgumentBuilder = mock(ClasspathArgumentBuilder.class);
@@ -152,8 +160,14 @@ class RuntimeEnvironmentTest {
 
 	@Test
 	void shouldAddInfinitestJarOrClassDirToClasspath() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(),
-				systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
+		RuntimeEnvironment environment = new RuntimeEnvironment(
+				currentJavaHome(),
+				fakeWorkingDirectory(),
+				systemClasspath(),
+				systemClasspath(),
+				fakeBuildPaths(),
+				systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 		String classpath = environment.getRunnerFullClassPath();
 		assertTrue(classpath.contains("infinitest"));
 		assertTrue(classpath.endsWith(environment.findInfinitestRunnerJar()), classpath);
@@ -164,8 +178,14 @@ class RuntimeEnvironmentTest {
 		LoggingAdapter listener = new LoggingAdapter();
 		addLoggingListener(listener);
 
-		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(),
-				systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
+		RuntimeEnvironment environment = new RuntimeEnvironment(
+				currentJavaHome(),
+				fakeWorkingDirectory(),
+				systemClasspath(),
+				systemClasspath(),
+				fakeBuildPaths(),
+				systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 		Map<String, String> env = environment.createProcessEnvironment();
 		assertThat(env).containsEntry("CLASSPATH", environment.getRunnerBootstrapClassPath());
 	}
@@ -190,9 +210,13 @@ class RuntimeEnvironmentTest {
 
 	@Test
 	void shouldLogWarningIfClasspathContainsMissingFilesOrDirectories() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), 
+		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(),
 				fakeWorkingDirectory(),
-				systemClasspath(), systemClasspath(), fakeBuildPaths(), "classpath");
+				systemClasspath(),
+				systemClasspath(),
+				fakeBuildPaths(),
+				"classpath",
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 		LoggingAdapter adapter = new LoggingAdapter();
 		addLoggingListener(adapter);
 		environment.getRunnerFullClassPath();
@@ -220,9 +244,13 @@ class RuntimeEnvironmentTest {
 	}
 
 	private RuntimeEnvironment createEnv(String outputDir, String workingDir, String classpath, String javahome) {
-		RuntimeEnvironment env = new RuntimeEnvironment(new File(javahome), new File(workingDir),
-				"runnerClassLoaderClassPath", "runnerProcessClassPath", asList(new File(outputDir)), classpath);
-		return env;
+		return new RuntimeEnvironment(new File(javahome),
+				new File(workingDir),
+				"runnerClassLoaderClassPath",
+				"runnerProcessClassPath",
+				asList(new File(outputDir)),
+				classpath,
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 	}
 
 	private RuntimeEnvironment createEqualInstance() {
@@ -237,7 +265,8 @@ class RuntimeEnvironmentTest {
 				"runnerClassLoaderClassPath",
 				"runnerProcessClassPath",
 				Collections.singletonList(new File("outputDir")),
-				classpath) {
+				classpath,
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory()) {
 			@Override
 			String findInfinitestRunnerJar() {
 				return "c:/test path/runner.jar";

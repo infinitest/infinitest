@@ -112,4 +112,9 @@ public interface InfinitestCore {
 
 	void removeConsoleOutputListener(ConsoleOutputListener listener);
 
+	/**
+	 * To be called when the filter file was modified, created or deleted
+	 */
+	void filterFileWasUpdated();
+
 }

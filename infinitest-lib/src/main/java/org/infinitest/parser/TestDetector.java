@@ -47,4 +47,6 @@ public interface TestDetector {
 	void setClasspathProvider(ClasspathProvider classpath);
 
 	Set<String> getCurrentTests();
+
+	void updateFilterList();
 }

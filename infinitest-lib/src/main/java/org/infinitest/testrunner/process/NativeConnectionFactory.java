@@ -31,6 +31,7 @@ import static java.util.Arrays.asList;
 import static java.util.logging.Level.CONFIG;
 import static org.infinitest.util.InfinitestUtils.log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -88,7 +89,7 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 		builder.directory(environment.getWorkingDirectory());
 
 		List<String> arguments = environment.createProcessArguments(classpathArgumentBuilder);
-		arguments.addAll(buildRunnerArgs(port));
+		arguments.addAll(buildRunnerArgs(port, environment));
 		builder.command(arguments);
 
 		builder.environment().putAll(environment.createProcessEnvironment());
@@ -113,10 +114,18 @@ public class NativeConnectionFactory implements ProcessConnectionFactory {
 		return message.toString();
 	}
 
-	private Collection<String> buildRunnerArgs(int portNum) {
+	private Collection<String> buildRunnerArgs(int portNum, RuntimeEnvironment environment) {
+		File filterFile = environment.getConfigurationSource().getFile();
+		
+		String filterFilePath = "null";
+		if (filterFile != null) {
+			filterFilePath = filterFile.getAbsolutePath();
+		}
+		
 		return asList(
 				TestRunnerProcess.class.getName(), 
 				runnerClass.getName(), 
-				String.valueOf(portNum));
+				String.valueOf(portNum),
+				filterFilePath);
 	}
 }

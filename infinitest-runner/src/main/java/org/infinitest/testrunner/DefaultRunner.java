@@ -43,6 +43,7 @@ public class DefaultRunner implements NativeRunner {
 			.createFromCurrentWorkingDirectory();
 
 	// to override the default config source for unit tests
+	@Override
 	public void setTestConfigurationSource(InfinitestConfigurationSource configurationSource) {
 		configSource = configurationSource;
 	}

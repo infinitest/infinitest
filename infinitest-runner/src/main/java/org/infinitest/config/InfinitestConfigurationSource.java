@@ -27,7 +27,15 @@
  */
 package org.infinitest.config;
 
+import java.io.File;
+
 public interface InfinitestConfigurationSource {
 
 	InfinitestConfiguration getConfiguration();
+	
+	/**
+	 * We need to tell the test runner process where to get its configuration file
+	 * @return The file used for this configuration or <code>null</code> if there isn't one
+	 */
+	File getFile();
 }

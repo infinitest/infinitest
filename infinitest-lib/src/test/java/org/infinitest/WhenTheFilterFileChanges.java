@@ -38,12 +38,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.infinitest.changedetect.ChangeDetector;
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.filter.RegexFileFilter;
 import org.infinitest.filter.TestFilter;
 import org.infinitest.parser.ClassFileTestDetector;
 import org.infinitest.parser.JavaClass;
 import org.infinitest.parser.TestDetector;
+import org.infinitest.testrunner.TestRunner;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
@@ -76,7 +78,25 @@ class WhenTheFilterFileChanges {
 
 		verify(testFilter).updateFilterList();
 	}
-
+	
+	@Test
+	void shouldReloadAndUpdateCoreWhenFilterChanges() throws IOException {
+		TestRunner runner = mock(TestRunner.class);
+		EventQueue queue = mock(EventQueue.class);
+		TestDetector testDetector = mock(TestDetector.class);
+		ChangeDetector changeDetector = mock(ChangeDetector.class);
+		
+		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, queue);
+		core.setTestDetector(testDetector);
+		core.setChangeDetector(changeDetector);
+		
+		core.filterFileWasUpdated();
+		
+		// Verify that side effects where called
+		verify(testDetector).updateFilterList();
+		verify(changeDetector).findChangedFiles();
+	}
+	
 	static JavaClass javaClass(String name) {
 		JavaClass javaClass = mock(JavaClass.class);
 		when(javaClass.getName()).thenReturn(name);

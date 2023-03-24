@@ -27,71 +27,93 @@
  */
 package org.infinitest;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.parser.JavaClass;
-import org.infinitest.testrunner.*;
+import org.infinitest.testrunner.TestCaseEvent;
+import org.infinitest.testrunner.TestResultsListener;
 
 @SuppressWarnings("all")
 public class FakeInfinitestCore implements InfinitestCore {
+	@Override
 	public void addTestQueueListener(TestQueueListener listener) {
 	}
 
+	@Override
 	public void removeTestQueueListener(TestQueueListener listener) {
 	}
 
+	@Override
 	public void addTestResultsListener(TestResultsListener listener) {
 	}
 
+	@Override
 	public void removeTestResultsListener(TestResultsListener listener) {
 	}
 
+	@Override
 	public int update() {
 		return 0;
 	}
 
+	@Override
 	public void reload() {
 	}
 
+	@Override
 	public void setRuntimeEnvironment(RuntimeEnvironment environment) {
 	}
 
+	@Override
 	public String getName() {
 		return null;
 	}
 
+	@Override
 	public void addConsoleOutputListener(ConsoleOutputListener listener) {
 	}
 
+	@Override
 	public void removeConsoleOutputListener(ConsoleOutputListener listener) {
 	}
 
 	public void addReloadListener(ReloadListener listener) {
 	}
 
+	@Override
 	public void addDisabledTestListener(DisabledTestListener listener) {
 	}
 
+	@Override
 	public void removeDisabledTestListener(DisabledTestListener anyObject) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public RuntimeEnvironment getRuntimeEnvironment() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public boolean isEventSourceFor(TestCaseEvent testCaseEvent) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int update(Collection<File> changedFiles) {
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void remove(Collection<File> removedFiles, Set<JavaClass> removedClasses) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void filterFileWasUpdated() {
 		throw new UnsupportedOperationException();
 	}
 }

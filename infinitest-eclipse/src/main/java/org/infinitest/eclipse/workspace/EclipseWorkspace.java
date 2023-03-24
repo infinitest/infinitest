@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.infinitest.InfinitestCore;
@@ -97,7 +98,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 	@Override
 	public void remove(Set<IResource> removedResources) {
 		Map<ProjectFacade, Set<File>> removedFilesByProject = groupResourcesByProject(removedResources);
-		Set<JavaClass> removedClasses = new HashSet<JavaClass>();
+		Set<JavaClass> removedClasses = new HashSet<>();
 
 		for (Map.Entry<ProjectFacade, Set<File>> entry : removedFilesByProject.entrySet()) {
 			ProjectFacade project = entry.getKey();
@@ -159,8 +160,14 @@ class EclipseWorkspace implements WorkspaceFacade {
 	private RuntimeEnvironment buildRuntimeEnvironment(ProjectFacade project, File javaHome) throws CoreException {
 		String runnerBootsrapClassPath = infinitestJarsClasspathProvider.getInfinitestClassLoaderClassPath();
 		String runnerProcessClassPath = infinitestJarsClasspathProvider.getInfinitestRunnerClassPath();
+		EclipseConfigurationSource configSource = new EclipseConfigurationSource(project);
 		
-		return new RuntimeEnvironment(javaHome, project.workingDirectory(), runnerBootsrapClassPath, runnerProcessClassPath, projectSet.outputDirectories(project), project.rawClasspath());
+		return new RuntimeEnvironment(javaHome,
+				project.workingDirectory(),
+				runnerBootsrapClassPath, runnerProcessClassPath,
+				projectSet.outputDirectories(project),
+				project.rawClasspath(),
+				configSource);
 	}
 
 
@@ -196,5 +203,24 @@ class EclipseWorkspace implements WorkspaceFacade {
 		}
 		
 		return filesByProjectFacade;
+	}
+	
+	@Override
+	public void filterFileModified(Set<IResource> filterFiles) {
+		List<ProjectFacade> projects = projectSet.projects();
+		
+		for (IResource resource : filterFiles) {
+			IProject project = resource.getProject();
+			if (project != null) {
+				for (ProjectFacade projectFacade : projects) {
+					if (projectFacade.contains(resource)) {
+						InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
+						if (core != null) {
+							core.filterFileWasUpdated();
+						}
+					}
+				}
+			}
+		}
 	}
 }

@@ -28,6 +28,7 @@
 package org.infinitest.intellij.idea;
 
 import static java.io.File.pathSeparator;
+import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.io.File;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
@@ -103,7 +105,20 @@ public class IdeaModuleSettings implements ModuleSettings {
 		}
 		String runnerClassLoaderClassPath = infinitestJarPath(locator.findInfinitestClassLoaderlJarName());
 		String runnerProcessClassPath  = infinitestJarPath(locator.findInfinitestRunnerJarName());
-		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()), getWorkingDirectory(), runnerClassLoaderClassPath, runnerProcessClassPath, listOutputDirectories(), buildClasspathString());
+		
+		File workingDirectory = getWorkingDirectory();
+		
+		InfinitestConfigurationSource configurationSource = module.getService(InfinitestConfigurationSource.class);
+		IdeaCustomJvmArgumentsReader argumentsReader = new IdeaCustomJvmArgumentsReader(module);
+		
+		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()),
+				workingDirectory,
+				runnerClassLoaderClassPath,
+				runnerProcessClassPath,
+				listOutputDirectories(),
+				buildClasspathString(),
+				configurationSource,
+				argumentsReader);
 	}
 
 	/**
@@ -163,7 +178,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return builder.toString();
 	}
 
-	private File getWorkingDirectory() {
+	protected File getWorkingDirectory() {
 		CommonProgramRunConfigurationParameters configuration = new InfinitestRunConfigurationParameters();
 		configuration.setWorkingDirectory("%MODULE_WORKING_DIR%");
 		
@@ -171,6 +186,37 @@ public class IdeaModuleSettings implements ModuleSettings {
 		String workingDir = configurator.getWorkingDir(configuration, module.getProject(), module);
 		
 		return new File(workingDir);
+	}
+	
+	/**
+	 * @param workingDirectory
+	 * @return The filter file for the module, or if it does not exist the project filter file, or null if it does not exist
+	 */
+	@Override
+	public File getFilterFile() {
+		for (File rootDirectory : getRootDirectories()) {
+			File filterFile = new File(rootDirectory, INFINITEST_FILTERS_FILE_NAME);
+			
+			if (filterFile.exists()) {
+				return filterFile;
+			}
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public List<File> getRootDirectories() {
+		List<File> directories = new ArrayList<>();
+		
+		directories.add(getWorkingDirectory());
+
+		String basePath = module.getProject().getBasePath();
+		if (basePath != null) {
+			directories.add(new File(basePath));
+		}
+		
+		return directories;
 	}
 
 	/**
@@ -239,7 +285,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		return CompilerModuleExtension.getInstance(module);
 	}
 
-	private String infinitestJarPath(String jarName) {
+	protected String infinitestJarPath(String jarName) {
 		PluginId pluginId = PluginManager.getPluginByClassName(getClass().getName());
 		IdeaPluginDescriptor descriptor = PluginManager.getPlugin(pluginId);
 		Path pluginPath = descriptor.getPluginPath();

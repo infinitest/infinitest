@@ -36,4 +36,6 @@ public interface WorkspaceFacade {
 	void updateProjects(Set<IResource> modifiedResources) throws CoreException;
 	
 	void remove(Set<IResource> removedResources);
+
+	void filterFileModified(Set<IResource> filterFiles);
 }

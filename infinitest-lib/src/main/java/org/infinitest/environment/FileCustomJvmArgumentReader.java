@@ -31,10 +31,11 @@ import static java.util.Collections.emptyList;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.io.Files;
 
@@ -46,27 +47,38 @@ public class FileCustomJvmArgumentReader implements CustomJvmArgumentsReader {
 		LINES_ONLY, SPACES
 	}
 
-	public static final String FILE_NAME = "infinitest.args";
+	public static final String INFINITEST_ARGS_FILE_NAME = "infinitest.args";
 
-	private final File parentDirectory;
+	private final File[] parentDirectories;
 
-	public FileCustomJvmArgumentReader(File parentDirectory) {
-		this.parentDirectory = parentDirectory;
+	public FileCustomJvmArgumentReader(File ... parentDirectories) {
+		this.parentDirectories = parentDirectories;
 	}
 
 	@Override
 	public List<String> readCustomArguments() {
-		File file = new File(parentDirectory, FILE_NAME);
-		if (!file.exists()) {
-			return emptyList();
+		File file = locateFile();
+		if (file == null) {
+			return Collections.emptyList();
 		}
-
+		
 		try {
-			List<String> lines = Files.readLines(file, Charsets.UTF_8);
+			List<String> lines = Files.readLines(file, StandardCharsets.UTF_8);
 			return parseLines(lines);
 		} catch (IOException e) {
 			return emptyList();
 		}
+	}
+
+	private File locateFile() {
+		for (File parentDirectory : parentDirectories) {
+			File file = new File(parentDirectory, INFINITEST_ARGS_FILE_NAME);
+			if (file.exists()) {
+				return file;
+			}
+		}
+		
+		return null;
 	}
 
 	private List<String> parseLines(List<String> lines) {

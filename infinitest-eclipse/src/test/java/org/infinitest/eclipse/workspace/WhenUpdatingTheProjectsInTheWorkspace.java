@@ -80,9 +80,9 @@ class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 		path = mock(IPath.class);
 		projectPath = mock(IPath.class);
 		resource = mock(IResource.class);
-		iproject = mock(IProject.class);
 		projectSet = mock(ProjectSet.class);
 		ProjectFacade projectFacade = newFacade(project);
+		iproject = project.getProject();
 		projects.add(projectFacade);
 		coreRegistry = mock(CoreRegistry.class);
 		CoreFactory coreFactory = new CoreFactory(null);
@@ -149,6 +149,15 @@ class WhenUpdatingTheProjectsInTheWorkspace extends ResourceEventSupport {
 		assertStatusIs(findingTests(0, projects.size(), 0));
 		verify(core).setRuntimeEnvironment(any(RuntimeEnvironment.class));
 
+	}
+
+	@Test
+	void shouldUpdateCoreOnFilterFileModified() throws CoreException {
+		InfinitestCore core = prepareCore(projectAUri(), 10);
+
+		workspace.filterFileModified(Collections.singleton(resource));
+
+		verify(core).filterFileWasUpdated();
 	}
 
 	private InfinitestCore prepareCore(URI projectAUri, int numberOfTestsRun) {

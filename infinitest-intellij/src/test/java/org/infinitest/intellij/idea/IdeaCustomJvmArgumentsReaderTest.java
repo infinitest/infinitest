@@ -25,34 +25,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.intellij.idea;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 
-import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.environment.FileCustomJvmArgumentReader;
+import org.infinitest.intellij.IntellijMockBase;
+import org.infinitest.intellij.ModuleSettings;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
+class IdeaCustomJvmArgumentsReaderTest extends IntellijMockBase {
 
-public interface ModuleSettings {
-	void writeToLogger(Logger log);
-
-	String getName();
-
-	RuntimeEnvironment getRuntimeEnvironment();
-	
-	/**
-	 * @return The filter {@link File} for this {@link Module}, this should be either the filter file at
-	 * the root of the module folder or, if there isn't a file there the project root, or <code>null</code>
-	 */
-	File getFilterFile();
-
-	
-	/**
-	 * Builds the list of possible locations for the filter and args files. In IntelliJ they can be either in
-	 * the module or in the project root. The list is sorted by priority (module root first).
-	 * @return A list consisting of the module working directory and (if there's one) the project base path
-	 */
-	List<File> getRootDirectories();
+	@Test
+	void readCustomArguments(@TempDir File tempDir) throws IOException {
+		ModuleSettings moduleSettings = mock(ModuleSettings.class);
+		
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		when(moduleSettings.getRootDirectories()).thenReturn(Collections.singletonList(tempDir));
+		File argsFiles = new File(tempDir, FileCustomJvmArgumentReader.INFINITEST_ARGS_FILE_NAME);
+		argsFiles.createNewFile();
+		Files.writeString(argsFiles.toPath(), "-Dtest.foo=bar");
+		
+		IdeaCustomJvmArgumentsReader reader = new IdeaCustomJvmArgumentsReader(module);
+		
+		
+		List<String> arguments = reader.readCustomArguments();
+		
+		assertThat(arguments).containsExactly("-Dtest.foo=bar");
+	}
 }

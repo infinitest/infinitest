@@ -76,4 +76,9 @@ class StubTestDetector implements TestDetector {
 	public Set<String> getCurrentTests() {
 		return emptySet();
 	}
+	
+	@Override
+	public void updateFilterList() {
+		// Doing nothing here
+	}
 }
