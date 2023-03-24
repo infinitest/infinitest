@@ -36,6 +36,7 @@ import org.infinitest.DisabledTestListener;
 import org.infinitest.FailureListListener;
 import org.infinitest.StatusChangeListener;
 import org.infinitest.TestQueueListener;
+import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.idea.IdeaLogService;
 import org.infinitest.intellij.idea.LogServiceState;
 import org.infinitest.intellij.idea.ProjectTestControl;
@@ -81,6 +82,8 @@ public class IntellijMockBase {
 	protected ProjectRootManager projectRootManager; 
 	
 	protected InfinitestLauncher launcher;
+	protected ModuleSettings moduleSettings;
+	protected RuntimeEnvironment runtimeEnvironment;
 	protected ModuleRootManager moduleRootManager;
 	protected ProjectTestControl control;
 	protected InfinitestAnnotator annotator;
@@ -95,6 +98,8 @@ public class IntellijMockBase {
 		projectFileIndex = mock(ProjectFileIndex.class);
 		projectRootManager = mock(ProjectRootManager.class);
 		launcher = mock(InfinitestLauncher.class);
+		moduleSettings = mock(ModuleSettings.class);
+		runtimeEnvironment = mock(RuntimeEnvironment.class);
 		moduleRootManager = mock(ModuleRootManager.class);
 		sdk = mock(Sdk.class);
 		control = new ProjectTestControl(project);
@@ -111,6 +116,9 @@ public class IntellijMockBase {
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
 		when(module.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManager);
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		
+		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
 		
 		when(moduleRootManager.getSdk()).thenReturn(sdk);
 		when(moduleRootManager.getDependencies()).thenReturn(new Module[0]);
