@@ -45,7 +45,7 @@ class PreferencePageTest {
 		ProblemMarkerRegistry problemMarkerRegistry = mock(ProblemMarkerRegistry.class);
 		SlowMarkerRegistry slowMarkerRegistry = mock(SlowMarkerRegistry.class);
 		
-		Display display = new Display();
+		Display display = Display.getCurrent();
 		Composite parent = new Shell(display);
 		
 		PreferencePage preferencePage = new PreferencePage(changeHandler, problemMarkerRegistry, slowMarkerRegistry) {
@@ -60,7 +60,5 @@ class PreferencePageTest {
 		
 		verify(changeHandler).clearProblemMarkers();
 		verify(changeHandler).clearSlowMarkers();
-		
-		display.dispose();
 	}
 }
