@@ -241,7 +241,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 				if (currentModule != null) {
 					OrderRootsEnumerator enumerator = OrderEnumerator.orderEntries(currentModule)
 					.withoutSdk()
-					.compileOnly()
+					.productionOnly()
 					.recursively()
 					.classes();
 					
