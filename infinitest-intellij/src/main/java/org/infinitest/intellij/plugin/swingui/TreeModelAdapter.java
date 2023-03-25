@@ -28,7 +28,9 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -73,7 +75,9 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public Object getChild(Object parent, int index) {
 		if (parent.equals(getRoot())) {
-			return ModuleManager.getInstance(project).getModules()[index];
+			Module[] modules = getModules();
+			
+			return modules[index];
 		} else if (parent instanceof Module) {
 			Module module = (Module) parent;
 			ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
@@ -81,7 +85,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 		} else {
 			PointOfFailure pointOfFailure = (PointOfFailure) parent;
 			
-			for (Module module : ModuleManager.getInstance(project).getModules()) {
+			for (Module module : getModules()) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				if (collector.isPointOfFailure(parent)) {
 					// When a  @ParameterizedTest fails inside the @BeforeEach method, multiple test events will be in the collector
@@ -96,7 +100,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public int getChildCount(Object parent) {
 		if (parent.equals(getRoot())) {
-			return ModuleManager.getInstance(project).getModules().length;
+			return getModules().length;
 		} else if (parent instanceof Module) {
 			Module module = (Module) parent;
 			TestControl testControl = module.getProject().getService(ProjectTestControl.class);
@@ -108,7 +112,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 		} else if (parent instanceof PointOfFailure) {
 			PointOfFailure pointOfFailure = (PointOfFailure) parent;
 			
-			for (Module module : ModuleManager.getInstance(project).getModules()) {
+			for (Module module : getModules()) {
 				ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
 				if (collector.isPointOfFailure(parent)) {
 					// Only show distinct test events
@@ -122,7 +126,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent.equals(getRoot())) {
-			Module[] modules = ModuleManager.getInstance(project).getModules();
+			Module[] modules = getModules();
 			for (int i=0; i<modules.length; i++) {
 				if (child.equals(modules[i])) {
 					return i;
@@ -192,5 +196,16 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public void modulesRenamed(@NotNull Project project, @NotNull List<? extends Module> modules, @NotNull Function<? super Module, String> oldNameProvider) {
 		fireTreeStructureChanged();
+	}
+	
+
+	/**
+	 * @return the {@link Module} array for this project, sorted by alphabetical order
+	 */
+	private Module[] getModules() {
+		Module[] modules = ModuleManager.getInstance(project).getModules();
+		Arrays.sort(modules, Comparator.comparing(Module::getName));
+		
+		return modules;
 	}
 }
