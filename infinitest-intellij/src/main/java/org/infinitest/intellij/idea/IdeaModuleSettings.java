@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.InfinitestJarsLocator;
 import org.infinitest.intellij.ModuleSettings;
@@ -108,7 +107,7 @@ public class IdeaModuleSettings implements ModuleSettings {
 		
 		File workingDirectory = getWorkingDirectory();
 		
-		InfinitestConfigurationSource configurationSource = module.getService(InfinitestConfigurationSource.class);
+		IdeaInfinitestConfigurationSource configurationSource = new IdeaInfinitestConfigurationSource(module);
 		IdeaCustomJvmArgumentsReader argumentsReader = new IdeaCustomJvmArgumentsReader(module);
 		
 		return new RuntimeEnvironment(new File(sdkPath.getAbsolutePath()),
