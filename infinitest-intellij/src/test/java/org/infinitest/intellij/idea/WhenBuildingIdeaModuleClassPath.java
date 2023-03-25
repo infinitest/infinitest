@@ -28,7 +28,6 @@
 package org.infinitest.intellij.idea;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -117,7 +116,7 @@ class WhenBuildingIdeaModuleClassPath {
 		when(moduleRootManagerMock.orderEntries()).thenReturn(orderEntriesEnumerator);
 		
 		when(orderEntriesEnumerator.withoutSdk()).thenReturn(orderEntriesEnumerator);
-		when(orderEntriesEnumerator.compileOnly()).thenReturn(orderEntriesEnumerator);
+		when(orderEntriesEnumerator.productionOnly()).thenReturn(orderEntriesEnumerator);
 		when(orderEntriesEnumerator.recursively()).thenReturn(orderEntriesEnumerator);
 		when(orderEntriesEnumerator.classes()).thenReturn(orderRootsEnumerator);
 		when(orderRootsEnumerator.getRoots()).thenReturn(new VirtualFile[0]);
