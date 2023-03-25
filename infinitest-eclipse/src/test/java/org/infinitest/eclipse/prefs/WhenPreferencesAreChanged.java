@@ -127,14 +127,14 @@ class WhenPreferencesAreChanged {
 	@Test
 	void shouldMarketsWhenFailedTestSeverityChanges() {
 		when(eventSource.getPreferenceName()).thenReturn(FAILED_TEST_MARKER_SEVERITY);
-		changeProperty(SwtColorFieldEditor.VALUE, "2", "1");
+		changeProperty(VALUE, "2", "1");
 		verify(problemMarkerRegistry).updateMarkersSeverity(SEVERITY_WARNING);
 	}
 
 	@Test
 	void shouldMarketsWhenSlowTestSeverityChanges() {
 		when(eventSource.getPreferenceName()).thenReturn(SLOW_TEST_MARKER_SEVERITY);
-		changeProperty(SwtColorFieldEditor.VALUE, "2", "1");
+		changeProperty(VALUE, "2", "1");
 		verify(slowMarkerRegistry).updateMarkersSeverity(SEVERITY_WARNING);
 	}
 

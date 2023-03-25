@@ -58,7 +58,6 @@ class PreferencePageTest {
 		preferencePage.createFieldEditors();
 		preferencePage.performDefaults();
 		
-		verify(changeHandler).clearProblemMarkers();
 		verify(changeHandler).clearSlowMarkers();
 	}
 }

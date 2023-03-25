@@ -143,9 +143,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	@Override
 	public void performDefaults() {
-		handler.clearProblemMarkers();
 		handler.clearSlowMarkers();
-		
 		super.performDefaults();
 	}
 }

@@ -55,7 +55,6 @@ public class PreferenceChangeHandler {
 	private final CoreSettings coreSettings;
 	private ProblemMarkerRegistry problemMarkerRegistry;
 	private SlowMarkerRegistry slowMarkerRegistry;
-	private boolean clearProblemMarkerRegistry;
 	private boolean clearSlowMarkerRegistry;
 
 	@Autowired
@@ -134,7 +133,6 @@ public class PreferenceChangeHandler {
 
 	public void setProblemMarkerRegistry(ProblemMarkerRegistry bean) {
 		problemMarkerRegistry = bean;
-		clearProblemMarkerRegistry = false;
 	}
 
 	public void setSlowMarkerRegistry(SlowMarkerRegistry bean) {
@@ -143,25 +141,13 @@ public class PreferenceChangeHandler {
 	}
 
 	public void applyChanges() {
-		if (clearProblemMarkerRegistry) {
-			clearProblemMarkers();
-		}
-		
 		if (clearSlowMarkerRegistry) {
 			clearSlowMarkers();
 		}
 	}
 
 	public void clearChanges() {
-		clearProblemMarkerRegistry = false;
 		clearSlowMarkerRegistry = false;
-	}
-
-	public void clearProblemMarkers() {
-		clearProblemMarkerRegistry = false;
-		if (problemMarkerRegistry != null) {
-			problemMarkerRegistry.clear();
-		}
 	}
 
 	public void clearSlowMarkers() {
