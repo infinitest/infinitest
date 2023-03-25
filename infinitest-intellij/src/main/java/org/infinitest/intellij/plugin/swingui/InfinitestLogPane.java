@@ -64,6 +64,7 @@ public class InfinitestLogPane extends JPanel {
 		
 		textArea = new JTextArea();
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		textArea.setEditable(false);
 		setLayout(new BorderLayout());
 		add(new JScrollPane(textArea), CENTER);
 		
