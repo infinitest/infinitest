@@ -34,18 +34,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.List;
 
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.junit.jupiter.api.Test;
 
 class WhenSearchingForClassFilesToIndex {
-  @Test
-  void shouldSearchClassDirectoriesOnTheClasspath() {
-    File outputDir = new File("target/classes");
-    List<File> outputDirs = asList(outputDir);
-    String classpath = "target/classes" + pathSeparator + "target/test-classes";
-    RuntimeEnvironment environment = new RuntimeEnvironment(new File("javahome"), new File("."), "runnerClassLoaderClassPath", "runnerProcessClassPath", outputDirs, classpath);
-    List<File> directoriesInClasspath = environment.classDirectoriesInClasspath();
+	@Test
+	void shouldSearchClassDirectoriesOnTheClasspath() {
+		File outputDir = new File("target/classes");
+		List<File> outputDirs = asList(outputDir);
+		String classpath = "target/classes" + pathSeparator + "target/test-classes";
+		RuntimeEnvironment environment = new RuntimeEnvironment(
+				new File("javahome"),
+				new File("."),
+				"runnerClassLoaderClassPath",
+				"runnerProcessClassPath",
+				outputDirs,
+				classpath,
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
+		List<File> directoriesInClasspath = environment.classDirectoriesInClasspath();
 
-    assertThat(directoriesInClasspath).contains(new File("target/test-classes"), outputDir);
-  }
+		assertThat(directoriesInClasspath).contains(new File("target/test-classes"), outputDir);
+	}
 }

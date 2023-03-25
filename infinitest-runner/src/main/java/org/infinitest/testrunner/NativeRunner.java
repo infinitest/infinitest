@@ -27,6 +27,8 @@
  */
 package org.infinitest.testrunner;
 
+import org.infinitest.config.InfinitestConfigurationSource;
+
 /**
  * Implementers of this interface must provide a default constructor so that
  * the TestRunner can be created using Class.newInstance();
@@ -35,4 +37,7 @@ package org.infinitest.testrunner;
  */
 public interface NativeRunner {
 	TestResults runTest(String testClass);
+	
+	default void setTestConfigurationSource(InfinitestConfigurationSource configurationSource) {
+	}
 }

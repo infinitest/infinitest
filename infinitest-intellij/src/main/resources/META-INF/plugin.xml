@@ -31,14 +31,19 @@
     
     <projectListeners>
     	<listener class="org.infinitest.intellij.idea.IdeaCompilationListener" topic="com.intellij.task.ProjectTaskListener"/>
+        <listener class="org.infinitest.intellij.idea.FilterFileWatcher" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
     
 	<extensions defaultExtensionNs="com.intellij">
-    	<toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
-    	
-    	<projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
-    	
-	    <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
-    	<moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
+        <!-- Referencing classes from infinitest-runner such as InfinitestConfigurationSource cause the IntelliJ plugin compatibility check to fail
+        because it seems to analyse every single .class from the runner jar and that jar contains a lot of shaded dependencies -->
+        <toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
+
+        <projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
+
+        <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
+        <moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
+
+        <applicationConfigurable parentId="tools" instance="org.infinitest.intellij.ApplicationSettingConfigurable" id="org.infinitest.intellij.ApplicationSettingConfigurable" displayName="Infinitest Settings"/>
 	</extensions>
 </idea-plugin>

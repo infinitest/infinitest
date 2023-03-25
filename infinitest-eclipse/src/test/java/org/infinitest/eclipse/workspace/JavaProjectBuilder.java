@@ -76,6 +76,7 @@ public class JavaProjectBuilder implements IJavaProject {
 	private final String defaultOutputLocation = "/target/classes/";
 
 	private IMarker marker;
+	private IProject project;
 
 	public static JavaProjectBuilder project() {
 		return project("project");
@@ -88,6 +89,8 @@ public class JavaProjectBuilder implements IJavaProject {
 	private JavaProjectBuilder(String projectName) {
 		this.projectName = projectName;
 		entries = new ArrayList<>();
+		
+		project = mock(IProject.class);
 	}
 
 	public JavaProjectBuilder withJar(String jarName) {
@@ -205,7 +208,6 @@ public class JavaProjectBuilder implements IJavaProject {
 	@Override
 	public IProject getProject() {
 		try {
-			IProject project = mock(IProject.class);
 			when(project.getLocationURI()).thenReturn(new URI("/root/" + projectName));
 			when(project.getLocation()).thenReturn(new Path("/root/" + projectName));
 			when(project.getName()).thenReturn(projectName);

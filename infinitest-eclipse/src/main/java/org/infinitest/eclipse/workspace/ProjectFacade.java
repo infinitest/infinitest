@@ -27,20 +27,24 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static java.util.logging.Level.*;
-import static org.eclipse.core.resources.IMarker.*;
-import static org.eclipse.core.resources.IResource.*;
-import static org.eclipse.jdt.core.IJavaModelMarker.*;
-import static org.eclipse.jdt.launching.JavaRuntime.*;
-import static org.infinitest.util.InfinitestUtils.*;
+import static java.util.logging.Level.WARNING;
+import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
+import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
+import static org.eclipse.jdt.core.IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER;
+import static org.eclipse.jdt.launching.JavaRuntime.getVMInstall;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.net.URI;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.launching.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.IVMInstall2;
 
 class ProjectFacade implements EclipseProject {
 	private final IJavaProject project;
@@ -175,5 +179,9 @@ class ProjectFacade implements EclipseProject {
 	public boolean isOnClasspath(IResource resource) {
 		// isOnClasspath() does not seem to return true for a class in its own project
 		return project.isOnClasspath(resource) || resource.getProject().equals(project.getProject());
+	}
+	
+	public boolean contains(IResource resource) {
+		return resource.getProject().equals(project.getProject());
 	}
 }

@@ -25,34 +25,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij;
+package org.infinitest.eclipse.workspace;
 
 import java.io.File;
-import java.util.List;
 
-import org.infinitest.environment.RuntimeEnvironment;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
+import org.infinitest.config.InfinitestConfiguration;
+import org.infinitest.config.InfinitestConfigurationSource;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-
-public interface ModuleSettings {
-	void writeToLogger(Logger log);
-
-	String getName();
-
-	RuntimeEnvironment getRuntimeEnvironment();
+/**
+ * @author gtoison
+ *
+ */
+public class EclipseConfigurationSource implements InfinitestConfigurationSource {
+	private ProjectFacade project;
 	
-	/**
-	 * @return The filter {@link File} for this {@link Module}, this should be either the filter file at
-	 * the root of the module folder or, if there isn't a file there the project root, or <code>null</code>
-	 */
-	File getFilterFile();
+	public EclipseConfigurationSource(ProjectFacade project) {
+		this.project = project;
+	}
 
-	
-	/**
-	 * Builds the list of possible locations for the filter and args files. In IntelliJ they can be either in
-	 * the module or in the project root. The list is sorted by priority (module root first).
-	 * @return A list consisting of the module working directory and (if there's one) the project base path
-	 */
-	List<File> getRootDirectories();
+	@Override
+	public InfinitestConfiguration getConfiguration() {
+		File file = getFile();
+		if (file.exists()) {
+			return FileBasedInfinitestConfigurationSource.createFromFile(getFile()).getConfiguration();
+		} else {
+			return InfinitestConfiguration.empty();
+		}
+	}
+
+	@Override
+	public File getFile() {
+		File workingDirectory = project.workingDirectory();
+		
+		return new File(workingDirectory, FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME);
+	}
 }

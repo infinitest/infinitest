@@ -54,7 +54,13 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.ThrowableComputable;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
@@ -68,13 +74,17 @@ public class IntellijMockBase {
 	protected Project project;
 	protected Module module;
 	protected ModuleManager moduleManager;
+	private Sdk sdk;
 	
 	protected MessageBus messageBus;
 	protected MessageBusConnection messageBusConnection;
+	protected ProjectFileIndex projectFileIndex;
+	protected ProjectRootManager projectRootManager; 
 	
 	protected InfinitestLauncher launcher;
 	protected ModuleSettings moduleSettings;
 	protected RuntimeEnvironment runtimeEnvironment;
+	protected ModuleRootManager moduleRootManager;
 	protected ProjectTestControl control;
 	protected InfinitestAnnotator annotator;
 	
@@ -85,9 +95,13 @@ public class IntellijMockBase {
 		moduleManager = mock(ModuleManager.class);
 		messageBus = mock(MessageBus.class);
 		messageBusConnection = mock(MessageBusConnection.class);
+		projectFileIndex = mock(ProjectFileIndex.class);
+		projectRootManager = mock(ProjectRootManager.class);
 		launcher = mock(InfinitestLauncher.class);
 		moduleSettings = mock(ModuleSettings.class);
 		runtimeEnvironment = mock(RuntimeEnvironment.class);
+		moduleRootManager = mock(ModuleRootManager.class);
+		sdk = mock(Sdk.class);
 		control = new ProjectTestControl(project);
 		annotator = mock(InfinitestAnnotator.class);
 		
@@ -95,13 +109,24 @@ public class IntellijMockBase {
 		when(project.getMessageBus()).thenReturn(messageBus);
 		when(project.getService(ProjectTestControl.class)).thenReturn(control);
 		when(project.getService(InfinitestAnnotator.class)).thenReturn(annotator);
+		when(project.getService(ProjectFileIndex.class)).thenReturn(projectFileIndex);
+		when(project.getService(ProjectRootManager.class)).thenReturn(projectRootManager);
 		
 		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
+		when(module.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManager);
 		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
 		
 		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
+		
+		when(moduleRootManager.getSdk()).thenReturn(sdk);
+		when(moduleRootManager.getDependencies()).thenReturn(new Module[0]);
+		when(moduleRootManager.getOrderEntries()).thenReturn(new OrderEntry[0]);
+		
+		when(projectRootManager.getContentRoots()).thenReturn(new VirtualFile[0]);
+		
+		when(sdk.getHomePath()).thenReturn("java");
 		
 		when(moduleManager.getModules()).thenReturn(new Module[] {module});
 		

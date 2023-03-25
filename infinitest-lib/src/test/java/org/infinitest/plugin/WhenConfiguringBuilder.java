@@ -39,6 +39,7 @@ import static org.mockito.Mockito.mock;
 import org.infinitest.FakeEventQueue;
 import org.infinitest.InfinitestCore;
 import org.infinitest.InfinitestCoreBuilder;
+import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.filter.TestFilter;
 import org.infinitest.parser.TestDetector;
@@ -51,7 +52,14 @@ class WhenConfiguringBuilder {
 
 	@BeforeEach
 	final void mustProvideRuntimeEnvironmentAndEventQueue() {
-		RuntimeEnvironment environment = new RuntimeEnvironment(currentJavaHome(), fakeWorkingDirectory(), systemClasspath(), systemClasspath(), fakeBuildPaths(), systemClasspath());
+		RuntimeEnvironment environment = new RuntimeEnvironment(
+				currentJavaHome(),
+				fakeWorkingDirectory(),
+				systemClasspath(),
+				systemClasspath(),
+				fakeBuildPaths(),
+				systemClasspath(),
+				FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory());
 		builder = new InfinitestCoreBuilder(environment, new FakeEventQueue(), "myCoreName");
 	}
 

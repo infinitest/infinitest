@@ -25,33 +25,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.intellij.plugin.launcher;
+package org.infinitest.intellij.idea;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.infinitest.config.FileBasedInfinitestConfigurationSource;
-import org.infinitest.config.InfinitestConfigurationSource;
-import org.infinitest.environment.RuntimeEnvironment;
+import java.io.File;
+
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.ModuleSettings;
 import org.junit.jupiter.api.Test;
 
-class InfinitestLauncherImplTest extends IntellijMockBase {
+/**
+ * @author gtoison
+ *
+ */
+class IdeaInfinitestConfigurationSourceTest extends IntellijMockBase {
+
 	@Test
-	void launcherInitiatilization() {
+	void noFilterFile() {
 		ModuleSettings moduleSettings = mock(ModuleSettings.class);
-		RuntimeEnvironment runtimeEnvironment = mock(RuntimeEnvironment.class);
-		InfinitestConfigurationSource configurationSource = FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory();
-		
 		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
-		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
-		when(runtimeEnvironment.getConfigurationSource()).thenReturn(configurationSource);
 		
-		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(module);
+		IdeaInfinitestConfigurationSource configurationSource = new IdeaInfinitestConfigurationSource(module);
 		
-		assertThat(launcher.getCore()).isNotNull();
-		assertThat(launcher.getResultCollector()).isNotNull();
+		assertNotNull(configurationSource.getConfiguration());
+		
+		verify(moduleSettings, times(1)).getFilterFile();
+	}
+	
+	@Test
+	void filterFile() {
+		ModuleSettings moduleSettings = mock(ModuleSettings.class);
+		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
+		when(moduleSettings.getFilterFile()).thenReturn(new File(INFINITEST_FILTERS_FILE_NAME));
+		
+		IdeaInfinitestConfigurationSource configurationSource = new IdeaInfinitestConfigurationSource(module);
+		
+		assertNotNull(configurationSource.getConfiguration());
+		
+		verify(moduleSettings, times(1)).getFilterFile();
 	}
 }
