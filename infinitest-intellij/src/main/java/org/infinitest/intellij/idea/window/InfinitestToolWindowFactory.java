@@ -93,6 +93,7 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 		projectMessageBusConnection.subscribe(InfinitestTopics.FAILURE_LIST_TOPIC, treeModelAdapter);
 		projectMessageBusConnection.subscribe(InfinitestTopics.CONSOLE_TOPIC, frame);
 		projectMessageBusConnection.subscribe(ProjectTopics.MODULES, treeModelAdapter);
+		projectMessageBusConnection.subscribe(ProjectTopics.PROJECT_ROOTS, treeModelAdapter);
 
 		new InfinitestPresenter(project, frame);
 		

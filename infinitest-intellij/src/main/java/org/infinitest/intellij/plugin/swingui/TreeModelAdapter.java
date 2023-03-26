@@ -28,10 +28,10 @@
 package org.infinitest.intellij.plugin.swingui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
@@ -47,20 +47,27 @@ import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.PointOfFailure;
 import org.infinitest.testrunner.TestEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootEvent;
+import com.intellij.openapi.roots.ModuleRootListener;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Function;
 
 /**
  * The structure of the tree is:<br>
  * {@link Project} / {@link Module} / {@link PointOfFailure} / {@link TestEvent}
  */
-public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleListener {
+public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleListener, ModuleRootListener {
 	private final Project project;
 	private final List<TreeModelListener> listeners;
+	
+	private Module[] modules;
 
 	public TreeModelAdapter(Project project) {
 		this.project = project;
@@ -75,9 +82,7 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public Object getChild(Object parent, int index) {
 		if (parent.equals(getRoot())) {
-			Module[] modules = getModules();
-			
-			return modules[index];
+			return getModules()[index];
 		} else if (parent instanceof Module) {
 			Module module = (Module) parent;
 			ResultCollector collector = module.getService(InfinitestLauncher.class).getResultCollector();
@@ -126,9 +131,9 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent.equals(getRoot())) {
-			Module[] modules = getModules();
-			for (int i=0; i<modules.length; i++) {
-				if (child.equals(modules[i])) {
+			Module[] m = getModules();
+			for (int i=0; i<m.length; i++) {
+				if (child.equals(m[i])) {
 					return i;
 				}
 			}
@@ -164,6 +169,8 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				modules = null;
+				
 				int[] childIndices = new int[0];
 				Object[] children = new Object[0];
 				for (TreeModelListener listener : listeners) {
@@ -198,14 +205,31 @@ public class TreeModelAdapter implements TreeModel, FailureListListener, ModuleL
 		fireTreeStructureChanged();
 	}
 	
+	@Override
+	public void rootsChanged(@NotNull ModuleRootEvent event) {
+		fireTreeStructureChanged();
+	}
 
 	/**
-	 * @return the {@link Module} array for this project, sorted by alphabetical order
+	 * @return the {@link Module} array for this project, sorted by alphabetical order, only considering modules with test sources
 	 */
 	private Module[] getModules() {
-		Module[] modules = ModuleManager.getInstance(project).getModules();
-		Arrays.sort(modules, Comparator.comparing(Module::getName));
-		
+		if (modules == null) {
+			modules = Stream
+					.of(ModuleManager.getInstance(project).getModules())
+					.filter(this::hasTests)
+					.sorted(Comparator.comparing(Module::getName))
+					.toArray(Module[]::new);
+		}
+
 		return modules;
+	}
+	
+	private boolean hasTests(Module module) {
+		List<VirtualFile> sourceRoots = ModuleRootManager
+				.getInstance(module)
+				.getSourceRoots(JavaSourceRootType.TEST_SOURCE);
+		
+		return !sourceRoots.isEmpty();
 	}
 }
