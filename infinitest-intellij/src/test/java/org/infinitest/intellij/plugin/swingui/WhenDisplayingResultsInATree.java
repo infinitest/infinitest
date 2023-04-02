@@ -36,14 +36,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.infinitest.InfinitestCore;
 import org.infinitest.ResultCollector;
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.intellij.openapi.vfs.VirtualFile;
 
 import junit.framework.AssertionFailedError;
 
@@ -58,7 +64,12 @@ class WhenDisplayingResultsInATree extends IntellijMockBase {
 		InfinitestCore mockCore = mock(InfinitestCore.class);
 		collector = new ResultCollector(mockCore);
 		
+		VirtualFile testSourcesRoot = mock(VirtualFile.class);
+		
+		List<VirtualFile> testSourcesRoots = Collections.singletonList(testSourcesRoot);
+		
 		when(launcher.getResultCollector()).thenReturn(collector);
+		when(moduleRootManager.getSourceRoots(JavaSourceRootType.TEST_SOURCE)).thenReturn(testSourcesRoots);
 		
 		model = new TreeModelAdapter(project);
 	}
@@ -117,6 +128,13 @@ class WhenDisplayingResultsInATree extends IntellijMockBase {
 		Object testNode = model.getChild(failureNode, 0);
 		assertEquals(0, model.getChildCount(testNode));
 		assertTrue(model.isLeaf(testNode));
+	}
+	
+	@Test
+	void shouldHideModuleWithoutTests() {
+		when(moduleRootManager.getSourceRoots(JavaSourceRootType.TEST_SOURCE)).thenReturn(Collections.emptyList());
+		
+		assertEquals(0, model.getChildCount(model.getRoot()));
 	}
 
 	private void assertNodeReferenceIntegrity(Object parent, int nodeIndex) {
