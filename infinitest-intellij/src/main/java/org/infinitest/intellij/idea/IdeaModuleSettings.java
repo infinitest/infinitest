@@ -51,7 +51,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -232,14 +231,6 @@ public class IdeaModuleSettings implements ModuleSettings {
 		}
 
 		return classpathElements;
-	}
-
-	ModuleRootManager moduleRootManagerInstance() {
-		return ModuleRootManager.getInstance(module);
-	}
-
-	CompilerModuleExtension compilerModuleExtension() {
-		return CompilerModuleExtension.getInstance(module);
 	}
 
 	protected String infinitestJarPath(String jarName) {
