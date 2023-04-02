@@ -42,11 +42,13 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo {
 	private final String testName;
 	private final MethodStats methodStats;
 	private final ResourceLookup lookup;
-
-	public SlowTestMarkerInfo(String testName, MethodStats methodStats, ResourceLookup lookup) {
+	private final int markerSeverity;
+	
+	public SlowTestMarkerInfo(String testName, MethodStats methodStats, ResourceLookup lookup, int markerSeverity) {
 		this.testName = testName;
 		this.methodStats = methodStats;
 		this.lookup = lookup;
+		this.markerSeverity = markerSeverity;
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class SlowTestMarkerInfo extends AbstractMarkerInfo {
 	@Override
 	public Map<String, Object> attributes() {
 		Map<String, Object> markerAttributes = newLinkedHashMap();
-		markerAttributes.put(SEVERITY, SEVERITY_WARNING);
+		markerAttributes.put(SEVERITY, markerSeverity);
 		markerAttributes.put(MESSAGE, buildMessage());
 
 		return markerAttributes;

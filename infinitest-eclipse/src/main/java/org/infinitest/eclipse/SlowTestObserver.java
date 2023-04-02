@@ -54,7 +54,7 @@ public class SlowTestObserver implements DisabledTestListener, TestResultsListen
 		// The whole process of detecting passing/failing/ignored/disabled tests
 		// is remarkably
 		// similar to the process of detecting slow/fast/ignored/disabled tests.
-		SlowTestMarkerInfo marker = new SlowTestMarkerInfo(testName, newStats, lookup);
+		SlowTestMarkerInfo marker = new SlowTestMarkerInfo(testName, newStats, lookup, slowMarkerRegistry.markerServerity());
 		if (newStats.duration() > getSlowTestTimeLimit()) {
 			slowMarkerRegistry.addMarker(marker);
 		} else {

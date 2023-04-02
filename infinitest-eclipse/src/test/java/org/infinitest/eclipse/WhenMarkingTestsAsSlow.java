@@ -54,7 +54,7 @@ class WhenMarkingTestsAsSlow extends EqualityTestSupport {
 		resourceLookup = mock(ResourceLookup.class);
 		MethodStats stats = new MethodStats("shouldRunSlowly");
 		stats.stop(5000);
-		marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup);
+		marker = new SlowTestMarkerInfo(TEST_NAME, stats, resourceLookup, IMarker.SEVERITY_WARNING);
 	}
 
 	@Test
@@ -84,11 +84,11 @@ class WhenMarkingTestsAsSlow extends EqualityTestSupport {
 
 	@Override
 	protected Object createEqualInstance() {
-		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup);
+		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunSlowly"), resourceLookup, IMarker.SEVERITY_ERROR);
 	}
 
 	@Override
 	protected Object createUnequalInstance() {
-		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup);
+		return new SlowTestMarkerInfo(TEST_NAME, new MethodStats("shouldRunQuickly"), resourceLookup, IMarker.SEVERITY_ERROR);
 	}
 }

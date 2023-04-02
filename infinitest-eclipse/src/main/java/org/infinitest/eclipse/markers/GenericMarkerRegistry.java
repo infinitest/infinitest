@@ -27,12 +27,23 @@
  */
 package org.infinitest.eclipse.markers;
 
-import static org.infinitest.util.InfinitestUtils.*;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ui.ide.undo.UpdateMarkersOperation;
+import org.infinitest.eclipse.InfinitestPlugin;
 
 /**
  * This would be a nice feature someday: <a
@@ -43,10 +54,33 @@ import org.eclipse.core.runtime.*;
 public class GenericMarkerRegistry implements MarkerRegistry {
 	private final Map<MarkerInfo, IMarker> markers;
 	private final String markerId;
+	private int markerSeverity;
 
-	public GenericMarkerRegistry(String markerId) {
+	public GenericMarkerRegistry(String markerId, String severityPerferrenceKey) {
+		this(markerId, getPreferredSeverity(severityPerferrenceKey));
+	}
+
+	public GenericMarkerRegistry(String markerId, int markerSeverity) {
 		this.markerId = markerId;
+		this.markerSeverity = markerSeverity;
 		markers = new HashMap<>();
+	}
+
+	private static int getPreferredSeverity(String severityPerferrenceKey) {
+		InfinitestPlugin plugin = InfinitestPlugin.getInstance();
+		// The plugin is null in unit tests
+		if (plugin != null) {
+			String value = plugin.getPreferenceStore().getString(severityPerferrenceKey);
+			if (value != null && !value.isEmpty()) {
+				try {
+					return Integer.parseInt(value);
+				} catch (NumberFormatException e) {
+					log("Error getting preferred marker severity for " + severityPerferrenceKey, e);
+				}
+			}
+		}
+		
+		return IMarker.SEVERITY_ERROR;
 	}
 
 	@Override
@@ -126,5 +160,34 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 
 	public int markerCount() {
 		return getMarkers().size();
+	}
+	
+	@Override
+	public void updateMarkersSeverity(int markersSeverity) {
+		this.markerSeverity = markersSeverity;
+		
+		Map<String, Integer> attributes = Collections.singletonMap(IMarker.SEVERITY, markerSeverity);
+		IMarker[] markersArray = markers.values().toArray(new IMarker[0]);
+		
+		IProgressMonitor monitor = new NullProgressMonitor();
+		
+		for (IMarker marker : markers.values()) {
+			UpdateMarkersOperation operation = buildUpdateMarkersAction(attributes, markersArray);
+			
+			try {
+				operation.execute(monitor, marker.getResource());
+			} catch (ExecutionException e) {
+				log("Error updating marker severity " + marker, e);
+			}
+		}
+	}
+
+	protected UpdateMarkersOperation buildUpdateMarkersAction(Map<String, Integer> attributes, IMarker[] markers) {
+		return new UpdateMarkersOperation(markers, attributes, "Infinitest markers update", true);
+	}
+	
+	@Override
+	public int markerServerity() {
+		return markerSeverity;
 	}
 }

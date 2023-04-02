@@ -27,6 +27,7 @@
  */
 package org.infinitest.eclipse.prefs;
 
+import static org.eclipse.core.resources.IMarker.SEVERITY_WARNING;
 import static org.eclipse.jface.preference.FieldEditor.*;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
 import static org.infinitest.util.InfinitestGlobalSettings.*;
@@ -50,15 +51,22 @@ class WhenPreferencesAreChanged {
 	private PluginActivationController controller;
 	private PreferenceChangeHandler handler;
 	private CoreSettings coreSettings;
+	
+	private SlowMarkerRegistry slowMarkerRegistry;
+	private ProblemMarkerRegistry problemMarkerRegistry;
 
 	@BeforeEach
 	void setUp() {
 		controller = mock(PluginActivationController.class);
 		coreSettings = mock(CoreSettings.class);
 		eventSource = mock(BooleanFieldEditor.class);
+		
+		slowMarkerRegistry = mock(SlowMarkerRegistry.class);
+		problemMarkerRegistry = mock(ProblemMarkerRegistry.class);
 
 		handler = new PreferenceChangeHandler(controller, coreSettings);
-		handler.setSlowMarkerRegistry(new SlowMarkerRegistry());
+		handler.setSlowMarkerRegistry(slowMarkerRegistry);
+		handler.setProblemMarkerRegistry(problemMarkerRegistry);
 	}
 
 	@AfterEach
@@ -114,6 +122,20 @@ class WhenPreferencesAreChanged {
 		changeProperty(SwtColorFieldEditor.VALUE, String.valueOf(white), String.valueOf(yellow));
 
 		assertEquals(yellow, ColorSettings.getFailingTextColor());
+	}
+
+	@Test
+	void shouldMarketsWhenFailedTestSeverityChanges() {
+		when(eventSource.getPreferenceName()).thenReturn(FAILED_TEST_MARKER_SEVERITY);
+		changeProperty(VALUE, "2", "1");
+		verify(problemMarkerRegistry).updateMarkersSeverity(SEVERITY_WARNING);
+	}
+
+	@Test
+	void shouldMarketsWhenSlowTestSeverityChanges() {
+		when(eventSource.getPreferenceName()).thenReturn(SLOW_TEST_MARKER_SEVERITY);
+		changeProperty(VALUE, "2", "1");
+		verify(slowMarkerRegistry).updateMarkersSeverity(SEVERITY_WARNING);
 	}
 
 	@Test

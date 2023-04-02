@@ -27,25 +27,33 @@
  */
 package org.infinitest.eclipse.prefs;
 
-import static java.lang.Integer.*;
-import static org.apache.commons.lang.StringUtils.*;
-import static org.eclipse.jface.preference.FieldEditor.*;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
+import static java.lang.Integer.parseInt;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.eclipse.jface.preference.FieldEditor.VALUE;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_MARKER_SEVERITY;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
+import static org.infinitest.util.InfinitestGlobalSettings.setSlowTestTimeLimit;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.markers.*;
-import org.infinitest.eclipse.trim.*;
-import org.infinitest.eclipse.workspace.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.infinitest.eclipse.PluginActivationController;
+import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
+import org.infinitest.eclipse.trim.ColorSettings;
+import org.infinitest.eclipse.workspace.CoreSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class PreferenceChangeHandler {
 	private final PluginActivationController controller;
 	private final CoreSettings coreSettings;
+	private ProblemMarkerRegistry problemMarkerRegistry;
 	private SlowMarkerRegistry slowMarkerRegistry;
 	private boolean clearSlowMarkerRegistry;
 
@@ -65,9 +73,13 @@ public class PreferenceChangeHandler {
 			updateSlowTestWarning((String) newValue);
 		} else if (PARALLEL_CORES.equals(preference)) {
 			updateConcurrency((String) newValue);
-		} else if (PreferencesConstants.FAILING_BACKGROUND_COLOR.equals(preference)) {
+		} else if (FAILED_TEST_MARKER_SEVERITY.equals(preference)) {
+			updateFailedTestMarkerSeverity((String) newValue);
+		} else if (SLOW_TEST_MARKER_SEVERITY.equals(preference)) {
+			updateSlowTestMarkerSeverity((String) newValue);
+		} else if (FAILING_BACKGROUND_COLOR.equals(preference)) {
 			updateFailingBackgroundColor((String) newValue);
-		} else if (PreferencesConstants.FAILING_TEXT_COLOR.equals(preference)) {
+		} else if (FAILING_TEXT_COLOR.equals(preference)) {
 			updateFailingTextColor((String) newValue);
 		}
 	}
@@ -103,12 +115,24 @@ public class PreferenceChangeHandler {
 		}
 	}
 
+	private void updateFailedTestMarkerSeverity(String newValue) {
+		problemMarkerRegistry.updateMarkersSeverity(Integer.parseInt(newValue));
+	}
+
+	private void updateSlowTestMarkerSeverity(String newValue) {
+		slowMarkerRegistry.updateMarkersSeverity(Integer.parseInt(newValue));
+	}
+
 	private String findChangedPreference(PropertyChangeEvent event) {
 		Object source = event.getSource();
 		if ((source instanceof FieldEditor) && event.getProperty().equals(VALUE)) {
 			return ((FieldEditor) source).getPreferenceName();
 		}
 		return null;
+	}
+
+	public void setProblemMarkerRegistry(ProblemMarkerRegistry bean) {
+		problemMarkerRegistry = bean;
 	}
 
 	public void setSlowMarkerRegistry(SlowMarkerRegistry bean) {
@@ -120,7 +144,6 @@ public class PreferenceChangeHandler {
 		if (clearSlowMarkerRegistry) {
 			clearSlowMarkers();
 		}
-
 	}
 
 	public void clearChanges() {

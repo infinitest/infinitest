@@ -27,26 +27,37 @@
  */
 package org.infinitest.eclipse.prefs;
 
-public abstract class PreferencesConstants {
-	/**
-	 * Indicates if Infinitest should automatically be run.
-	 */
-	public static final String AUTO_TEST = "org.infinitest.eclipse.auto";
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-	public static final String LICENSE_KEY = "org.infinitest.eclipse.license.key";
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
+import org.junit.jupiter.api.Test;
 
-	public static final String EXP_DATE_DISPLAY = "org.infinitest.eclipse.license.expdate";
+class PreferencePageTest {
 
-	public static final String PARALLEL_CORES = "org.infinitest.eclipse.parallel";
-
-	public static final String SLOW_TEST_WARNING = "org.infinitest.eclipse.slow-warning";
-	
-	public static final String FAILED_TEST_MARKER_SEVERITY = "org.infinitest.eclipse.failed.test.marker.severity";
-	
-	public static final String SLOW_TEST_MARKER_SEVERITY = "org.infinitest.eclipse.slow.test.marker.severity";
-
-	public static final String FAILING_BACKGROUND_COLOR = "org.infinitest.eclipse.color.failing.background";
-
-	public static final String FAILING_TEXT_COLOR = "org.infinitest.eclipse.color.failing.text";
-
+	@Test
+	void test() throws Exception {
+		PreferenceChangeHandler changeHandler = mock(PreferenceChangeHandler.class);
+		ProblemMarkerRegistry problemMarkerRegistry = mock(ProblemMarkerRegistry.class);
+		SlowMarkerRegistry slowMarkerRegistry = mock(SlowMarkerRegistry.class);
+		
+		Display display = Display.getCurrent();
+		Composite parent = new Shell(display);
+		
+		PreferencePage preferencePage = new PreferencePage(changeHandler, problemMarkerRegistry, slowMarkerRegistry) {
+			@Override
+			protected Composite getFieldEditorParent() {
+				return parent;
+			}
+		};
+		
+		preferencePage.createFieldEditors();
+		preferencePage.performDefaults();
+		
+		verify(changeHandler).clearSlowMarkers();
+	}
 }
