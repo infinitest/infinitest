@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.infinitest.environment.RuntimeEnvironment;
@@ -52,15 +51,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.CompilerModuleExtension;
-import com.intellij.openapi.roots.JdkOrderEntry;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.OrderRootsEnumerator;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class IdeaModuleSettings implements ModuleSettings {
@@ -227,61 +219,18 @@ public class IdeaModuleSettings implements ModuleSettings {
 	List<File> listClasspathElements() {
 		// Classpath order is significant
 		List<File> classpathElements = new ArrayList<>();
-
-		// all our dependencies (recursively where needed)
-		for (OrderEntry entry : moduleRootManagerInstance().getOrderEntries()) {
-			List<VirtualFile> files = new ArrayList<>();
-
-			if (entry instanceof ModuleOrderEntry) {
-				/*
-				 * other modules we depend on -> they could depend on modules
-				 * themselves, so we need to add them recursively.
-				 */
-				Module currentModule = ((ModuleOrderEntry) entry).getModule();
-				if (currentModule != null) {
-					OrderRootsEnumerator enumerator = OrderEnumerator.orderEntries(currentModule)
-					.withoutSdk()
-					.compileOnly()
-					.recursively()
-					.classes();
-					
-					files.addAll(Arrays.asList(enumerator.getRoots()));
-				}
-			} else if (entry instanceof LibraryOrderEntry) {
-				/*
-				 * libraries cannot be recursive and we only need the classes of
-				 * them.
-				 */
-				LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry) entry;
-				files.addAll(Arrays.asList(libraryOrderEntry.getRootFiles(OrderRootType.CLASSES)));
-			} else if (!(entry instanceof JdkOrderEntry)) {
-				/*
-				 * all other cases (whichever they are) we want to have their
-				 * classes outputs.
-				 */
-				files.addAll(Arrays.asList(entry.getFiles(OrderRootType.CLASSES)));
-			}
-			for (VirtualFile virtualFile : files) {
-				classpathElements.add(new File(virtualFile.getPath()));
-			}
-		}
-
-		CompilerModuleExtension compilerExtension = compilerModuleExtension();
-		if (compilerExtension != null) {
-			for (VirtualFile virtualFile : compilerExtension.getOutputRoots(true)) {
-				classpathElements.add(new File(virtualFile.getPath()));
-			}
+		
+		VirtualFile[] files = OrderEnumerator.orderEntries(module)
+				.withoutSdk()
+				.recursively()
+				.classes()
+				.getRoots();
+		
+		for (VirtualFile virtualFile : files) {
+			classpathElements.add(new File(virtualFile.getPath()));
 		}
 
 		return classpathElements;
-	}
-
-	ModuleRootManager moduleRootManagerInstance() {
-		return ModuleRootManager.getInstance(module);
-	}
-
-	CompilerModuleExtension compilerModuleExtension() {
-		return CompilerModuleExtension.getInstance(module);
 	}
 
 	protected String infinitestJarPath(String jarName) {
