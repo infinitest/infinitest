@@ -100,6 +100,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	@Override
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(PARALLEL_CORES, 1);
+		store.setDefault(DISABLE_WHEN_WORKSPACE_HAS_ERRORS, true);
 		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
 		store.setDefault(FAILING_BACKGROUND_COLOR, ColorSettings.getFailingBackgroundColor());
 		store.setDefault(FAILING_TEXT_COLOR, ColorSettings.getFailingTextColor());
