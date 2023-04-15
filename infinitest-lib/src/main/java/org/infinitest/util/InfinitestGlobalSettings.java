@@ -37,7 +37,7 @@ import java.util.logging.Level;
 public class InfinitestGlobalSettings {
 	private static Level logLevel = Level.INFO;
 	private static long slowTestTimeLimit = 500;
-	private static boolean disableWhenWorkspaceHasErrors;
+	private static boolean disableWhenWorkspaceHasErrors = true;
 
 	public static void resetToDefaults() {
 		setLogLevel(INFO);
