@@ -29,6 +29,7 @@ package org.infinitest.eclipse;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
@@ -133,6 +134,7 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	@VisibleForTesting
 	void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings) {
 		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
+		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(preferences.getBoolean(DISABLE_WHEN_WORKSPACE_HAS_ERRORS));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
 		ColorSettings.setFailingBackgroundColor(preferences.getInt(PreferencesConstants.FAILING_BACKGROUND_COLOR));
 		ColorSettings.setFailngTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));

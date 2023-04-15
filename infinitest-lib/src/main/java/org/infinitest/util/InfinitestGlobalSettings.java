@@ -27,9 +27,9 @@
  */
 package org.infinitest.util;
 
-import static java.util.logging.Level.*;
+import static java.util.logging.Level.INFO;
 
-import java.util.logging.*;
+import java.util.logging.Level;
 
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
@@ -37,6 +37,7 @@ import java.util.logging.*;
 public class InfinitestGlobalSettings {
 	private static Level logLevel = Level.INFO;
 	private static long slowTestTimeLimit = 500;
+	private static boolean disableWhenWorkspaceHasErrors;
 
 	public static void resetToDefaults() {
 		setLogLevel(INFO);
@@ -57,5 +58,13 @@ public class InfinitestGlobalSettings {
 
 	public static long getSlowTestTimeLimit() {
 		return slowTestTimeLimit;
+	}
+
+	public static boolean isDisableWhenWorkspaceHasErrors() {
+		return disableWhenWorkspaceHasErrors;
+	}
+
+	public static void setDisableWhenWorkspaceHasErrors(boolean disableWhenWorkspaceHasErrors) {
+		InfinitestGlobalSettings.disableWhenWorkspaceHasErrors = disableWhenWorkspaceHasErrors;
 	}
 }
