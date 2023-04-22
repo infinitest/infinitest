@@ -37,6 +37,7 @@ import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.swt.SWT;
 import org.infinitest.eclipse.InfinitestPlugin;
 import org.infinitest.eclipse.trim.ColorSettings;
 
@@ -53,7 +54,7 @@ public class InfinitestPreferenceInitializer extends AbstractPreferenceInitializ
 		node.put(PARALLEL_CORES, Integer.toString(1));
 		node.put(DISABLE_WHEN_WORKSPACE_HAS_ERRORS, Boolean.toString(false));
 		node.put(SLOW_TEST_WARNING, Long.toString(getSlowTestTimeLimit()));
-		node.put(FAILING_BACKGROUND_COLOR, Integer.toString(ColorSettings.getFailingBackgroundColor()));
-		node.put(FAILING_TEXT_COLOR, Integer.toString(ColorSettings.getFailingTextColor()));
+		node.put(FAILING_BACKGROUND_COLOR, Integer.toString(SWT.COLOR_DARK_RED));
+		node.put(FAILING_TEXT_COLOR, Integer.toString(SWT.COLOR_WHITE));
 	}
 }
