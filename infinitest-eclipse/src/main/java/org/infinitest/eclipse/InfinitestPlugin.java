@@ -30,17 +30,13 @@ package org.infinitest.eclipse;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
-import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.infinitest.eclipse.prefs.PreferencesConstants;
 import org.infinitest.eclipse.trim.ColorSettings;
@@ -95,15 +91,6 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 
 	public void startContinuouslyTesting() {
 		getPluginController().enable();
-	}
-
-	@Override
-	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		store.setDefault(PARALLEL_CORES, 1);
-		store.setDefault(DISABLE_WHEN_WORKSPACE_HAS_ERRORS, true);
-		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
-		store.setDefault(FAILING_BACKGROUND_COLOR, ColorSettings.getFailingBackgroundColor());
-		store.setDefault(FAILING_TEXT_COLOR, ColorSettings.getFailingTextColor());
 	}
 
 	// Only used for testing.
