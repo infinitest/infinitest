@@ -40,7 +40,7 @@ public class ColorSettings {
 		return failingTextColor;
 	}
 
-	public static void setFailngTextColor(int failTextColor) {
+	public static void setFailingTextColor(int failTextColor) {
 		ColorSettings.failingTextColor = failTextColor;
 	}
 

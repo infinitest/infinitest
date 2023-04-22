@@ -89,7 +89,7 @@ public class PreferenceChangeHandler {
 	}
 
 	private void updateFailingTextColor(String newValue) {
-		ColorSettings.setFailngTextColor(Integer.valueOf(newValue));
+		ColorSettings.setFailingTextColor(Integer.valueOf(newValue));
 	}
 
 	private void updateFailingBackgroundColor(String newValue) {

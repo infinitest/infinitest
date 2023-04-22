@@ -125,6 +125,6 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(preferences.getBoolean(DISABLE_WHEN_WORKSPACE_HAS_ERRORS));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
 		ColorSettings.setFailingBackgroundColor(preferences.getInt(PreferencesConstants.FAILING_BACKGROUND_COLOR));
-		ColorSettings.setFailngTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
+		ColorSettings.setFailingTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
 	}
 }
