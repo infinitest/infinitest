@@ -32,6 +32,7 @@ import org.infinitest.StatusChangeListener;
 import org.infinitest.intellij.InfinitestIcons;
 import org.infinitest.intellij.InfinitestLoggingListener;
 import org.infinitest.intellij.InfinitestTopics;
+import org.infinitest.intellij.android.AndroidBuildListener;
 import org.infinitest.intellij.idea.IdeaSourceNavigator;
 import org.infinitest.intellij.plugin.launcher.FileEditorListener;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
@@ -100,6 +101,8 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 		// TODO replace by something not static
 		InfinitestLoggingListener loggingListener = new InfinitestLoggingListener(frame);
 		InfinitestUtils.addLoggingListener(loggingListener);
+		
+		project.getService(AndroidBuildListener.class);
 	}
 	
 	private static class InfinitestToolWindowStatusChangeListener implements StatusChangeListener {

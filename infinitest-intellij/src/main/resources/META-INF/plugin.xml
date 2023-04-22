@@ -22,6 +22,7 @@
     
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends optional="true">org.jetbrains.android</depends>
     
     <project-components>
         <component>
@@ -40,6 +41,7 @@
         <toolWindow id="Infinitest" icon="AllIcons.General.Modified" anchor="bottom" factoryClass="org.infinitest.intellij.idea.window.InfinitestToolWindowFactory"/>
 
         <projectService serviceInterface="org.infinitest.intellij.InfinitestAnnotator" serviceImplementation="org.infinitest.intellij.idea.language.IdeaInfinitestAnnotator"/>
+        <projectService serviceImplementation="org.infinitest.intellij.android.AndroidBuildListener"/>
 
         <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
         <moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
