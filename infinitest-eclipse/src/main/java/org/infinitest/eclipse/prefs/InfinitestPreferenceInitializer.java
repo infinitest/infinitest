@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.swt.SWT;
 import org.infinitest.eclipse.InfinitestPlugin;
-import org.infinitest.eclipse.trim.ColorSettings;
 
 public class InfinitestPreferenceInitializer extends AbstractPreferenceInitializer {
 
