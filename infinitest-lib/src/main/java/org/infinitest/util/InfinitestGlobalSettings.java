@@ -34,10 +34,15 @@ import java.util.logging.Level;
 /**
  * @author <a href="mailto:benrady@gmail.com"Ben Rady</a>
  */
-public class InfinitestGlobalSettings {
+public final class InfinitestGlobalSettings {
+	public static final int DEFAULT_SLOW_TEST_LIMIT = 500;
+	
 	private static Level logLevel = Level.INFO;
-	private static long slowTestTimeLimit = 500;
+	private static long slowTestTimeLimit = DEFAULT_SLOW_TEST_LIMIT;
 	private static boolean disableWhenWorkspaceHasErrors = true;
+	
+	private InfinitestGlobalSettings() {
+	}
 
 	public static void resetToDefaults() {
 		setLogLevel(INFO);
