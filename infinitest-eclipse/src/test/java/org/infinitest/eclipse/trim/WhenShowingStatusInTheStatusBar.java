@@ -46,10 +46,12 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 
+import org.eclipse.swt.SWT;
 import org.infinitest.TestQueueEvent;
 import org.infinitest.eclipse.status.WorkspaceStatus;
 import org.infinitest.testrunner.TestCaseEvent;
 import org.infinitest.testrunner.TestResults;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +66,12 @@ class WhenShowingStatusInTheStatusBar {
 		presenter = new VisualStatusPresenter();
 		presenter.updateVisualStatus(statusBar);
 		firstEvent = new TestQueueEvent(asList("ATest"), 2);
+	}
+	
+	@AfterAll
+	public static void resetDefaults() {
+		ColorSettings.setFailingBackgroundColor(SWT.COLOR_DARK_RED);
+		ColorSettings.setFailingTextColor(SWT.COLOR_WHITE);
 	}
 
 	@Test
@@ -124,7 +132,7 @@ class WhenShowingStatusInTheStatusBar {
 	@Test
 	void shouldChangeToFailingBackgroundColorWhenTestsFail() {
 		ColorSettings.setFailingBackgroundColor(COLOR_DARK_RED);
-		ColorSettings.setFailngTextColor(COLOR_YELLOW);
+		ColorSettings.setFailingTextColor(COLOR_YELLOW);
 
 		presenter.coreStatusChanged(PASSING, FAILING);
 

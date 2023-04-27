@@ -31,6 +31,7 @@ import static java.lang.Integer.parseInt;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.eclipse.jface.preference.FieldEditor.VALUE;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
@@ -46,6 +47,7 @@ import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
 import org.infinitest.eclipse.markers.SlowMarkerRegistry;
 import org.infinitest.eclipse.trim.ColorSettings;
 import org.infinitest.eclipse.workspace.CoreSettings;
+import org.infinitest.util.InfinitestGlobalSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +71,8 @@ public class PreferenceChangeHandler {
 		
 		if (AUTO_TEST.equals(preference)) {
 			updateAutoTest((Boolean) newValue);
+		} else if (DISABLE_WHEN_WORKSPACE_HAS_ERRORS.equals(preference)) {
+			updateDisableWhenWorkspaceHasErrors((Boolean) newValue);
 		} else if (SLOW_TEST_WARNING.equals(preference)) {
 			updateSlowTestWarning((String) newValue);
 		} else if (PARALLEL_CORES.equals(preference)) {
@@ -85,7 +89,7 @@ public class PreferenceChangeHandler {
 	}
 
 	private void updateFailingTextColor(String newValue) {
-		ColorSettings.setFailngTextColor(Integer.valueOf(newValue));
+		ColorSettings.setFailingTextColor(Integer.valueOf(newValue));
 	}
 
 	private void updateFailingBackgroundColor(String newValue) {
@@ -113,6 +117,10 @@ public class PreferenceChangeHandler {
 		} else {
 			controller.disable();
 		}
+	}
+	
+	private void updateDisableWhenWorkspaceHasErrors(boolean newValue) {
+		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(newValue);
 	}
 
 	private void updateFailedTestMarkerSeverity(String newValue) {

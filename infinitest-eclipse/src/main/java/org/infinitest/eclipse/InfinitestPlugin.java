@@ -29,17 +29,14 @@ package org.infinitest.eclipse;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.util.Arrays.asList;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_BACKGROUND_COLOR;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILING_TEXT_COLOR;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
-import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
 import static org.infinitest.util.InfinitestUtils.addLoggingListener;
 
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.infinitest.eclipse.prefs.PreferencesConstants;
 import org.infinitest.eclipse.trim.ColorSettings;
@@ -96,14 +93,6 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 		getPluginController().enable();
 	}
 
-	@Override
-	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		store.setDefault(PARALLEL_CORES, 1);
-		store.setDefault(SLOW_TEST_WARNING, getSlowTestTimeLimit());
-		store.setDefault(FAILING_BACKGROUND_COLOR, ColorSettings.getFailingBackgroundColor());
-		store.setDefault(FAILING_TEXT_COLOR, ColorSettings.getFailingTextColor());
-	}
-
 	// Only used for testing.
 	public void setPluginBundle(Bundle bundle) {
 		pluginBundle = bundle;
@@ -133,8 +122,9 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	@VisibleForTesting
 	void restoreSavedPreferences(Preferences preferences, CoreSettings coreSettings) {
 		coreSettings.setConcurrentCoreCount(preferences.getInt(PARALLEL_CORES));
+		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(preferences.getBoolean(DISABLE_WHEN_WORKSPACE_HAS_ERRORS));
 		InfinitestGlobalSettings.setSlowTestTimeLimit(preferences.getLong(SLOW_TEST_WARNING));
 		ColorSettings.setFailingBackgroundColor(preferences.getInt(PreferencesConstants.FAILING_BACKGROUND_COLOR));
-		ColorSettings.setFailngTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
+		ColorSettings.setFailingTextColor(preferences.getInt(PreferencesConstants.FAILING_TEXT_COLOR));
 	}
 }

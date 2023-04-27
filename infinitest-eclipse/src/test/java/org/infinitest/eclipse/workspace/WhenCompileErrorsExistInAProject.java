@@ -31,52 +31,87 @@ import static org.infinitest.eclipse.util.StatusMatchers.equalsStatus;
 import static org.infinitest.eclipse.workspace.WorkspaceStatusFactory.workspaceErrors;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.infinitest.eclipse.ResourceEventSupport;
 import org.infinitest.eclipse.SystemClassPathJarLocator;
 import org.infinitest.eclipse.status.WorkspaceStatus;
+import org.infinitest.util.InfinitestGlobalSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 // DEBT Duplication with WhenUpdatingTheProjectsInTheWorkspace
 class WhenCompileErrorsExistInAProject extends ResourceEventSupport {
 	private List<ProjectFacade> projects;
+	private IJavaProject projectMock;
 	private CoreRegistry coreRegistry;
 	private ProjectSet projectSet;
 	private EclipseWorkspace workspace;
+	private Set<IResource> modifiedResources;
+	private IResource modifiedResource;
 
 	@BeforeEach
 	void inContext() throws CoreException {
 		projects = new ArrayList<>();
 		projectSet = mock(ProjectSet.class);
-		projects.add(new ProjectFacade(project));
+		projectMock = mock(IJavaProject.class);
+		projects.add(new ProjectFacade(projectMock) {
+			@Override
+			public String rawClasspath() throws CoreException {
+				return "";
+			}
+		});
 		coreRegistry = mock(CoreRegistry.class);
+		modifiedResource = mock(IResource.class);
+		IPath modifiedResourcePath = mock(IPath.class);
+		modifiedResources = Collections.singleton(modifiedResource);
+		
 		CoreFactory coreFactory = new CoreFactory(null);
-		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory, new SystemClassPathJarLocator());
+		workspace = new EclipseWorkspace(projectSet, coreRegistry, coreFactory, new SystemClassPathJarLocator()) {
+			@Override
+			protected int updateProject(ProjectFacade project, java.util.Collection<java.io.File> changedFiles) throws CoreException {
+				return 42;
+			}
+		};
 
 		when(projectSet.projects()).thenReturn(projects);
 		when(projectSet.hasErrors()).thenReturn(true);
+		when(projectMock.isOnClasspath(modifiedResource)).thenReturn(true);
+		
+		when(modifiedResource.getRawLocation()).thenReturn(modifiedResourcePath);
+		when(modifiedResourcePath.makeAbsolute()).thenReturn(modifiedResourcePath);
 	}
 
 	@Test
-	void shouldNotUpdateIt() throws CoreException {
-		IJavaProject project = mock(IJavaProject.class);
-		projects.clear();
-		projects.add(new ProjectFacade(project));
-
+	void shouldNotUpdateWhenDisabled() throws CoreException {
+		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(true);
+		
 		workspace.updateProjects(Collections.emptySet());
 
 		assertStatusIs(workspaceErrors());
 
-		verifyNoInteractions(project);
+		verifyNoInteractions(projectMock);
+	}
+
+	@Test
+	void shouldUpdateItWhenEnabled() throws CoreException {
+		InfinitestGlobalSettings.setDisableWhenWorkspaceHasErrors(false);
+		
+		workspace.updateProjects(modifiedResources);
+
+		verify(projectMock, times(1)).isOnClasspath(modifiedResource);
 	}
 
 	private void assertStatusIs(WorkspaceStatus expectedStatus) {

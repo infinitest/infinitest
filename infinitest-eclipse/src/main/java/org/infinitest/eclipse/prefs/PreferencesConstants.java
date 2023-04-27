@@ -32,6 +32,8 @@ public abstract class PreferencesConstants {
 	 * Indicates if Infinitest should automatically be run.
 	 */
 	public static final String AUTO_TEST = "org.infinitest.eclipse.auto";
+	
+	public static final String DISABLE_WHEN_WORKSPACE_HAS_ERRORS = "org.infinitest.eclipse.disable.when.project.has.errors";
 
 	public static final String LICENSE_KEY = "org.infinitest.eclipse.license.key";
 

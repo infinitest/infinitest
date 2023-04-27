@@ -29,6 +29,7 @@ package org.infinitest.eclipse.prefs;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
 
@@ -75,6 +76,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	@Override
 	protected void createFieldEditors() {
 		addField(createAutoTestEditor());
+		addField(createDisableWhenWorkspaceHasErrorsEditor());
 		addField(createParallelizationEditor());
 		addField(createSlowTestWarningCutoffEditor());
 		addField(createSeverityEditor(PreferencesConstants.FAILED_TEST_MARKER_SEVERITY, "Failed test severity"));
@@ -85,6 +87,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	private BooleanFieldEditor createAutoTestEditor() {
 		return new BooleanFieldEditor(AUTO_TEST, "Continuously Test", getFieldEditorParent());
+	}
+
+	private BooleanFieldEditor createDisableWhenWorkspaceHasErrorsEditor() {
+		return new BooleanFieldEditor(DISABLE_WHEN_WORKSPACE_HAS_ERRORS, "Disable when workspace has errors", getFieldEditorParent());
 	}
 
 	private SwtColorFieldEditor createFailingBackgroundColorEditor() {

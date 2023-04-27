@@ -27,21 +27,35 @@
  */
 package org.infinitest.eclipse.prefs;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.IMarker.SEVERITY_WARNING;
-import static org.eclipse.jface.preference.FieldEditor.*;
-import static org.infinitest.eclipse.prefs.PreferencesConstants.*;
-import static org.infinitest.util.InfinitestGlobalSettings.*;
+import static org.eclipse.jface.preference.FieldEditor.IS_VALID;
+import static org.eclipse.jface.preference.FieldEditor.VALUE;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.AUTO_TEST;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.DISABLE_WHEN_WORKSPACE_HAS_ERRORS;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.PARALLEL_CORES;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_MARKER_SEVERITY;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.SLOW_TEST_WARNING;
+import static org.infinitest.util.InfinitestGlobalSettings.getSlowTestTimeLimit;
+import static org.infinitest.util.InfinitestGlobalSettings.resetToDefaults;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.*;
-import org.eclipse.swt.*;
-import org.infinitest.eclipse.*;
-import org.infinitest.eclipse.markers.*;
-import org.infinitest.eclipse.trim.*;
-import org.infinitest.eclipse.workspace.*;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.infinitest.eclipse.PluginActivationController;
+import org.infinitest.eclipse.markers.ProblemMarkerRegistry;
+import org.infinitest.eclipse.markers.SlowMarkerRegistry;
+import org.infinitest.eclipse.trim.ColorSettings;
+import org.infinitest.eclipse.workspace.CoreSettings;
+import org.infinitest.util.InfinitestGlobalSettings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,6 +170,17 @@ class WhenPreferencesAreChanged {
 	void shouldIgnoreBlankValues() {
 		when(eventSource.getPreferenceName()).thenReturn(PARALLEL_CORES);
 		assertDoesNotThrow(() -> changeProperty(VALUE, "", ""));
+	}
+	
+	@Test
+	void updateDisableWhenWorkspaceHasErrors() {
+		when(eventSource.getPreferenceName()).thenReturn(DISABLE_WHEN_WORKSPACE_HAS_ERRORS);
+		
+		changeProperty(VALUE, true, false);
+		assertThat(InfinitestGlobalSettings.isDisableWhenWorkspaceHasErrors()).isFalse();
+		
+		changeProperty(VALUE, false, true);
+		assertThat(InfinitestGlobalSettings.isDisableWhenWorkspaceHasErrors()).isTrue();
 	}
 
 	private void changeProperty(String type, Object oldValue, Object newValue) {

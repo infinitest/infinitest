@@ -54,6 +54,7 @@ import org.infinitest.eclipse.status.WorkspaceStatusListener;
 import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.parser.JavaClass;
 import org.infinitest.util.Events;
+import org.infinitest.util.InfinitestGlobalSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -85,7 +86,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 
 	@Override
 	public void updateProjects(Set<IResource> modifiedResources) throws CoreException {
-		if (projectSet.hasErrors()) {
+		if (projectSet.hasErrors() && InfinitestGlobalSettings.isDisableWhenWorkspaceHasErrors()) {
 			setStatus(workspaceErrors());
 		} else {
 			int numberOfTestsToRun = updateProjectsIn(modifiedResources);
@@ -142,7 +143,7 @@ class EclipseWorkspace implements WorkspaceFacade {
 		return totalTests;
 	}
 
-	private int updateProject(ProjectFacade project, Collection<File> changedFiles) throws CoreException {
+	protected int updateProject(ProjectFacade project, Collection<File> changedFiles) throws CoreException {
 		RuntimeEnvironment environment = buildRuntimeEnvironment(project);
 		InfinitestCore core = coreRegistry.getCore(project.getLocationURI());
 		if (core == null) {
