@@ -6,6 +6,14 @@
     <vendor url="http://infinitest.github.io/">Infinitest</vendor>
     
     <change-notes><![CDATA[
+    <h2>5.4.1</h2>
+    <ul>
+        <li>Fixed an issue where test resources of Gradle projects were not on the classpath</li>
+        <li>Fixed an issue where test resources of dependent Maven projects were on the classpath</li>
+        <li>Only display modules with tests in the Results view and sort them by name</li>
+        <li>Set the working directory to the root of the module</li>
+        <li>Fixed the issue that test annotated with ArchTest were not detected</li>
+    </ul>
     <h2>5.4.0</h2>
     <ul>
         <li>Infinitest is no longer a facet, just build the project to use it.</li>
