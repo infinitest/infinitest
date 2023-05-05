@@ -33,6 +33,7 @@ import org.infinitest.intellij.InfinitestIcons;
 import org.infinitest.intellij.InfinitestLoggingListener;
 import org.infinitest.intellij.InfinitestTopics;
 import org.infinitest.intellij.idea.IdeaSourceNavigator;
+import org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory;
 import org.infinitest.intellij.plugin.launcher.FileEditorListener;
 import org.infinitest.intellij.plugin.launcher.InfinitestPresenter;
 import org.infinitest.intellij.plugin.swingui.InfinitestMainFrame;
@@ -95,6 +96,7 @@ public class InfinitestToolWindowFactory implements ToolWindowFactory {
 		projectMessageBusConnection.subscribe(ProjectTopics.MODULES, treeModelAdapter);
 		projectMessageBusConnection.subscribe(ProjectTopics.PROJECT_ROOTS, treeModelAdapter);
 
+		new InfinitestHighlightingPassFactory(project);
 		new InfinitestPresenter(project, frame);
 		
 		// TODO replace by something not static

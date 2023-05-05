@@ -44,6 +44,7 @@ import org.infinitest.intellij.plugin.launcher.InfinitestLauncher;
 import org.infinitest.testrunner.TestResultsListener;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
@@ -80,6 +81,7 @@ public class IntellijMockBase {
 	protected MessageBusConnection messageBusConnection;
 	protected ProjectFileIndex projectFileIndex;
 	protected ProjectRootManager projectRootManager; 
+	protected TextEditorHighlightingPassRegistrar passRegistrar;
 	
 	protected InfinitestLauncher launcher;
 	protected ModuleSettings moduleSettings;
@@ -97,6 +99,8 @@ public class IntellijMockBase {
 		messageBusConnection = mock(MessageBusConnection.class);
 		projectFileIndex = mock(ProjectFileIndex.class);
 		projectRootManager = mock(ProjectRootManager.class);
+		passRegistrar = mock(TextEditorHighlightingPassRegistrar.class);
+		
 		launcher = mock(InfinitestLauncher.class);
 		moduleSettings = mock(ModuleSettings.class);
 		runtimeEnvironment = mock(RuntimeEnvironment.class);
@@ -111,6 +115,7 @@ public class IntellijMockBase {
 		when(project.getService(InfinitestAnnotator.class)).thenReturn(annotator);
 		when(project.getService(ProjectFileIndex.class)).thenReturn(projectFileIndex);
 		when(project.getService(ProjectRootManager.class)).thenReturn(projectRootManager);
+		when(project.getService(TextEditorHighlightingPassRegistrar.class)).thenReturn(passRegistrar);
 		
 		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);
