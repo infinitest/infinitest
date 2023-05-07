@@ -36,6 +36,7 @@ import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiFile;
 
@@ -44,8 +45,9 @@ public class InfinitestHighlightingPassFactory implements TextEditorHighlighting
 	 * The key to retrieve the {@link InfinitestLineMarkersPass} in the {@link Editor}
 	 */
 	public static final Key<InfinitestLineMarkersPass> KEY = new Key<>("InfinitestLineMarkersPass");
-
-	public InfinitestHighlightingPassFactory(TextEditorHighlightingPassRegistrar passRegistrar) {
+	
+	public InfinitestHighlightingPassFactory(Project project) {
+		TextEditorHighlightingPassRegistrar passRegistrar = TextEditorHighlightingPassRegistrar.getInstance(project);
 		passRegistrar.registerTextEditorHighlightingPass(this, TextEditorHighlightingPassRegistrar.Anchor.LAST, Pass.UPDATE_ALL, true, true);
 	}
 

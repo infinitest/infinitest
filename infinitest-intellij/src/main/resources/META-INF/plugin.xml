@@ -31,12 +31,6 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     
-    <project-components>
-        <component>
-            <implementation-class>org.infinitest.intellij.idea.language.InfinitestHighlightingPassFactory</implementation-class>
-        </component>
-    </project-components>
-    
     <projectListeners>
     	<listener class="org.infinitest.intellij.idea.IdeaCompilationListener" topic="com.intellij.task.ProjectTaskListener"/>
         <listener class="org.infinitest.intellij.idea.FilterFileWatcher" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
