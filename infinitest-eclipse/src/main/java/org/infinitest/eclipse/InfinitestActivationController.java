@@ -86,7 +86,7 @@ public class InfinitestActivationController implements PluginActivationControlle
 		pluginEnabled = true;
 		// calling addResourceChangeListener() without the event type second argument is equivalent to
 		// listening only to: PRE_CLOSE, PRE_DELETE and POST_CHANGE
-		workspace.addResourceChangeListener(updateNotifier, IResourceChangeEvent.POST_BUILD);
+		workspace.addResourceChangeListener(updateNotifier, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_CLOSE);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ class WhenActivatingThePlugin {
 		controller.enable();
 		controller.enable();
 
-		verify(workspace).addResourceChangeListener(coreUpdateNotifier, IResourceChangeEvent.POST_BUILD);
+		verify(workspace).addResourceChangeListener(coreUpdateNotifier, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_CLOSE);
 	}
 
 	@Test

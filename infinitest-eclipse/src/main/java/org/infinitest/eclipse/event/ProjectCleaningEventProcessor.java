@@ -27,41 +27,32 @@
  */
 package org.infinitest.eclipse.event;
 
-import static java.util.Arrays.*;
+import static java.util.logging.Level.WARNING;
+import static org.infinitest.util.InfinitestUtils.log;
 
-import java.util.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
+import org.infinitest.eclipse.workspace.CoreRegistry;
+import org.infinitest.eclipse.workspace.EclipseProject;
+import org.infinitest.eclipse.workspace.ProjectSet;
 
-import org.eclipse.core.resources.*;
-import org.infinitest.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+abstract class ProjectCleaningEventProcessor extends EclipseEventProcessor {
+	private final CoreRegistry coreRegistry;
+	private final ProjectSet projectSet;
 
-@Component
-class CoreUpdateNotifier implements IResourceChangeListener {
-	private final List<EclipseEventProcessor> processors;
-	private final EventQueue queue;
-
-	@Autowired
-	CoreUpdateNotifier(EventQueue queue) {
-		this.queue = queue;
-		processors = new ArrayList<>();
+	ProjectCleaningEventProcessor(CoreRegistry coreRegistry, ProjectSet projectSet, String name) {
+		super("Clearing Infinitest Indexes");
+		this.coreRegistry = coreRegistry;
+		this.projectSet = projectSet;
 	}
 
-	@Autowired
-	public void addProcessor(EclipseEventProcessor... eventProcessors) {
-		processors.addAll(asList(eventProcessors));
-	}
-
-	/**
-	 * http://www.eclipse.org/articles/Article-Resource-deltas/resource-deltas.
-	 * html
-	 */
-	@Override
-	public void resourceChanged(final IResourceChangeEvent event) {
-		for (EclipseEventProcessor processor : processors) {
-			if (processor.canProcessEvent(event)) {
-				queue.pushNamed(new EventProcessorRunnable(processor, event));
-			}
+	protected void cleanProject(IResource resource) {
+		IPath projectPath = resource.getFullPath();
+		EclipseProject project = projectSet.findProject(projectPath);
+		if (project == null) {
+			log(WARNING, "Could not find project for resource " + projectPath);
+		} else {
+			coreRegistry.removeCore(project.getLocationURI());
 		}
 	}
 }

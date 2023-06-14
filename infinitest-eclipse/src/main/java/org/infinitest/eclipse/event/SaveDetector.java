@@ -45,6 +45,10 @@ class SaveDetector extends EclipseEventProcessor {
 
 	@Override
 	public boolean canProcessEvent(IResourceChangeEvent event) {
+		if (event.getDelta() == null) {
+			return false;
+		}
+		
 		DeltaVisitor visitor = new DeltaVisitor();
 		try {
 			event.getDelta().accept(visitor, true);

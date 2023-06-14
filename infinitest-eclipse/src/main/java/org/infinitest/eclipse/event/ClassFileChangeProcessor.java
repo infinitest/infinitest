@@ -53,7 +53,7 @@ class ClassFileChangeProcessor extends EclipseEventProcessor {
 
 	@Override
 	public boolean canProcessEvent(IResourceChangeEvent event) {
-		return (event.getType() & POST_BUILD) > 0;
+		return (event.getType() & POST_BUILD) > 0 && event.getDelta() != null;
 	}
 
 	@Override

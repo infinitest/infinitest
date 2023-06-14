@@ -46,7 +46,7 @@ class WhenRespondingToResourceChangeEvents {
 
 		chain = new CoreUpdateNotifier(queue);
 		chain.addProcessor(new MockProcessor());
-		chain.processEvent(event);
+		chain.resourceChanged(event);
 
 		verify(queue).pushNamed(any(NamedRunnable.class));
 	}
