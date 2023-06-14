@@ -41,7 +41,7 @@ abstract class ProjectCleaningEventProcessor extends EclipseEventProcessor {
 	private final ProjectSet projectSet;
 
 	ProjectCleaningEventProcessor(CoreRegistry coreRegistry, ProjectSet projectSet, String name) {
-		super("Clearing Infinitest Indexes");
+		super(name);
 		this.coreRegistry = coreRegistry;
 		this.projectSet = projectSet;
 	}
