@@ -76,9 +76,22 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		queueAggregator.detach(core);
 		core.removeTestResultsListener(this);
 		core.removeDisabledTestListener(this);
+		
+		// Check if we are removing a core with failed tests
+		boolean hasFailures = hasFailures();
+		
 		List<String> tests = findFailingTestsForCore(core);
 		for (String string : tests) {
 			resultMap.remove(string);
+		}
+		
+		if (hasFailures && !hasFailures()) {
+			// The core we've removed had failed tests and now there are no failure: update the status
+			if (resultMap.isEmpty()) {
+				setStatus(SCANNING);
+			} else {
+				setStatus(PASSING);
+			}
 		}
 	}
 

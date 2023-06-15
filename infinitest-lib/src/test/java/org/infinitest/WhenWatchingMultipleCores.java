@@ -27,6 +27,7 @@
  */
 package org.infinitest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.testrunner.TestEvent.TestState.METHOD_FAILURE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,6 +46,7 @@ import junit.framework.AssertionFailedError;
 
 class WhenWatchingMultipleCores {
 	private static final String TEST_NAME = "com.fakeco.TestFoo";
+	private static final String FAILING_TEST_NAME = "com.fakeco.FailingTestFoo";
 
 	private ResultCollector collector;
 	private InfinitestCore core;
@@ -70,11 +72,7 @@ class WhenWatchingMultipleCores {
 
 	@Test
 	void shouldRemoveFailuresForACoreWhenItIsDetached() {
-		TestEvent event = withFailingMethod("method1");
-		TestCaseEvent caseEvent = new TestCaseEvent(TEST_NAME, this, new TestResults(event));
-		when(core.isEventSourceFor(caseEvent)).thenReturn(true);
-
-		collector.testCaseComplete(caseEvent);
+		addTestEvent(core, TEST_NAME, withFailingMethod("method1"));
 		assertTrue(collector.hasFailures());
 
 		collector.detachCore(core);
@@ -83,9 +81,32 @@ class WhenWatchingMultipleCores {
 		verify(core).removeTestQueueListener(null);
 		verify(core).removeTestResultsListener(collector);
 		verify(core).removeDisabledTestListener(collector);
+		
+		// There was only that core, there shouldn't be any test results left so the status should be SCANNING
+		assertThat(collector.getStatus()).isEqualTo(CoreStatus.SCANNING);
+	}
+	
+	@Test
+	void shouldUpdateStatusWhenRemovingOnlyCoreWithFailureAndTheresAnotherCoreWithPassingTests() {
+		InfinitestCore passingCore = mock(InfinitestCore.class);
+		
+		addTestEvent(core, TEST_NAME, withFailingMethod("method1"));
+		addTestEvent(passingCore, FAILING_TEST_NAME);
+		
+		collector.detachCore(core);
+		
+		// There should be one test passing test result so the status should be PASSING
+		assertThat(collector.getStatus()).isEqualTo(CoreStatus.PASSING);
+	}
+
+	private void addTestEvent(InfinitestCore c, String testName, TestEvent ... events) {
+		TestCaseEvent caseEvent = new TestCaseEvent(testName, this, new TestResults(events));
+		when(c.isEventSourceFor(caseEvent)).thenReturn(true);
+
+		collector.testCaseComplete(caseEvent);
 	}
 
 	private static TestEvent withFailingMethod(String methodName) {
-		return new TestEvent(METHOD_FAILURE, "", "", "", new AssertionFailedError());
+		return new TestEvent(METHOD_FAILURE, "", "", methodName, new AssertionFailedError());
 	}
 }
