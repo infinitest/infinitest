@@ -44,4 +44,9 @@ public class InProcessRunner extends AbstractTestRunner {
 		}
 		getEventSupport().fireTestRunComplete();
 	}
+	
+	@Override
+	public void stop() {
+		// Nothing to stop here as we're only pretending to run tests
+	}
 }

@@ -117,4 +117,8 @@ public interface InfinitestCore {
 	 */
 	void filterFileWasUpdated();
 
+	/**
+	 * Stop the tests that might be currently running
+	 */
+	void stop();
 }

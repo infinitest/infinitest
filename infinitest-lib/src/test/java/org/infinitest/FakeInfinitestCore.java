@@ -116,4 +116,9 @@ public class FakeInfinitestCore implements InfinitestCore {
 	public void filterFileWasUpdated() {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public void stop() {
+		throw new UnsupportedOperationException();
+	}
 }

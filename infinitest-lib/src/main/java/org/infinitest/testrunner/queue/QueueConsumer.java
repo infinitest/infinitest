@@ -35,6 +35,7 @@ import java.util.concurrent.*;
 
 import org.infinitest.*;
 import org.infinitest.testrunner.*;
+import org.infinitest.util.InfinitestUtils;
 
 public abstract class QueueConsumer {
 	private final Queue<String> testQueue;
@@ -95,10 +96,10 @@ public abstract class QueueConsumer {
 			eventSupport.fireQueueEvent(new TestQueueEvent(new ArrayList<>(testQueue), testQueue.size()));
 			processorThread.start();
 		}
+	}
 
-		private boolean testsAreRunning() {
-			return (processorThread != null) && processorThread.isAlive();
-		}
+	private boolean testsAreRunning() {
+		return (processorThread != null) && processorThread.isAlive();
 	}
 
 	private void stopCurrentRun() throws InterruptedException {
@@ -119,5 +120,16 @@ public abstract class QueueConsumer {
 
 	public void setConcurrencySemaphore(ConcurrencyController controller) {
 		semaphore = controller;
+	}
+	
+	public void stop() {
+		if (testsAreRunning()) {
+			try {
+				stopCurrentRun();
+			} catch (InterruptedException e) {
+				InfinitestUtils.log("Interrupted while stopping test run", e);
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 }

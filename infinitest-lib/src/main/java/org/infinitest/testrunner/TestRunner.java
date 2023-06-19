@@ -52,4 +52,9 @@ public interface TestRunner {
 	void removeTestQueueListener(ReloadListener testQueueNormalizer);
 
 	void setConcurrencyController(ConcurrencyController semaphore);
+	
+	/**
+	 * Stop the tests that might be running
+	 */
+	void stop();
 }

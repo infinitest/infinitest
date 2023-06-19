@@ -41,4 +41,8 @@ public interface CoreRegistry {
 
 	void addLifecycleListener(CoreLifecycleListener listener);
 
+	/**
+	 * Stop all the cores
+	 */
+	void stop();
 }

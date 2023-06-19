@@ -69,4 +69,9 @@ public class MultiProcessRunner extends AbstractTestRunner {
 			queueConsumer.push(testNames);
 		}
 	}
+	
+	@Override
+	public void stop() {
+		queueConsumer.stop();
+	}
 }
