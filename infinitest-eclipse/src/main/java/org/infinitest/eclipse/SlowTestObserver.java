@@ -49,28 +49,22 @@ public class SlowTestObserver implements DisabledTestListener, TestResultsListen
 		this.lookup = lookup;
 	}
 
-	private void runStatsUpdated(String testName, MethodStats newStats) {
-		// DEBT This class wants to share a lot of code with ResultCollector
-		// The whole process of detecting passing/failing/ignored/disabled tests
-		// is remarkably
-		// similar to the process of detecting slow/fast/ignored/disabled tests.
-		SlowTestMarkerInfo marker = new SlowTestMarkerInfo(testName, newStats, lookup, slowMarkerRegistry.markerServerity());
-		if (newStats.duration() > getSlowTestTimeLimit()) {
-			slowMarkerRegistry.addMarker(marker);
-		} else {
-			slowMarkerRegistry.removeMarker(marker);
-		}
-	}
-
 	@Override
 	public void testCaseStarting(TestEvent event) {
 	}
 
 	@Override
 	public void testCaseComplete(TestCaseEvent event) {
+		Collection<MarkerInfo> markers = new ArrayList<>();
+		
 		for (MethodStats methodStat : event.getRunStats()) {
-			runStatsUpdated(event.getTestName(), methodStat);
+			if (methodStat.duration() > getSlowTestTimeLimit()) {
+				SlowTestMarkerInfo marker = new SlowTestMarkerInfo(event.getTestName(), methodStat, lookup, slowMarkerRegistry.markerServerity());
+				markers.add(marker);
+			}
 		}
+		
+		slowMarkerRegistry.setMarkers(event.getTestName(), markers);
 	}
 
 	@Override

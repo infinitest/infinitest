@@ -30,6 +30,7 @@ package org.infinitest.eclipse.markers;
 import static org.infinitest.util.InfinitestUtils.log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -136,6 +137,25 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 	public void removeMarkers(String testName) {
 		for (MarkerInfo each : findMarkersFor(testName)) {
 			deleteMarker(each);
+		}
+	}
+	
+	@Override
+	public void setMarkers(String testName, Collection<MarkerInfo> markers) {
+		Collection<MarkerInfo> markersToProcess = new HashSet<>(markers);
+		
+		// Update the current markers
+		for (MarkerInfo marker : findMarkersFor(testName)) {
+			if (markersToProcess.contains(marker)) {
+				updateMarker(marker);
+				markersToProcess.remove(marker);
+			} else {
+				removeMarker(marker);
+			}
+		}
+		// Add the new markers
+		for (MarkerInfo marker : markersToProcess) {
+			addMarker(marker);
 		}
 	}
 
