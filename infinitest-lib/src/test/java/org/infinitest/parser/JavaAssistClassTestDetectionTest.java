@@ -73,10 +73,10 @@ class JavaAssistClassTestDetectionTest {
 		
 		// Ignored/disabled tests are still considered as tests, we leave it to the test engine to decide if a test must run
 		// We cannot always evaluate conditions (for instance @DisabledForJreRange)t
-		assertThat(classPoolUtil.getClass(IgnoredClassJUnit4TestCase.class).isATest()).isFalse();
-		assertThat(classPoolUtil.getClass(IgnoredTestJUnit4TestCase.class).isATest()).isFalse();
-		assertThat(classPoolUtil.getClass(DisabledClassJUnit5TestCase.class).isATest()).isFalse();
-		assertThat(classPoolUtil.getClass(DisabledTestJUnit5TestCase.class).isATest()).isFalse();
+		assertThat(classPoolUtil.getClass(IgnoredClassJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(IgnoredTestJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(DisabledClassJUnit5TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(DisabledTestJUnit5TestCase.class).isATest()).isTrue();
 	}
 
 	@Test
