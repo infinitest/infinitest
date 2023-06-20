@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 
 import org.junit.*;
 
-@Ignore
+@Ignore(value = "should be considered as a test")
 public class IgnoredClassJUnit4TestCase {
 	private static final String KEY = IgnoredClassJUnit4TestCase.class.getName() + "TOGGLE";
 	private static final String ENABLED = "ENABLED";

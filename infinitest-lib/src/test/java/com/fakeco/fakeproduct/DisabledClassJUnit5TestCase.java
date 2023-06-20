@@ -35,11 +35,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by fpoyer on 28/06/17.
  */
-@Disabled
+@Disabled(value = "should be considered as a test")
 public class DisabledClassJUnit5TestCase {
 
-    @Test
-    void nonPublicJUnit5TestShouldPass() {
-        assertThat(true).isTrue();
-    }
+	@Test
+	void nonPublicJUnit5TestShouldPass() {
+		assertThat(isTrue()).isTrue();
+	}
+
+	private boolean isTrue() {
+		return true;
+	}
 }

@@ -70,7 +70,10 @@ class JavaAssistClassTestDetectionTest {
 		assertThat(classPoolUtil.getClass(ParameterizedTest.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestNGFakeProductTest.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestNGWithClassLevelOnlyTestAnnotationFakeTest.class).isATest()).isTrue();
-		
+	}
+	
+	@Test
+	void disabledTestShouldBeConsideredAsTests() {
 		// Ignored/disabled tests are still considered as tests, we leave it to the test engine to decide if a test must run
 		// We cannot always evaluate conditions (for instance @DisabledForJreRange)t
 		assertThat(classPoolUtil.getClass(IgnoredClassJUnit4TestCase.class).isATest()).isTrue();

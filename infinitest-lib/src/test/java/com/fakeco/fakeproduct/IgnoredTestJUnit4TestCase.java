@@ -35,13 +35,13 @@ public class IgnoredTestJUnit4TestCase {
 	private static final String KEY = IgnoredTestJUnit4TestCase.class.getName() + "TOGGLE";
 	private static final String ENABLED = "ENABLED";
 
-	@Ignore
+	@Ignore(value = "should be considered as a test")
 	@Test
 	@SuppressWarnings("all")
 	public void shouldPass() {
 	}
 
-	@Ignore
+	@Ignore(value = "should be considered as a test")
 	@Test
 	public void shouldFailIfPropertyIsSet() {
 		if (ENABLED.equals(System.getProperty(KEY))) {
