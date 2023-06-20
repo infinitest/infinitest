@@ -41,6 +41,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -53,6 +55,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class WhenCreatingMarkers {
+	private static final String TEST_NAME = "com.fake.TestName";
 	private GenericMarkerRegistry registry;
 	private AssertionError error;
 	private UpdateMarkersOperation updateMarkersOperation;
@@ -162,7 +165,7 @@ class WhenCreatingMarkers {
 		registry.removeMarkers("NotATest");
 		assertThat(registry.getMarkers()).isNotEmpty();
 
-		registry.removeMarkers("com.fake.TestName");
+		registry.removeMarkers(TEST_NAME);
 		assertThat(registry.getMarkers()).isEmpty();
 	}
 
@@ -186,12 +189,28 @@ class WhenCreatingMarkers {
 		
 		assertEquals(SEVERITY_INFO, registry.markerServerity());
 	}
+	
+	@Test
+	void setMarkersOverwritesExistingMarkers() {
+		// add some markers
+		addMarker(methodFailed("", TEST_NAME, "methodName1", error));
+		addMarker(methodFailed("", TEST_NAME, "methodName2", error));
+		
+		// now set these two markers
+		FakeProblemMarkerInfo marker1 = new FakeProblemMarkerInfo(methodFailed("", TEST_NAME, "methodName1", error));
+		FakeProblemMarkerInfo marker3 = new FakeProblemMarkerInfo(methodFailed("", TEST_NAME, "methodName3", error));
+		Collection<MarkerInfo> markers = Arrays.asList(marker1, marker3);
+		
+		registry.setMarkers(TEST_NAME, markers);
+		
+		assertThat(registry.getMarkers()).containsExactlyInAnyOrder(marker1, marker3);
+	}
 
 	private void addMarker(TestEvent event) {
 		registry.addMarker(new FakeProblemMarkerInfo(event));
 	}
 
 	private TestEvent failureEvent(String failureMessage) {
-		return methodFailed(failureMessage, "com.fake.TestName", "methodName", error);
+		return methodFailed(failureMessage, TEST_NAME, "methodName", error);
 	}
 }
