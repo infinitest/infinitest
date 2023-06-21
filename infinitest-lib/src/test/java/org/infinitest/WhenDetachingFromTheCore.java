@@ -31,8 +31,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.CoreDependencySupport.createCore;
 import static org.infinitest.CoreDependencySupport.withNoTestsToRun;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.infinitest.changedetect.FakeChangeDetector;
+import org.infinitest.testrunner.TestRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +54,7 @@ class WhenDetachingFromTheCore {
 	}
 
 	@Test
-	void shouldNoLongerRecieveEvents() {
+	void shouldNoLongerReceiveEvents() {
 		ControlledEventQueue eventQueue = new ControlledEventQueue();
 		DefaultInfinitestCore core = createCore(new FakeChangeDetector(), withNoTestsToRun(), eventQueue);
 		core.addTestQueueListener(listener);
@@ -70,5 +73,16 @@ class WhenDetachingFromTheCore {
 		EventNormalizer normalizer = new EventNormalizer(new FakeEventQueue());
 		assertEquals(normalizer.testQueueNormalizer(listener), normalizer.testQueueNormalizer(listener));
 		assertThat(normalizer.testQueueNormalizer(listener)).isNotEqualTo(normalizer.testQueueNormalizer(new TestQueueAdapter()));
+	}
+	
+	@Test
+	void shouldStopRunner() {
+		ControlledEventQueue eventQueue = new ControlledEventQueue();
+		TestRunner runner = mock(TestRunner.class);
+		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, eventQueue);
+		
+		core.stop();
+		
+		verify(runner).stop();
 	}
 }

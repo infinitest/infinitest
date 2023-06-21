@@ -82,7 +82,7 @@ public abstract class QueueConsumer {
 		@Override
 		public void run() {
 			try {
-				if (testsAreRunning()) {
+				if (isTestRunning()) {
 					stopCurrentRun();
 				}
 				startNewTestRun();
@@ -98,7 +98,7 @@ public abstract class QueueConsumer {
 		}
 	}
 
-	private boolean testsAreRunning() {
+	private boolean isTestRunning() {
 		return (processorThread != null) && processorThread.isAlive();
 	}
 
@@ -123,7 +123,7 @@ public abstract class QueueConsumer {
 	}
 	
 	public void stop() {
-		if (testsAreRunning()) {
+		if (isTestRunning()) {
 			try {
 				stopCurrentRun();
 			} catch (InterruptedException e) {
