@@ -27,6 +27,7 @@
  */
 package org.infinitest.eclipse.workspace;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
@@ -62,6 +63,25 @@ class WhenCreatingAndRemovingCores implements CoreLifecycleListener {
 
 		registry.removeCore(new URI("//someProject"));
 		assertSame(coreRemoved, mockCore);
+	}
+	
+	@Test
+	void shouldStopAllCores() throws URISyntaxException {
+		URI uri1 = new URI("c:/test/1");
+		URI uri2 = new URI("c:/test/2");
+		
+		InfinitestCore core1 = mock(InfinitestCore.class);
+		InfinitestCore core2 = mock(InfinitestCore.class);
+		
+		registry.addCore(uri1, core1);
+		registry.addCore(uri2, core2);
+		
+		assertThat(registry.indexedCoreCount()).isEqualTo(2);
+		
+		registry.stop();
+		
+		verify(registry.getCore(uri1)).stop();
+		verify(registry.getCore(uri2)).stop();
 	}
 
 	@Override

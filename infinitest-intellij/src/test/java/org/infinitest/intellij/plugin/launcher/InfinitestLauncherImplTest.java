@@ -33,25 +33,40 @@ import static org.mockito.Mockito.when;
 
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfigurationSource;
-import org.infinitest.environment.RuntimeEnvironment;
 import org.infinitest.intellij.IntellijMockBase;
 import org.infinitest.intellij.ModuleSettings;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.intellij.openapi.util.Disposer;
+
 class InfinitestLauncherImplTest extends IntellijMockBase {
-	@Test
-	void launcherInitiatilization() {
-		ModuleSettings moduleSettings = mock(ModuleSettings.class);
-		RuntimeEnvironment runtimeEnvironment = mock(RuntimeEnvironment.class);
+	private ModuleSettings moduleSettings;
+	
+	@BeforeEach
+	void setupInfinitestLauncherImplTest() {
+		moduleSettings = mock(ModuleSettings.class);
 		InfinitestConfigurationSource configurationSource = FileBasedInfinitestConfigurationSource.createFromCurrentWorkingDirectory();
 		
 		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
 		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
-		when(runtimeEnvironment.getConfigurationSource()).thenReturn(configurationSource);
-		
+		when(runtimeEnvironment.getConfigurationSource()).thenReturn(configurationSource);		
+	}
+
+	@Test
+	void launcherInitiatilization() {
 		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(module);
 		
 		assertThat(launcher.getCore()).isNotNull();
 		assertThat(launcher.getResultCollector()).isNotNull();
+	}
+	
+	@Test
+	void moduleDisposedShouldStopTests() {
+		InfinitestLauncherImpl launcher = new InfinitestLauncherImpl(module);
+		
+		Disposer.dispose(module);
+		
+		assertThat(Disposer.getDisposalTrace(launcher)).isNotNull();
 	}
 }
