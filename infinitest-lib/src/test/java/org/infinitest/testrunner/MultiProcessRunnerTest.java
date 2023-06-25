@@ -27,15 +27,15 @@
  */
 package org.infinitest.testrunner;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.infinitest.ConcurrencyController;
@@ -60,12 +60,12 @@ class MultiProcessRunnerTest {
 		when(remoteProcessManager.getConnection(any(), any())).thenReturn(processConnection);
 
 		AtomicBoolean testStarting = new AtomicBoolean(false);
-		CountDownLatch testStarted = new CountDownLatch(1);
+		AtomicBoolean testStarted = new AtomicBoolean(false);
 		AtomicBoolean testCompleted = new AtomicBoolean(false);
 		
 		when(processConnection.runTest(anyString())).then(i -> {
-			testStarted.countDown();
-			Thread.sleep(60000L);
+			testStarted.set(true);
+			await().atMost(60, SECONDS);
 			testCompleted.set(true);
 			
 			return null;
@@ -91,7 +91,7 @@ class MultiProcessRunnerTest {
 		
 		// The test runs on another thread, wait for it to start or our stop() call will not stop anything
 		// It should take a lot less than 10 seconds for the test to start
-		testStarted.await(10, TimeUnit.SECONDS);
+		await().atMost(10, SECONDS).untilTrue(testStarted);
 		
 		runner.stop();
 
