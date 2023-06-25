@@ -27,6 +27,8 @@
  */
 package org.infinitest;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -54,7 +56,7 @@ public class CoreDependencySupport {
 		@Test
 		public void shouldBeReallySlow() throws Exception {
 			assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
-			Thread.sleep(1000000);
+			await().atLeast(1000, SECONDS);
 		}
 	}
 

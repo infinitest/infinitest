@@ -27,7 +27,6 @@
  */
 package org.infinitest.testrunner.queue;
 
-import static java.lang.Thread.sleep;
 import static java.util.Arrays.asList;
 import static org.infinitest.EventSupport.testCaseFailing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +48,6 @@ class WhenPrioritizingTests {
 	@Test
 	void shouldPreferRecentlyFailedTests() throws Exception {
 		stats.testCaseComplete(testCaseFailing("test2", "", new Exception()));
-		sleep(2);
 		stats.testCaseComplete(testCaseFailing("test1", "", new Exception()));
 
 		queue.add("test1");

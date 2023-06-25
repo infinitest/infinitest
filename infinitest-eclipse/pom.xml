@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.4.1.1</version>
+		<version>5.4.2-SNAPSHOT</version>
 	</parent>
 
 	<name>Infinitest Plugin for Eclipse</name>
@@ -307,6 +307,20 @@
 			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.infinitest</groupId>
+			<artifactId>infinitest-lib</artifactId>
+			<version>${project.parent.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>${awaitility.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
