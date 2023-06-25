@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.*;
 
 import org.infinitest.*;
-import org.infinitest.eclipse.util.*;
+import org.infinitest.util.ThreadSafeFlag;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,12 +66,7 @@ class SwtEventQueueTest {
 	@Test
 	void shouldExecuteEvents() throws Exception {
 		final ThreadSafeFlag ran = new ThreadSafeFlag();
-		queue.push(new Runnable() {
-			@Override
-			public void run() {
-				ran.trip();
-			}
-		});
+		queue.push(ran::trip);
 		ran.assertTripped();
 	}
 
@@ -86,12 +81,7 @@ class SwtEventQueueTest {
 	void shouldExecuteSuccessiveEvents() throws Exception {
 		final Semaphore semaphore = new Semaphore(3);
 		semaphore.acquire(3);
-		Runnable semaphoreReleasingTask = new Runnable() {
-			@Override
-			public void run() {
-				semaphore.release();
-			}
-		};
+		Runnable semaphoreReleasingTask = semaphore::release;
 		queue.push(semaphoreReleasingTask);
 		queue.push(semaphoreReleasingTask);
 		queue.push(semaphoreReleasingTask);
@@ -108,12 +98,7 @@ class SwtEventQueueTest {
 				throw new RuntimeException();
 			}
 		});
-		queue.push(new Runnable() {
-			@Override
-			public void run() {
-				flag.trip();
-			}
-		});
+		queue.push(flag::trip);
 
 		flag.assertTripped();
 		assertTrue(failingRunnableExecuted);

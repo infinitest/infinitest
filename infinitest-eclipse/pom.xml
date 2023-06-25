@@ -311,6 +311,20 @@
 			<groupId>org.infinitest</groupId>
 			<artifactId>infinitest-lib</artifactId>
 			<version>${project.parent.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>${awaitility.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.infinitest</groupId>
+			<artifactId>infinitest-lib</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.infinitest.eclipse</groupId>

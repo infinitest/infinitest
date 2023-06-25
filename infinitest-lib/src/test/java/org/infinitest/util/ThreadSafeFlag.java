@@ -27,10 +27,10 @@
  */
 package org.infinitest.util;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadSafeFlag {
@@ -51,7 +51,7 @@ public class ThreadSafeFlag {
 	}
 	
 	public void assertTripped() throws InterruptedException {
-		await().atMost(timeout, TimeUnit.MILLISECONDS).untilTrue(tripped);
+		await().atMost(timeout, MILLISECONDS).untilTrue(tripped);
 		assertThat(tripped).isTrue();
 	}
 

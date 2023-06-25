@@ -27,6 +27,7 @@
  */
 package org.infinitest;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.infinitest.testrunner.TestRunnerMother.*;
 import static org.infinitest.util.InfinitestTestUtils.*;
@@ -35,7 +36,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import org.infinitest.changedetect.*;
 import org.infinitest.parser.*;
@@ -56,7 +56,7 @@ public class CoreDependencySupport {
 		@Test
 		public void shouldBeReallySlow() throws Exception {
 			assumeTrue(InfinitestTestUtils.testIsBeingRunFromInfinitest());
-			await().atLeast(1000, TimeUnit.SECONDS);
+			await().atLeast(1000, SECONDS);
 		}
 	}
 
