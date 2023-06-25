@@ -27,30 +27,32 @@
  */
 package org.infinitest.util;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadSafeFlag {
-	private boolean tripped;
+	private AtomicBoolean tripped;
 	private final long timeout;
 
 	public ThreadSafeFlag(long timeout) {
+		this.tripped = new AtomicBoolean(false);
 		this.timeout = timeout;
 	}
 
 	public ThreadSafeFlag() {
-		this(1000);
+		this(5000);
 	}
 
-	public synchronized void trip() {
-		tripped = true;
-		notify();
+	public void trip() {
+		tripped.set(true);
 	}
-
-	public synchronized void assertTripped() throws InterruptedException {
-		if (!tripped) {
-			wait(timeout);
-		}
-		assertTrue(tripped);
+	
+	public void assertTripped() throws InterruptedException {
+		await().atMost(timeout, TimeUnit.MILLISECONDS).untilTrue(tripped);
+		assertThat(tripped).isTrue();
 	}
 
 }

@@ -36,7 +36,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.beans.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import org.awaitility.Awaitility;
 import org.infinitest.testrunner.*;
 import org.infinitest.testrunner.TestEvent.TestState;
 import org.infinitest.util.*;
@@ -82,10 +84,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 
 	@Override
 	public void testQueueUpdated(TestQueueEvent event) {
-		synchronized (queueEvents) {
-			queueEvents.add(event);
-			queueEvents.notify();
-		}
+		queueEvents.add(event);
 	}
 
 	@Override
@@ -144,11 +143,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	}
 
 	public void assertQueueChanges(int expectedEventCount) throws InterruptedException {
-		synchronized (queueEvents) {
-			while (queueEvents.size() < expectedEventCount) {
-				queueEvents.wait(timeout);
-			}
-		}
+		Awaitility.await().atMost(timeout, TimeUnit.MILLISECONDS).until(() -> queueEvents.size() >= expectedEventCount);
 	}
 
 	public void assertReloadOccured() throws InterruptedException {
