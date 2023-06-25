@@ -30,6 +30,7 @@ package org.infinitest;
 import static com.google.common.collect.Iterables.*;
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.infinitest.testrunner.TestEvent.*;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,7 +144,7 @@ public class EventSupport implements StatusChangeListener, TestQueueListener, Te
 	}
 
 	public void assertQueueChanges(int expectedEventCount) throws InterruptedException {
-		Awaitility.await().atMost(timeout, TimeUnit.MILLISECONDS).until(() -> queueEvents.size() >= expectedEventCount);
+		Awaitility.await().atMost(timeout, TimeUnit.MILLISECONDS).until(queueEvents::size, greaterThanOrEqualTo(expectedEventCount));
 	}
 
 	public void assertReloadOccured() throws InterruptedException {
