@@ -48,9 +48,6 @@ class WhenTestsAreRunAsynchronously {
 		eventSupport = new EventSupport(5000);
 		core.addTestQueueListener(eventSupport);
 		core.addTestResultsListener(eventSupport);
-		// Not sure why, but maven fails if we don't reset the interrupted state
-		// here!
-		Thread.interrupted();
 	}
 
 	@Test
