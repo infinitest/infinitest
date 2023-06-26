@@ -29,6 +29,7 @@ package org.infinitest.testrunner;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,7 +52,30 @@ import org.junit.jupiter.api.Test;
 class MultiProcessRunnerTest {
 
 	@Test
-	void stopShouldKillRunningTest() throws InterruptedException, IOException {
+	void stopShouldKillRunningInterruptibleTest() throws IOException {
+		Runnable interruptibleCode = () ->  {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		};
+		
+		stopShouldKillRunningTest(interruptibleCode);
+	}
+	
+
+	@Test
+	void stopShouldKillRunningUninterruptibleTest() throws IOException {
+		// Simulate that something prevents the processing thread from being interrupted
+		// In practice the tests run in annother process and we kill that process so this should never happen
+		AtomicBoolean flag = new AtomicBoolean();
+		Runnable uninterruptibleCode = () -> await().forever().untilTrue(flag);
+		
+		assertThatCode(() -> stopShouldKillRunningTest(uninterruptibleCode)).isInstanceOf(IllegalStateException.class);
+	}
+	
+	private void stopShouldKillRunningTest(Runnable longRunningCode) throws IOException {
 		ProcessConnectionFactory remoteProcessManager = mock(ProcessConnectionFactory.class);
 		ProcessConnection processConnection = mock(ProcessConnection.class);
 		RuntimeEnvironment environment  = mock(RuntimeEnvironment.class);
@@ -65,7 +89,7 @@ class MultiProcessRunnerTest {
 		
 		when(processConnection.runTest(anyString())).then(i -> {
 			testStarted.set(true);
-			await().atMost(60, SECONDS);
+			longRunningCode.run();
 			testCompleted.set(true);
 			
 			return null;
