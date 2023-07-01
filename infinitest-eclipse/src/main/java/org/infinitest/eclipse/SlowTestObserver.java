@@ -49,6 +49,11 @@ public class SlowTestObserver implements DisabledTestListener, TestResultsListen
 		this.lookup = lookup;
 	}
 
+		// DEBT This class wants to share a lot of code with ResultCollector
+		// The whole process of detecting passing/failing/ignored/disabled tests
+		// is remarkably
+		// similar to the process of detecting slow/fast/ignored/disabled tests.
+
 	@Override
 	public void testCaseStarting(TestEvent event) {
 	}
