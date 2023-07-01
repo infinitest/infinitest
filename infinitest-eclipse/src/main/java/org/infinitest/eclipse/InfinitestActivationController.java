@@ -86,6 +86,10 @@ public class InfinitestActivationController implements PluginActivationControlle
 		pluginEnabled = true;
 		// calling addResourceChangeListener() without the event type second argument is equivalent to
 		// listening only to: PRE_CLOSE, PRE_DELETE and POST_CHANGE
+
+		// Here we set the second argument to the event types we are interested in:
+		// - POST_BUILD to capture the changes in .class files after a build (so we get all the changes at once)
+		// - PRE_CLOSE to be notified when a project is closed, so we can clean up the failed tests
 		workspace.addResourceChangeListener(updateNotifier, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_CLOSE);
 	}
 
