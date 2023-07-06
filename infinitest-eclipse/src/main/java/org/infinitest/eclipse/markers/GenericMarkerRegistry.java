@@ -56,8 +56,12 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 	private final String markerId;
 	private int markerSeverity;
 
-	public GenericMarkerRegistry(String markerId, String severityPerferrenceKey) {
-		this(markerId, getPreferredSeverity(severityPerferrenceKey));
+	/**
+	 * @param severityPerferrenceKey The key of the preference to retrieve the severity
+	 * @param defaultSeverity The default severity in case the preference was not set
+	 */
+	public GenericMarkerRegistry(String markerId, String severityPerferrenceKey, int defaultSeverity) {
+		this(markerId, getPreferredSeverity(severityPerferrenceKey, defaultSeverity));
 	}
 
 	public GenericMarkerRegistry(String markerId, int markerSeverity) {
@@ -66,7 +70,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 		markers = new HashMap<>();
 	}
 
-	private static int getPreferredSeverity(String severityPerferrenceKey) {
+	private static int getPreferredSeverity(String severityPerferrenceKey, int defaultSeverity) {
 		InfinitestPlugin plugin = InfinitestPlugin.getInstance();
 		// The plugin is null in unit tests
 		if (plugin != null) {
@@ -80,7 +84,7 @@ public class GenericMarkerRegistry implements MarkerRegistry {
 			}
 		}
 		
-		return IMarker.SEVERITY_ERROR;
+		return defaultSeverity;
 	}
 
 	@Override
