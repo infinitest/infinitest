@@ -40,6 +40,6 @@ public class TestComparator implements Comparator<String> {
 
 	@Override
 	public int compare(String test1, String test2) {
-		return new Long(stats.getLastFailureTime(test2)).compareTo(stats.getLastFailureTime(test1));
+		return Long.compare(stats.getLastFailureTime(test2), stats.getLastFailureTime(test1));
 	}
 }

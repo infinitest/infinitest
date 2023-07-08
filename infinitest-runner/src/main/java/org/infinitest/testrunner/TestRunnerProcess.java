@@ -68,8 +68,8 @@ public class TestRunnerProcess {
 	protected NativeRunner instantiateTestRunner(String runnerClassName) {
 		try {
 			Class<?> runnerClass = Class.forName(runnerClassName);
-			return (NativeRunner) runnerClass.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			return (NativeRunner) runnerClass.getConstructor().newInstance();
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
