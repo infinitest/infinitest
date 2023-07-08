@@ -25,36 +25,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.eclipse.markers;
+package com.fakeco.fakeproduct;
 
-import java.util.Collection;
+import static org.junit.Assert.*;
 
-import org.eclipse.core.resources.IMarker;
+import org.junit.*;
 
-public interface MarkerRegistry {
-	void addMarker(MarkerInfo marker);
+@Ignore(value = "should be considered as a test")
+public class IgnoredClassJUnit4TestCase {
+	private static final String KEY = IgnoredClassJUnit4TestCase.class.getName() + "TOGGLE";
+	private static final String ENABLED = "ENABLED";
 
-	void removeMarker(MarkerInfo marker);
+	@Test
+	@SuppressWarnings("all")
+	public void shouldPass() {
+	}
 
-	void clear();
+	@Test
+	public void shouldFailIfPropertyIsSet() {
+		if (ENABLED.equals(System.getProperty(KEY))) {
+			fail("Test Failed");
+		}
+	}
 
-	void updateMarker(MarkerInfo marker);
+	public static void enable() {
+		System.setProperty(KEY, ENABLED);
+	}
 
-	void removeMarkers(String testName);
-	
-	/**
-	 * Set the markers for a given test name. For instance if the collection is empty all the markers will be cleared for that test
-	 * 
-	 * @param testName The test name
-	 * @param markers The new collection of markers
-	 */
-	void setMarkers(String testName, Collection<MarkerInfo> markers);
-
-	/**
-	 * Updates the severity of all the markers
-	 * @param markersSeverity The new marker severity, for instance {@link IMarker#SEVERITY_ERROR}
-	 */
-	void updateMarkersSeverity(int markersSeverity);
-	
-	int markerServerity();
+	public static void disable() {
+		System.clearProperty(KEY);
+	}
 }

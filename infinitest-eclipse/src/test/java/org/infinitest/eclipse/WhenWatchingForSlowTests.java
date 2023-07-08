@@ -40,6 +40,7 @@ import org.infinitest.testrunner.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatcher;
 
 class WhenWatchingForSlowTests {
 	private SlowMarkerRegistry mockMarkerRegistry;
@@ -74,7 +75,7 @@ class WhenWatchingForSlowTests {
 
 		observer.testCaseComplete(event);
 
-		verify(mockMarkerRegistry).addMarker(expectedMarker);
+		verify(mockMarkerRegistry).setMarkers(eq("MyTest"), eq(Arrays.asList(expectedMarker)));
 	}
 
 	@Test
@@ -84,7 +85,7 @@ class WhenWatchingForSlowTests {
 
 		observer.testCaseComplete(event);
 
-		verify(mockMarkerRegistry).removeMarker(expectedMarker);
+		verify(mockMarkerRegistry).setMarkers(eq("MyTest"), emptyCollection());
 	}
 
 	@Test
@@ -95,8 +96,18 @@ class WhenWatchingForSlowTests {
 		observer.testCaseComplete(event);
 		observer.testsDisabled(Arrays.asList("MyTest"));
 
-		verify(mockMarkerRegistry).addMarker(expectedMarker);
+		verify(mockMarkerRegistry).setMarkers(eq("MyTest"), eq(Arrays.asList(expectedMarker)));
 		verify(mockMarkerRegistry).removeMarkers("MyTest");
+	}
+
+	@Test
+	void shouldRemoveMarkersWhenTestsAreIgnored() {
+		TestResults ignoreTestResults = new TestResults(Collections.emptyList());
+		TestCaseEvent ignoredTestEvent = new TestCaseEvent("MyTest", this, ignoreTestResults);
+		
+		observer.testCaseComplete(ignoredTestEvent);
+
+		verify(mockMarkerRegistry).setMarkers(eq("MyTest"), emptyCollection());
 	}
 
 	@Test
@@ -104,5 +115,10 @@ class WhenWatchingForSlowTests {
 		observer.clearMarkers();
 
 		verify(mockMarkerRegistry).clear();
+	}
+	
+	private static <T> Collection<T> emptyCollection() {
+		ArgumentMatcher<Collection<T>> matcher = c -> c.isEmpty();
+		return argThat(matcher);
 	}
 }

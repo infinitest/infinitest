@@ -32,7 +32,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fakeco.fakeproduct.DisabledClassJUnit5TestCase;
+import com.fakeco.fakeproduct.DisabledTestJUnit5TestCase;
 import com.fakeco.fakeproduct.FakeProduct;
+import com.fakeco.fakeproduct.IgnoredClassJUnit4TestCase;
+import com.fakeco.fakeproduct.IgnoredTestJUnit4TestCase;
 import com.fakeco.fakeproduct.JUnit3TestThatInherits;
 import com.fakeco.fakeproduct.JUnit4TestThatInherits;
 import com.fakeco.fakeproduct.ParameterizedTest;
@@ -66,6 +70,16 @@ class JavaAssistClassTestDetectionTest {
 		assertThat(classPoolUtil.getClass(ParameterizedTest.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestNGFakeProductTest.class).isATest()).isTrue();
 		assertThat(classPoolUtil.getClass(TestNGWithClassLevelOnlyTestAnnotationFakeTest.class).isATest()).isTrue();
+	}
+	
+	@Test
+	void disabledTestShouldBeConsideredAsTests() {
+		// Ignored/disabled tests are still considered as tests, we leave it to the test engine to decide if a test must run
+		// We cannot always evaluate conditions (for instance @DisabledForJreRange)t
+		assertThat(classPoolUtil.getClass(IgnoredClassJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(IgnoredTestJUnit4TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(DisabledClassJUnit5TestCase.class).isATest()).isTrue();
+		assertThat(classPoolUtil.getClass(DisabledTestJUnit5TestCase.class).isATest()).isTrue();
 	}
 
 	@Test

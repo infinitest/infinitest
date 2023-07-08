@@ -25,36 +25,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.infinitest.eclipse.markers;
+package com.fakeco.fakeproduct;
 
-import java.util.Collection;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import org.eclipse.core.resources.IMarker;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public interface MarkerRegistry {
-	void addMarker(MarkerInfo marker);
+/**
+ * Created by fpoyer on 28/06/17.
+ */
+@Disabled(value = "should be considered as a test")
+public class DisabledClassJUnit5TestCase {
 
-	void removeMarker(MarkerInfo marker);
+	@Test
+	void nonPublicJUnit5TestShouldPass() {
+		assertThat(isTrue()).isTrue();
+	}
 
-	void clear();
-
-	void updateMarker(MarkerInfo marker);
-
-	void removeMarkers(String testName);
-	
-	/**
-	 * Set the markers for a given test name. For instance if the collection is empty all the markers will be cleared for that test
-	 * 
-	 * @param testName The test name
-	 * @param markers The new collection of markers
-	 */
-	void setMarkers(String testName, Collection<MarkerInfo> markers);
-
-	/**
-	 * Updates the severity of all the markers
-	 * @param markersSeverity The new marker severity, for instance {@link IMarker#SEVERITY_ERROR}
-	 */
-	void updateMarkersSeverity(int markersSeverity);
-	
-	int markerServerity();
+	private boolean isTrue() {
+		return true;
+	}
 }
