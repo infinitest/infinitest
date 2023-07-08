@@ -27,6 +27,7 @@
  */
 package org.infinitest.eclipse.markers;
 
+import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
 import static org.infinitest.eclipse.PluginConstants.PROBLEM_MARKER_ID;
 import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
 
@@ -35,6 +36,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProblemMarkerRegistry extends GenericMarkerRegistry {
 	public ProblemMarkerRegistry() {
-		super(PROBLEM_MARKER_ID, FAILED_TEST_MARKER_SEVERITY);
+		super(PROBLEM_MARKER_ID, FAILED_TEST_MARKER_SEVERITY, SEVERITY_ERROR);
 	}
 }

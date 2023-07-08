@@ -34,6 +34,7 @@ import static org.eclipse.core.resources.IMarker.SEVERITY;
 import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
 import static org.eclipse.core.resources.IMarker.SEVERITY_INFO;
 import static org.infinitest.eclipse.PluginConstants.PROBLEM_MARKER_ID;
+import static org.infinitest.eclipse.prefs.PreferencesConstants.FAILED_TEST_MARKER_SEVERITY;
 import static org.infinitest.testrunner.TestEvent.methodFailed;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,6 @@ import java.util.Map;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.ide.undo.UpdateMarkersOperation;
-import org.infinitest.eclipse.prefs.PreferencesConstants;
 import org.infinitest.eclipse.workspace.FakeResourceFinder;
 import org.infinitest.testrunner.TestEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +64,7 @@ class WhenCreatingMarkers {
 	void inContext() {
 		error = new AssertionError();
 		updateMarkersOperation = mock(UpdateMarkersOperation.class);
-		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID, PreferencesConstants.FAILED_TEST_MARKER_SEVERITY) {
+		registry = new GenericMarkerRegistry(PROBLEM_MARKER_ID, FAILED_TEST_MARKER_SEVERITY, SEVERITY_ERROR) {
 			@Override
 			protected UpdateMarkersOperation buildUpdateMarkersAction(Map<String, Integer> attributes, IMarker[] markers) {
 				return updateMarkersOperation;
