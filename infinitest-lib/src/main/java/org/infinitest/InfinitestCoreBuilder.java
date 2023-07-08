@@ -45,7 +45,6 @@ import org.infinitest.testrunner.TestRunner;
  */
 public class InfinitestCoreBuilder {
 	private TestFilter filterList;
-	private final Class<? extends TestRunner> runnerClass;
 	private final RuntimeEnvironment runtimeEnvironment;
 	private final EventQueue eventQueue;
 	private String coreName;
@@ -59,7 +58,6 @@ public class InfinitestCoreBuilder {
 		this.coreName = coreName;
 		
 		filterList = new RegexFileFilter(environment.getConfigurationSource());
-		runnerClass = MultiProcessRunner.class;
 		controller = new SingleLockConcurrencyController();
 	}
 
@@ -67,7 +65,7 @@ public class InfinitestCoreBuilder {
 	 * Creates a new core from the existing builder settings.
 	 */
 	public InfinitestCore createCore() {
-		TestRunner runner = createRunner();
+		TestRunner runner = new MultiProcessRunner();
 		runner.setConcurrencyController(controller);
 		DefaultInfinitestCore core = new DefaultInfinitestCore(runner, eventQueue);
 		core.setName(coreName);
@@ -88,16 +86,6 @@ public class InfinitestCoreBuilder {
 	 */
 	public void setFilter(TestFilter testFilter) {
 		filterList = testFilter;
-	}
-
-	private TestRunner createRunner() {
-		try {
-			return runnerClass.newInstance();
-		} catch (InstantiationException e) {
-			throw new RuntimeException("Cannot create runner from class " + runnerClass + ". Did you provide a no-arg constructor?", e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Cannot access runner class " + runnerClass, e);
-		}
 	}
 
 	public void setUpdateSemaphore(ConcurrencyController semaphore) {

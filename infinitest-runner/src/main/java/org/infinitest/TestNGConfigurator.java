@@ -64,7 +64,7 @@ public class TestNGConfigurator {
 
 		for (String listenerClassName : listenerClassNames) {
 			try {
-				listenerList.add(Class.forName(listenerClassName).newInstance());
+				listenerList.add(Class.forName(listenerClassName).getConstructor().newInstance());
 			} catch (Exception e) {
 				// unable to add this listener, just continue with the next.
 				e.printStackTrace();

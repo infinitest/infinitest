@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -68,8 +69,8 @@ public class TestRunnerProcess {
 	protected NativeRunner instantiateTestRunner(String runnerClassName) {
 		try {
 			Class<?> runnerClass = Class.forName(runnerClassName);
-			return (NativeRunner) runnerClass.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			return (NativeRunner) runnerClass.getConstructor().newInstance();
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
