@@ -34,9 +34,11 @@ import org.infinitest.intellij.InfinitestTopics;
 import org.infinitest.intellij.ModuleSettings;
 import org.infinitest.intellij.plugin.swingui.SwingEventQueue;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.Disposer;
 
-public class InfinitestLauncherImpl implements InfinitestLauncher {
+public class InfinitestLauncherImpl implements InfinitestLauncher, Disposable {
 	private final InfinitestCore core;
 	private final ResultCollector resultCollector;
 	
@@ -56,6 +58,8 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 		resultCollector.addChangeListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.FAILURE_LIST_TOPIC));
 		resultCollector.addStatusChangeListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.STATUS_CHANGE_TOPIC));
 		resultCollector.addTestQueueListener(module.getProject().getMessageBus().syncPublisher(InfinitestTopics.TEST_QUEUE_TOPIC));
+		
+		Disposer.register(module, this);
 	}
 
 	@Override
@@ -66,5 +70,10 @@ public class InfinitestLauncherImpl implements InfinitestLauncher {
 	@Override
 	public ResultCollector getResultCollector() {
 		return resultCollector;
+	}
+	
+	@Override
+	public void dispose() {
+		core.stop();
 	}
 }

@@ -66,6 +66,8 @@ class InfinitestCoreRegistry implements CoreRegistry {
 		if (core != null) {
 			fireRemovedEvent(core);
 			log("Removing core " + core.getName());
+			
+			core.stop();
 		}
 	}
 
@@ -88,5 +90,12 @@ class InfinitestCoreRegistry implements CoreRegistry {
 	@Override
 	public void addLifecycleListener(CoreLifecycleListener listener) {
 		listeners.add(listener);
+	}
+	
+	@Override
+	public void stop() {
+		for (InfinitestCore core : coreMap.values()) {
+			core.stop();
+		}
 	}
 }

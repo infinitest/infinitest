@@ -244,6 +244,11 @@ class DefaultInfinitestCore implements InfinitestCore {
 		reload();
 		update();
 	}
+	
+	@Override
+	public void stop() {
+		runner.stop();
+	}
 
 	TestRunner getRunner() {
 		return runner;

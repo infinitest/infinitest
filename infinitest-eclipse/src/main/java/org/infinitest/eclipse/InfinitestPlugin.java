@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.infinitest.eclipse.prefs.PreferencesConstants;
 import org.infinitest.eclipse.trim.ColorSettings;
+import org.infinitest.eclipse.workspace.CoreRegistry;
 import org.infinitest.eclipse.workspace.CoreSettings;
 import org.infinitest.util.InfinitestGlobalSettings;
 import org.infinitest.util.InfinitestUtils;
@@ -80,8 +81,12 @@ public class InfinitestPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception
 	// CHECKSTYLE:ON
 	{
-		sharedInstance = null;
-		super.stop(context);
+		try {
+			getBean(CoreRegistry.class).stop();
+		} finally {
+			sharedInstance = null;
+			super.stop(context);
+		}
 	}
 
 	// Idiomatic OSGI
