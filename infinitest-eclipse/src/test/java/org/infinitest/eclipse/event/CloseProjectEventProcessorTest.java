@@ -27,96 +27,74 @@
  */
 package org.infinitest.eclipse.event;
 
-import static org.eclipse.core.resources.IResourceChangeEvent.POST_BUILD;
-import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
 import static org.eclipse.core.resources.IResourceChangeEvent.PRE_BUILD;
+import static org.eclipse.core.resources.IResourceChangeEvent.PRE_CLOSE;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.AUTO_BUILD;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.eclipse.core.internal.events.ResourceChangeEvent;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.infinitest.eclipse.ResourceEventSupport;
-import org.infinitest.eclipse.workspace.WorkspaceFacade;
+import org.infinitest.eclipse.workspace.CoreRegistry;
+import org.infinitest.eclipse.workspace.EclipseProject;
+import org.infinitest.eclipse.workspace.ProjectSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class WhenRespondingToBuildEvents extends ResourceEventSupport {
-	private ClassFileChangeProcessor processor;
-	private WorkspaceFacade workspace;
+class CloseProjectEventProcessorTest extends ResourceEventSupport {
+	private CoreRegistry coreRegistry;
+	private ProjectSet projectSet;
+	private CloseProjectEventProcessor processor;
 
 	@BeforeEach
 	void inContext() {
-		workspace = mock(WorkspaceFacade.class);
-		processor = new ClassFileChangeProcessor(workspace);
+		coreRegistry = mock(CoreRegistry.class);
+		projectSet = mock(ProjectSet.class);
+		
+		processor = new CloseProjectEventProcessor(coreRegistry, projectSet);
 	}
 
 	@Test
 	void shouldNotRespondToPreBuildEvents() {
+		// Not sure if it is correct to use AUTO_BUILD here
+		
 		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, null);
 		assertFalse(processor.canProcessEvent(event));
-
-		verifyNoInteractions(workspace);		
 	}
 
 	@Test
-	void shouldNotUpdateIfClassesAreNotChanged() throws CoreException {
-		assertDoesNotThrow(() -> processor.processEvent(emptyEvent()));
-
-		verifyNoInteractions(workspace);
-	}
-
-	@Test
-	void shouldRespondToPostBuildEvents() {
+	void shouldRespondToPreCloseEvents() {
 		IResourceDelta delta = mock(IResourceDelta.class);
-		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_BUILD, AUTO_BUILD, delta);
+		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_CLOSE, AUTO_BUILD, delta);
 		assertTrue(processor.canProcessEvent(event));
-
-		verifyNoInteractions(workspace);
-	}
-
-	@Test
-	void shouldRespondToPostChangeEvents() {
-		// Not sure why we wanted to respond to change events, seems better to respond to the post build event, once the build is finished
-		IResourceChangeEvent event = new ResourceChangeEvent(this, POST_CHANGE, AUTO_BUILD, null);
-		assertFalse(processor.canProcessEvent(event));
-
-		verifyNoInteractions(workspace);
 	}
 	
 	@Test
-	void shouldHandleRemovedTestClasses() throws CoreException {
-		IResourceDelta delta = mock(IResourceDelta.class);
-		IPath path = mock(IPath.class);
+	void shouldCloseCore() throws CoreException, URISyntaxException {
+		IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+		IProject project = mock(IProject.class);
+		IPath projectPath = mock(IPath.class);
+		EclipseProject projectFacade = mock(EclipseProject.class);
+		URI projectUri = new URI("c:/test/project");
 		
-		when(delta.getKind()).thenReturn(IResourceDelta.REMOVED);
-		when(delta.getAffectedChildren()).thenReturn(new IResourceDelta[] {delta});
-		doAnswer(i -> {
-			IResourceDeltaVisitor v = i.getArgument(0, IResourceDeltaVisitor.class);
-			v.visit(delta);
-			
-			return null;
-		}).when(delta).accept(any());
-		when(delta.getFullPath()).thenReturn(path);
-		when(path.toPortableString()).thenReturn("/target/test.class");
-		
-		IResourceChangeEvent event = new ResourceChangeEvent(this, PRE_BUILD, AUTO_BUILD, delta);
+		when(event.getResource()).thenReturn(project);
+		when(project.getFullPath()).thenReturn(projectPath);
+		when(projectSet.findProject(projectPath)).thenReturn(projectFacade);
+		when(projectFacade.getLocationURI()).thenReturn(projectUri);
 		
 		processor.processEvent(event);
 		
-		verify(workspace, times(1)).remove(anySet());
+		verify(coreRegistry).removeCore(projectUri);
 	}
 }

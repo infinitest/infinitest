@@ -38,7 +38,7 @@ class WhenNoProcessorsCanHandleEvent {
 		EventQueue eventQueue = mock(EventQueue.class);
 
 		CoreUpdateNotifier factory = new CoreUpdateNotifier(eventQueue);
-		factory.processEvent(null);
+		factory.resourceChanged(null);
 		verifyNoInteractions(eventQueue);
 	}
 }

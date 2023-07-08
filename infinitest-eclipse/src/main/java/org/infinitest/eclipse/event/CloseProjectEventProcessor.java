@@ -27,41 +27,34 @@
  */
 package org.infinitest.eclipse.event;
 
-import static java.util.Arrays.*;
+import static org.eclipse.core.resources.IResourceChangeEvent.PRE_CLOSE;
 
-import java.util.*;
-
-import org.eclipse.core.resources.*;
-import org.infinitest.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.runtime.CoreException;
+import org.infinitest.eclipse.workspace.CoreRegistry;
+import org.infinitest.eclipse.workspace.ProjectSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
-class CoreUpdateNotifier implements IResourceChangeListener {
-	private final List<EclipseEventProcessor> processors;
-	private final EventQueue queue;
+public class CloseProjectEventProcessor extends ProjectCleaningEventProcessor {
 
 	@Autowired
-	CoreUpdateNotifier(EventQueue queue) {
-		this.queue = queue;
-		processors = new ArrayList<>();
+	CloseProjectEventProcessor(CoreRegistry coreRegistry, ProjectSet projectSet) {
+		super(coreRegistry, projectSet, "Closing project");
 	}
 
-	@Autowired
-	public void addProcessor(EclipseEventProcessor... eventProcessors) {
-		processors.addAll(asList(eventProcessors));
-	}
-
-	/**
-	 * http://www.eclipse.org/articles/Article-Resource-deltas/resource-deltas.
-	 * html
-	 */
 	@Override
-	public void resourceChanged(final IResourceChangeEvent event) {
-		for (EclipseEventProcessor processor : processors) {
-			if (processor.canProcessEvent(event)) {
-				queue.pushNamed(new EventProcessorRunnable(processor, event));
-			}
+	public void processEvent(IResourceChangeEvent event) throws CoreException {
+		if (event.getResource() instanceof IProject) {
+			IProject project = (IProject) event.getResource();
+			cleanProject(project);
 		}
+	}
+
+	@Override
+	public boolean canProcessEvent(IResourceChangeEvent event) {
+		return (event.getType() & PRE_CLOSE) > 0;
 	}
 }

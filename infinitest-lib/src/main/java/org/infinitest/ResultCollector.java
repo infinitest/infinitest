@@ -77,9 +77,8 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 		core.removeTestResultsListener(this);
 		core.removeDisabledTestListener(this);
 		List<String> tests = findFailingTestsForCore(core);
-		for (String string : tests) {
-			resultMap.remove(string);
-		}
+		
+		testsDisabled(tests);
 	}
 
 	private List<String> findFailingTestsForCore(InfinitestCore core) {
@@ -192,10 +191,22 @@ public class ResultCollector implements DisabledTestListener, TestQueueListener,
 
 	@Override
 	public void testsDisabled(Collection<String> testNames) {
+		// Check if we have failures before removing the tests
+		boolean hasFailures = hasFailures();
+		
 		for (String eachTest : testNames) {
 			TestCaseEvent event = resultMap.remove(eachTest);
 			if (event != null) {
 				fireChangeEvent(noEvents(), event.getFailureEvents());
+			}
+		}
+		
+		if (hasFailures && !hasFailures()) {
+			// Some of the tests we've removed were failed tests and now there is no failure: update the status
+			if (resultMap.isEmpty()) {
+				setStatus(SCANNING);
+			} else {
+				setStatus(PASSING);
 			}
 		}
 	}

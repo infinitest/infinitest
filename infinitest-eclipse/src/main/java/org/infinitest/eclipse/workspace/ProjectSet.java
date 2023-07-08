@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 
 public interface ProjectSet {
-	ProjectFacade findProject(IPath path);
+	EclipseProject findProject(IPath path);
 
 	List<File> outputDirectories(EclipseProject project) throws JavaModelException;
 
