@@ -45,7 +45,5 @@
 
         <moduleService serviceInterface="org.infinitest.intellij.ModuleSettings" serviceImplementation="org.infinitest.intellij.idea.IdeaModuleSettings"/>
         <moduleService serviceInterface="org.infinitest.intellij.plugin.launcher.InfinitestLauncher" serviceImplementation="org.infinitest.intellij.plugin.launcher.InfinitestLauncherImpl"/>
-
-        <applicationConfigurable parentId="tools" instance="org.infinitest.intellij.ApplicationSettingConfigurable" id="org.infinitest.intellij.ApplicationSettingConfigurable" displayName="Infinitest Settings"/>
 	</extensions>
 </idea-plugin>
