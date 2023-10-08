@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.4.3</version>
+		<version>5.4.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>infinitest-eclipse-feature</artifactId>
 	<name>Infinitest Feature for Eclipse</name>
