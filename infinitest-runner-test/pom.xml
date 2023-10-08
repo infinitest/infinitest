@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.infinitest</groupId>
 		<artifactId>infinitest-parent</artifactId>
-		<version>5.4.3-SNAPSHOT</version>
+		<version>5.4.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>infinitest-runner-test</artifactId>
 	<name>infinitest-runner-test</name>
