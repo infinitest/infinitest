@@ -6,6 +6,10 @@
     <vendor url="http://infinitest.github.io/">Infinitest</vendor>
     
     <change-notes><![CDATA[
+    <h2>5.4.3</h2>
+    <ul>
+        <li>Bugfix: removed applicationConfigurable</li>
+    </ul>
     <h2>5.4.1</h2>
     <ul>
         <li>Fixed an issue where test resources of Gradle projects were not on the classpath</li>
