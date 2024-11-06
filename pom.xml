@@ -45,7 +45,7 @@
 		<awaitility.version>4.2.0</awaitility.version>
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.organization>infinitest</sonar.organization>
+		<sonar.organization>infinitest-github</sonar.organization>
 		<sonar.exclusions>org/infinitest/testrunner/exampletests/**/*,com/fakeco/**/*</sonar.exclusions>
 	</properties>
 
