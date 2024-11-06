@@ -27,16 +27,24 @@
  */
 package org.infinitest.eclipse.trim;
 
-import static org.eclipse.swt.SWT.*;
-import static org.infinitest.eclipse.util.GraphicsUtils.*;
+import static org.eclipse.swt.SWT.BORDER;
+import static org.eclipse.swt.SWT.COLOR_BLACK;
+import static org.eclipse.swt.SWT.COLOR_WHITE;
+import static org.eclipse.swt.SWT.LEFT;
+import static org.eclipse.swt.SWT.NONE;
+import static org.infinitest.eclipse.util.GraphicsUtils.getColor;
 
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
-import org.eclipse.ui.menus.*;
-import org.infinitest.eclipse.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
+import org.infinitest.eclipse.InfinitestPlugin;
+import org.infinitest.eclipse.PluginActivationController;
 
-public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStatus {
+public class StatusBar extends WorkbenchWindowControlContribution implements VisualStatus {
+	
 	/**
 	 * Cache the current trim so we can 'dispose' it on demand
 	 */
@@ -45,8 +53,13 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 	private String statusString = "Infinitest is waiting for changes";
 	private int backgroundColor = COLOR_BLACK;
 
-	@Override
-	public void init(IWorkbenchWindow workbenchWindow) {
+	public StatusBar() {
+		getPluginController().attachVisualStatus(this);
+	}
+
+	public StatusBar(String id) {
+		super(id);
+		
 		getPluginController().attachVisualStatus(this);
 	}
 
@@ -57,35 +70,29 @@ public class StatusBar extends AbstractWorkbenchTrimWidget implements VisualStat
 		}
 		composite = null;
 	}
-
-	@Override
-	public void fill(Composite parent, int oldSide, int newSide) {
+	
+	protected Control createControl(Composite parent) {
+		// See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=471313#c12
+		parent.getParent().setRedraw(true);
+		
 		composite = new Composite(parent, NONE);
-
-		RowLayout layout = new RowLayout();
-		layout.marginHeight = 4;
-		layout.marginWidth = 2;
-		layout.center = true;
+		
+		FillLayout layout = new FillLayout();
 		composite.setLayout(layout);
 
-		addStatusLabel(newSide);
-		composite.layout();
-	}
-
-	private void addStatusLabel(int newSide) {
+		
 		statusLabel = new Label(composite, BORDER | LEFT);
-		statusLabel.setLayoutData(getRowData(newSide));
 		statusLabel.setForeground(getColor(COLOR_WHITE));
 		statusLabel.setText(statusString);
 		statusLabel.setBackground(getColor(backgroundColor));
+		
+		return composite;
 	}
-
-	RowData getRowData(int newSide) {
-		RowData rowData = new RowData();
-		if ((newSide == BOTTOM) || (newSide == TOP)) {
-			rowData.width = 400;
-		}
-		return rowData;
+	
+	@Override
+	public boolean isDynamic() {
+		// See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=471313#c12
+		return true;
 	}
 
 	@Override
