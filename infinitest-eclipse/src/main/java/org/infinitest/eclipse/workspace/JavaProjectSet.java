@@ -29,6 +29,7 @@ package org.infinitest.eclipse.workspace;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.*;
@@ -66,7 +67,7 @@ class JavaProjectSet implements ProjectSet {
 	public List<ProjectFacade> projects() {
 		return openProjects()
 				.map(ProjectFacade::new)
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	@Override
