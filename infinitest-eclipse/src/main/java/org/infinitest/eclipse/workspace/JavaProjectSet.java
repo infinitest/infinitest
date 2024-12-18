@@ -27,17 +27,15 @@
  */
 package org.infinitest.eclipse.workspace;
 
-import static com.google.common.collect.Iterables.*;
-
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
-
-import com.google.common.base.*;
 
 @Component
 class JavaProjectSet implements ProjectSet {
@@ -50,13 +48,11 @@ class JavaProjectSet implements ProjectSet {
 
 	@Override
 	public ProjectFacade findProject(IPath path) {
-		for (IJavaProject project : openProjects()) {
-			if (project.getPath().equals(path)) {
-				return createProjectFacade(project);
-			}
-		}
-
-		return null;
+		return openProjects()
+				.filter(project -> project.getPath().equals(path))
+				.map(ProjectFacade::new)
+				.findFirst()
+				.orElse(null);
 	}
 
 	protected ProjectFacade createProjectFacade(IJavaProject project) {
@@ -69,11 +65,9 @@ class JavaProjectSet implements ProjectSet {
 
 	@Override
 	public List<ProjectFacade> projects() {
-		List<ProjectFacade> projects = new ArrayList<>();
-		for (IJavaProject project : openProjects()) {
-			projects.add(new ProjectFacade(project));
-		}
-		return projects;
+		return openProjects()
+				.map(ProjectFacade::new)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -86,13 +80,11 @@ class JavaProjectSet implements ProjectSet {
 		return false;
 	}
 
-	private Iterable<IJavaProject> openProjects() {
-		return filter(finder.getJavaProjects(), new Predicate<IJavaProject>() {
-			@Override
-			public boolean apply(IJavaProject input) {
-				return input.isOpen();
-			}
-		});
+	/**
+	 * @return the {@link Stream} of the open projects
+	 */
+	private Stream<IJavaProject> openProjects() {
+		return finder.getJavaProjects().stream().filter(IJavaProject::isOpen);
 	}
 
 	/**
