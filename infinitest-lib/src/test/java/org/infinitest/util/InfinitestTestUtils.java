@@ -32,10 +32,10 @@ import static org.infinitest.environment.FakeEnvironments.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.infinitest.testrunner.*;
 
-import com.google.common.base.*;
 import com.google.common.io.*;
 
 public abstract class InfinitestTestUtils {
@@ -96,12 +96,7 @@ public abstract class InfinitestTestUtils {
 	}
 
 	public static Predicate<String> containsSubstring(final String substring) {
-		return new Predicate<String>() {
-			@Override
-			public boolean apply(String input) {
-				return input.contains(substring);
-			}
-		};
+		return input -> input.contains(substring);
 	}
 
 	public static List<String> emptyStringList() {

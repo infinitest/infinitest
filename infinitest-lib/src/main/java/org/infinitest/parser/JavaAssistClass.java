@@ -39,13 +39,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import org.infinitest.util.InfinitestUtils;
 import org.junit.platform.commons.annotation.Testable;
 import org.junit.runner.RunWith;
-
-import com.google.common.base.Predicate;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -291,12 +290,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private Predicate<CtClass> hasACustomRunner() {
-		return new Predicate<CtClass>() {
-			@Override
-			public boolean apply(CtClass input) {
-				return isAnnotatedWithCustomRunner(input);
-			}
-		};
+		return this::isAnnotatedWithCustomRunner;
 	}
 
 	private boolean hasArchUnitTests(CtClass classReference) {
@@ -346,8 +340,8 @@ public class JavaAssistClass extends AbstractJavaClass {
     private boolean isJUnit5TestMethod(CtMethod ctMethod, ClassPool classPool) {
         final List<?> attributes = ctMethod.getMethodInfo2().getAttributes();
         return attributes.stream()
-                .filter(clazz -> clazz instanceof AnnotationsAttribute)
-                .map(attribute -> (AnnotationsAttribute) attribute)
+                .filter(AnnotationsAttribute.class::isInstance)
+                .map(AnnotationsAttribute.class::cast)
                 .map(AnnotationsAttribute::getAnnotations)
                 .flatMap(Arrays::stream)
                 .anyMatch(annotation -> isJUnit5TestAnnotation(annotation, classPool));
@@ -385,7 +379,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	private boolean anySuperclassOf(CtClass classReference, Predicate<CtClass> predicate) {
 		CtClass superclass = findSuperclass(classReference);
 		while (superclass != null) {
-			if (predicate.apply(superclass)) {
+			if (predicate.test(superclass)) {
 				return true;
 			}
 			superclass = findSuperclass(superclass);
@@ -394,12 +388,7 @@ public class JavaAssistClass extends AbstractJavaClass {
 	}
 
 	private Predicate<CtClass> isTestCase() {
-		return new Predicate<CtClass>() {
-			@Override
-			public boolean apply(CtClass input) {
-				return input.getName().equals(TestCase.class.getName());
-			}
-		};
+		return input -> input.getName().equals(TestCase.class.getName());
 	}
 
 	private CtClass findSuperclass(CtClass aClassReference) {
