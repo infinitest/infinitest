@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.infinitest.environment.ClasspathProvider;
 import org.jgrapht.DirectedGraph;
@@ -108,6 +109,21 @@ public class ClassFileIndex {
 			}
 		}
 		return clazz;
+	}
+
+	/**
+	 * @return The {@link Collection} of tests doing (directly or indirectly) some dynamic loading, for instance
+	 * inspecting all the classes of a given package. Since we cannot compute the explicit dependencies of these
+	 * tests we need to run them on every change.
+	 * For now this applies to ArchUnit tests.
+	 * @see JavaAssistClass#canComputeTestDependencies()
+	 */
+	public Collection<JavaClass> findDynamicTestClasses() {
+		return classesByName
+				.values()
+				.stream()
+				.filter(javaClass -> javaClass.isATest() && !javaClass.canComputeTestDependencies())
+				.collect(Collectors.toList());
 	}
 
 	private JavaClass findClass(String classname) {

@@ -41,6 +41,13 @@ public interface JavaClass {
 	boolean isATest();
 
 	boolean locatedInClassFile();
+	
+	/**
+	 * @return <code>true</code> if we can compute the classes that this class depends on.
+	 */
+	default boolean canComputeTestDependencies() {
+		return true;
+	}
 
 	File getClassFile();
 }

@@ -67,9 +67,11 @@ import junit.framework.TestCase;
  */
 public class JavaAssistClass extends AbstractJavaClass {
 	private static final String ARCHUNIT_ARCHTEST = "com.tngtech.archunit.junit.ArchTest";
+	private static final String ARCHUNIT_ANALYSE_CLASSES = "com.tngtech.archunit.junit.AnalyzeClasses";
 	
 	private final String[] imports;
 	private final boolean isATest;
+	private final boolean canComputeTestDependencies;
 	private final String className;
 	private File classFile;
 
@@ -78,6 +80,9 @@ public class JavaAssistClass extends AbstractJavaClass {
 		isATest = !isAbstract(classReference) &&
 				(hasTests(classReference) || isJUnit5Testable(classReference)) &&
 				(hasJUnit5TestImport(imports) || canInstantiate(classReference));
+		
+		// ArchUnit loads classes dynamically so we cannot compute the dependencies
+		canComputeTestDependencies = !hasArchUnitTests(classReference);
 		className = classReference.getName();
 	}
 
@@ -218,6 +223,11 @@ public class JavaAssistClass extends AbstractJavaClass {
 	public boolean isATest() {
 		return isATest;
 	}
+	
+	@Override
+	public boolean canComputeTestDependencies() {
+		return canComputeTestDependencies;
+	}
 
 	boolean canInstantiate(CtClass classReference) {
 		for (CtConstructor ctConstructor : classReference.getConstructors()) {
@@ -295,14 +305,14 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasArchUnitTests(CtClass classReference) {
 		for (CtField field : classReference.getDeclaredFields()) {
-			if (field.hasAnnotation(ARCHUNIT_ARCHTEST)) {
+			if (field.hasAnnotation(ARCHUNIT_ARCHTEST) || field.hasAnnotation(ARCHUNIT_ANALYSE_CLASSES)) {
 				return true;
 			}
 		}
 		
 		// getMethods() returns the non-private methods
 		for (CtMethod ctMethod : classReference.getDeclaredMethods()) {
-			if (ctMethod.hasAnnotation(ARCHUNIT_ARCHTEST)) {
+			if (ctMethod.hasAnnotation(ARCHUNIT_ARCHTEST) || ctMethod.hasAnnotation(ARCHUNIT_ANALYSE_CLASSES)) {
 				return true;
 			}
 		}

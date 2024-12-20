@@ -31,6 +31,7 @@ import static org.infinitest.CoreStatus.FAILING;
 import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -62,7 +63,11 @@ class WhenRunningTests {
       builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
       TestFilter testFilter = mock(TestFilter.class);
-      when(testFilter.match(not(argThat(startsWith("com.fakeco.fakeproduct.simple"))))).thenReturn(true);
+      JavaClass testsMatcher = not(or(
+          argThat(startsWith("com.fakeco.fakeproduct.simple")),
+          argThat(notADynamicTest())
+        ));
+      when(testFilter.match(testsMatcher)).thenReturn(true);
       builder.setFilter(testFilter);
 
       InfinitestCore core = builder.createCore();
@@ -102,6 +107,15 @@ class WhenRunningTests {
       @Override
       public boolean matches(JavaClass argument) {
         return argument.getName().startsWith(namePrefix);
+      }
+    };
+  }
+  
+  static ArgumentMatcher<JavaClass> notADynamicTest() {
+    return new ArgumentMatcher<JavaClass>() {
+      @Override
+      public boolean matches(JavaClass argument) {
+        return argument.canComputeTestDependencies();
       }
     };
   }
