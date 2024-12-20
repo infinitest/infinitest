@@ -31,7 +31,7 @@ import static org.infinitest.CoreStatus.FAILING;
 import static org.infinitest.environment.FakeEnvironments.fakeEnvironment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.AdditionalMatchers.or;
+import static org.mockito.AdditionalMatchers.and;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,7 +63,7 @@ class WhenRunningTests {
       builder.setUpdateSemaphore(mock(ConcurrencyController.class));
 
       TestFilter testFilter = mock(TestFilter.class);
-      JavaClass testsMatcher = not(or(
+      JavaClass testsMatcher = not(and(
           argThat(startsWith("com.fakeco.fakeproduct.simple")),
           argThat(notADynamicTest())
         ));
