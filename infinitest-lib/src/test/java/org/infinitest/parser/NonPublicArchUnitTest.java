@@ -27,27 +27,23 @@
  */
 package org.infinitest.parser;
 
-import java.io.*;
 
-public interface JavaClass {
-	String getName();
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-	/**
-	 * Gets the collection on classes that this class depends on. i.e. the list
-	 * of this classes children.
-	 */
-	String[] getImports();
+import java.time.LocalDateTime;
 
-	boolean isATest();
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.junit.ArchTest;
+import com.tngtech.archunit.lang.ArchRule;
 
-	boolean locatedInClassFile();
-	
-	/**
-	 * @return <code>true</code> if we can compute the classes that this class depends on.
-	 */
-	default boolean canComputeTestDependencies() {
-		return true;
-	}
+/**
+ * Not a real test: this is a sample for {@link JavaAssistClassTest}.
+ * Since this class is not public we put it in the same package as {@link JavaAssistClassTest}
+ */
+@AnalyzeClasses
+class NonPublicArchUnitTest {
 
-	File getClassFile();
+    @ArchTest
+    static final ArchRule onlyUseSuppliedClock = noClasses()
+            .should().callMethod(LocalDateTime.class, "now");
 }

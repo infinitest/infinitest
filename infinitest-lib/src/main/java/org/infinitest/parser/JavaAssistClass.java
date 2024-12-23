@@ -27,7 +27,6 @@
  */
 package org.infinitest.parser;
 
-import static java.util.Arrays.stream;
 import static javassist.Modifier.isPublic;
 import static javassist.bytecode.AnnotationsAttribute.invisibleTag;
 import static javassist.bytecode.AnnotationsAttribute.visibleTag;
@@ -67,39 +66,91 @@ import junit.framework.TestCase;
  */
 public class JavaAssistClass extends AbstractJavaClass {
 	private static final String ARCHUNIT_ARCHTEST = "com.tngtech.archunit.junit.ArchTest";
+	private static final String ARCHUNIT_ANALYSE_CLASSES = "com.tngtech.archunit.junit.AnalyzeClasses";
 	
 	private final String[] imports;
 	private final boolean isATest;
+	private final boolean canComputeTestDependencies;
 	private final String className;
 	private File classFile;
 
 	public JavaAssistClass(CtClass classReference) {
 		imports = findImports(classReference);
 		isATest = !isAbstract(classReference) &&
-				(hasTests(classReference) || isJUnit5Testable(classReference)) &&
-				(hasJUnit5TestImport(imports) || canInstantiate(classReference));
+				((hasTests(classReference) && canInstantiate(classReference))
+				|| isJUnit5Testable(classReference, new HashSet<CtClass>()));
+		
+		// ArchUnit loads classes dynamically so we cannot compute the dependencies
+		canComputeTestDependencies = !hasArchUnitTests(classReference);
 		className = classReference.getName();
-	}
-
-	private boolean hasJUnit5TestImport(final String[] imports) {
-		return stream(imports)
-				.anyMatch(org.junit.jupiter.api.Test.class.getName()::equals);
 	}
 	
 	/**
 	 * @return <code>true</code> if the class or one of its parents is annotated with {@link Testable}
 	 */
-	private boolean isJUnit5Testable(final CtClass classReference) {
+	private boolean isJUnit5Testable(final CtClass classReference, Set<CtClass> visitedClasses) {
+		// Break the recursion when we encounter a  class we have already visited
+		if (!visitedClasses.add(classReference)) {
+			return false;
+		}
+		
 		CtClass clazz = classReference;
-		while (clazz !=null) {
+		while (clazz != null) {
 			if (clazz.hasAnnotation(Testable.class)) {
 				return true;
+			}
+			
+			// Look for class-level annotations and check if they have the Testable meta annotation
+			AttributeInfo attributeInfo = clazz.getClassFile2().getAttribute(AnnotationsAttribute.visibleTag);
+			if (isJUnit5Testable(attributeInfo, classReference.getClassPool(), visitedClasses)) {
+				return true;
+			}
+			
+			for (CtMethod method : classReference.getDeclaredMethods()) {
+				attributeInfo = method.getMethodInfo2().getAttribute(AnnotationsAttribute.visibleTag);
+				if (isJUnit5Testable(attributeInfo, classReference.getClassPool(), visitedClasses)) {
+					return true;
+				}
+			}
+			
+			for (CtField field : classReference.getDeclaredFields()) {
+				attributeInfo = field.getFieldInfo2().getAttribute(AnnotationsAttribute.visibleTag);
+				if (isJUnit5Testable(attributeInfo, classReference.getClassPool(), visitedClasses)) {
+					return true;
+				}
 			}
 			
 			try {
 				clazz = clazz.getSuperclass();
 			} catch (NotFoundException e) {
 				return false;
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * @return <code>true</code> if the attribute (from a class, method or field) has the {@link Testable} meta
+	 * annotation or an annotation that is itself {@link Testable}
+	 */
+	private boolean isJUnit5Testable(AttributeInfo attributeInfo, ClassPool classPool,
+			Set<CtClass> visitedClasses) {
+		if (attributeInfo instanceof AnnotationsAttribute) {
+			AnnotationsAttribute attribute = (AnnotationsAttribute) attributeInfo;
+			Annotation[] annotations = attribute.getAnnotations();
+			if (annotations != null) {
+				for (Annotation annotation : annotations) {
+					try {
+						CtClass annotationClass = classPool.get(annotation.getTypeName());
+						if (isJUnit5Testable(annotationClass, visitedClasses)) {
+							return true;
+						}
+
+					} catch (NotFoundException e) {
+						return false;
+					}
+				}
 			}
 		}
 		
@@ -218,6 +269,11 @@ public class JavaAssistClass extends AbstractJavaClass {
 	public boolean isATest() {
 		return isATest;
 	}
+	
+	@Override
+	public boolean canComputeTestDependencies() {
+		return canComputeTestDependencies;
+	}
 
 	boolean canInstantiate(CtClass classReference) {
 		for (CtConstructor ctConstructor : classReference.getConstructors()) {
@@ -265,7 +321,6 @@ public class JavaAssistClass extends AbstractJavaClass {
 	private boolean hasTests(CtClass classReference) {
 		return hasJUnitTestMethods(classReference) //
 				|| usesCustomRunner(classReference) //
-				|| hasArchUnitTests(classReference)
 				|| hasTestNGTests(classReference);
 	}
 
@@ -295,14 +350,14 @@ public class JavaAssistClass extends AbstractJavaClass {
 
 	private boolean hasArchUnitTests(CtClass classReference) {
 		for (CtField field : classReference.getDeclaredFields()) {
-			if (field.hasAnnotation(ARCHUNIT_ARCHTEST)) {
+			if (field.hasAnnotation(ARCHUNIT_ARCHTEST) || field.hasAnnotation(ARCHUNIT_ANALYSE_CLASSES)) {
 				return true;
 			}
 		}
 		
 		// getMethods() returns the non-private methods
 		for (CtMethod ctMethod : classReference.getDeclaredMethods()) {
-			if (ctMethod.hasAnnotation(ARCHUNIT_ARCHTEST)) {
+			if (ctMethod.hasAnnotation(ARCHUNIT_ARCHTEST) || ctMethod.hasAnnotation(ARCHUNIT_ANALYSE_CLASSES)) {
 				return true;
 			}
 		}

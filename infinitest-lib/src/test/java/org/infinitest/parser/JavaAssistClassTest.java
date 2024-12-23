@@ -161,6 +161,7 @@ class JavaAssistClassTest {
 			JUnit5TestableSubclass.class,
 			JUnit5ArchUnitTest.class,
 			JUnit5ArchUnitMethodTest.class,
+			NonPublicArchUnitTest.class,
 	})
 	void shouldSupportTestClasses(Class<?> testClass) throws NotFoundException {
 		ClassPool classPool = classPoolUtil.getClassPool();
