@@ -79,6 +79,11 @@ public class ClassFileTestDetector implements TestDetector {
 
 		// run through total set, and pick out tests to run
 		log(Level.FINE, "Total changeset: " + changedParents);
+
+		if (!changedFiles.isEmpty()) {
+			changedClasses.addAll(index.findDynamicTestClasses());
+		}
+		
 		return filterTests(changedClasses);
 	}
 
