@@ -27,13 +27,15 @@
  */
 package org.infinitest;
 
-import java.util.*;
+import java.util.List;
+
+import org.testng.ITestNGListener;
 
 /** Provides testNG-settings. Just a data-provider, no logic here. */
 public class TestNGConfiguration {
 	private String excludedGroups;
 	private String groups;
-	private List<Object> listeners;
+	private List<ITestNGListener> listeners;
 
 	public void setExcludedGroups(String excludedGroups) {
 		this.excludedGroups = excludedGroups;
@@ -51,11 +53,11 @@ public class TestNGConfiguration {
 		return groups;
 	}
 
-	public List<Object> getListeners() {
+	public List<ITestNGListener> getListeners() {
 		return listeners;
 	}
 
-	public void setListeners(List<Object> listenerList) {
+	public void setListeners(List<ITestNGListener> listenerList) {
 		listeners = listenerList;
 	}
 }

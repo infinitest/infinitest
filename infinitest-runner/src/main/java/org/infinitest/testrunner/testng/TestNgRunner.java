@@ -39,6 +39,7 @@ import org.infinitest.testrunner.TestEvent;
 import org.infinitest.testrunner.TestResults;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
+import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.TestNG;
 
@@ -72,7 +73,11 @@ public class TestNgRunner {
 		TestNGEventTranslator eventTranslator = new TestNGEventTranslator();
 
 		TestNG core = new TestNG();
-		core.addListener(eventTranslator);
+		// TestNG 6 has addListener(ITestListener)
+		// TestNG 7 has addListener(ITestNGListener)
+		// The method is selected at compile time so compiling with either version yields a NoSuchMethodError on the other version
+		// Since addListener(Object) is in both versions we use it even though it is deprecated to remain compatible with TestNG 
+ 		core.addListener((Object) eventTranslator);
 		core.setTestClasses(new Class[] { classUnderTest });
 
 		TestNGConfiguration config = new TestNGConfigurator(configSource).readConfig();
@@ -88,8 +93,8 @@ public class TestNgRunner {
 		core.setExcludedGroups(config.getExcludedGroups());
 		core.setGroups(config.getGroups());
 		if (config.getListeners() != null) {
-			for (Object listener : config.getListeners()) {
-				core.addListener(listener);
+			for (ITestNGListener listener : config.getListeners()) {
+				core.addListener((Object) listener);
 			}
 		}
 	}
