@@ -14,8 +14,6 @@
     <intellij.version>20.1.0</intellij.version>
     <intellij.api.version>221.5787.30</intellij.api.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <repositories>
