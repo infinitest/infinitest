@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8', '11', '17', '19' ]
+        java: [ '11', '17', '19' ]
     name: Unit tests Java ${{ matrix.Java }}
     steps:
       - uses: actions/checkout@v3
@@ -25,13 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gtk2.0 libxtst6
-      - name: Build and Test Java 8
-        if: ${{ matrix.Java == '8' }}
-      # We need a virtual X11 for the Eclipse unit tests
-        run: |
-          xvfb-run -a mvn -B test -pl infinitest-lib,infinitest-runner -am
-      - name: Build and Test Java > 8
-        if: ${{ matrix.Java != '8' }}
+      - name: Build and Test
       # We need a virtual X11 for the Eclipse unit tests
         run: |
           xvfb-run -a mvn -B package
