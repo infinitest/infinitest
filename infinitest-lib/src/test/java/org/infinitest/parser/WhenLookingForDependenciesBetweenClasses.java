@@ -131,11 +131,11 @@ class WhenLookingForDependenciesBetweenClasses extends DependencyGraphTestBase {
   void shouldFindNewlyCreatedClasses() throws Exception {
     ClassPool pool = ClassPool.getDefault();
     pool.appendPathList(systemClasspath());
-    CtClass cc = pool.makeClass("ANewTest");
+    CtClass cc = pool.makeClass("org.infinitest.parser.ANewTest");
     cc.setSuperclass(pool.get(TestCase.class.getName()));
     cc.addMethod(CtMethod.make("void testSomething(){}", cc));
     cc.writeFile(FakeEnvironments.fakeClassDirectory().getAbsolutePath());
-    Class<?> testClass = cc.toClass();
+    Class<?> testClass = cc.toClass(getClass());
     InfinitestTestUtils.getFileForClass(testClass).deleteOnExit();
     assertClassRecognizedAsTest(testClass);
   }
