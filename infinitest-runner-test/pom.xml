@@ -10,8 +10,10 @@
 
 	<properties>
 		<user.junit.version>5.8.2</user.junit.version>
+		<user.junit5-platform.version>1.8.2</user.junit5-platform.version>
 		<user.assertj.version>3.23.1</user.assertj.version>
 		<user.hamcrest.version>3.23.1</user.hamcrest.version>
+		<user.surefire.version>3.0.0-M7</user.surefire.version>
 	</properties>
 
 	<dependencies>
@@ -32,6 +34,13 @@
 			<artifactId>junit-jupiter-params</artifactId>
 			<version>${user.junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<!-- Overriden here so we don't get the version from infinitest-runner -->
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>${user.junit5-platform.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>
@@ -55,26 +64,13 @@
 		</dependency>
 	</dependencies>
 
-	<!--
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>infinitest-runner-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<testClassesDirectory>${project.basedir}/../infinitest-lib/target/test-classes</testClassesDirectory>
-							<testClassesDirectory>${project.basedir}/../infinitest-runner/target/test-classes</testClassesDirectory>
-						</configuration>
-					</execution>
-				</executions>
+				<version>${user.surefire.version}</version>
 			</plugin>
 		</plugins>
 	</build>
-	-->
 </project>

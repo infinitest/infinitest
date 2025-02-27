@@ -45,6 +45,7 @@ import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
 import org.junit.platform.engine.ConfigurationParameters;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.UniqueId;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.opentest4j.AssertionFailedError;
@@ -59,13 +60,18 @@ class JUnit5EventTranslatorTest {
 	void before() throws NoSuchMethodException, SecurityException {
 		stubClock = new StubClock();
 		eventTranslator = new JUnit5EventTranslator(stubClock);
-		ConfigurationParameters parameters = LauncherDiscoveryRequestBuilder.request().build().getConfigurationParameters(); 
+		LauncherDiscoveryRequest launcherDiscovery = LauncherDiscoveryRequestBuilder.request().build();
+		ConfigurationParameters parameters = launcherDiscovery.getConfigurationParameters(); 
+		
 		JupiterConfiguration configuration = new DefaultJupiterConfiguration(parameters);
 
 		UniqueId id = UniqueId.parse(
 				"[engine:junit-jupiter]/[class:org.infinitest.testrunner.exampletests.junit5.JUnit5Test]/[method:shouldFail()]");
-		shouldFailMethodTestDescriptor = new TestMethodTestDescriptor(id, JUnit5Test.class,
-				JUnit5Test.class.getMethod("shouldFail"), configuration);
+		shouldFailMethodTestDescriptor = new TestMethodTestDescriptor(
+				id,
+				JUnit5Test.class,
+				JUnit5Test.class.getMethod("shouldFail"),
+				configuration);
 	}
 
 	@Test
