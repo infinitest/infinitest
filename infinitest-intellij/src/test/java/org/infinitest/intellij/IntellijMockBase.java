@@ -174,7 +174,7 @@ public class IntellijMockBase {
 		
 		// Setup the properties component
 		PropertiesComponent propertiesComponent = mock(PropertiesComponent.class);
-		when(propertiesComponent.getBoolean("power.save.mode")).thenReturn(Boolean.valueOf(powerSaveModeEnabled));
+		when(propertiesComponent.getBoolean("power.save.mode")).thenReturn(powerSaveModeEnabled);
 		
 		when(application.getService(PropertiesComponent.class)).thenReturn(propertiesComponent);
 		
