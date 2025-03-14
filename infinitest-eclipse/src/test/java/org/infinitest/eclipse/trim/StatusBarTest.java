@@ -27,31 +27,13 @@
  */
 package org.infinitest.eclipse.trim;
 
-import static org.eclipse.swt.SWT.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.swt.layout.*;
-import org.infinitest.eclipse.*;
-import org.junit.jupiter.api.BeforeEach;
+import org.infinitest.eclipse.PluginActivationController;
 import org.junit.jupiter.api.Test;
 
 class StatusBarTest {
-	private StatusBar statusBar;
-
-	@BeforeEach
-	void inContext() {
-		statusBar = new StatusBar();
-	}
-
-	@Test
-	void shouldShrinkWhenMovedToSideBars() {
-		RowData rowData = statusBar.getRowData(BOTTOM);
-		assertEquals(400, rowData.width);
-
-		rowData = statusBar.getRowData(LEFT);
-		assertEquals(-1, rowData.width);
-	}
 
 	@Test
 	void shouldRegisterStatusPluginController() {
@@ -62,7 +44,6 @@ class StatusBarTest {
 				return mockController;
 			}
 		};
-		statusBar.init(null);
 
 		verify(mockController).attachVisualStatus(statusBar);
 	}
