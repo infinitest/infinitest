@@ -32,6 +32,7 @@ import junit.framework.AssertionFailedError;
 import static org.infinitest.testrunner.TestEvent.TestState.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -43,7 +44,9 @@ public class TestEvent implements Serializable {
 	private static final long serialVersionUID = -1821340797590868333L;
 
 	public enum TestState {
-		METHOD_FAILURE, TEST_CASE_STARTING
+		TEST_INITIALIZATION_FAILURE,
+		METHOD_FAILURE,
+		TEST_CASE_STARTING
 	}
 
 	private final String message;
@@ -52,6 +55,7 @@ public class TestEvent implements Serializable {
 	private final TestState state;
 	private boolean isAssertionFailure;
 	private StackTraceElement[] stackTrace;
+	private String printedStackTrace;
 	private String simpleErrorClassName;
 	private String fullErrorClassName;
 
@@ -73,6 +77,10 @@ public class TestEvent implements Serializable {
 	public static TestEvent methodFailed(String testName, String methodName, Throwable throwable) {
 		return new TestEvent(METHOD_FAILURE, throwable.getMessage(), testName, methodName, throwable);
 	}
+	
+	public static TestEvent testInitializationFailed(String testName, String methodName, Throwable throwable) {
+		return new TestEvent(TEST_INITIALIZATION_FAILURE, throwable.getMessage(), testName, methodName, throwable);
+	}
 
 	public static TestEvent testCaseStarting(String testClass) {
 		return new TestEvent(TEST_CASE_STARTING, "Test Starting", testClass, "", null);
@@ -84,6 +92,17 @@ public class TestEvent implements Serializable {
 		if (stackTrace == null) {
 			stackTrace = new StackTraceElement[0];
 		}
+		
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+				PrintStream stream = new PrintStream(out, false, StandardCharsets.UTF_8)) {
+			error.printStackTrace(stream);
+			stream.flush();
+			
+			printedStackTrace = out.toString(StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		simpleErrorClassName = error.getClass().getSimpleName();
 		fullErrorClassName = error.getClass().getName();
 	}
@@ -178,5 +197,9 @@ public class TestEvent implements Serializable {
 
 	public StackTraceElement[] getStackTrace() {
 		return stackTrace;
+	}
+	
+	public String getPrintedStackTrace() {
+		return printedStackTrace;
 	}
 }

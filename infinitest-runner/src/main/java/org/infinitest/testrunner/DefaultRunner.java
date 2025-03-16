@@ -28,6 +28,7 @@
 package org.infinitest.testrunner;
 
 import org.infinitest.MissingClassException;
+import org.infinitest.TestClassInitializationException;
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfigurationSource;
 import org.infinitest.testrunner.junit4.Junit4And3Runner;
@@ -55,6 +56,8 @@ public class DefaultRunner implements NativeRunner {
 			testClass = Class.forName(testClassName);
 		} catch (ClassNotFoundException e) {
 			throw new MissingClassException(testClassName);
+		} catch (Throwable t) {
+			throw new TestClassInitializationException("Failed to initialize test class " + testClassName, t);
 		}
 
 		if (TestNgRunner.isTestNGTest(testClass)) {
