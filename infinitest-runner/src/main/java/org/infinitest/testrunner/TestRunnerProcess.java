@@ -133,7 +133,7 @@ public class TestRunnerProcess {
 		}
 	}
 
-	private static void writeTestResultToOutputStream(TestRunnerProcess process, ObjectOutputStream outputStream, String testName) throws IOException {
+	public static void writeTestResultToOutputStream(TestRunnerProcess process, ObjectOutputStream outputStream, String testName) throws IOException {
 		TestResults results;
 		try {
 			results = process.runTest(testName);

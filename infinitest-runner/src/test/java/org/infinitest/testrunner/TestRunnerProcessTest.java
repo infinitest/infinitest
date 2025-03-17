@@ -27,6 +27,7 @@
  */
 package org.infinitest.testrunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.infinitest.config.FileBasedInfinitestConfigurationSource.INFINITEST_FILTERS_FILE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -37,9 +38,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
+import javax.management.RuntimeErrorException;
+
+import org.infinitest.testrunner.TestEvent.TestState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -99,5 +107,33 @@ class TestRunnerProcessTest {
 	void getFilterFile() {
 		File filteFile = new File(INFINITEST_FILTERS_FILE_NAME);
 		assertEquals(filteFile, TestRunnerProcess.getFilterFile(new String[] {null, null, INFINITEST_FILTERS_FILE_NAME}));
+	}
+	
+	@Test
+	void testClassInitializationFailure() throws IOException, ClassNotFoundException {
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(out)) {
+			TestRunnerProcess process = new TestRunnerProcess(DefaultRunner.class.getName(), null);
+			TestRunnerProcess.writeTestResultToOutputStream(process, oos, InvalidTestClass.class.getName());
+			
+			try (ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()); ObjectInputStream ois = new ObjectInputStream(in)) {
+				TestResults results = (TestResults) ois.readObject();
+				
+				assertThat(results.iterator().hasNext()).isTrue();
+				
+				TestEvent event = results.iterator().next();
+				
+				assertThat(event.getType()).isEqualTo(TestState.TEST_INITIALIZATION_FAILURE);
+				assertThat(event.getPrintedStackTrace()).isNotNull();
+			}
+		}
+	}
+	
+	private static class InvalidTestClass {
+		static {
+			Exception cause = new Exception("Test for a class failing to load");
+			if (true) {
+				throw new RuntimeException("Failed to load class", cause);
+			}
+		}
 	}
 }
