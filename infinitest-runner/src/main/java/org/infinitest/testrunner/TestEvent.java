@@ -35,6 +35,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import org.infinitest.MissingClassException;
+
 /**
  * @author <a href="mailto:benrady@gmail.com">Ben Rady</a>
  */
@@ -100,7 +102,7 @@ public class TestEvent implements Serializable {
 			
 			printedStackTrace = out.toString(StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new MissingClassException("Error when trying to print stack trace", e);
 		}
 		
 		simpleErrorClassName = error.getClass().getSimpleName();

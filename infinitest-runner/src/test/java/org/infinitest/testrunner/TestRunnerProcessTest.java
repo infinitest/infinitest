@@ -45,8 +45,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.management.RuntimeErrorException;
-
 import org.infinitest.testrunner.TestEvent.TestState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
