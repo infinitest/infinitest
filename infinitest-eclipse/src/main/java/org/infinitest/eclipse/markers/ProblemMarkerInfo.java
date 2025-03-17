@@ -39,6 +39,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.infinitest.eclipse.workspace.*;
 import org.infinitest.testrunner.*;
+import org.infinitest.testrunner.TestEvent.TestState;
 
 public class ProblemMarkerInfo extends AbstractMarkerInfo {
 	public static final String PICKLED_STACK_TRACE_ATTRIBUTE = "Pickled Stack Trace";
@@ -108,7 +109,13 @@ public class ProblemMarkerInfo extends AbstractMarkerInfo {
 
 	private String buildMessage(TestEvent anEvent) {
 		PointOfFailure failure = anEvent.getPointOfFailure();
-		return anEvent.getErrorClassName() + getMessage(failure) + " in " + stripPackageName(event.getTestName()) + "." + anEvent.getTestMethod();
+		String message = anEvent.getErrorClassName() + getMessage(failure) + " in " + stripPackageName(event.getTestName()) + "." + anEvent.getTestMethod();
+		
+		if (anEvent.getType() == TestState.TEST_INITIALIZATION_FAILURE) {
+			return message + "\n\n" + anEvent.getPrintedStackTrace();
+		} else {
+			return message;
+		}
 	}
 
 	private String getMessage(PointOfFailure failure) {

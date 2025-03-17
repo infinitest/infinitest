@@ -28,6 +28,7 @@
 package org.infinitest.testrunner;
 
 import static org.infinitest.testrunner.TestEvent.methodFailed;
+import static org.infinitest.testrunner.TestEvent.testInitializationFailed;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +38,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import org.infinitest.TestClassInitializationException;
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 
 // RISK This class is only tested by running it, which is slow and throws off coverage
@@ -131,17 +133,16 @@ public class TestRunnerProcess {
 		}
 	}
 
-	private static void writeTestResultToOutputStream(TestRunnerProcess process, ObjectOutputStream outputStream, String testName) throws IOException {
+	public static void writeTestResultToOutputStream(TestRunnerProcess process, ObjectOutputStream outputStream, String testName) throws IOException {
 		TestResults results;
 		try {
 			results = process.runTest(testName);
-		}
-		// CHECKSTYLE:OFF
-		catch (Throwable e)
-		// CHECKSTYLE:ON
-		{
+		} catch (TestClassInitializationException e) {
+			results = new TestResults(testInitializationFailed(testName, "", e));
+		} catch (Throwable e) {
 			results = new TestResults(methodFailed(testName, "", e));
 		}
+		
 		outputStream.writeObject(results);
 	}
 }
