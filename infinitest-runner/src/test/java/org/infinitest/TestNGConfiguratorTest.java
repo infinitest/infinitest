@@ -35,6 +35,7 @@ import java.util.List;
 import org.infinitest.config.InfinitestConfiguration;
 import org.infinitest.config.MemoryInfinitestConfigurationSource;
 import org.junit.jupiter.api.Test;
+import org.testng.ITestNGListener;
 
 class TestNGConfiguratorTest {
 
@@ -71,7 +72,7 @@ class TestNGConfiguratorTest {
 	@Test
 	void listenersClassesShouldBeInstantiated() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().testngListeners("org.testng.internal.annotations.DefaultAnnotationTransformer", "org.testng.reporters.JUnitXMLReporter").build());
-		List<Object> listeners = config.getListeners();
+		List<ITestNGListener> listeners = config.getListeners();
 
 		assertThat(listeners.get(0)).isExactlyInstanceOf(org.testng.internal.annotations.DefaultAnnotationTransformer.class);
 		assertThat(listeners.get(1)).isExactlyInstanceOf(org.testng.reporters.JUnitXMLReporter.class);
@@ -80,7 +81,7 @@ class TestNGConfiguratorTest {
 	@Test
 	void unknowListenersClassesShouldBeIgnored() {
 		TestNGConfiguration config = fromInfinitestConfig(InfinitestConfiguration.builder().testngListeners("org.testng.UnknownReporter", "org.testng.reporters.JUnitXMLReporter").build());
-		List<Object> listeners = config.getListeners();
+		List<ITestNGListener> listeners = config.getListeners();
 
 		assertThat(listeners.get(0)).isExactlyInstanceOf(org.testng.reporters.JUnitXMLReporter.class);
 	}

@@ -84,7 +84,7 @@
       <version>${testng.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.beust</groupId>
+      <groupId>org.jcommander</groupId>
       <artifactId>jcommander</artifactId>
       <version>${jcommander.version}</version>
     </dependency>
