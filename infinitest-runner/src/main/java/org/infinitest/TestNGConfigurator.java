@@ -33,6 +33,7 @@ import java.util.List;
 import org.infinitest.config.FileBasedInfinitestConfigurationSource;
 import org.infinitest.config.InfinitestConfiguration;
 import org.infinitest.config.InfinitestConfigurationSource;
+import org.testng.ITestNGListener;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
@@ -59,12 +60,13 @@ public class TestNGConfigurator {
 		return testNgConfiguration;
 	}
 
-	private List<Object> createListenerList(ImmutableSet<String> listenerClassNames) {
-		List<Object> listenerList = new ArrayList<>();
+	private List<ITestNGListener> createListenerList(ImmutableSet<String> listenerClassNames) {
+		List<ITestNGListener> listenerList = new ArrayList<>();
 
 		for (String listenerClassName : listenerClassNames) {
 			try {
-				listenerList.add(Class.forName(listenerClassName).getConstructor().newInstance());
+				ITestNGListener listener = (ITestNGListener) Class.forName(listenerClassName).getConstructor().newInstance();
+				listenerList.add(listener);
 			} catch (Exception e) {
 				// unable to add this listener, just continue with the next.
 				e.printStackTrace();
