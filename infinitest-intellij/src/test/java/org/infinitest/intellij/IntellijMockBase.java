@@ -45,6 +45,7 @@ import org.infinitest.testrunner.TestResultsListener;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
+import com.intellij.diagnostic.LoadingState;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
@@ -109,7 +110,7 @@ public class IntellijMockBase {
 		control = new ProjectTestControl(project);
 		annotator = mock(InfinitestAnnotator.class);
 		
-		when(project.getComponent(ModuleManager.class)).thenReturn(moduleManager);
+		when(project.getService(ModuleManager.class)).thenReturn(moduleManager);
 		when(project.getMessageBus()).thenReturn(messageBus);
 		when(project.getService(ProjectTestControl.class)).thenReturn(control);
 		when(project.getService(InfinitestAnnotator.class)).thenReturn(annotator);
@@ -120,7 +121,7 @@ public class IntellijMockBase {
 		when(module.getName()).thenReturn("module");
 		when(module.getProject()).thenReturn(project);
 		when(module.getService(InfinitestLauncher.class)).thenReturn(launcher);
-		when(module.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManager);
+		when(module.getService(ModuleRootManager.class)).thenReturn(moduleRootManager);
 		when(module.getService(ModuleSettings.class)).thenReturn(moduleSettings);
 		
 		when(moduleSettings.getRuntimeEnvironment()).thenReturn(runtimeEnvironment);
@@ -130,6 +131,7 @@ public class IntellijMockBase {
 		when(moduleRootManager.getOrderEntries()).thenReturn(new OrderEntry[0]);
 		
 		when(projectRootManager.getContentRoots()).thenReturn(new VirtualFile[0]);
+		when(projectRootManager.getModuleRootManager(module)).thenReturn(moduleRootManager);
 		
 		when(sdk.getHomePath()).thenReturn("java");
 		
@@ -143,6 +145,8 @@ public class IntellijMockBase {
 		when(messageBus.syncPublisher(InfinitestTopics.STATUS_CHANGE_TOPIC)).thenReturn(mock(StatusChangeListener.class));
 		when(messageBus.syncPublisher(InfinitestTopics.TEST_QUEUE_TOPIC)).thenReturn(mock(TestQueueListener.class));
 		when(messageBus.syncPublisher(InfinitestTopics.TEST_RESULTS_TOPIC)).thenReturn(mock(TestResultsListener.class));
+		
+		LoadingState.setCurrentState(LoadingState.COMPONENTS_REGISTERED);
 	}
 	
 	/**

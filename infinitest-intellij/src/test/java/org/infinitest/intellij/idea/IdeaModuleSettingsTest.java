@@ -57,9 +57,8 @@ class IdeaModuleSettingsTest extends IntellijMockBase {
 		ModuleRootManager rootManager = mock(ModuleRootManager.class);
 		CompilerModuleExtension compilerModuleExtension = mock(CompilerModuleExtension.class);
 		
-		when(module.getComponent(ModuleRootManager.class)).thenReturn(rootManager);
 		when(rootManager.getDependencies()).thenReturn(new Module[0]);
-		when(rootManager.getModuleExtension(CompilerModuleExtension.class)).thenReturn(compilerModuleExtension);
+		when(ModuleRootManager.getInstance(module).getModuleExtension(CompilerModuleExtension.class)).thenReturn(compilerModuleExtension);
 		when(compilerModuleExtension.getCompilerOutputUrl()).thenReturn("/project/target/classes");
 		when(compilerModuleExtension.getCompilerOutputUrlForTests()).thenReturn("/project/target/test-classes");
 		IdeaModuleSettings settings = new IdeaModuleSettings(module);

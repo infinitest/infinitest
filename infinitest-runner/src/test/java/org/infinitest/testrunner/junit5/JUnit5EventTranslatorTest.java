@@ -31,6 +31,8 @@ import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collections;
+
 import org.infinitest.testrunner.MethodStats;
 import org.infinitest.testrunner.StubClock;
 import org.infinitest.testrunner.TestEvent;
@@ -45,6 +47,7 @@ import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
 import org.junit.platform.engine.ConfigurationParameters;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.UniqueId;
+import org.junit.platform.engine.reporting.OutputDirectoryProvider;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
@@ -61,9 +64,10 @@ class JUnit5EventTranslatorTest {
 		stubClock = new StubClock();
 		eventTranslator = new JUnit5EventTranslator(stubClock);
 		LauncherDiscoveryRequest launcherDiscovery = LauncherDiscoveryRequestBuilder.request().build();
-		ConfigurationParameters parameters = launcherDiscovery.getConfigurationParameters(); 
+		ConfigurationParameters parameters = launcherDiscovery.getConfigurationParameters();
+		OutputDirectoryProvider outputDirectoryProvider = launcherDiscovery.getOutputDirectoryProvider();
 		
-		JupiterConfiguration configuration = new DefaultJupiterConfiguration(parameters);
+		JupiterConfiguration configuration = new DefaultJupiterConfiguration(parameters, outputDirectoryProvider);
 
 		UniqueId id = UniqueId.parse(
 				"[engine:junit-jupiter]/[class:org.infinitest.testrunner.exampletests.junit5.JUnit5Test]/[method:shouldFail()]");
@@ -71,6 +75,7 @@ class JUnit5EventTranslatorTest {
 				id,
 				JUnit5Test.class,
 				JUnit5Test.class.getMethod("shouldFail"),
+				() -> Collections.emptyList(),
 				configuration);
 	}
 

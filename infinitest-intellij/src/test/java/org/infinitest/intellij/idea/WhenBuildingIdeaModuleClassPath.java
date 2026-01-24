@@ -42,7 +42,6 @@ import org.infinitest.intellij.IntellijMockBase;
 import org.junit.jupiter.api.Test;
 
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEnumerator;
 import com.intellij.openapi.roots.OrderRootsEnumerator;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -89,10 +88,8 @@ class WhenBuildingIdeaModuleClassPath extends IntellijMockBase {
 	void moduleSdk() {
 		IdeaModuleSettings settings = new IdeaModuleSettings(module);
 		
-		ModuleRootManager moduleRootManager = mock(ModuleRootManager.class);
 		Sdk sdk = mock(Sdk.class);
 		
-		when(module.getComponent(ModuleRootManager.class)).thenReturn(moduleRootManager);
 		when(moduleRootManager.getSdk()).thenReturn(sdk);
 		when(sdk.getHomePath()).thenReturn("jdk");
 		

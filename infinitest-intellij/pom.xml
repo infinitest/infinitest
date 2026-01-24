@@ -12,7 +12,7 @@
 
   <properties>
     <intellij.version>20.1.0</intellij.version>
-    <intellij.api.version>221.5787.30</intellij.api.version>
+    <intellij.api.version>253.29346.240</intellij.api.version>
     <slf4j.version>1.7.36</slf4j.version>
   </properties>
 
