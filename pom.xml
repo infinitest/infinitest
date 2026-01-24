@@ -43,6 +43,7 @@
 		<jcommander.version>1.83</jcommander.version>
 		<surefire.version>3.4.0</surefire.version>
 		<awaitility.version>4.2.0</awaitility.version>
+		<jacoco.version>0.8.14</jacoco.version>
 		
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.organization>infinitest-github</sonar.organization>
@@ -212,7 +213,7 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.12</version>
+					<version>${jacoco.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
