@@ -18,6 +18,19 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.auto.value</groupId>
+              <artifactId>auto-value</artifactId>
+              <version>${autovalue.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
@@ -93,11 +106,10 @@
       <artifactId>javax.annotation-api</artifactId>
       <version>${javax.annotation.version}</version>
     </dependency>
-		<dependency>
-			<groupId>com.google.auto.value</groupId>
-			<artifactId>auto-value</artifactId>
-			<version>${autovalue.version}</version>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>${autovalue.version}</version>
+    </dependency>
   </dependencies>
 </project>
