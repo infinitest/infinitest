@@ -26,19 +26,23 @@
 		</super>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
-		<group id="org.infinitest.eclipse.trimwidget" separatorsVisible="true">
-			<location>
-				<bar type="trim">
-				</bar>
-				<order position="before" relativeTo="status">
-				</order>
-			</location>
-		</group>
-		<widget class="org.infinitest.eclipse.trim.StatusBar" id="org.infinitest.eclipse.trim.status">
-			<location>
-				<bar path="org.infinitest.eclipse.trimwidget" type="trim">
-				</bar>
-			</location>
-		</widget>
+		<menuContribution allPopups="false" locationURI="toolbar:org.eclipse.ui.trim.status">
+			<toolbar id="org.infinitest.eclipse.status" label="Infinitest Bar">
+				<command commandId="org.infinitest.eclipse.toggle" style="toggle">
+				</command>
+				<control id="org.infinitest.eclipse.trim.StatusBar" class="org.infinitest.eclipse.trim.StatusBar">
+				</control>
+			</toolbar>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.commands">
+		<command id="org.infinitest.eclipse.toggle" defaultHandler="org.infinitest.eclipse.prefs.InfinitestToggleCommandHandler" icon="icons/infinitest-icon.png" name="Infinitest">
+			<state>
+			</state>
+		</command>
+	</extension>
+	<extension point="org.eclipse.ui.commandImages">
+		<image commandId="org.infinitest.eclipse.toggle" icon="icons/infinitest-icon.png">
+		</image>
 	</extension>
 </plugin>
